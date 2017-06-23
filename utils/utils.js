@@ -1,7 +1,9 @@
 'use strict';
 
+var async = require('async');
+
 module.exports = {
-	
+
 	/**
 	 * Check if error is available and return it in response, else return callback function
 	 *
@@ -11,7 +13,6 @@ module.exports = {
 	 * @param {Callback Function} cb
 	 */
 	checkErrorReturn: function (soajs, mainCb, data, cb) {
-		soajs.log.info('check Error Return');
 		if (data.error) {
 			if (typeof (data.error) === 'object') {
 				soajs.log.error(data.error);
@@ -54,7 +55,7 @@ module.exports = {
         for (var i = 0; i < selected.length; i++) {
             envDeployer = envDeployer[selected[i]];
         }
-	    
+
         options.deployerConfig = envDeployer;
         options.soajs = { registry: soajs.registry };
         options.model = BL.model;
@@ -80,5 +81,30 @@ module.exports = {
         };
 
         model.findEntry(soajs, opts, cb);
-    }
+    },
+
+	/**
+	 * Function that replaces characters in object keys with alternatives
+	 * @param  {Object}   record            The record that will be manipulated
+	 * @param  {String}   regex             String used to build the regex
+	 * @param  {String}   replacementString Replacement string
+	 * @param  {Function} cb                Callback function
+	 * @return {void}
+	 */
+	normalizeKeyValues: function (record, regex, replacementString, cb) {
+		var updatedRecord = {};
+		var replacementRegex = new RegExp(regex, 'g');
+		async.eachOf(record, function (oneRecordEntry, key, callback) {
+			if(key.match(replacementRegex)) {
+				updatedRecord[key.replace(replacementRegex, replacementString)] = oneRecordEntry;
+			}
+			else {
+				updatedRecord[key] = oneRecordEntry;
+			}
+
+			return callback();
+		}, function () {
+			return cb(null, updatedRecord);
+		});
+	}
 };

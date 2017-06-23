@@ -1,28 +1,28 @@
 <section ng-controller="gitAccountsAppCtrl">
-	<a ng-if="access.login" href="" class="btn btn-primary" ng-click="addAccount()">{{translation.addAccount[LANG]}}</a>
-	<div ng-if="accounts && accounts.length === 0">
-		<alert type="warning">{{translation.noGitAccountsAdded[LANG]}}</alert>
-	</div>
-	<div ng-if="accounts.length > 0">
-		<div class="entryBoxes entryBoxesGrid">
-			<div ng-if="access.listAccounts" id="a_{{account._id}}" ng-repeat="account in accounts" class="entryBox customEntryBox">
-				<div class="header opened">
-					<span class="icon icon-github" ng-if="account.provider === 'github'"></span>
-					<span class="icon" ng-if="account.provider === 'bitbucket_org'"><i class="fa fa-lg fa-bitbucket"></i></span>
-					<span class="icon" ng-if="account.provider === 'bitbucket_enterprise'"><i class="fa fa-lg fa-bitbucket"></i></span>
-					{{account.label|uppercase}}&nbsp;&nbsp;[{{account.owner}}]
-				</div>
-				<div class="body" ng-if="account.loading">
-					<div id="loadingNotification">
-						<img class="loadingImageLarge" ng-src="{{imagePath}}" width="32px" height="32px"><br>
-						<h5 class="alignCenter">{{translation.gettingReposPleaseWait[LANG]}}</h5>
-					</div>
-				</div>
-				<div class="body" ng-if="!account.loading">
-					<div class="inner" ng-class="{'hidden': account.hide}">
-						<label>{{translation.repositories[LANG]}}</label>
-						<span style="float: right; padding-right: 1%" class="icon icon-search">&nbsp;
-		                <input ng-model="searchKeyword"/>&nbsp;
+    <a ng-if="access.login" href="" class="btn btn-primary" ng-click="addAccount()">{{translation.addAccount[LANG]}}</a>
+    <div ng-if="accounts && accounts.length === 0">
+        <alert type="warning">{{translation.noGitAccountsAdded[LANG]}}</alert>
+    </div>
+    <div ng-if="accounts.length > 0">
+        <div class="entryBoxes entryBoxesGrid">
+            <div ng-if="access.listAccounts" id="a_{{account._id}}" ng-repeat="account in accounts" class="entryBox customEntryBox">
+                <div class="header opened">
+                    <span class="icon icon-github" ng-if="account.provider === 'github'"></span>
+                    <span class="icon" ng-if="account.provider === 'bitbucket_org'"><i class="fa fa-lg fa-bitbucket"></i></span>
+                    <span class="icon" ng-if="account.provider === 'bitbucket_enterprise'"><i class="fa fa-lg fa-bitbucket"></i></span>
+                    {{account.label|uppercase}}&nbsp;&nbsp;[{{account.owner}}]
+                </div>
+                <div class="body" ng-if="account.loading">
+                    <div id="loadingNotification">
+                        <img class="loadingImageLarge" ng-src="{{imagePath}}" width="32px" height="32px"><br>
+                        <h5 class="alignCenter">{{translation.gettingReposPleaseWait[LANG]}}</h5>
+                    </div>
+                </div>
+                <div class="body" ng-if="!account.loading">
+	                <div class="inner" ng-class="{'hidden': account.hide}">
+                        <label>{{translation.repositories[LANG]}}</label>
+		                <span style="float: right; padding-right: 1%" class="icon icon-search">&nbsp;
+		                <input ng-model="searchKeyword" />&nbsp;
 		                <a href="" ng-if="access.getRepos" ng-click="listRepos(account, 0, 'getRepos');" ng-if="access.getRepos">
                             <span class="icon icon-loop2" tooltip="{{translation.syncRepo[LANG]}}"></span>
                         </a>
@@ -30,131 +30,123 @@
                             <span class="icon icon-cross" tooltip="{{translation.deleteAccount[LANG]}}"></span>
                         </a>
 	                </span>
-						<div ng-if="account.repo && account.repo.length === 0">
-							<alert type="warning">{{translation.noReposFound[LANG]}}</alert>
-						</div>
-						<div ng-if="access.getRepos" id="reposList">
-							<ul class="blueListing">
-								<li class="blueLi row-list {{repo.status}}" ng-repeat="repo in account.repos| filter: searchKeyword" ng-style="{'width': '99%'}">
-									<span class="repoFullName">{{repo.full_name}}</span>
-									<span ng-if="repo.status === 'deleted'" class="f-right mr11"><span class="icon icon-warning"></span>{{translation.repoHasBeenDeleted[LANG]}}</span>
-									<span ng-if="repo.status === 'active'" class="f-right mr11"><span class="icon icon-checkmark"></span>{{translation.activeRepo[LANG]}}</span>
-									<span ng-if="repo.status === 'outOfSync'" class="f-right mr11"><span class="icon icon-warning"></span>{{translation.repoOutOfSync[LANG]}}</span>
-									<div class="rightActions">
-										<a href="" ng-if="access.activateRepo && !repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
-											<span class="icon icon-switch" tooltip="{{translation.activate[LANG]}}"></span>
-										</a>
-										<a href="" ng-if="access.deactivateRepo && repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
-											<span class="icon icon-cross" tooltip="{{translation.deactivate[LANG]}}"></span>
-										</a>
-										<a href="" ng-if="access.syncRepo && repo.status === 'active' && repo.type !== 'custom'" ng-click="syncRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
-											<span class="icon icon-loop2" tooltip="{{translation.sync[LANG]}}"></span>
-										</a>
-										<a href="" ng-if="repo.status" ng-click="configureRepo(repo, account)" ng-style="{'margin-top': '-19px'}">
-											<span tooltip="Configure" class="icon icon-cog"></span>
-										</a>
-									</div>
-								</li>
-							</ul>
-							<a href="" class="loadMore btn btn-block" ng-click="listRepos(account, 0, 'loadMore')" ng-if="account.allowLoadMore">Load
-								More</a>
-						</div>
-					</div>
-					
-					<div class="entryAction">
-						<a href="" ng-click="showHide(account)">
-							<span class="icon icon-{{account.icon || 'plus'}}"></span>
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+		                <div ng-if="account.repo && account.repo.length === 0">
+			                <alert type="warning">{{translation.noReposFound[LANG]}}</alert>
+		                </div>
+		                <div ng-if="access.getRepos" id="reposList">
+			                <ul class="blueListing">
+				                <li class="blueLi row-list {{repo.status}}" ng-repeat="repo in account.repos| filter: searchKeyword" ng-style="{'width': '99%'}">
+					                <span class="repoFullName">{{repo.full_name}}</span>
+					                <span ng-if="repo.status === 'deleted'" class="f-right mr11"><span class="icon icon-warning"></span>{{translation.repoHasBeenDeleted[LANG]}}</span>
+					                <span ng-if="repo.status === 'active'" class="f-right mr11"><span class="icon icon-checkmark"></span>{{translation.activeRepo[LANG]}}</span>
+					                <span ng-if="repo.status === 'outOfSync'" class="f-right mr11"><span class="icon icon-warning"></span>{{translation.repoOutOfSync[LANG]}}</span>
+					                <div class="rightActions">
+						                <a href="" ng-if="access.activateRepo && !repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
+							                <span class="icon icon-switch" tooltip="{{translation.activate[LANG]}}"></span>
+						                </a>
+						                <a href="" ng-if="access.deactivateRepo && repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
+							                <span class="icon icon-cross" tooltip="{{translation.deactivate[LANG]}}"></span>
+						                </a>
+						                <a href="" ng-if="access.syncRepo && repo.status === 'active'" ng-click="syncRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
+							                <span class="icon icon-loop2" tooltip="{{translation.sync[LANG]}}"></span>
+						                </a>
+						                <a href="" ng-if="repo.status" ng-click="configureRepo(repo)" ng-style="{'margin-top': '-19px'}">
+							                <span tooltip="Configure" class="icon icon-cog"></span>
+						                </a>
+					                </div>
+				                </li>
+			                </ul>
+			                <a href="" class="loadMore btn btn-block" ng-click="listRepos(account, 0, 'loadMore')" ng-if="account.allowLoadMore">Load More</a>
+		                </div>
+	                </div>
+
+                    <div class="entryAction">
+	                    <a href="" ng-click="showHide(account)">
+		                    <span class="icon icon-{{account.icon || 'plus'}}"></span>
+	                    </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <script type="text/ng-template" id="repoAddSuccess.tmpl">
-	<div id="activeRepos" class="modal-body">
-		<h4 style="text-align: center;">{{translation.repoHasBeenActivated[LANG]}}</h4>
-		<label>{{translation.theFollowingModulesWereAdded[LANG]}}</label>
-		<div class="grid" style="width:100%">
-			<table cellspacing="0" cellpadding="0" border="0">
-				<tbody>
-					<tr>
-						<th>{{translation.name[LANG]}}</th>
-						<th>{{translation.type[LANG]}}</th>
-						<th>{{translation.link[LANG]}}</th>
-					</tr>
-					<tr ng-repeat="entry in added" ng-class-even="'even'" ng-class-odd="'odd'">
-						<td>{{entry.name}}</td>
-						<td>{{entry.type}}</td>
-						<td ng-if="entry.type === 'service'"><a href="#/services" ng-click="ok()">{{translation.link[LANG]}}</a>
-						</td>
-						<td ng-if="entry.type === 'daemon'"><a href="#/daemons" ng-click="ok()">{{translation.link[LANG]}}</a>
-						</td>
-						<td ng-if="entry.type === 'static'"><a href="#/static-content" ng-click="ok()">{{translation.link[LANG]}}</a>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
-	</div>
+    <div id="activeRepos" class="modal-body">
+        <h4 style="text-align: center;">{{translation.repoHasBeenActivated[LANG]}}</h4>
+        <label>{{translation.theFollowingModulesWereAdded[LANG]}}</label>
+        <div class="grid" style="width:100%">
+            <table cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                <tr>
+                    <th>{{translation.name[LANG]}}</th>
+                    <th>{{translation.type[LANG]}}</th>
+                    <th>{{translation.link[LANG]}}</th>
+                </tr>
+                <tr ng-repeat="entry in added" ng-class-even="'even'" ng-class-odd="'odd'" ng-show="['service','daemon'].indexOf(entry.type) !== -1">
+                    <td>{{entry.name}}</td>
+                    <td>{{entry.type}}</td>
+                    <td ng-if="entry.type === 'service'"><a href="#/services" ng-click="ok()">{{translation.link[LANG]}}</a></td>
+                    <td ng-if="entry.type === 'daemon'"><a href="#/daemons" ng-click="ok()">{{translation.link[LANG]}}</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
+    </div>
 </script>
 
 <script type="text/ng-template" id="errorDisplay.tmpl">
-	<div class="modal-body">
-		<h4>{{title}}</h4>
-		<alert type="danger" ng-bind-html="error"></alert>
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
-	</div>
+    <div class="modal-body">
+        <h4>{{title}}</h4>
+        <alert type="danger" ng-bind-html="error"></alert>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
+    </div>
 </script>
 
 <script type="text/ng-template" id="syncSuccess.tmpl">
-	<div id="syncedRepos" class="modal-body">
-		<h4 style="text-align: center;">{{translation.repoHasBeenSynced[LANG]}}</h4>
-		<div ng-repeat="(action, entries) in results" ng-if="entries.length > 0">
-			<label>{{translation.theFollowingModulesWere[LANG]}} {{action}}:</label><br>
-			<div class="grid" style="width:100%">
-				<table cellspacing="0" cellpadding="0" border="0">
-					<tbody>
-						<tr>
-							<th>{{translation.name[LANG]}}</th>
-							<th>{{translation.type[LANG]}}</th>
-							<th>{{translation.link[LANG]}}</th>
-						</tr>
-						<tr ng-repeat="entry in entries" ng-class-even="'even'" ng-class-odd="'odd'">
-							<td>{{entry.name}}</td>
-							<td>{{entry.type}}</td>
-							<td ng-if="entry.type === 'service'"><a href="#/services" ng-click="ok()">{{translation.link[LANG]}}</a>
-							</td>
-							<td ng-if="entry.type === 'daemon'"><a href="#/daemons" ng-click="ok()">{{translation.link[LANG]}}</a>
-							</td>
-							<td ng-if="entry.type === 'static'"><a href="#/static-content" ng-click="ok()">{{translation.link[LANG]}}</a>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
-	</div>
+    <div id="syncedRepos" class="modal-body">
+        <h4 style="text-align: center;">{{translation.repoHasBeenSynced[LANG]}}</h4>
+        <div ng-repeat="(action, entries) in results" ng-if="entries.length > 0">
+            <label>{{translation.theFollowingModulesWere[LANG]}} {{action}}:</label><br>
+            <div class="grid" style="width:100%">
+                <table cellspacing="0" cellpadding="0" border="0">
+                    <tbody>
+                    <tr>
+                        <th>{{translation.name[LANG]}}</th>
+                        <th>{{translation.type[LANG]}}</th>
+                        <th>{{translation.link[LANG]}}</th>
+                    </tr>
+                    <tr ng-repeat="entry in entries" ng-class-even="'even'" ng-class-odd="'odd'">
+                        <td>{{entry.name}}</td>
+                        <td>{{entry.type}}</td>
+                        <td ng-if="entry.type === 'service'"><a href="#/services" ng-click="ok()">{{translation.link[LANG]}}</a></td>
+                        <td ng-if="entry.type === 'daemon'"><a href="#/daemons" ng-click="ok()">{{translation.link[LANG]}}</a></td>
+                        <td ng-if="entry.type === 'static'"><a href="#/static-content" ng-click="ok()">{{translation.link[LANG]}}</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
+    </div>
 </script>
 
 <script type="text/ng-template" id="repoOutOfSync.tmpl">
-	<div class="modal-body">
-		<h4 style="text-align: center;">{{translation.repoOutOfSync[LANG]}}</h4>
-		<label style="text-align: center;">{{translation.wouldYouLikeReactivateRepo[LANG]}}</label>
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="reactivate()">{{translation.reactivate[LANG]}}</button>
-		<button class="btn btn-danger" ng-click="cancel()">{{translation.cancel[LANG]}}</button>
-	</div>
+    <div class="modal-body">
+        <h4 style="text-align: center;">{{translation.repoOutOfSync[LANG]}}</h4>
+        <label style="text-align: center;">{{translation.wouldYouLikeReactivateRepo[LANG]}}</label>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="reactivate()">{{translation.reactivate[LANG]}}</button>
+        <button class="btn btn-danger" ng-click="cancel()">{{translation.cancel[LANG]}}</button>
+    </div>
 </script>
 
 <script type="text/ng-template" id="configureRepo.tmpl">

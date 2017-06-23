@@ -277,13 +277,17 @@ var lib = {
 					})
 				});
 			}
-			
+
 			for (var i = 0; i < allRepos.length; i++) {
 				if (allRepos[i].full_name === oneRepo.name) {
 					if (oneRepo.status) {
 						allRepos[i].status = oneRepo.status;
 					} else {
 						allRepos[i].status = 'active';
+					}
+
+					if(oneRepo.type !== 'multi') {
+						allRepos[i].serviceName = oneRepo.serviceName;
 					}
 
 					allRepos[i].type = oneRepo.type;

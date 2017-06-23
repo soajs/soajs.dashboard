@@ -5,14 +5,101 @@ var utils = helper.requireModule('./utils/drivers/git/index.js');
 
 describe("testing git index.js", function () {
 	var soajs = {};
+	var data = {
+		getAccount: function (soajs, model, options, cb) {
+			return cb('error');
+		},
+		checkIfAccountExists: function (soajs, model, options, cb) {
+			return cb('error');
+		}
+	};
+	var model = {};
+	var options = {
+		provider: 'any'
+	};
+
+	describe("testing login", function () {
+
+		it("Login github", function (done) {
+			options = {
+				provider: 'github'
+			};
+			utils.login(soajs, data, model, options, function (error, body) {
+				// assert.ok(body);
+				// assert.ok(body);
+				done();
+			});
+		});
+
+	});
+
+	describe("testing logout", function () {
+
+		it("logout github", function (done) {
+			options = {
+				provider: 'github'
+			};
+			utils.logout(soajs, data, model, options, function (error, body) {
+				// assert.ok(body);
+				// assert.ok(body);
+				done();
+			});
+		});
+
+	});
+
+	describe("testing getRepos", function () {
+
+		it("getRepos github", function (done) {
+			options = {
+				provider: 'github'
+			};
+			utils.getRepos(soajs, data, model, options, function (error, body) {
+				// assert.ok(body);
+				// assert.ok(body);
+				done();
+			});
+		});
+
+	});
+
+	describe("testing getBranches", function () {
+
+		it("getBranches github", function (done) {
+			options = {
+				provider: 'github'
+			};
+			utils.getBranches(soajs, data, model, options, function (error, body) {
+				// assert.ok(body);
+				// assert.ok(body);
+				done();
+			});
+		});
+
+	});
+
+	describe("testing getJSONContent", function () {
+
+		it("getJSONContent github", function (done) {
+			options = {
+				path: 'name.js',
+				provider: 'github'
+			};
+			utils.getJSONContent(soajs, data, model, options, function (error, body) {
+				// assert.ok(body);
+				// assert.ok(body);
+				done();
+			});
+		});
+
+	});
+
 	describe("testing getAnyContent", function () {
-		var data = {};
-		var model = {};
-		var options = {
-			provider: 'any'
-		};
 
 		it("Fail name not found", function (done) {
+			options = {
+				provider: 'any'
+			};
 			utils.getAnyContent(soajs, data, model, options, function (error, body) {
 				assert.ok(error);
 				done();

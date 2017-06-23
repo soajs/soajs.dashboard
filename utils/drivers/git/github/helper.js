@@ -248,13 +248,17 @@ var lib = {
 					})
 				});
 			}
-			
+
 			for (var i = 0; i < allRepos.length; i++) {
-				if (allRepos[ i ].full_name === oneRepo.name) {
+				if (allRepos[i].full_name === oneRepo.name) {
 					if (oneRepo.status) {
-						allRepos[ i ].status = oneRepo.status;
+						allRepos[i].status = oneRepo.status;
 					} else {
-						allRepos[ i ].status = 'active';
+						allRepos[i].status = 'active';
+					}
+
+					if(oneRepo.type !== 'multi') {
+						allRepos[i].serviceName = oneRepo.serviceName;
 					}
 
 					allRepos[i].type = oneRepo.type;
@@ -271,9 +275,9 @@ var lib = {
 				var newRepo = {
 					full_name: oneRepo.name,
 					owner: {
-						login: repoInfo[ 0 ]
+						login: repoInfo[0]
 					},
-					name: repoInfo[ 1 ],
+					name: repoInfo[1],
 					status: 'deleted',
 					type: oneRepo.type
 				};

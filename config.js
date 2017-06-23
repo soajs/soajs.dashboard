@@ -4,6 +4,82 @@ var cbSchema = require("./schemas/cb");
 var aclSchema = require("./schemas/acl");
 var catalogSchema = require("./schemas/catalog");
 
+var cdOptions = {
+	"recipe": {
+		"type": "string", "required": true,
+	},
+	"gitSource": {
+		"type": "object",
+		"required": true,
+		"properties": {
+			"owner": {"required": true, "type": "string"},
+			"repo": {"required": true, "type": "string"},
+			"branch": {"required": true, "type": "string"},
+			"commit": {"required": true, "type": "string"}
+		}
+	},
+	"deployConfig": {
+		"type": "object",
+		"required": true,
+		"properties": {
+			"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
+			"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
+			"replication": {
+				"required": true,
+				"type": "object",
+				"properties": {
+					"mode": { "required": true, "type": "string", "enum": ['replicated', 'global', 'deployment', 'daemonset'] },
+					"replicas": { "required": false, "type": "number" }
+				}
+			}
+		}
+	},
+	"custom":{
+		"type": "object",
+		"required": false,
+		"properties": {
+			"image" :{
+				"type":"object",
+				"required": false,
+				"properties":{
+					"prefix": { "required": false, "type": "string" },
+					"name": { "required": false, "type": "string" },
+					"tag": { "required": false, "type": "string" },
+				}
+			},
+			"env":{
+				"type": "object",
+				"required": false,
+				"additionalProperties":{ "type": "string" }
+			},
+			"type": {
+				"required": true,
+				"type": "string"
+			},
+			"name": {
+				"required": false,
+				"type": "string"
+			},
+			"version": {
+				"required": false,
+				"type": "number",
+				"minimum": 1
+			},
+			"daemonGroup": {
+				"required": false,
+				"type": "string"
+			},
+			"gc":{
+				"required": false,
+				"type": "object",
+				"properties":{
+					"gcName": {"required": true, "type": "string"},
+					"gcVersion": {"required": true, "type": "number"}
+				}
+			}
+		}
+	}
+}
 module.exports = {
     type: 'service',
     prerequisites: {
@@ -67,6 +143,12 @@ module.exports = {
         "clustersList": ['mysql', 'sql', "mongo", 'mongodb', "es", 'elasticsearch']
     },
 
+	"tokens": {
+		"dotValue": ".",
+		"dotToken": "__dot__",
+		"dotRegexString": "\\."
+	},
+
     "gitAccounts": {
         "bitbucket_org": {
             apiDomain: 'https://api.bitbucket.org/1.0',
@@ -79,6 +161,9 @@ module.exports = {
             oauth: {
                 domain: 'https://bitbucket.org/site/oauth2/access_token'
             },
+	        "hash":{
+		        "algorithm": "sha256"
+	        },
             repoConfigsFolder: __dirname + '/repoConfigs',
             defaultConfigFilePath: "config.js",
             customConfigFilesPath: {
@@ -94,6 +179,9 @@ module.exports = {
                 "soajsFile": "soa.js",
                 "swaggerFile": "swagger.yml"
             },
+	        "hash":{
+            	"algorithm": "sha256"
+	        },
             // required for OAuth
             apiDomain: '%PROVIDER_DOMAIN%/rest/api/1.0',
             downloadUrl: '%PROVIDER_DOMAIN%/projects/%PROJECT_NAME%/repos/%REPO_NAME%/browse/%PATH%?at=%BRANCH%&raw'
@@ -1700,7 +1788,7 @@ module.exports = {
                             "owner": {"required": true, "type": "string"},
                             "repo": {"required": true, "type": "string"},
                             "branch": {"required": true, "type": "string"},
-                            "commit": {"required": true, "type": "string"}
+                            "commit": {"required": false, "type": "string"}
                         }
                     }
                 },
@@ -1903,18 +1991,32 @@ module.exports = {
 	                    "properties":{
                         	"pause":{"type":"boolean", "required": false}
 	                    },
-                        "patternProperties": {
+                        "additionalProperties": {
                             "^[a-zA-Z]{3,}$": {
                                 "type":"object",
                                 "required": true,
-                                "additionalProperties": { //pattern to match a service/daemon name { "DEV": { "branch": "develop", "urac": { "branch": "master" } } }
+                                "patternProperties": { //pattern to match a service/daemon name { "DEV": { "branch": "develop", "urac": { "branch": "master" } } }
                                     "^[a-z0-9]+$": {
                                         "type": "object",
                                         "required": false,
                                         "properties":{
                                             "branch": {"type": "string", "required": true}, //{'DEV': {'branch': 'develop'} }
-                                            "strategy": {"type": "string", "enum": ["notify", "update"], "required": true}
-                                        }
+                                            "strategy": {"type": "string", "enum": ["notify", "update"], "required": true},
+                                            "deploy": {"type": "boolean", "required": false},
+                                            "options": cdOptions
+                                        },
+	                                    "patternProperties": {
+		                                    "^v[0-9]+$": {
+			                                    "type":"object",
+			                                    "required": true,
+			                                    "properties": {
+				                                    "branch": {"type": "string", "required": true}, //{'DEV': {'branch': 'develop'} }
+				                                    "strategy": {"type": "string", "enum": ["notify", "update"], "required": true},
+				                                    "deploy": {"type": "boolean", "required": false},
+				                                    "options": cdOptions
+			                                    }
+		                                    }
+	                                    }
                                     }
                                 }
                             }
@@ -2363,15 +2465,57 @@ module.exports = {
                         "oneOf":[
                             {
                             	"type": "object",
+								"additionalProperties": false,
 								"properties": {
                                     "id": {
                                         'required': true,
                                         'validation': {
                                             'type': 'string'
                                         }
-                                    }
+                                    },
+									"action": {
+                                        'required': true,
+                                        'validation': {
+                                            'type': 'string'
+                                        }
+                                    },
                                 }
                             },
+							{
+								"type": "object",
+								"properties": {
+                                    "env": {
+                                        'required': true,
+                                        'validation': {
+                                            'type': 'string'
+                                        }
+                                    },
+									"serviceName": {
+										'required': true,
+                                        'validation': {
+                                            'type': 'string'
+                                        }
+									},
+									"serviceVersion": {
+										'required': false,
+                                        'validation': {
+                                            'type': 'string'
+                                        }
+									},
+									"id": {
+                                        'required': true,
+                                        'validation': {
+                                            'type': 'string'
+                                        }
+                                    },
+									"action": {
+                                        'required': true,
+                                        'validation': {
+                                            'type': 'string'
+                                        }
+                                    },
+                                }
+							},
                             {
                                 "type": "object",
                                 "properties": {
@@ -2415,7 +2559,14 @@ module.exports = {
                             }
                         ]
                     }
-                }
+                },
+				"deployOptions": {
+					'required': false,
+					"source": ["body.deployOptions"],
+					'validation': {
+						'type': 'object'
+					}
+				}
             },
 
             "/environment/update": {

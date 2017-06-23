@@ -1232,7 +1232,7 @@ service.init(function () {
 	 */
 	service.post("/cd/deploy", function (req, res) {
 		initBLModel(req, res, dashboardBL.cd.module, dbModel, function (BL) {
-			BL.cdDeploy(config, req, deployer, dashboardBL.cd.helper, function (error, data) {
+			BL.cdDeploy(config, req, service.registry, deployer, dashboardBL.cd.helper, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1668,7 +1668,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Settings features
 	 */

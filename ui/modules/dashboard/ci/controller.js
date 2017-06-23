@@ -11,6 +11,8 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 
 	$scope.travisImagePath = "./themes/" + themeToUse + "/img/travis_logo.png";
 	$scope.droneImagePath = "./themes/" + themeToUse + "/img/drone_logo.png";
+	$scope.jenkinsImagePath = "./themes/" + themeToUse + "/img/jenkins_logo.png";
+	$scope.teamCityImagePath = "./themes/" + themeToUse + "/img/teamcity_logo.png";
 
 	$scope.checkRecipe = function () {
 		overlayLoading.show();
@@ -103,30 +105,6 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			submitLabel = "Update";
 		}
 
-		formConfig.entries[0].onAction = function (id, data, form) {
-			if ($scope.ciData.settings && Object.keys($scope.ciData.settings).length > 0) {
-				if (data !== $scope.ciData.settings.driver) {
-					form.formData.domain = '';
-					form.formData.owner = '';
-					form.formData.gitToken = '';
-				}
-				else {
-					form.formData.domain = $scope.ciData.settings.settings.domain;
-					form.formData.owner = $scope.ciData.settings.settings.owner;
-					form.formData.gitToken = $scope.ciData.settings.settings.gitToken;
-				}
-			}
-			else {
-				form.formData.domain = '';
-				form.formData.owner = '';
-				form.formData.gitToken = '';
-
-				if (data === 'travis') {
-					form.formData.domain = "api.travis-ci.org";
-				}
-			}
-		};
-
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
@@ -160,9 +138,13 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 						}, function (error, response) {
 							if (error) {
 								$scope.form.displayAlert('danger', error.message);
+								overlayLoading.hide();
 							}
 							else {
-								$scope.modalInstance.close();
+								if ($scope.modalInstance) {
+									$scope.modalInstance.close();
+								}
+
 								$scope.form.displayAlert('success', 'Recipe Saved successfully');
 								$scope.form.formData = {};
 								$scope.checkRecipe();

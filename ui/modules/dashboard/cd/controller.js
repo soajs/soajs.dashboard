@@ -6,13 +6,13 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	$scope.configuration={};
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, cdAppConfig.permissions);
-	
+
 	$scope.cdData = {};
 	$scope.myEnv = $cookies.getObject('myEnv').code;
 	$scope.upgradeSpaceLink = cdAppConfig.upgradeSpaceLink;
 	$scope.updateCount;
 	$scope.upgradeCount;
-	
+
 	$scope.cdShowHide = function(oneSrv){
 		if($scope.configuration[oneSrv].icon === 'minus'){
 			$scope.configuration[oneSrv].icon = 'plus';
@@ -23,9 +23,9 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			jQuery('#cdc_' + oneSrv).slideDown()
 		}
 	};
-	
+
 	$scope.getRecipe = function () {
-		
+
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			method: 'get',
@@ -35,11 +35,11 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			if (error) {
 				$scope.displayAlert('danger', error.message);
 			}
-			
+
 			if(!response) {
 				response = {};
 			}
-			
+
 			$scope.cdData = response;
 			$scope.maxEntries = 0;
 			if(response[$scope.myEnv.toUpperCase()]){
@@ -49,12 +49,12 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				}
 				delete $scope.configuration.pause;
 				for(var service in $scope.configuration){
-					if(service !== 'pause'){
+					if(['pause', 'deploy', 'options'].indexOf(service) === -1){
 						$scope.maxEntries++;
 						$scope.configuration[service].icon = 'minus';
 						$scope.configuration[service].versions = {};
 						for(var i in $scope.configuration[service]){
-							if(i !== 'branch' && i !== 'strategy' && i !== 'versions' && i !== 'icon'){
+							if (['branch', 'strategy', 'versions', 'icon', 'deploy', 'options'].indexOf(i) === -1) {
 								$scope.configuration[service].versions[i] = angular.copy($scope.configuration[service][i]);
 								delete $scope.configuration[service][i];
 							}
@@ -64,15 +64,15 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			}
 		});
 	};
-	
+
 	$scope.pauseRecipe = function(pause){
 		$scope.cdData[$scope.myEnv].pause = pause;
-		
+
 		var data = $scope.cdData;
 		delete data._id;
 		delete data.type;
 		delete data.soajsauth;
-		
+
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			method: 'post',
@@ -93,9 +93,9 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			}
 		});
 	};
-	
+
 	$scope.saveRecipe = function() {
-		
+
 		var configuration={};
 		for(var service in $scope.configuration){
 			configuration[service] = {
@@ -106,13 +106,13 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				configuration[service][version] = $scope.configuration[service].versions[version];
 			}
 		}
-		
+
 		$scope.cdData[$scope.myEnv] = configuration;
 		var data = $scope.cdData;
 		delete data._id;
 		delete data.type;
 		delete data.soajsauth;
-		
+
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			method: 'post',
@@ -131,7 +131,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			}
 		});
 	};
-	
+
 	$scope.getUpdates = function () {
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
@@ -149,14 +149,14 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				parseMyResponse(response);
 			}
 		});
-		
-		
+
+
 		function parseMyResponse(list) {
 			$scope.imageLedger = [];
 			$scope.catalogLedger = [];
-			
+
 			$scope.upgradeCount =0;
-			
+
 			list.forEach(function (oneEntry) {
 				$scope.upgradeCount++;
 				if($scope.myEnv.toLowerCase() === 'dashboard'){
@@ -182,7 +182,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			}
 		}
 	};
-	
+
 	$scope.getLedger = function () {
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
@@ -213,16 +213,22 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			}
 		});
 	};
-	
+
 	$scope.updateEntry = function (oneEntry, operation) {
 		var formConfig = {
 			entries: []
 		};
-		
+
 		if (operation === 'redeploy') {
 			doRebuild(null);
 		}
 		else {
+			//testing/////////
+			oneEntry.catalog = {
+				"image": {},
+				"envs": {}
+			};
+			//testing/////////
 			if (oneEntry.catalog.image && oneEntry.catalog.image.override) {
 				//append images
 				formConfig.entries.push({
@@ -232,7 +238,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 					'value': oneEntry.catalog.image.prefix,
 					'fieldMsg': "Override the image prefix if you want"
 				});
-				
+
 				formConfig.entries.push({
 					'name': "ImageName",
 					'label': "Image Name",
@@ -240,7 +246,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 					'value': oneEntry.catalog.image.name,
 					'fieldMsg': "Override the image name if you want"
 				});
-				
+
 				formConfig.entries.push({
 					'name': "ImageTag",
 					'label': "Image Tag",
@@ -249,12 +255,12 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 					'fieldMsg': "Override the image tag if you want"
 				});
 			}
-			
+
 			//append inputs whose type is userInput
 			if (oneEntry.catalog.envs) {
 				for (var envVariable in oneEntry.catalog.envs) {
 					if (oneEntry.catalog.envs[envVariable].type === 'userInput') {
-						
+
 						var defaultValue = oneEntry.catalog.envs[envVariable].default || '';
 						//todo: get value from service.env
 						oneEntry.service.env.forEach(function (oneEnv) {
@@ -262,7 +268,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 								defaultValue = oneEnv.split("=")[1];
 							}
 						});
-						
+
 						//push a new input for this variable
 						var newInput = {
 							'name': '_ci_' + envVariable,
@@ -271,16 +277,16 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							'value': defaultValue,
 							'fieldMsg': oneEntry.catalog.envs[envVariable].fieldMsg
 						};
-						
+
 						if (!defaultValue || defaultValue === '') {
 							newInput.required = true;
 						}
-						
+
 						formConfig.entries.push(newInput);
 					}
 				}
 			}
-			
+
 			if (formConfig.entries.length === 0) {
 				doRebuild(null);
 			}
@@ -313,17 +319,18 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				buildFormWithModal($scope, $modal, options);
 			}
 		}
-		
+
 		function doRebuild(formData) {
 			var params;
 			if(operation === 'redeploy'){
 				params = {
 					data:{
-						id: oneEntry._id.toString()
+						id: oneEntry._id.toString(),
+						action: operation
 					}
 				}
 			}
-			else{
+			else if (operation === 'rebuild') {
 				params = {
 					data:{
 						env: $scope.myEnv.toUpperCase(),
@@ -334,7 +341,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 						action: operation
 					}
 				};
-				
+
 				if (formData && Object.keys(formData).length > 0) {
 					//inject user input catalog entry and image override
 					params.custom = {
@@ -344,7 +351,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							tag: formData['ImageTag']
 						}
 					};
-					
+
 					for (var input in formData) {
 						if (input.indexOf('_ci_') !== -1) {
 							if (!params.custom.env) {
@@ -355,7 +362,44 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 					}
 				}
 			}
-			
+			else if (operation === 'deploy') {
+				params = {
+					data: {
+						env: oneEntry.env,
+						serviceName: oneEntry.serviceName,
+						id: oneEntry._id.toString(),
+						action: operation
+					},
+					deployOptions: oneEntry.deployOptions
+				};
+
+				if (oneEntry.serviceVersion) {
+					params.data.serviceVersion = oneEntry.serviceVersion;
+				}
+
+				if (formData && Object.keys(formData).length > 0) {
+					//inject user input catalog entry and image override
+					if (!params.deployOptions.custom) {
+						params.deployOptions.custom = {};
+					}
+
+					params.deployOptions.custom.image = {
+						name: formData['ImageName'],
+						prefix: formData['ImagePrefix'],
+						tag: formData['ImageTag']
+					};
+
+					for (var input in formData) {
+						if (input.indexOf('_ci_') !== -1) {
+							if (!params.deployOptions.custom.env) {
+								params.deployOptions.custom.env = {};
+							}
+							params.deployOptions.custom.env[input.replace('_ci_', '')] = formData[input];
+						}
+					}
+				}
+			}
+
 			overlayLoading.show();
 			getSendDataFromServer($scope, ngDataApi, {
 				method: 'put',
@@ -367,9 +411,9 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 					$scope.displayAlert('danger', error.message);
 				}
 				else {
-					$scope.displayAlert('success', 'Service rebuilt successfully');
-					
-					if(operation === 'redeploy'){
+					$scope.displayAlert('success', 'Service operation [' + operation + '] was successful');
+
+					if(operation === 'redeploy' || operation === 'deploy'){
 						$scope.getLedger();
 					}
 					else{
@@ -382,6 +426,30 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				}
 			});
 		}
+	};
+
+	$scope.deployEntry = function (oneEntry) {
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'post',
+			routeName: '/dashboard/cd/action',
+			data: oneEntry.deployOptions || {}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.displayAlert('success', 'Service deployed successfully');
+
+				if(operation === 'redeploy'){
+					$scope.getLedger();
+				}
+				else{
+					$scope.getUpdates();
+				}
+			}
+		});
 	};
 
 	$scope.readAll = function () {
@@ -427,7 +495,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
     };
 
 	injectFiles.injectCss("modules/dashboard/cd/cd.css");
-	
+
 	// Start here
 	if ($scope.access.get) {
 		$scope.getLedger();
