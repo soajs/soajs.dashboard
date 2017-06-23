@@ -667,7 +667,7 @@ module.exports = {
                     }
                 },
             },
-            
+
 	        "/environment/list": {
                 _apiInfo: {
                     "l": "List Environments",
@@ -1120,7 +1120,7 @@ module.exports = {
                 },
 	            "commonFields": ["id"]
             },
-	
+
 	        "/ci/script/download": {
 		        "_apiInfo": {
 			        "l": "Download CI Script",
@@ -1972,7 +1972,7 @@ module.exports = {
                     }
                 }
             },
-	
+
 	        "/ci/recipe": {
 		        "_apiInfo": {
 			        "l": "Add New CI Recipe",
@@ -2490,7 +2490,7 @@ module.exports = {
                     }
                 }
             },
-           
+
             "/cd/action": {
                 "_apiInfo": {
                     "l": "Take Action",
@@ -3281,7 +3281,7 @@ module.exports = {
                 }
             },
 
-	        "/gitAccounts/ci/":{
+	        "/gitAccounts/ci":{
 		        "_apiInfo": {
 			        "l": "Update Repo CI Settings",
 			        "group": "Continuous Integration"
@@ -3309,7 +3309,7 @@ module.exports = {
 			        }
 		        }
 	        },
-	        
+
 	        "/ci/provider": {
 		        "_apiInfo": {
 			        "l": "Deactivate CI Provider",
@@ -3330,7 +3330,7 @@ module.exports = {
 			        }
 		        }
 	        },
-	
+
 	        "/ci/recipe": {
 		        "_apiInfo": {
 			        "l": "Edit CI Recipe",
@@ -3358,7 +3358,7 @@ module.exports = {
 			        }
 		        }
 	        },
-	        
+
             "/ci/settings": {
                 "_apiInfo": {
                     "l": "Update CI Repository Settings",

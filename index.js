@@ -1282,13 +1282,13 @@ service.init(function () {
 	 */
 
 	/**
-	 * Get a CI configuration
+	 * Get CI providers
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
 	service.get("/ci", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			BL.getConfig(config, req, dashboardBL.ci.driver, function (error, data) {
+			BL.listUniqueProviders(config, req, dashboardBL.ci.driver, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1308,13 +1308,65 @@ service.init(function () {
 	});
 
 	/**
-	 * Save a CI configuration
+	 * Activate CI Provider
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
 	service.post("/ci", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			BL.saveConfig(config, req, dashboardBL.ci.driver, function (error, data) {
+			BL.activateProvider(config, req, dashboardBL.ci.driver, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Add CI Recipe
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/ci/recipe", function (req, res) {
+		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
+			BL.addRecipe(config, req, dashboardBL.ci.driver, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Edit CI Recipe
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/ci/recipe", function (req, res) {
+		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
+			BL.editRecipe(config, req, dashboardBL.ci.driver, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Delete CI Recipe
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.delete("/ci/recipe", function (req, res) {
+		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
+			BL.deleteRecipe(config, req, dashboardBL.ci.driver, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Deactivate CI Provider
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/ci/provider", function (req, res) {
+		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
+			BL.deactivateProvider(config, req, dashboardBL.ci.driver, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1338,9 +1390,22 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.get("/ci/download", function (req, res) {
+	service.get("/ci/recipe/download", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
 			BL.downloadRecipe(config, req, res, dashboardBL.ci.driver, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Download CI provider script for CD
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/ci/script/download", function (req, res) {
+		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
+			BL.downloadScript(config, req, res, dashboardBL.ci.driver, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1488,6 +1553,19 @@ service.init(function () {
 	service.put('/gitAccounts/repo/sync', function (req, res) {
 		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
 			BL.syncRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Update repo CI settings
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put('/gitAccounts/ci', function (req, res) {
+		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
+			BL.updateRepoCI(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
