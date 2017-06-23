@@ -198,3 +198,10 @@ li.accountType {
 .font-14{
     font-size:14px;
 }
+
+.loadingImage {
+    height: 18px !important;
+    margin-left: 5px !important;
+    margin-top: -3px !important;
+    width: 18px !important;
+}

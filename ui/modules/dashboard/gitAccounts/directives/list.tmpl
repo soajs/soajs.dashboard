@@ -1,28 +1,28 @@
 <section ng-controller="gitAccountsAppCtrl">
-    <a ng-if="access.login" href="" class="btn btn-primary" ng-click="addAccount()">{{translation.addAccount[LANG]}}</a>
-    <div ng-if="accounts && accounts.length === 0">
-        <alert type="warning">{{translation.noGitAccountsAdded[LANG]}}</alert>
-    </div>
-    <div ng-if="accounts.length > 0">
-        <div class="entryBoxes entryBoxesGrid">
-            <div ng-if="access.listAccounts" id="a_{{account._id}}" ng-repeat="account in accounts" class="entryBox customEntryBox">
-                <div class="header opened">
-                    <span class="icon icon-github" ng-if="account.provider === 'github'"></span>
-                    <span class="icon" ng-if="account.provider === 'bitbucket_org'"><i class="fa fa-lg fa-bitbucket"></i></span>
-                    <span class="icon" ng-if="account.provider === 'bitbucket_enterprise'"><i class="fa fa-lg fa-bitbucket"></i></span>
-                    {{account.label|uppercase}}&nbsp;&nbsp;[{{account.owner}}]
-                </div>
-                <div class="body" ng-if="account.loading">
-                    <div id="loadingNotification">
-                        <img class="loadingImageLarge" ng-src="{{imagePath}}" width="32px" height="32px"><br>
-                        <h5 class="alignCenter">{{translation.gettingReposPleaseWait[LANG]}}</h5>
-                    </div>
-                </div>
-                <div class="body" ng-if="!account.loading">
-	                <div class="inner" ng-class="{'hidden': account.hide}">
-                        <label>{{translation.repositories[LANG]}}</label>
-		                <span style="float: right; padding-right: 1%" class="icon icon-search">&nbsp;
-		                <input ng-model="searchKeyword" />&nbsp;
+	<a ng-if="access.login" href="" class="btn btn-primary" ng-click="addAccount()">{{translation.addAccount[LANG]}}</a>
+	<div ng-if="accounts && accounts.length === 0">
+		<alert type="warning">{{translation.noGitAccountsAdded[LANG]}}</alert>
+	</div>
+	<div ng-if="accounts.length > 0">
+		<div class="entryBoxes entryBoxesGrid">
+			<div ng-if="access.listAccounts" id="a_{{account._id}}" ng-repeat="account in accounts" class="entryBox customEntryBox">
+				<div class="header opened">
+					<span class="icon icon-github" ng-if="account.provider === 'github'"></span>
+					<span class="icon" ng-if="account.provider === 'bitbucket_org'"><i class="fa fa-lg fa-bitbucket"></i></span>
+					<span class="icon" ng-if="account.provider === 'bitbucket_enterprise'"><i class="fa fa-lg fa-bitbucket"></i></span>
+					{{account.label|uppercase}}&nbsp;&nbsp;[{{account.owner}}]
+				</div>
+				<div class="body" ng-if="account.loading">
+					<div id="loadingNotification">
+						<img class="loadingImageLarge" ng-src="{{imagePath}}" width="32px" height="32px"><br>
+						<h5 class="alignCenter">{{translation.gettingReposPleaseWait[LANG]}}</h5>
+					</div>
+				</div>
+				<div class="body" ng-if="!account.loading">
+					<div class="inner" ng-class="{'hidden': account.hide}">
+						<label>{{translation.repositories[LANG]}}</label>
+						<span style="float: right; padding-right: 1%" class="icon icon-search">&nbsp;
+		                <input ng-model="searchKeyword"/>&nbsp;
 		                <a href="" ng-if="access.getRepos" ng-click="listRepos(account, 0, 'getRepos');" ng-if="access.getRepos">
                             <span class="icon icon-loop2" tooltip="{{translation.syncRepo[LANG]}}"></span>
                         </a>
@@ -30,140 +30,155 @@
                             <span class="icon icon-cross" tooltip="{{translation.deleteAccount[LANG]}}"></span>
                         </a>
 	                </span>
-		                <div ng-if="account.repo && account.repo.length === 0">
-			                <alert type="warning">{{translation.noReposFound[LANG]}}</alert>
-		                </div>
-		                <div ng-if="access.getRepos" id="reposList">
-			                <ul class="blueListing">
-				                <li class="blueLi row-list {{repo.status}}" ng-repeat="repo in account.repos| filter: searchKeyword" ng-style="{'width': '99%'}">
-					                <span class="repoFullName">{{repo.full_name}}</span>
-					                <span ng-if="repo.status === 'deleted'" class="f-right mr11"><span class="icon icon-warning"></span>{{translation.repoHasBeenDeleted[LANG]}}</span>
-					                <span ng-if="repo.status === 'active'" class="f-right mr11"><span class="icon icon-checkmark"></span>{{translation.activeRepo[LANG]}}</span>
-					                <span ng-if="repo.status === 'outOfSync'" class="f-right mr11"><span class="icon icon-warning"></span>{{translation.repoOutOfSync[LANG]}}</span>
-					                <div class="rightActions">
-						                <a href="" ng-if="access.activateRepo && !repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
-							                <span class="icon icon-switch" tooltip="{{translation.activate[LANG]}}"></span>
-						                </a>
-						                <a href="" ng-if="access.deactivateRepo && repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
-							                <span class="icon icon-cross" tooltip="{{translation.deactivate[LANG]}}"></span>
-						                </a>
-						                <a href="" ng-if="access.syncRepo && repo.status === 'active' && repo.type !== 'custom'" ng-click="syncRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
-							                <span class="icon icon-loop2" tooltip="{{translation.sync[LANG]}}"></span>
-						                </a>
-						                <a href="" ng-if="repo.status" ng-click="configureRepo(repo)" ng-style="{'margin-top': '-19px'}">
-							                <span tooltip="Configure" class="icon icon-cog"></span>
-						                </a>
-					                </div>
-				                </li>
-			                </ul>
-			                <a href="" class="loadMore btn btn-block" ng-click="listRepos(account, 0, 'loadMore')" ng-if="account.allowLoadMore">Load More</a>
-		                </div>
-	                </div>
-
-                    <div class="entryAction">
-	                    <a href="" ng-click="showHide(account)">
-		                    <span class="icon icon-{{account.icon || 'plus'}}"></span>
-	                    </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+						<div ng-if="account.repo && account.repo.length === 0">
+							<alert type="warning">{{translation.noReposFound[LANG]}}</alert>
+						</div>
+						<div ng-if="access.getRepos" id="reposList">
+							<ul class="blueListing">
+								<li class="blueLi row-list {{repo.status}}" ng-repeat="repo in account.repos| filter: searchKeyword" ng-style="{'width': '99%'}">
+									<span class="repoFullName">{{repo.full_name}}</span>
+									<span ng-if="repo.status === 'deleted'" class="f-right mr11"><span class="icon icon-warning"></span>{{translation.repoHasBeenDeleted[LANG]}}</span>
+									<span ng-if="repo.status === 'active'" class="f-right mr11"><span class="icon icon-checkmark"></span>{{translation.activeRepo[LANG]}}</span>
+									<span ng-if="repo.status === 'outOfSync'" class="f-right mr11"><span class="icon icon-warning"></span>{{translation.repoOutOfSync[LANG]}}</span>
+									<div class="rightActions">
+										<a href="" ng-if="access.activateRepo && !repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
+											<span class="icon icon-switch" tooltip="{{translation.activate[LANG]}}"></span>
+										</a>
+										<a href="" ng-if="access.deactivateRepo && repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
+											<span class="icon icon-cross" tooltip="{{translation.deactivate[LANG]}}"></span>
+										</a>
+										<a href="" ng-if="access.syncRepo && repo.status === 'active' && repo.type !== 'custom'" ng-click="syncRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
+											<span class="icon icon-loop2" tooltip="{{translation.sync[LANG]}}"></span>
+										</a>
+										<a href="" ng-if="repo.status" ng-click="configureRepo(repo, account)" ng-style="{'margin-top': '-19px'}">
+											<span tooltip="Configure" class="icon icon-cog"></span>
+										</a>
+									</div>
+								</li>
+							</ul>
+							<a href="" class="loadMore btn btn-block" ng-click="listRepos(account, 0, 'loadMore')" ng-if="account.allowLoadMore">Load
+								More</a>
+						</div>
+					</div>
+					
+					<div class="entryAction">
+						<a href="" ng-click="showHide(account)">
+							<span class="icon icon-{{account.icon || 'plus'}}"></span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
 
 <script type="text/ng-template" id="repoAddSuccess.tmpl">
-    <div id="activeRepos" class="modal-body">
-        <h4 style="text-align: center;">{{translation.repoHasBeenActivated[LANG]}}</h4>
-        <label>{{translation.theFollowingModulesWereAdded[LANG]}}</label>
-        <div class="grid" style="width:100%">
-            <table cellspacing="0" cellpadding="0" border="0">
-                <tbody>
-                <tr>
-                    <th>{{translation.name[LANG]}}</th>
-                    <th>{{translation.type[LANG]}}</th>
-                    <th>{{translation.link[LANG]}}</th>
-                </tr>
-                <tr ng-repeat="entry in added" ng-class-even="'even'" ng-class-odd="'odd'">
-                    <td>{{entry.name}}</td>
-                    <td>{{entry.type}}</td>
-                    <td ng-if="entry.type === 'service'"><a href="#/services" ng-click="ok()">{{translation.link[LANG]}}</a></td>
-                    <td ng-if="entry.type === 'daemon'"><a href="#/daemons" ng-click="ok()">{{translation.link[LANG]}}</a></td>
-                    <td ng-if="entry.type === 'static'"><a href="#/static-content" ng-click="ok()">{{translation.link[LANG]}}</a></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
-    </div>
+	<div id="activeRepos" class="modal-body">
+		<h4 style="text-align: center;">{{translation.repoHasBeenActivated[LANG]}}</h4>
+		<label>{{translation.theFollowingModulesWereAdded[LANG]}}</label>
+		<div class="grid" style="width:100%">
+			<table cellspacing="0" cellpadding="0" border="0">
+				<tbody>
+					<tr>
+						<th>{{translation.name[LANG]}}</th>
+						<th>{{translation.type[LANG]}}</th>
+						<th>{{translation.link[LANG]}}</th>
+					</tr>
+					<tr ng-repeat="entry in added" ng-class-even="'even'" ng-class-odd="'odd'">
+						<td>{{entry.name}}</td>
+						<td>{{entry.type}}</td>
+						<td ng-if="entry.type === 'service'"><a href="#/services" ng-click="ok()">{{translation.link[LANG]}}</a>
+						</td>
+						<td ng-if="entry.type === 'daemon'"><a href="#/daemons" ng-click="ok()">{{translation.link[LANG]}}</a>
+						</td>
+						<td ng-if="entry.type === 'static'"><a href="#/static-content" ng-click="ok()">{{translation.link[LANG]}}</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
+	</div>
 </script>
 
 <script type="text/ng-template" id="errorDisplay.tmpl">
-    <div class="modal-body">
-        <h4>{{title}}</h4>
-        <alert type="danger" ng-bind-html="error"></alert>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
-    </div>
+	<div class="modal-body">
+		<h4>{{title}}</h4>
+		<alert type="danger" ng-bind-html="error"></alert>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
+	</div>
 </script>
 
 <script type="text/ng-template" id="syncSuccess.tmpl">
-    <div id="syncedRepos" class="modal-body">
-        <h4 style="text-align: center;">{{translation.repoHasBeenSynced[LANG]}}</h4>
-        <div ng-repeat="(action, entries) in results" ng-if="entries.length > 0">
-            <label>{{translation.theFollowingModulesWere[LANG]}} {{action}}:</label><br>
-            <div class="grid" style="width:100%">
-                <table cellspacing="0" cellpadding="0" border="0">
-                    <tbody>
-                    <tr>
-                        <th>{{translation.name[LANG]}}</th>
-                        <th>{{translation.type[LANG]}}</th>
-                        <th>{{translation.link[LANG]}}</th>
-                    </tr>
-                    <tr ng-repeat="entry in entries" ng-class-even="'even'" ng-class-odd="'odd'">
-                        <td>{{entry.name}}</td>
-                        <td>{{entry.type}}</td>
-                        <td ng-if="entry.type === 'service'"><a href="#/services" ng-click="ok()">{{translation.link[LANG]}}</a></td>
-                        <td ng-if="entry.type === 'daemon'"><a href="#/daemons" ng-click="ok()">{{translation.link[LANG]}}</a></td>
-                        <td ng-if="entry.type === 'static'"><a href="#/static-content" ng-click="ok()">{{translation.link[LANG]}}</a></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
-    </div>
+	<div id="syncedRepos" class="modal-body">
+		<h4 style="text-align: center;">{{translation.repoHasBeenSynced[LANG]}}</h4>
+		<div ng-repeat="(action, entries) in results" ng-if="entries.length > 0">
+			<label>{{translation.theFollowingModulesWere[LANG]}} {{action}}:</label><br>
+			<div class="grid" style="width:100%">
+				<table cellspacing="0" cellpadding="0" border="0">
+					<tbody>
+						<tr>
+							<th>{{translation.name[LANG]}}</th>
+							<th>{{translation.type[LANG]}}</th>
+							<th>{{translation.link[LANG]}}</th>
+						</tr>
+						<tr ng-repeat="entry in entries" ng-class-even="'even'" ng-class-odd="'odd'">
+							<td>{{entry.name}}</td>
+							<td>{{entry.type}}</td>
+							<td ng-if="entry.type === 'service'"><a href="#/services" ng-click="ok()">{{translation.link[LANG]}}</a>
+							</td>
+							<td ng-if="entry.type === 'daemon'"><a href="#/daemons" ng-click="ok()">{{translation.link[LANG]}}</a>
+							</td>
+							<td ng-if="entry.type === 'static'"><a href="#/static-content" ng-click="ok()">{{translation.link[LANG]}}</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
+	</div>
 </script>
 
 <script type="text/ng-template" id="repoOutOfSync.tmpl">
-    <div class="modal-body">
-        <h4 style="text-align: center;">{{translation.repoOutOfSync[LANG]}}</h4>
-        <label style="text-align: center;">{{translation.wouldYouLikeReactivateRepo[LANG]}}</label>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="reactivate()">{{translation.reactivate[LANG]}}</button>
-        <button class="btn btn-danger" ng-click="cancel()">{{translation.cancel[LANG]}}</button>
-    </div>
+	<div class="modal-body">
+		<h4 style="text-align: center;">{{translation.repoOutOfSync[LANG]}}</h4>
+		<label style="text-align: center;">{{translation.wouldYouLikeReactivateRepo[LANG]}}</label>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="reactivate()">{{translation.reactivate[LANG]}}</button>
+		<button class="btn btn-danger" ng-click="cancel()">{{translation.cancel[LANG]}}</button>
+	</div>
 </script>
 
 <script type="text/ng-template" id="configureRepo.tmpl">
 	<div class="modal-body">
+		<div ng-show="alerts.length >0">
+			<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)" dismiss-on-timeout="5000">
+				{{alert.msg}}
+			</alert>
+			<br>
+		</div>
 		<div ng-if="noCiConfig">
 			<alert type="warning">No Continuous Integration Configuration Found. Please visit
-				<a href="" ng-click="goTOCI()">Continuous Integration</a> Section and configure a provider before you can proceed.
+				<a href="" ng-click="goTOCI()">Continuous Integration</a> Section and configure a provider before you
+				can proceed.
 			</alert>
 		</div>
-        <div ng-if="noRepoCiConfig && !noCiConfig">
-			<alert type="warning">This repository does not belong to the specified Continuous Integration Strategy.</alert>
+		<div ng-if="noRepoCiConfig && !noCiConfig">
+			<alert type="warning">This repository does not belong to the specified Continuous Integration Strategy.
+			</alert>
 		</div>
 		<div ng-if="!noCiConfig && !noRepoCiConfig">
 			<tabset>
 				<tab heading="Continuous Integration">
-					<br />
+					<br/>
 					<div ng-show="activateRepo">
 						<div class="table w100 c-both">
 							<div class="f-left">
@@ -189,15 +204,11 @@
 						</div>
 						<hr>
 					</div>
-					<div ng-show="alerts.length >0">
-						<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-					</div>
 					<ngform></ngform>
 				</tab>
 				<tab heading="Continuous Delivery" ng-click="getCDRecipe()">
 					<br>
 					<div class="configCd entryBoxes entryBoxesGrid">
-						
 						<div ng-repeat="(oneSrv, cdData) in cdConfiguration" class="entryBox customEntryBox">
 							<div ng-show="cdData.display === false">
 								<div class="header opened">
@@ -225,80 +236,90 @@
 										</a>
 									</div>
 									<tabset class="inner" id="cdc_{{cdData.name}}">
-										<tab ng-repeat="oneEnv in cdEnvs" heading="{{oneEnv}}" >
-											<br />
+										<tab ng-repeat="oneEnv in cdEnvs" heading="{{oneEnv}}">
+											<br/>
 											<div ng-show="!cdData[oneEnv].display">
 												<alert type="info">The following entry is not deployed in any environment.</alert>
 											</div>
 											<div ng-show="cdData[oneEnv].display">
-												<p>
-													Default Environment Strategy is set to <b>Notify</b> when updates are pushed to branch <b>Master</b>.
-												</p>
-												<fieldset>
-													<legend class="font-16">Default Strategy</legend>
-													<p>
-												<span ng-if="cdData[oneEnv].cdData.default">
-													This service has not Custom Strategy and is currently configured to use the Environment's Default.
-												</span>
-														<span ng-if="!cdData[oneEnv].cdData.branch">
-													The strategy of this service overrides the Environment's default as follow:
-												</span>
-													</p>
-													<div class="clearfix">
-														<div class="halfPage branchLabel">
-															<label>Branch:</label>
-															<select class="form-control" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.branch">
-																<option ng-repeat="myBranch in cdData[oneEnv].obj.branches" value="{{myBranch}}">{{myBranch}}</option>
-															</select>
-														</div>
-														<div class="halfPage">
-															<label>Strategy:</label>
-															<select class="form-control" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.strategy">
-																<option value="notify">notify</option>
-																<option value="update">update</option>
-															</select>
-														</div>
-													</div>
-													<div class="fieldMsg">This Strategy is applicable on all versions of <b>{{cdData.name}}</b> in this Environment.</div>
-												</fieldset>
-												
-												<table width="100%" border="0">
-													<tr ng-repeat="(version, versionInfo) in cdData[oneEnv].obj.ha">
-														<td>
-															<fieldset>
-																<legend  class="font-14">
-																	<input ng-click="setVersion(oneEnv, version, oneSrv)" ng-checked="cdConfiguration[oneSrv][oneEnv].cdData.versions[version]" type="checkbox">&nbsp;&nbsp;<label class="version">Version:</label> {{version}}
-																</legend>
-																<div ng-show="cdConfiguration[oneSrv][oneEnv].cdData.versions[version]">
-																	<p>
-																		Override the default <b>{{cdData.name}}</b> strategy for version <b>{{version}}</b>.
-																	</p>
-																	<div class="halfPage branchLabel">
-																		<label class="">Branch:</label> {{versionInfo.branch}}
-																	</div>
-																	<div class="halfPage">
-																		<label class="">Strategy:</label>
-																		<select class="form-control" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].strategy">
-																			<option value="notify">notify</option>
-																			<option value="update">update</option>
-																		</select>
-																	</div>
-																	<div class="fieldMsg">This Strategy is applicable only for <b>{{cdData.name}}</b> Version <b>{{version.versionLabel}}</b> and in this Environment.</div>
+												<tabset>
+													<tab ng-repeat="(version, versionInfo) in cdData[oneEnv].obj.ha" heading="{{tabLabel}}{{version}}">
+														<br>
+														<input ng-click="setVersion(oneEnv, version, oneSrv)" ng-checked="cdConfiguration[oneSrv][oneEnv].cdData.versions[version]" type="checkbox">&nbsp;&nbsp;<label class="version">Activate</label>
+														<div ng-show="cdConfiguration[oneSrv][oneEnv].cdData.versions[version]">
+															<p ng-if="!default">
+																Strategy for <b>{{cdData.name}}</b> version <b>{{version}}</b>.
+															</p>
+															<div class="halfPage branchLabel">
+																<label>{{translation.branch[LANG]}}:</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingBranches">
+																<select class="form-control" ng-disabled="versionInfo.deployed" ng-if="!loadingBranches" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch">
+																	<option ng-repeat="myBranch in branches" value="{{myBranch.name}}">
+																		{{myBranch.name}}
+																	</option>
+																</select>
+															</div>
+															<div class="halfPage branchLabel">
+																<label>Strategy:</label>
+																<select class="form-control" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].strategy">
+																	<option value="notify">notify</option>
+																	<option value="update">update</option>
+																</select>
+															</div>
+															<div class="halfPage">
+																<input ng-click="setDeploy(oneEnv, version, oneSrv, false, 0)" ng-checked="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].deploy" type="checkbox">&nbsp;&nbsp;<label class="version">Deploy</label>
+															</div>
+															<div ng-show="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].deploy">
+																<div class="f-left form-g">
+																	<fieldset>
+																		<legend>Deployment Options</legend>
+																		<div>
+																			<label>Deployment Mode</label>
+																			<select class="form-control" ng-required="true" ng-options="mode for mode in deploymentModes" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode"></select>
+																			<label class="fieldMsg">Global/Daemonset mode deploys one replica of the service on each node.</label>
+																			<label class="fieldMsg">Replicated/Deployment mode deploys the specified number of replicas based on the availability of resources.</label>
+																			<br>
+																		</div>
+																		<div ng-if="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'replicated' || cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'deployment'">
+																			<label>Replica Count</label>
+																			<input type="number" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas" ng-required="true"/>
+																			<br>
+																		</div>
+																		<div>
+																			<label>Memory Limit Per Instance (in
+																				MBytes)</label>
+																			<input type="number" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit" ng-required="true"/>
+																			<br/>
+																		</div>
+																		<div>
+																			<label>Catalog
+																				Recipe</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingRecipes">
+																			<select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name group by recipe.type for recipe in myRecipes" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.recipe" ng-change="injectCatalogEntries(oneEnv, version, oneSrv, false)"></select>
+																			<br>
+																		</div>
+																		<div ng-include="'modules/dashboard/gitAccounts/directives/list-cloud-catalogInputs.tmpl'"></div>
+																	</fieldset>
+																	<fieldset ng-if="allowGitOverride && cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.groupConfigs">
+																		<legend>Service Options</legend>
+																		<div ng-if="groupConfigs">
+																			<label>{{translation.daemonGroupConfig[LANG]}}</label>
+																			<select class="form-control" ng-required="true" ng-options="group as group.daemonConfigGroup for group in groupConfigs" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.daemonGroup"></select>
+																			<br>
+																		</div>
+																	</fieldset>
 																</div>
-															</fieldset>
-														</td>
-													</tr>
-												</table>
+															</div>
+															<div class="fieldMsg">This Strategy is applicable only for <b>{{cdData.name}}</b> Version <b>{{version.versionLabel}}</b> and in this Environment.
+															</div>
+														</div>
+													</tab>
+												</tabset>
 											</div>
-										</tab>
-									</tabset>
+										</div>
+									</div>
 								</div>
 							</div>
-						</div>
-						
 						<div class="table c-both w100" ng-show="maxEntries > 0">
 							<input class="btn btn-sm btn-primary f-right" ng-click="saveRecipe()" value="Save Settings" type="submit">
-						</div>
 					</div>
 				</tab>
 			</tabset>
