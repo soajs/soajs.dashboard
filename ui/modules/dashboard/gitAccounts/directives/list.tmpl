@@ -235,13 +235,11 @@
 											</div>
 											<div ng-show="cdData[oneEnv].display">
 												<tabset>
-													<tab ng-repeat="(version, versionInfo) in cdData[oneEnv].obj.ha" heading="{{tabLabel}}{{version}}">
+													<tab ng-repeat="(version, versionInfo) in cdData[oneEnv].obj.ha">
+														<tab-heading ng-class="{'deployed': versionInfo.deployed}">{{tabLabel}}{{version}}</tab-heading>
 														<br>
 														<input ng-click="setVersion(oneEnv, version, oneSrv)" ng-checked="cdConfiguration[oneSrv][oneEnv].cdData.versions[version]" type="checkbox">&nbsp;&nbsp;<label class="version">Activate</label>
 														<div ng-show="cdConfiguration[oneSrv][oneEnv].cdData.versions[version]">
-															<p ng-if="!default">
-																Strategy for <b>{{cdData.name}}</b> version <b>{{version}}</b>.
-															</p>
 															<div class="halfPage branchLabel">
 																<label>{{translation.branch[LANG]}}:</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingBranches">
 																<select class="form-control" ng-disabled="versionInfo.deployed" ng-if="!loadingBranches" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch">

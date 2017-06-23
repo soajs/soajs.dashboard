@@ -54,7 +54,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 			controller: function ($scope) {
 				fixBackDrop();
 				$scope.services = {};
-				$scope.tabLabel = 'Version: ';
+				$scope.tabLabel = 'Version ';
 				$scope.default = false;
 				$scope.gitAccount = gitAccount;
 				$scope.alerts = [];
@@ -685,7 +685,6 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				delete cdData.versions;
 			}
 		}
-		
 		if (service.versions) {
 			var versions = Object.keys(service.versions);
 			var actVerKeys = Object.keys(activatedVersions);
@@ -734,7 +733,6 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				var activatedVersions = {};
 				for (var srv = 0; srv < response.length; srv++) {
 					var service = response[srv];
-					
 					if (service.labels) {
 						if (serviceName === service.labels['service.repo'] || serviceName === service.labels['soajs.service.name']) {
 							if (service.labels['soajs.service.version']) {
@@ -743,7 +741,6 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 							else {
 								activatedVersions['versionless'] = service;
 							}
-							break;
 						}
 					}
 				}

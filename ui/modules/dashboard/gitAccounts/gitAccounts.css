@@ -205,3 +205,8 @@ li.accountType {
     margin-top: -3px !important;
     width: 18px !important;
 }
+
+.deployed {
+    color: #3c763d;
+    font-weight: bold;
+}
