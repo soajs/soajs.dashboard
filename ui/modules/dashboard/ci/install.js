@@ -19,7 +19,7 @@ var ciNav = [
         },
         'mainMenu': true,
         'tracker': true,
-        'order': 1,
+        'order': 2,
         'scripts': ['modules/dashboard/ci/config.js', 'modules/dashboard/ci/controller.js'],
         'ancestor': [translation.home[LANG]]
     }

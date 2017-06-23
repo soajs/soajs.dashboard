@@ -404,7 +404,7 @@ var servicesNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'order': 2,
+		'order': 3,
 		'scripts': ['modules/dashboard/services/config.js', 'modules/dashboard/services/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	},
@@ -426,7 +426,7 @@ var servicesNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'order': 3,
+		'order': 4,
 		'scripts': ['modules/dashboard/services/config.js', 'modules/dashboard/services/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	},
