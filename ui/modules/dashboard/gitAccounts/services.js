@@ -299,17 +299,15 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 						}
 						if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].deploy) {
 							delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].deploy;
-							// delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options;
 						}
 						else {
-							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].deploy = true;
 							if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options) {
 								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options = {'deployConfig': {'replication': {}}};
-								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource = {};
-								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch;
-								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.owner = $scope.serviceOwner;
-								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.repo = $scope.serviceRepo;
 							}
+							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource = {};
+							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch;
+							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.owner = $scope.gitAccount.owner;
+							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.repo = oneRepo.name;
 							if (isKubernetes) {
 								$scope.deploymentModes = ['deployment', 'daemonset'];
 								if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode) {
@@ -325,7 +323,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 							var service = $scope.services[oneSrv];
 							$scope.groupConfigs = '';
 							if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit) {
-								if (service && service.prerequisites && service.prerequisites.memory) {
+								if (service && service.prerequisites && service.prerequisites.memory && service.prerequisites.memory.trim().length > 0) {
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = parseFloat(service.prerequisites.memory);
 								} else {
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = 500;
@@ -391,7 +389,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 								}
 								if (catalogRecipe.recipe.deployOptions.specifyGitConfiguration) {
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.env = oneEnv;
-									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.name = $scope.cdConfiguration[oneSrv].label;
+									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.name = oneSrv;
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.type = $scope.cdConfiguration[oneSrv].type;
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.version = version;
 									$scope.allowGitOverride = true;
@@ -575,8 +573,6 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 					currentScope.displayAlert('danger', error.message);
 				} else {
 					currentScope.branches = response.branches;
-					currentScope.serviceOwner = response.owner;
-					currentScope.serviceRepo = response.repo;
 				}
 				currentScope.loadingBranches = false;
 				cb();
@@ -667,7 +663,11 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				counter++;
 				delete cdData.deploy;
 			}
-			var cdDataClone = angular.copy(cdData);
+			var cdDataClone = angular.copy(currentScope.cdData[env.toUpperCase()][serviceName]);
+			delete cdDataClone.branch;
+			delete cdDataClone.strategy;
+			delete cdDataClone.options;
+			delete cdDataClone.deploy;
 			if (Object.keys(cdDataClone).length > 0) {
 				for (var version in cdDataClone) {
 					var v = version.replace('v', '');
@@ -793,12 +793,17 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 						}
 					}
 				}
-				if (Object.keys(configuration[oneEnv][oneRepo]).length === 0) {
+				if(!currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions || Object.keys(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions).length === 0){
 					delete configuration[oneEnv][oneRepo];
+				}
+				if (configuration[oneEnv] && configuration[oneEnv][oneRepo] && Object.keys(configuration[oneEnv][oneRepo]).length === 0) {
+					delete configuration[oneEnv][oneRepo];
+				}
+				if (configuration[oneEnv] && Object.keys(configuration[oneEnv]).length === 0) {
+					delete configuration[oneEnv];
 				}
 			}
 		});
-		
 		overlayLoading.show();
 		getSendDataFromServer(currentScope, ngDataApi, {
 			method: 'post',
