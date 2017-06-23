@@ -1379,7 +1379,7 @@ service.init(function () {
 	 */
 	service.put("/ci/provider", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			BL.deactivateProvider(config, req, dashboardBL.ci.driver, function (error, data) {
+			BL.deactivateProvider(config, req, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
