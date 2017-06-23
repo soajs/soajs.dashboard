@@ -1,7 +1,7 @@
 "use strict";
 var repoService = soajsApp.components;
 repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', function (ngDataApi, $timeout, $modal, $cookies) {
-	
+
 	function getCIRecipe(currentScope, cb) {
 		overlayLoading.show();
 		getSendDataFromServer(currentScope, ngDataApi, {
@@ -19,12 +19,12 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				for (var i = 0; i < response.list.length - 1; i++) {
 					response.list[i].status = (response.list[i].active) ? 'ON' : 'OFF';
 				}
-				
+
 				return cb(null, response);
 			}
 		});
 	}
-	
+
 	function configureRepo(currentScope, oneRepo, gitAccount, config) {
 		var noCiConfig = false;
 		var noRepoCiConfig = false;
@@ -33,7 +33,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 		if (!currentScope.ciData.settings.settings || Object.keys(currentScope.ciData.settings.settings).length === 0) {
 			noCiConfig = true;
 		}
-		
+
 		let ciRepo;
 		for (let i = 0; i < currentScope.ciData.list.length; i++) {
 			if (currentScope.ciData.list[i].name === oneRepo.full_name) {
@@ -41,11 +41,11 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				break;
 			}
 		}
-		
+
 		if (!ciRepo) {
 			noRepoCiConfig = true;
 		}
-		
+
 		var configureRepo = $modal.open({
 			templateUrl: 'configureRepo.tmpl',
 			size: 'lg',
@@ -70,11 +70,11 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 					currentScope.$parent.go('#/continuous-integration');
 					configureRepo.close();
 				};
-				
+
 				$scope.cancel = function () {
 					configureRepo.close();
 				};
-				
+
 				$scope.toggleStatus = function (status) {
 					toggleStatus($scope, status, ciRepo, function () {
 						$scope.activateRepo = !status;
@@ -86,7 +86,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 						}
 					});
 				};
-				
+
 				$scope.displayAlert = function (type, msg, isCode, service, orgMesg) {
 					$scope.alerts = [];
 					if (isCode) {
@@ -97,11 +97,11 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 					}
 					$scope.alerts.push({'type': type, 'msg': msg});
 				};
-				
+
 				$scope.closeAlert = function (index) {
 					$scope.alerts.splice(index, 1);
 				};
-				
+
 				$scope.showCIConfigForm = function () {
 					overlayLoading.show();
 					getSendDataFromServer(currentScope, ngDataApi, {
@@ -118,7 +118,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 						else {
 							var customEnvs = response.envs;
 							var formConfig = angular.copy(config.form.settings);
-							
+
 							for (var oneVar in currentScope.ciData.variables) {
 								formConfig.entries[1].entries.push({
 									'name': oneVar,
@@ -128,12 +128,12 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 									'type': 'text'
 								});
 							}
-							
+
 							formConfig.entries[1].entries.push({
 								"type": "html",
 								"value": "<br /><p><em>Once you submit this form, the above SOAJS environment variables will be added to your repository configuration.</em></p>"
 							});
-							
+
 							var count = 0;
 							formConfig.entries[2].entries = [];
 							customEnvs.forEach(function (enVar) {
@@ -152,15 +152,15 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 									count++;
 								}
 							});
-							
-							
+
+
 							var oneClone = angular.copy(config.form.envVar);
 							for (var i = 0; i < oneClone.length; i++) {
 								oneClone[i].name = oneClone[i].name.replace("%count%", count);
 							}
 							formConfig.entries[2].entries = formConfig.entries[2].entries.concat(oneClone);
 							count++;
-							
+
 							formConfig.entries.push({
 								"name": "addEnv",
 								"type": "html",
@@ -174,7 +174,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 									count++;
 								}
 							});
-							
+
 							var options = {
 								timeout: $timeout,
 								entries: formConfig.entries,
@@ -195,14 +195,14 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 													"maximum_number_of_builds": formData.maximum_number_of_builds
 												}
 											};
-											
+
 											data.variables = {};
 											for (var i = 0; i < count; i++) {
 												if (!currentScope.ciData.variables[formData['envName' + i]]) {
 													data.variables[formData['envName' + i]] = formData['envVal' + i];
 												}
 											}
-											
+
 											overlayLoading.show();
 											getSendDataFromServer(currentScope, ngDataApi, {
 												method: 'put',
@@ -235,14 +235,14 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 									}
 								]
 							};
-							
+
 							buildForm($scope, null, options, function () {
-							
+
 							});
 						}
 					});
 				};
-				
+
 				if (!noCiConfig && !noRepoCiConfig) {
 					if (!ciRepo.active) {
 						$scope.activateRepo = true;
@@ -251,7 +251,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 						$scope.showCIConfigForm();
 					}
 				}
-				
+
 				$scope.showHide = function (oneService, name) {
 					if (oneService.icon === 'minus') {
 						oneService.icon = 'plus';
@@ -262,7 +262,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 						jQuery('#cd_' + name).slideDown()
 					}
 				};
-				
+
 				$scope.cdShowHide = function (oneSrv, name) {
 					if ($scope.cdConfiguration[oneSrv].icon === 'minus') {
 						$scope.cdConfiguration[oneSrv].icon = 'plus';
@@ -273,7 +273,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 						jQuery('#cdc_' + name).slideDown()
 					}
 				};
-				
+
 				$scope.setVersion = function (oneEnv, version, oneSrv) {
 					var deployedBranch = '';
 					if($scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version] && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch']){
@@ -294,7 +294,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 						
 					}
 				};
-				
+
 				$scope.setDeploy = function (oneEnv, version, oneSrv, first, counter) {
 					var isKubernetes = (envPlatform.toLowerCase() === "kubernetes");
 					if (!first) {
@@ -345,12 +345,12 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 							if (service.type === 'daemon' && service.grpConf) {
 								$scope.groupConfigs = service.grpConf;
 							}
-							
+
 							$scope.injectCatalogEntries(oneEnv, version, oneSrv, first);
 						}
 					});
 				};
-				
+
 				$scope.injectCatalogEntries = function (oneEnv, version, oneSrv, first) {
 					$scope.allowGitOverride = false;
 					if (first) {
@@ -400,8 +400,9 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 								if (Object.keys($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env).length === 0) {
 									delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env;
 								}
+								
+								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.env = oneEnv;
 								if (catalogRecipe.recipe.deployOptions.specifyGitConfiguration) {
-									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.env = oneEnv;
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.name = oneSrv;
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.type = $scope.cdConfiguration[oneSrv].type;
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.version = version;
@@ -411,21 +412,21 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 						});
 					}
 				};
-				
+
 				$scope.getCDRecipe = function () {
 					getCDRecipe($scope, oneRepo, function () {
 					});
 				};
-				
+
 				$scope.saveRecipe = function () {
 					saveRecipe($scope, function () {
-					
+
 					});
 				};
 			}
 		});
 	}
-	
+
 	function toggleStatus(currentScope, status, oneRepo, cb) {
 		overlayLoading.show();
 		getSendDataFromServer(currentScope, ngDataApi, {
@@ -447,7 +448,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 			}
 		});
 	}
-	
+
 	function getEnvironments(currentScope, cb) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
@@ -467,12 +468,12 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 			}
 		});
 	}
-	
+
 	function getCDRecipe(currentScope, oneRepo, cb) {
 		currentScope.cdConfiguration = null;
 		overlayLoading.show();
 		getEnvironments(currentScope, function () {
-			
+
 			getSendDataFromServer(currentScope, ngDataApi, {
 				method: 'get',
 				routeName: '/dashboard/cd'
@@ -488,7 +489,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 						"strategy": "notify",
 						"default": true
 					};
-					
+
 					if (!response) {
 						response = {};
 					}
@@ -530,7 +531,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				}
 			});
 		});
-		
+
 		function populateServiceInEnvironments(counter, serviceName, defaultCD, mCb) {
 			var oneCDEnv = currentScope.cdEnvs[counter];
 			var types = ['service', 'daemon', 'custom'];
@@ -540,12 +541,12 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 					if (!currentScope.cdData[oneCDEnv.toUpperCase()]) {
 						currentScope.cdData[oneCDEnv.toUpperCase()] = defaultCD;
 					}
-					
+
 					currentScope.cdConfiguration[serviceName].name = serviceName;
 					if (!Object.hasOwnProperty.call(currentScope.cdConfiguration[serviceName], 'display')) {
 						currentScope.cdConfiguration[serviceName].display = false;
 					}
-					
+
 					currentScope.cdConfiguration[serviceName][oneCDEnv.toUpperCase()] = {
 						"cdData": {},
 						"display": false
@@ -565,11 +566,11 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				mCb();
 			}
 		}
-		
+
 		function getEnvServices(envCode, serviceName, mCb) {
 			getServiceInEnv(currentScope, envCode, serviceName, mCb);
 		}
-		
+
 		function getServiceBranches(cb) {
 			currentScope.loadingBranches = true;
 			getSendDataFromServer(currentScope, ngDataApi, {
@@ -591,7 +592,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				cb();
 			});
 		}
-		
+
 		var getService = {
 			'service': function (serviceName, cb) {
 				getSendDataFromServer(currentScope, ngDataApi, {
@@ -634,7 +635,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 			}
 		};
 	}
-	
+
 	function buildFormData(currentScope, env, serviceName, activatedVersions, cb) {
 		var service = currentScope.services[serviceName];
 		var dashboardServices = ['dashboard', 'proxy'];
@@ -723,9 +724,9 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 		currentScope.cdConfiguration[serviceName].display = true;
 		currentScope.cdConfiguration[serviceName][env.toUpperCase()].display = true;
 		return cb();
-		
+
 	}
-	
+
 	function getServiceInEnv(currentScope, env, serviceName, cb) {
 		overlayLoading.show();
 		getSendDataFromServer(currentScope, ngDataApi, {
@@ -759,7 +760,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 			}
 		});
 	}
-	
+
 	function saveRecipe(currentScope, cb) {
 		var configuration = {};
 		var environments = currentScope.cdEnvs;
@@ -845,7 +846,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 			}
 		});
 	}
-	
+
 	function getCatalogRecipes(currentScope, cb) {
 		currentScope.loadingRecipes = true;
 		getSendDataFromServer(currentScope, ngDataApi, {
@@ -868,7 +869,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 			}
 		});
 	}
-	
+
 	return {
 		"getCIRecipe": getCIRecipe,
 		"getCDRecipe": getCDRecipe,
