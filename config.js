@@ -667,7 +667,8 @@ module.exports = {
                     }
                 },
             },
-            "/environment/list": {
+            
+	        "/environment/list": {
                 _apiInfo: {
                     "l": "List Environments",
                     "group": "Environment",
@@ -1107,31 +1108,32 @@ module.exports = {
 
             "/ci": {
                 "_apiInfo": {
-                    "l": "Get CI Configuration",
-                    "group": "Continuous Integration"
-                },
-                'port':{
-                    'source': ['query.port'],
-                    'required': true,
-                    'validation':{
-                        'type': 'number'
-                    }
-                },
-	            'list':{
-		            'source': ['query.list'],
-		            'required': false,
-		            'validation':{
-			            'type': 'boolean'
-		            }
-	            }
-            },
-
-            "/ci/download": {
-                "_apiInfo": {
-                    "l": "Download CI Recipe",
+                    "l": "Get CI Providers",
                     "group": "Continuous Integration"
                 }
             },
+
+            "/ci/recipe/download": {
+                "_apiInfo": {
+                    "l": "Download CI Recipe",
+                    "group": "Continuous Integration"
+                },
+	            "commonFields": ["id"]
+            },
+	
+	        "/ci/script/download": {
+		        "_apiInfo": {
+			        "l": "Download CI Script",
+			        "group": "Continuous Integration"
+		        },
+		        "provider": {
+		        	"required": false,
+			        "source": ["query.provider"],
+			        "validation":{
+		        		"type":"string"
+			        }
+		        }
+	        },
 
             "/ci/status": {
                 "_apiInfo": {
@@ -1161,20 +1163,6 @@ module.exports = {
                 },
                 'id':{
                     'source': ['query.id'],
-                    'required': true,
-                    'validation':{
-                        'type': 'number'
-                    }
-                }
-            },
-
-            "/ci/sync": {
-                "_apiInfo": {
-                    "l": "Sync All CI Repositories",
-                    "group": "Continuous Integration"
-                },
-                "port": {
-                    'source': ['query.port'],
                     'required': true,
                     'validation':{
                         'type': 'number'
@@ -1952,31 +1940,66 @@ module.exports = {
 
             "/ci": {
                 "_apiInfo": {
-                    "l": "Save CI Configuration",
+                    "l": "Activate CI Provider",
                     "group": "Continuous Integration"
                 },
-                "config": {
-                    "source": ['body.config'],
+	            "domain": {
+		            "source": ['body.domain'],
+		            "required": true,
+		            "validation": {
+			            "type": "string"
+		            }
+	            },
+	            "provider":{
+		            "source": ['body.provider'],
+		            "required": true,
+		            "validation": {
+			            "type": "string"
+		            }
+	            },
+	            "gitToken": {
+		            "source": ['body.gitToken'],
+		            "required": true,
+		            "validation": {
+			            "type": "string"
+		            }
+	            },
+                "owner": {
+                    "source": ['body.owner'],
                     "required": true,
                     "validation": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                            "driver": { "type": "string", "required": true, "enum": [ 'travis', 'drone' ] },
-                            "settings": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "properties": {
-                                    "domain": { "type": "string", "required": true },
-                                    "owner": { "type": "string", "required": true },
-                                    "gitToken": { "type": "string", "required": true }
-                                }
-                            },
-                            "recipe": { "type": "string", "required": true }
-                        }
+                        "type": "string"
                     }
                 }
             },
+	
+	        "/ci/recipe": {
+		        "_apiInfo": {
+			        "l": "Add New CI Recipe",
+			        "group": "Continuous Integration"
+		        },
+		        "domain": {
+			        "source": ['body.domain'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        },
+		        "recipe":{
+			        "source": ['body.recipe'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        },
+		        "name": {
+			        "source": ['body.name'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        }
+	        },
 
             "/cd": {
                 "_apiInfo": {
@@ -2467,6 +2490,7 @@ module.exports = {
                     }
                 }
             },
+           
             "/cd/action": {
                 "_apiInfo": {
                     "l": "Take Action",
@@ -3257,6 +3281,84 @@ module.exports = {
                 }
             },
 
+	        "/gitAccounts/ci/":{
+		        "_apiInfo": {
+			        "l": "Update Repo CI Settings",
+			        "group": "Continuous Integration"
+		        },
+		        "common":["id"],
+		        "repo": {
+			        "source": ['body.repo'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        },
+		        "provider": {
+			        "source": ['body.provider'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        },
+		        "recipe": {
+			        "source": ['body.recipe'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        }
+	        },
+	        
+	        "/ci/provider": {
+		        "_apiInfo": {
+			        "l": "Deactivate CI Provider",
+			        "group": "Continuous Integration"
+		        },
+		        "owner": {
+			        "source": ['body.owner'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        },
+		        "provider": {
+			        "source": ['body.provider'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        }
+	        },
+	
+	        "/ci/recipe": {
+		        "_apiInfo": {
+			        "l": "Edit CI Recipe",
+			        "group": "Continuous Integration"
+		        },
+		        "provider": {
+			        "source": ['body.provider'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        },
+		        "name": {
+			        "source": ['body.name'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        },
+		        "recipe": {
+			        "source": ['body.recipe'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        }
+	        },
+	        
             "/ci/settings": {
                 "_apiInfo": {
                     "l": "Update CI Repository Settings",
@@ -3568,11 +3670,12 @@ module.exports = {
                 }
             },
 
-            "/ci": {
+            "/ci/recipe": {
                 "_apiInfo": {
-                    "l": "Delete CI Configuration",
+                    "l": "Delete CI Recipe",
                     "group": "Continuous Integration"
-                }
+                },
+	            "commonFields": ["id"]
             },
 
             "/gitAccounts/logout": {
