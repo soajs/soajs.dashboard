@@ -275,13 +275,23 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				};
 				
 				$scope.setVersion = function (oneEnv, version, oneSrv) {
-					if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version]) {
-						delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version];
+					var deployedBranch = '';
+					if($scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version] && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch']){
+						 deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch'];
 					}
-					else {
+					if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active) {
+						delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active;
+					}
+					else if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version]){
 						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] = {
-							branch: $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].branch
+							branch: deployedBranch,
+							active: true
 						};
+					}
+					else{
+						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active = true;
+						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch = deployedBranch;
+						
 					}
 				};
 				
@@ -646,7 +656,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				cdData.versions = {};
 			}
 			if (cdData.branch || cdData.strategy || cdData.options) {
-				cdData.versions['Default'] = {};
+				cdData.versions['Default'] = {'active':true};
 			}
 			if (cdData.branch) {
 				cdData.versions['Default'].branch = cdData.branch;
@@ -675,6 +685,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				for (var version in cdDataClone) {
 					var v = version.replace('v', '');
 					cdData.versions[v] = cdDataClone[version];
+					cdData.versions[v].active = true;
 					if (cdDataClone[version].deploy) {
 						currentScope.setDeploy(env.toUpperCase(), v, serviceName, true, counter);
 						counter++;
@@ -766,34 +777,43 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 					configuration[oneEnv][oneRepo] = {};
 				}
 				for (var version in currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions) {
-					if (version === 'Default') {
-						configuration[oneEnv][oneRepo] = {
-							branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].branch,
-							strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy,
-							deploy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].deploy
-						};
-						if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].deploy) {
-							if (modes.indexOf(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.mode) === -1) {
-								delete currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas;
-							}
-							configuration[oneEnv][oneRepo].options = currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options;
+					if (!currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].active) {
+						delete currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version];
+						if(version === 'Default'){
+							delete configuration[oneEnv][oneRepo];
+						}else{
+							delete configuration[oneEnv][oneRepo]['v' + version];
 						}
-					}
-					else {
-						configuration[oneEnv][oneRepo]['v' + version] = {
-							branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].branch,
-							strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy,
-							deploy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].deploy
-						};
-						if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].deploy) {
-							if (modes.indexOf(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.mode) === -1) {
-								delete currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas;
+					}else{
+						if (version === 'Default') {
+							configuration[oneEnv][oneRepo] = {
+								branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].branch,
+								strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy,
+								deploy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].deploy
+							};
+							if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].deploy) {
+								if (modes.indexOf(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.mode) === -1) {
+									delete currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas;
+								}
+								configuration[oneEnv][oneRepo].options = currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options;
 							}
-							configuration[oneEnv][oneRepo]['v' + version].options = currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options;
 						}
-					}
-					if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options && currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig && currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit) {
-						currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit *= 1048576;
+						else {
+							configuration[oneEnv][oneRepo]['v' + version] = {
+								branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].branch,
+								strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy,
+								deploy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].deploy
+							};
+							if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].deploy) {
+								if (modes.indexOf(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.mode) === -1) {
+									delete currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas;
+								}
+								configuration[oneEnv][oneRepo]['v' + version].options = currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options;
+							}
+						}
+						if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options && currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig && currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit) {
+							currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit *= 1048576;
+						}
 					}
 				}
 				if (!currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions || Object.keys(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions).length === 0) {
