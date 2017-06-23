@@ -1105,19 +1105,26 @@ module.exports = {
                     }
                 }
             },
-	
+
 	        "/ci": {
 		        "_apiInfo": {
 			        "l": "Get CI Accounts",
 			        "group": "Continuous Integration"
 		        }
 	        },
-	        
+
             "/ci/providers": {
                 "_apiInfo": {
                     "l": "Get CI Providers",
                     "group": "Continuous Integration"
-                }
+                },
+				"owner": {
+					"source": ['query.owner'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
             },
 
             "/ci/recipe/download": {
