@@ -1,7 +1,9 @@
 "use strict";
 
 var gitRepo = null;
+var gitOwner = null;
 var gitBranch = null;
+var ciProvider = null;
 
 var authKey = process.env.SOAJS_CD_AUTH_KEY;
 var deployToken = process.env.SOAJS_CD_DEPLOY_TOKEN;
@@ -20,31 +22,36 @@ var utils = {
 		//check the build environment
 		if(process.env.TRAVIS){
 			console.log("Travis build environment detected");
-			
+			ciProvider = 'travis';
+
 			if(!process.env.TRAVIS_REPO_SLUG || !process.env.TRAVIS_BRANCH){
 				console.log("Could not find Travis environment variables (Repo Slug | branch). Aborting");
 				process.exit(0);
 			}
-			
-			gitRepo = process.env.TRAVIS_REPO_SLUG.split("/")[1];
-			gitBranch = process.env.TRAVIS_BRANCH;
+
+			var repoSlug = process.env.TRAVIS_REPO_SLUG.split("/");
+			gitOwner = repoSlug[0].toLowerCase();
+			gitRepo = repoSlug[1].toLowerCase();
+			gitBranch = process.env.TRAVIS_BRANCH.toLowerCase();
 		}
 		else if(process.env.DRONE){
 			console.log("Drone build environment detected");
-			
+			ciProvider = 'drone';
+
 			if(!process.env.DRONE_REPO_NAME || !process.env.DRONE_REPO_BRANCH){
 				console.log("Could not find Drone environment variables (Repo name | branch). Aborting");
 				process.exit(0);
 			}
-			
-			gitRepo = process.env.DRONE_REPO_NAME;
-			gitBranch = process.env.DRONE_REPO_BRANCH;
+
+			gitOwner = process.env.DRONE_REPO_OWNER.toLowerCase();
+			gitRepo = process.env.DRONE_REPO_NAME.toLowerCase();
+			gitBranch = process.env.DRONE_REPO_BRANCH.toLowerCase();
 		}
 		else {
 			console.log("Could not find any build environment. Aborting...");
 			process.exit(0);
 		}
-		
+
 		//Check if required envs are set
 		console.log("Checking if required environment variables are set")
 		//check auth env variables
@@ -57,32 +64,32 @@ var utils = {
 			console.log("Error: Missing DASHBOARD environment variables. Aborting...");
 			process.exit(0);
 		}
-		
+
 		console.log("Launching CD call...");
 		utils.createRequest(function(params){
 			request.post(params, cb);
 		});
 	},
-	
+
 	"createRequest": function(cb) {
 		var params = {};
-		
+
 		params.uri = dashboardProtocol + "://" + dashboardDomain + ":" + dashboardPort +
 			dashboardAPIRoute + "?deploy_token=" + deployToken;
-		
+
 		params.headers = {
 			"key" : authKey,
 			"Content-Type": "application/json"
 		};
-		
+
 		params.json = true;
-		
+
 		try {
 			config = require("./config.js");
 		}
 		catch(e) {
 			console.log("Could not find a config.js file, searching for custom config file [soa.js] ...");
-			
+
 			try {
 				config = require('./soa.js');
 			}
@@ -90,22 +97,24 @@ var utils = {
 				console.log("Could not find a soa.js file, repo does contain a service code...");
 			}
 		}
-		
+
 		params.body = {
 			"repo" : gitRepo,
-			"branch": gitBranch
+			"branch": gitBranch,
+			"owner": gitOwner,
+			"ciProvider": ciProvider
 		};
 		//if not a multi repo
 		if(config && config.type && config.type !== "multi" && config.serviceName){
 			params.body.services = [{"serviceName": config.serviceName}];
 			if(config.serviceVersion) {
 				params.body.services[0].serviceVersion = config.serviceVersion;
-				
+
 			}
 		}
-		
+
 		else if(config && config.type === "multi"){
-			
+
 			//loop over each service to add its
 			var services = [];
 			config.folders.forEach(function(service){
@@ -115,7 +124,7 @@ var utils = {
 				var oneService = {
 					"serviceName": serviceConfig.serviceName
 				};
-				
+
 				if(serviceConfig.serviceVersion){
 					oneService.serviceVersion = serviceConfig.serviceVersion;
 				}

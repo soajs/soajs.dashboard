@@ -2044,6 +2044,13 @@ module.exports = {
                         "type": "string"
                     }
                 },
+				"owner": {
+					"source": ['body.owner'],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+				},
                 "branch": {
                     "source": ['body.branch'],
                     "required": true,
@@ -2051,6 +2058,13 @@ module.exports = {
                         "type": "string"
                     }
                 },
+				"ciProvider": {
+					"source": ['body.ciProvider'],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+				},
                 "services": {
                     "source": ['body.services'],
                     "required": false,
