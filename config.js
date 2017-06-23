@@ -3286,7 +3286,7 @@ module.exports = {
 			        "l": "Update Repo CI Settings",
 			        "group": "Continuous Integration"
 		        },
-		        "common":["id"],
+		        "commonFields":["id"],
 		        "repo": {
 			        "source": ['body.repo'],
 			        "required": true,
