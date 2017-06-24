@@ -830,9 +830,6 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				if (configuration[oneEnv] && configuration[oneEnv][oneRepo] && Object.keys(configuration[oneEnv][oneRepo]).length === 0) {
 					delete configuration[oneEnv][oneRepo];
 				}
-				if (configuration[oneEnv] && Object.keys(configuration[oneEnv]).length === 0) {
-					delete configuration[oneEnv];
-				}
 			}
 		});
 		overlayLoading.show();
