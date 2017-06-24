@@ -1325,7 +1325,7 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.post("/ci", function (req, res) {
+	service.post("/ci/provider", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
 			BL.activateProvider(config, req, dashboardBL.ci.driver, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));

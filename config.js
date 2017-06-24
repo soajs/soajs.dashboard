@@ -1952,7 +1952,7 @@ module.exports = {
                 "catalog": catalogSchema
             },
 
-            "/ci": {
+            "/ci/provider": {
                 "_apiInfo": {
                     "l": "Activate CI Provider",
                     "group": "Continuous Integration"
@@ -2432,7 +2432,8 @@ module.exports = {
                 }
             }
         },
-        "put": {
+        
+	    "put": {
             "/services/settings/update": {
                 "_apiInfo": {
                     "l": "Updates Service Settings",

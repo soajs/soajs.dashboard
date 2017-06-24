@@ -13,14 +13,6 @@ var ciAppConfig = {
 					'fieldMsg': "Enter the domain value"
 				},
 				{
-					'name': 'owner',
-					'label': 'Owner',
-					'type': 'text',
-					'value': '',
-					'required': true,
-					'fieldMsg': "Enter the Owner of the account"
-				},
-				{
 					'name': 'gitToken',
 					'label': 'GIT Token',
 					'type': 'text',
@@ -47,9 +39,8 @@ var ciAppConfig = {
 	},
 	permissions: {
 		get: ['dashboard', '/ci', 'get'],
-		save: ['dashboard', '/ci', 'post'],
-		delete: ['dashboard', '/ci', 'delete'],
-		download: ['dashboard', '/ci/download', 'get'],
+		deactivate: ['dashboard', '/ci/provider', 'put'],
+		activate: ['dashboard', '/ci/provider', 'post']
 	}
 
 };

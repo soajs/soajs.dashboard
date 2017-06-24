@@ -1,70 +1,33 @@
-.provider-button {
-    margin-left: 1% !important;
-    margin-bottom: 1% !important;
-    width: 48% !important;
-    height: 250px !important;
+.customEntryBox {
+    width: 100% !important;
+    padding-left: 0px !important;
 }
 
-.greenRecipeBox{
-    border: solid 1px #3c763d !important;
+.ci_logo {
+    height: 32px;
 }
 
-.greenRecipeBox .header{
-    background-color: #dff0d8 !important;
-    border-bottom-color:#3c763d !important;
+#reposList ul{
+    list-style-type:none;
+    margin:0;
+    padding:0;
 }
 
-.redRecipeBox{
-    border: solid 1px #c9302c !important;
-}
-
-.redRecipeBox .header{
-    background-color: #f2dede !important;
-    border-bottom-color:#c9302c !important;
-}
-
-.mr-10{
-    margin-right:10px;
-}
-
-table.infoTable{
-    border-color:#999999;
-    position:absolute;
-    top: 0;
-    left:0;
-}
-table.infoTable th, table.infoTable td{
-    padding: 5px;
-    border-color:#999999;
-}
-
-table.infoTable td label{
-    margin-top:0px;
-    margin-bottom:0px;
-}
-
-table.infoTable td.val{
-    font-size: 12px;
-}
-
-div.infoTableContainer{
-    width:100%;
-    overflow-x: scroll;
-    height:225px;
+#reposList ul li{
+    margin: 5px 0;
+    border:solid 1px #ccc;
+    border-radius:5px;
+    padding:5px;
     position:relative;
 }
 
-.w5{
-    width:5%;
+#reposList ul li .rightActions{
+    position:absolute;
+    top: 31px;
+    right:5px;
 }
 
-.entryBox .header{
-    margin-bottom: 5px !important;
-}
-
-.bottom-body-spacing{
-    padding-bottom:5px;
-}
-.ci_logo {
-    height: 48%;
+#reposList ul li.locked{
+    background-color:#eee;
+    opacity: 0.7;
 }

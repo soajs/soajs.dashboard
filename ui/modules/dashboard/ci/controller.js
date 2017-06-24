@@ -9,222 +9,120 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 
 	$scope.ciData = {};
 
-	$scope.travisImagePath = "./themes/" + themeToUse + "/img/travis_logo.png";
-	$scope.droneImagePath = "./themes/" + themeToUse + "/img/drone_logo.png";
-	$scope.jenkinsImagePath = "./themes/" + themeToUse + "/img/jenkins_logo.png";
-	$scope.teamCityImagePath = "./themes/" + themeToUse + "/img/teamcity_logo.png";
-
-	$scope.checkRecipe = function () {
+	$scope.images = {
+		travis: "./themes/" + themeToUse + "/img/travis_logo.png",
+		drone: "./themes/" + themeToUse + "/img/drone_logo.png",
+		jenkins: "./themes/" + themeToUse + "/img/jenkins_logo.png",
+		teamcity: "./themes/" + themeToUse + "/img/teamcity_logo.png"
+	};
+	
+	$scope.unsupported = ['jenkins', 'teamcity'];
+	
+	$scope.listAccounts = function () {
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
-			method: 'get',
-			routeName: '/dashboard/ci',
-			params: {
-				'port': (mydomainport || 80),
-				'list': false
-			}
+			'method': 'get',
+			'routeName': '/dashboard/ci'
 		}, function (error, response) {
 			overlayLoading.hide();
 			if (error) {
 				$scope.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.ciData = response;
-
-				if ($scope.ciData.settings && Object.keys($scope.ciData.settings).length > 0) {
-					$scope.getRecipe('travis');
-				}
-			}
-		});
-	};
-
-	$scope.getRecipe = function (provider) {
-		var formConfig = angular.copy(ciAppConfig.form.f1);
-
-		var submitLabel = "Turn On";
-		var data = {};
-		var turnOff, download;
-
-		/**
-		 * Create/update and render continuous integration form
-		 */
-		if ($scope.ciData.settings && Object.keys($scope.ciData.settings).length > 0) {
-			var htmlString = {
-				'name': '',
-				'label': 'Environment Varlables',
-				'type': 'html',
-				'value': "<div class='infoTableContainer'><table class='infoTable' width='100%' border='1' cellpadding='3' cellspacing='2'>" +
-				"<thead>" +
-				"<tr>" +
-				"<th width='20%'>Variable Name</th>" +
-				"<th width='80%'>Value</th>" +
-				"</tr>" +
-				"</thead>" +
-				"<tbody>",
-				'fieldMsg': "The following environment variables are needed by SOAJS to set up your CI/CD integration. These variables are automatically created when you click on Sync All or when you update the settings of a repository in the second tab."
-			};
-			for (var oneVar in $scope.ciData.variables) {
-				htmlString.value += "<tr>" +
-					"<td><label>" + oneVar + "</label></td>" +
-					"<td class='val'>" + $scope.ciData.variables[oneVar] + "</td>" +
-					"</tr>";
-			}
-			htmlString.value += "</tbody></table></div>";
-
-			formConfig.entries.push(htmlString);
-
-			formConfig.entries = formConfig.entries.concat(angular.copy(ciAppConfig.form.f2.entries));
-			//show the list and the yaml file
-			formConfig.entries[1].collapsed = true;
-
-			data['driver'] = $scope.ciData.settings.driver;
-			data['domain'] = $scope.ciData.settings.settings.domain;
-			data['owner'] = $scope.ciData.settings.settings.owner;
-			data['gitToken'] = $scope.ciData.settings.settings.gitToken;
-			data['recipe'] = $scope.ciData.settings.recipe;
-			turnOff = {
-				type: 'button',
-				label: 'Turn Off Continuous Integration',
-				btn: 'danger',
-				action: function () {
-					$scope.deleteRecipe();
-				}
-			};
-
-			if (data['recipe'].trim() !== '') {
-				download = {
-					type: 'submit',
-					label: 'Download Continuous Integration',
-					btn: 'success',
-					action: function () {
-						$scope.downloadRecipe();
-					}
-				};
-			}
-
-			submitLabel = "Update";
-		}
-
-		var options = {
-			timeout: $timeout,
-			form: formConfig,
-			name: 'continuousIntegration',
-			label: 'Continuous Integration',
-			data: data,
-			actions: [
-				{
-					type: 'submit',
-					label: submitLabel + " Continuous Integration",
-					btn: 'primary',
-					action: function (formData) {
-
-						var data = {
-							config: {
-								"driver": provider,
-								"settings": {
-									"domain": formData.domain,
-									"owner": formData.owner,
-									"gitToken": formData.gitToken
-								},
-								"recipe": (formData.recipe) ? formData.recipe : ""
-							}
+			} else {
+				$scope.accounts = [];
+				var processed = [];
+				response.forEach(function(oneEntry){
+					if(processed.indexOf(oneEntry.owner) === -1){
+						var oneAccount = {
+							owner: oneEntry.owner,
+							hide: true,
+							icon: 'plus',
+							providers: []
 						};
-
-						overlayLoading.show();
-						getSendDataFromServer($scope, ngDataApi, {
-							method: 'post',
-							routeName: '/dashboard/ci',
-							data: data
-						}, function (error, response) {
-							if (error) {
-								$scope.form.displayAlert('danger', error.message);
-								overlayLoading.hide();
-							}
-							else {
-								if ($scope.modalInstance) {
-									$scope.modalInstance.close();
-								}
-
-								$scope.form.displayAlert('success', 'Recipe Saved successfully');
-								$scope.form.formData = {};
-								$scope.checkRecipe();
+						
+						response.forEach(function(oneEntryAgain){
+							if(oneEntryAgain.owner === oneAccount.owner){
+								oneEntryAgain.icon = $scope.images[oneEntryAgain.provider];
+								oneEntryAgain.locked = ($scope.unsupported.indexOf(oneEntryAgain.provider) !== -1);
+								oneAccount.providers.push(oneEntryAgain);
 							}
 						});
+						
+						$scope.accounts.push(oneAccount);
+						processed.push(oneEntry.owner);
 					}
-				}
-			]
-		};
-		if (download && Object.keys(download).length > 0) {
-			options.actions.push(download);
-		}
-
-		if (turnOff && Object.keys(turnOff).length > 0) {
-			options.actions.push(turnOff);
-		}
-
-		if ($scope.ciData.settings && Object.keys($scope.ciData.settings).length > 0) {
-			options.entries = formConfig.entries;
-			buildForm($scope, $modal, options, function () {
-				if ($scope.ciData.list && $scope.ciData.list.length > 0) {
-					for (var i = 0; i < $scope.ciData.list.length - 1; i++) {
-						$scope.ciData.list[i].status = ($scope.ciData.list[i].active) ? 'ON' : 'OFF';
+				});
+				
+				$scope.accounts.forEach(function(oneAccount){
+					var logos = angular.copy($scope.images);
+					oneAccount.providers.forEach(function(oneProvider){
+						if(logos[oneProvider.provider]){
+							delete logos[oneProvider.provider];
+						}
+					});
+					for(var logo in logos){
+						var nEntry = {
+							provider: logo,
+							icon: logos[logo]
+						};
+						nEntry.locked = ($scope.unsupported.indexOf(logo) !== -1);
+						
+						oneAccount.providers.push(nEntry);
 					}
+				});
+				
+				if($scope.accounts.length === 1){
+					$scope.accounts[0].hide = false;
+					$scope.accounts[0].icon = 'minus';
 				}
-			});
-		}
-		else {
-			buildFormWithModal($scope, $modal, options, function () {
-				if ($scope.ciData.list && $scope.ciData.list.length > 0) {
-					for (var i = 0; i < $scope.ciData.list.length - 1; i++) {
-						$scope.ciData.list[i].status = ($scope.ciData.list[i].active) ? 'ON' : 'OFF';
-					}
-				}
-			});
-		}
+			}
+		});
 	};
-
-	$scope.deleteRecipe = function () {
+	
+	$scope.deactivateAccount = function(provider){
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
-			method: 'delete',
-			routeName: '/dashboard/ci'
+			'method': 'put',
+			'routeName': '/dashboard/ci/provider',
+			'data':{
+				'owner': provider.owner,
+				'provider': provider.provider
+			}
 		}, function (error, response) {
 			overlayLoading.hide();
 			if (error) {
 				$scope.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.displayAlert('success', 'Recipe deleted successfully');
-				// $scope.getRecipe();
-				$scope.checkRecipe();
+			} else {
+				$scope.displayAlert('success', "Provider has been deactivated");
 			}
 		});
 	};
-
-	$scope.downloadRecipe = function () {
-		var options = {
-			routeName: "/dashboard/ci/download",
-			method: 'get',
-			headers: {
-				"Accept": "application/zip"
-			},
-			responseType: 'arraybuffer'
-		};
-		getSendDataFromServer($scope, ngDataApi, options, function (error, data) {
-			if (error) {
-				$scope.$parent.displayAlert("danger", error.message);
-			}
-			else {
-				openSaveAsDialog("ci.zip", data, "application/zip");
-			}
-		});
+	
+	$scope.activateAccount = function(provider){
+		
 	};
-
+	
+	$scope.updateAccount = function(provider){
+		
+	};
+	
+	$scope.showHide = function (account) {
+		if (!account.hide) {
+			jQuery('#a_' + account.owner + " .body .inner").slideUp();
+			account.icon = 'plus';
+			account.hide = true;
+		}
+		else {
+			jQuery('#a_' + account.owner + " .body .inner").slideDown();
+			account.icon = 'minus';
+			account.hide = false;
+		}
+	};
+	
 	injectFiles.injectCss("modules/dashboard/ci/ci.css");
 
 	//start here
 	if ($scope.access.get) {
-		$scope.checkRecipe();
+		$scope.listAccounts();
 	}
 
 }]);

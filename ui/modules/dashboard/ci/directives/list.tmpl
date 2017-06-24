@@ -1,26 +1,51 @@
 <section ng-controller="ciAppCtrl">
-	<div ng-if="!ciData.settings.settings.ciToken">
-		<h3>Choose a provider to configure your CI</h3>
-		<br />
-		<button class="btn btn-default provider-button" type="button" ng-click="getRecipe('travis')">
-			<img class="ci_logo" ng-src="{{travisImagePath}}" alt="Travis Logo"/><br /><br />
-			<label>Travis - Test and Deploy with Confidence.</label>
-		</button><!--
-        --><button class="btn btn-default provider-button" type="button" disabled>
-			<img class="ci_logo" ng-src="{{droneImagePath}}" alt="Drone Logo"/><br /><br />
-			<label>Drone - An open source Continuous Integration server built on Docker.</label><br />
-			<label>Coming Soon!</label><!--
-        --></button><button class="btn btn-default provider-button" type="button" disabled>
-			<img class="ci_logo" ng-src="{{jenkinsImagePath}}" alt="Jenkins Logo"/><br /><br />
-			<label>Jenkins - An open source Automation Server</label><br />
-			<label>Coming Soon!</label><!--
-        --></button><button class="btn btn-default provider-button" type="button" disabled>
-			<img class="ci_logo" ng-src="{{teamCityImagePath}}" alt="TeamCity Logo"/><br /><br />
-			<label>TeamCity - A Java-based build management and Continuous integration server.</label><br />
-			<label>Coming Soon!</label>
-		</button>
-	</div>
-    <div ng-if="ciData.settings.settings.ciToken">
-		<ngform></ngform>
-    </div>
+	<tabset>
+		<tab heading="Accounts">
+			<br />
+			<div ng-if="accounts && accounts.length === 0">
+				<alert type="warning">ma l2it shi please rou7 3ala git accounts w add them ....</alert>
+			</div>
+			<div ng-if="accounts.length > 0">
+				<div class="entryBoxes entryBoxesGrid">
+					<div id="a_{{account.owner}}" ng-repeat="account in accounts" class="entryBox customEntryBox">
+						<div class="header opened">
+							{{account.owner}}
+						</div>
+						<div class="body">
+							<div class="inner" ng-class="{'hidden': account.hide}">
+								<label>Providers</label>
+								<div id="reposList">
+									<ul>
+										<li ng-repeat="provider in account.providers" ng-style="{'width': '99%'}" ng-class="{'locked': provider.locked}">
+											<img class="ci_logo" ng-src="{{provider.icon}}" alt="{{provider.icon}}" />
+											<span class="repoFullName">{{provider.provider}}</span>
+											<div class="rightActions" ng-show="!provider.locked">
+												<a href="" ng-if="!provider.ciToken" ng-click="activateAccount(provider)" ng-style="{'margin-top': '-19px'}">
+													<span class="icon icon-switch" tooltip="{{translation.activate[LANG]}}"></span>
+												</a>
+												<a href="" ng-if="provider.ciToken" ng-click="deactivateAccount(provider)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this provider?">
+													<span class="icon icon-cross" tooltip="{{translation.deactivate[LANG]}}"></span>
+												</a>
+												<a href="" ng-if="provider.ciToken" ng-click="updateAccount(provider)" ng-style="{'margin-top': '-19px'}">
+													<span tooltip="Configure" class="icon icon-cog"></span>
+												</a>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="entryAction">
+								<a href="" ng-click="showHide(account)">
+									<span class="icon icon-{{account.icon || 'plus'}}"></span>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</tab>
+		<tab heading="Recipes">
+			
+		</tab>
+	</tabset>
 </section>
