@@ -161,7 +161,7 @@ li.accountType {
 }
 .configCd .form-control {
     display: inline;
-    width: auto;
+    width: 65%;
     height: auto;
     padding-bottom: 3px;
     padding-top: 4px;
@@ -175,6 +175,12 @@ li.accountType {
 .configCd .entryServiceBoxes .service-container label {
     font-weight: bold;
     padding-bottom: 2px;
+    width: 30%;
+}
+
+.configCd label.fieldMsg {
+    width:100%;
+    clear:both;
 }
 
 .configCd select.form-control {

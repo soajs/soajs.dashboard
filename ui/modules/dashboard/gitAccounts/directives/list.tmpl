@@ -272,18 +272,21 @@
 																		<div ng-if="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'replicated' || cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'deployment'">
 																			<label>Replica Count</label>
 																			<input type="number" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas" ng-required="true"/>
+																			<label class="fieldMsg">Enter a Replica Count that is greater or equal to 1</label>
 																			<br>
 																		</div>
 																		<div>
 																			<label>Memory Limit Per Instance (in
 																				MBytes)</label>
 																			<input type="number" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit" ng-required="true"/>
+																			<label class="fieldMsg">Specify the Maximum memory limit that should be provided when running your service/daemon.</label>
 																			<br/>
 																		</div>
 																		<div>
 																			<label>Catalog
 																				Recipe</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingRecipes">
 																			<select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name group by recipe.type for recipe in myRecipes" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.recipe" ng-change="injectCatalogEntries(oneEnv, version, oneSrv, false)"></select>
+																			<label class="fieldMsg">Choose a catalog recipe and define the deployment strategy in this environment.</label>
 																			<br>
 																		</div>
 																		<div ng-include="'modules/dashboard/gitAccounts/directives/list-cloud-catalogInputs.tmpl'"></div>
