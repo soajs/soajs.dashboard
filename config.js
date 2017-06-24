@@ -1993,7 +1993,7 @@ module.exports = {
                     "validation": {
 	                    "type": "object",
 	                    "patternProperties": {
-		                    "^[a-zA-Z]{3,}$": {//env code
+		                    "^[a-zA-Z]{2,}$": {//env code
 			                    "type": "object",
 			                    "required": true,
 			                    "properties": {
