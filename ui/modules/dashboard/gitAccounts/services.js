@@ -296,6 +296,10 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 					}
 				};
 				
+				$scope.updateGitBranch = function(oneSrv, oneEnv, version){
+					$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch;
+				};
+				
 				$scope.setDeploy = function (oneEnv, version, oneSrv, first, counter) {
 					var isKubernetes = (envPlatform.toLowerCase() === "kubernetes");
 					if (!first) {
