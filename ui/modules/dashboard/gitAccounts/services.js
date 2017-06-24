@@ -276,6 +276,9 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 
 				$scope.setVersion = function (oneEnv, version, oneSrv) {
 					var deployedBranch = '';
+					if($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch){
+						deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch;
+					}
 					if($scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version] && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch']){
 						 deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch'];
 					}
@@ -290,13 +293,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 					}
 					else{
 						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active = true;
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch = deployedBranch;
-						
 					}
-				};
-
-				$scope.updateGitBranch = function(oneSrv, oneEnv, version){
-					$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch;
 				};
 				
 				$scope.setDeploy = function (oneEnv, version, oneSrv, first, counter) {
