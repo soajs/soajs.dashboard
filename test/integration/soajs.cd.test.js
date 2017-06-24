@@ -862,19 +862,6 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it("configuring cd for this env", function(done){
-			configureCD({
-				"DEV": {
-					"branch": "master",
-					"strategy": "notify"
-				}
-			}, function(body){
-				assert.ok(body.result);
-				assert.ok(body.data);
-				done();
-			});
-		});
-		
 		it("fail - mimic call for cd/deploy of controller in dev", function(done){
 			mimicCall("invalid", null, function(body){
 				assert.equal(body.result, false);
@@ -894,8 +881,8 @@ describe("testing hosts deployment", function () {
 		it("configure cd again with specific entry for controller", function(done){
 			configureCD({
 				"DEV": {
-					"branch": "master",
-					"strategy": "notify",
+					// "branch": "master",
+					// "strategy": "notify",
 					"controller":{
 						"branch": "master",
 						"strategy": "notify"
@@ -919,8 +906,8 @@ describe("testing hosts deployment", function () {
 		it("configure cd again with specific version for controller", function(done){
 			configureCD({
 				"DEV": {
-					"branch": "master",
-					"strategy": "notify",
+					// "branch": "master",
+					// "strategy": "notify",
 					"controller":{
 						"branch": "master",
 						"strategy": "notify",
@@ -1026,8 +1013,8 @@ describe("testing hosts deployment", function () {
 		it("configure cd for automatic controller update", function(done){
 			configureCD({
 				"DEV": {
-					"branch": "master",
-					"strategy": "notify",
+					// "branch": "master",
+					// "strategy": "notify",
 					"controller":{
 						"branch": "master",
 						"strategy": "update",

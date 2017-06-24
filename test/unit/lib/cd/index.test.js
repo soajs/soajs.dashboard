@@ -90,7 +90,7 @@ var helpers = {
 		}];
 		return cb(null, servicesList);
 	},
-	processOneService: function (req, BL, oneService, deployer, callback) {
+	processOneService: function (req, BL, oneService, deployer, options, callback) {
 		return callback();
 	},
 	getEnvsServices: function (envs, req, deployer, BL, fcb) {
@@ -148,6 +148,9 @@ var helpers = {
 		return cb(null, services);
 	},
 	callDeployer: function (config, req, registry, deployer, opName, cb) {
+		return cb(null, true);
+	},
+	processUndeployedServices: function(req, deployedServices, allServices, cdRecordWithEnvRecords, cb){
 		return cb(null, true);
 	}
 };
@@ -364,7 +367,7 @@ describe("testing services.js", function () {
 			req.soajs.inputmaskData = {
 				deploy_token: "aaaabbbb"
 			};
-			cd.cdDeploy(config, req, deployer, helpers, function (error, body) {
+			cd.cdDeploy(config, req, registry, deployer, helpers, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -399,6 +402,7 @@ describe("testing services.js", function () {
 		});
 
 	});
+	
 	describe("testing saveConfig", function () {
 
 		it("Success saveConfig", function (done) {
