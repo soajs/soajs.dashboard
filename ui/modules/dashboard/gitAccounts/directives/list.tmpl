@@ -242,7 +242,7 @@
 														<div ng-show="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active">
 															<div class="halfPage branchLabel">
 																<label>{{translation.branch[LANG]}}:</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingBranches">
-																<select class="form-control" ng-disabled="versionInfo.deployed" ng-if="!loadingBranches" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch">
+																<select class="form-control" ng-disabled="versionInfo.deployed" ng-if="!loadingBranches" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch" ng-change="updateGitBranch(oneSrv, oneEnv, version)">
 																	<option ng-repeat="myBranch in branches" value="{{myBranch.name}}">
 																		{{myBranch.name}}
 																	</option>
