@@ -14,43 +14,47 @@ var cdOptions = {
 		"properties": {
 			"owner": {"required": true, "type": "string"},
 			"repo": {"required": true, "type": "string"},
-			"branch": {"required": true, "type": "string"},
-			"commit": {"required": true, "type": "string"}
+			"branch": {"required": true, "type": "string", "minLength": 1, 'pattern': /[a-z]+/},
+			"commit": {"required": false, "type": "string"}
 		}
 	},
 	"deployConfig": {
 		"type": "object",
 		"required": true,
 		"properties": {
-			"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
-			"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
+			"memoryLimit": {"required": false, "type": "number", "default": 209715200},
+			"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
 			"replication": {
 				"required": true,
 				"type": "object",
 				"properties": {
-					"mode": { "required": true, "type": "string", "enum": ['replicated', 'global', 'deployment', 'daemonset'] },
-					"replicas": { "required": false, "type": "number" }
+					"mode": {
+						"required": true,
+						"type": "string",
+						"enum": ['replicated', 'global', 'deployment', 'daemonset']
+					},
+					"replicas": {"required": false, "type": "number"}
 				}
 			}
 		}
 	},
-	"custom":{
+	"custom": {
 		"type": "object",
 		"required": false,
 		"properties": {
-			"image" :{
-				"type":"object",
-				"required": false,
-				"properties":{
-					"prefix": { "required": false, "type": "string" },
-					"name": { "required": false, "type": "string" },
-					"tag": { "required": false, "type": "string" },
-				}
-			},
-			"env":{
+			"image": {
 				"type": "object",
 				"required": false,
-				"additionalProperties":{ "type": "string" }
+				"properties": {
+					"prefix": {"required": false, "type": "string"},
+					"name": {"required": false, "type": "string"},
+					"tag": {"required": false, "type": "string"},
+				}
+			},
+			"env": {
+				"type": "object",
+				"required": false,
+				"additionalProperties": {"type": "string"}
 			},
 			"type": {
 				"required": true,
@@ -62,24 +66,24 @@ var cdOptions = {
 			},
 			"version": {
 				"required": false,
-				"type": "number",
-				"minimum": 1
+				"type": "string"
 			},
 			"daemonGroup": {
 				"required": false,
 				"type": "string"
 			},
-			"gc":{
+			"gc": {
 				"required": false,
 				"type": "object",
-				"properties":{
+				"properties": {
 					"gcName": {"required": true, "type": "string"},
 					"gcVersion": {"required": true, "type": "number"}
 				}
 			}
 		}
 	}
-}
+};
+
 module.exports = {
     type: 'service',
     prerequisites: {
@@ -1987,40 +1991,48 @@ module.exports = {
                     "source": ['body.config'],
                     "required": false,
                     "validation": {
-                        "type": "object",
-	                    "properties":{
-                        	"pause":{"type":"boolean", "required": false}
+	                    "type": "object",
+	                    "patternProperties": {
+		                    "^[a-zA-Z]{3,}$": {//env code
+			                    "type": "object",
+			                    "required": true,
+			                    "properties": {
+				                    "pause": {"type": "boolean", "required": false}
+			                    },
+			                    "patternProperties": { //service
+				                    "^(?!(pause))[a-z0-9]+$": {
+					                    "type": "object",
+					                    "required": false,
+					                    "properties": {
+						                    "branch": {"type": "string", "required": false, "minLengh": 1, 'pattern': /[a-z]+/},
+						                    "strategy": {"type": "string", "enum": ["notify", "update"], "required": false},
+						                    "deploy": {"type": "boolean", "required": false},
+						                    "options": {
+							                    "type":"object",
+							                    "properties": cdOptions
+						                    }
+					                    },
+					                    "patternProperties": {
+						                    "^v[0-9]+$": {
+							                    "type": "object",
+							                    "required": true,
+							                    "properties": {
+								                    "branch": {"type": "string", "required": true, "minLengh": 1, 'pattern': /[a-z]+/},
+								                    "strategy": {"type": "string", "enum": ["notify", "update"], "required": true},
+								                    "deploy": {"type": "boolean", "required": false},
+								                    "options": {
+									                    "type":"object",
+									                    "properties": cdOptions
+								                    }
+							                    }
+						                    }
+					                    },
+					                    "additionalProperties": false
+				                    }
+			                    }
+		                    }
 	                    },
-                        "additionalProperties": {
-                            "^[a-zA-Z]{3,}$": {
-                                "type":"object",
-                                "required": true,
-                                "patternProperties": { //pattern to match a service/daemon name { "DEV": { "branch": "develop", "urac": { "branch": "master" } } }
-                                    "^[a-z0-9]+$": {
-                                        "type": "object",
-                                        "required": false,
-                                        "properties":{
-                                            "branch": {"type": "string", "required": true}, //{'DEV': {'branch': 'develop'} }
-                                            "strategy": {"type": "string", "enum": ["notify", "update"], "required": true},
-                                            "deploy": {"type": "boolean", "required": false},
-                                            "options": cdOptions
-                                        },
-	                                    "patternProperties": {
-		                                    "^v[0-9]+$": {
-			                                    "type":"object",
-			                                    "required": true,
-			                                    "properties": {
-				                                    "branch": {"type": "string", "required": true}, //{'DEV': {'branch': 'develop'} }
-				                                    "strategy": {"type": "string", "enum": ["notify", "update"], "required": true},
-				                                    "deploy": {"type": "boolean", "required": false},
-				                                    "options": cdOptions
-			                                    }
-		                                    }
-	                                    }
-                                    }
-                                }
-                            }
-                        }
+	                    "additionalProperties": false
                     }
                 }
             },
