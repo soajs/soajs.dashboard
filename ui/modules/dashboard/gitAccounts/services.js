@@ -30,7 +30,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 		var noRepoCiConfig = false;
 		var envDeployer = $cookies.getObject("myEnv").deployer;
 		var envPlatform = envDeployer.selected.split('.')[1];
-		if (!currentScope.ciData.settings.settings || Object.keys(currentScope.ciData.settings.settings).length === 0) {
+		if (!currentScope.ciData || !currentScope.ciData.settings || !currentScope.ciData.settings.settings || Object.keys(currentScope.ciData.settings.settings).length === 0) {
 			noCiConfig = true;
 		}
 
@@ -753,6 +753,18 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				return cb();
 			}
 			else {
+				var prefixes = [];
+				prefixes.push(env.toLowerCase() + "_controller");
+				prefixes.push(env.toLowerCase() + "_nginx");
+				if(!currentScope.envDeployed){
+					currentScope.envDeployed = {};
+				}
+				currentScope.envDeployed[env] = false;
+				response.forEach(function(oneDeployedService){
+					if(prefixes.indexOf(oneDeployedService.name) !== -1){
+						currentScope.envDeployed[env] = true;
+					}
+				});
 				var activatedVersions = {};
 				for (var srv = 0; srv < response.length; srv++) {
 					var service = response[srv];
