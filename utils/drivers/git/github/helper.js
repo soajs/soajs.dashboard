@@ -262,7 +262,10 @@ var lib = {
 							allRepos[i].serviceName = oneRepo.serviceName;
 						}
 						else if(oneRepo.name){
-							var name = oneRepo.name.split("/")[1];
+							var name = oneRepo.name;
+							if(name.indexOf("/") !== -1){
+								name = name.split("/")[1];
+							}
 							name = name.replace("soajs.", "");
 							allRepos[i].serviceName = name;
 						}
