@@ -160,7 +160,7 @@ var driver = {
 						driver.helper.getRepoContent(options, function (error, response) {
 							checkIfError(error, {}, cb, function () {
 								var configFile = response.replace(/require\s*\(.+\)/g, '""');
-								var repoConfigsFolder = config.gitAccounts.bitbucket_org.repoConfigsFolder;
+								var repoConfigsFolder = config.gitAccounts.bitbucket.repoConfigsFolder;
 								var configDirPath = repoConfigsFolder + options.path.substring(0, options.path.lastIndexOf('/'));
 								
 								var configSHA = options.repo + options.path;
@@ -208,7 +208,7 @@ var driver = {
 				
 				driver.helper.getRepoContent(options, function (error, response) {
 					checkIfError(error, {}, cb, function () {
-						var downloadLink = config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getContent
+						var downloadLink = config.gitAccounts.bitbucket.apiDomain + config.gitAccounts.bitbucket.routes.getContent
 								.replace('%USERNAME%', options.user)
 								.replace('%REPO_NAME%', options.repo)
 								.replace('%BRANCH%', options.ref || 'master')

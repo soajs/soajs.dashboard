@@ -1,13 +1,13 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../../../../helper.js");
-var driverHelper = helper.requireModule('./utils/drivers/git/bitbucket_org/helper.js');
+var driverHelper = helper.requireModule('./utils/drivers/git/bitbucket/helper.js');
 
-describe("testing git/bitbucket_org helper.js", function () {
+describe("testing git/bitbucket helper.js", function () {
 	var soajs = {};
 	var model = {};
 	var options = {
-		provider: 'bitbucket_org'
+		provider: 'bitbucket'
 	};
 	
 	before(function(done){

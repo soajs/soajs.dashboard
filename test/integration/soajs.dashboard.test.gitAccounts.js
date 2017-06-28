@@ -124,7 +124,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					"username": usernamePersonal,
 					"password": passwordPersonal,
 					"label": "soajs Test Account",
-					"provider": "bitbucket",
+					"provider": "invalid",
 					"domain": "github.com",
 					"type": "personal",
 					"access": "private"

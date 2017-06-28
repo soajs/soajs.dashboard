@@ -46,7 +46,7 @@ var bitbucket = {
 	getUserRecord: function (data, cb) {
 		var options = {
 			method: 'GET',
-			url: config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getUserRecord.replace('%USERNAME%', data.owner)
+			url: config.gitAccounts.bitbucket.apiDomain + config.gitAccounts.bitbucket.routes.getUserRecord.replace('%USERNAME%', data.owner)
 		};
 
 		if (data.token) {
@@ -69,7 +69,7 @@ var bitbucket = {
 
 		var options = {
 			method: 'GET',
-			url: config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getBranches
+			url: config.gitAccounts.bitbucket.apiDomain + config.gitAccounts.bitbucket.routes.getBranches
 				.replace('%USERNAME%', repoInfo[0])
 				.replace('%REPO_NAME%', repoInfo[1])
 		};
@@ -86,7 +86,7 @@ var bitbucket = {
 	getContent: function (data, cb) {
 		var options = {
 			method: 'GET',
-			url: config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getContent
+			url: config.gitAccounts.bitbucket.apiDomain + config.gitAccounts.bitbucket.routes.getContent
 				.replace('%USERNAME%', data.user)
 				.replace('%REPO_NAME%', data.repo)
 				.replace('%BRANCH%', data.ref)
@@ -107,7 +107,7 @@ var bitbucket = {
 			method: 'GET'
 		};
 		if (data.token) {
-			options.url = config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getAllRepos;
+			options.url = config.gitAccounts.bitbucket.apiDomain + config.gitAccounts.bitbucket.routes.getAllRepos;
 			options.headers = {
 				authorization: 'Bearer ' + data.token
 			};
@@ -115,7 +115,7 @@ var bitbucket = {
 			return requester(options, cb);
 		}
 		else {
-			options.url = config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getUserRecord.replace('%USERNAME%', data.owner);
+			options.url = config.gitAccounts.bitbucket.apiDomain + config.gitAccounts.bitbucket.routes.getUserRecord.replace('%USERNAME%', data.owner);
 			requester(options, function (error, userRecord) {
 				if (error) {
 					return cb(error);
@@ -142,7 +142,7 @@ var bitbucket = {
 		var options = {
 			method: 'POST',
 			json: true,
-			url: config.gitAccounts.bitbucket_org.oauth.domain,
+			url: config.gitAccounts.bitbucket.oauth.domain,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded'
 			},

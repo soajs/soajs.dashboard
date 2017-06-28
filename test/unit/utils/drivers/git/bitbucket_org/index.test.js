@@ -1,11 +1,11 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../../../../helper.js");
-var driver = helper.requireModule('./utils/drivers/git/bitbucket_org/index.js');
-var driverHelper = helper.requireModule('./utils/drivers/git/bitbucket_org/helper.js');
+var driver = helper.requireModule('./utils/drivers/git/bitbucket/index.js');
+var driverHelper = helper.requireModule('./utils/drivers/git/bitbucket/helper.js');
 driver.helper = driverHelper;
 
-describe("testing git/bitbucket_org index.js", function () {
+describe("testing git/bitbucket index.js", function () {
 	var soajs = {};
 	var data = {
 		// data.checkIfAccountExists
@@ -28,7 +28,7 @@ describe("testing git/bitbucket_org index.js", function () {
 	var model = {};
 	var options = {
 		tokenInfo: {},
-		provider: 'bitbucket_org'
+		provider: 'bitbucket'
 	};
 
 	describe("testing login", function () {

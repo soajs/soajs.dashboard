@@ -154,7 +154,7 @@ module.exports = {
 	},
 
     "gitAccounts": {
-        "bitbucket_org": {
+        "bitbucket": {
             apiDomain: 'https://api.bitbucket.org/1.0',
             routes: {
                 getUserRecord: '/users/%USERNAME%',

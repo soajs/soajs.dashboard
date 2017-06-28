@@ -6,7 +6,7 @@ var gitAccountsAppConfig = {
 					'name': 'provider',
 					'label': translation.accountProvider[LANG],
 					'type': 'select',
-					'value': [{'v': 'github', 'l': 'GitHub'}, {'v': 'bitbucket_org', 'l': 'Bitbucket'}, {'v': 'bitbucket_enterprise', 'l': 'Bitbucket Enterprise'}],
+					'value': [{'v': 'github', 'l': 'GitHub'}, {'v': 'bitbucket', 'l': 'Bitbucket'}, {'v': 'bitbucket_enterprise', 'l': 'Bitbucket Enterprise'}],
 					'tooltip': translation.chooseAccountProvider[LANG],
 					'required': true,
 					'onAction': function (id, selected, form) {
@@ -25,7 +25,7 @@ var gitAccountsAppConfig = {
 								form.entries[2].value.splice(2, 1);
 							}
 
-							if (selected === 'bitbucket_org') {
+							if (selected === 'bitbucket') {
 								form.entries[1].value = 'bitbucket.org';
 								form.entries[1].type = 'readonly';
 
@@ -81,7 +81,7 @@ var gitAccountsAppConfig = {
 									currentProvider = formConfig.entries[0].value[i];
 								}
 							}
-							if (currentProvider.v === 'bitbucket_org' && !formConfig.entries[6] && !formConfig.entries[7]) {
+							if (currentProvider.v === 'bitbucket' && !formConfig.entries[6] && !formConfig.entries[7]) {
 								var oauth = [
 									{
 										'name': 'oauthKey',
