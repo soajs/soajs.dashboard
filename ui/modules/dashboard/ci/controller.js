@@ -246,8 +246,6 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			} else {
 				$scope.providers = angular.copy(response);
 				delete $scope.providers.soajsauth;
-				console.log($scope.providers);
-				
 			}
 		});
 	};
@@ -323,14 +321,15 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	};
 	
 	$scope.viewRecipe = function (recipe) {
-		var formConfig = angular.copy(catalogAppConfig.form.viewRecipe);
-		formConfig.entries[0].value = recipe;
+		var formConfig = angular.copy(ciAppConfig.form.f2);
+		formConfig.entries.splice(0,2);
+		formConfig.entries[0].value = recipe.recipe;
 		
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
 			name: 'viewRecipe',
-			label: 'View Recipe',
+			label: 'Viewing ' + recipe.name,
 			actions: [
 				{
 					type: 'reset',
@@ -348,39 +347,35 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	};
 	
 	$scope.updateRecipe = function (recipe) {
-		var formConfig = angular.copy(catalogAppConfig.form.viewRecipe);
-		formConfig.entries[0].value = angular.copy(recipe);
-		delete formConfig.entries[0].value._id;
+		var formConfig = angular.copy(ciAppConfig.form.f2);
+		formConfig.entries.splice(0, 1);
+		
+		formConfig.entries[0].readonly = true;
+		formConfig.entries[0].disabled = true;
 		
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
-			name: 'viewRecipe',
+			name: 'editRecipe',
 			label: 'Edit Recipe',
+			data: recipe,
 			actions: [
 				{
 					type: 'submit',
 					label: 'Submit',
 					btn: 'primary',
 					action: function (formData) {
-						if (formData.recipe.locked) {
-							//do not allow user to lock a recipe
-							delete formData.recipe.locked;
-						}
-						
-						delete formData.recipe.v;
-						delete formData.recipe.ts;
-						delete formData.recipe.refId;
-						
 						overlayLoading.show();
 						getSendDataFromServer($scope, ngDataApi, {
 							method: 'put',
-							routeName: '/dashboard/catalog/recipes/update',
+							routeName: '/dashboard/ci/recipe',
 							params: {
 								id: recipe._id
 							},
 							data: {
-								catalog: formData.recipe
+								provider: recipe.provider,
+								name: formData.name,
+								recipe: formData.recipe
 							}
 						}, function (error, response) {
 							overlayLoading.hide();
@@ -388,10 +383,10 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.form.displayAlert('success', 'Recipe updated successfully');
+								$scope.displayAlert('success', 'Recipe updated successfully');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
-								$scope.listRecipes();
+								$scope.listUniqueProviders();
 							}
 						});
 					}
@@ -411,19 +406,15 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		buildFormWithModal($scope, $modal, options);
 	};
 	
-	$scope.deleteRecipe = function (recipe, versioning) {
+	$scope.deleteRecipe = function (recipe) {
 		var params = {
 			id: recipe._id
 		};
-		if(versioning){
-			params.id = recipe.refId;
-			params.version = recipe.v;
-		}
 		
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			method: 'delete',
-			routeName: '/dashboard/catalog/recipes/delete',
+			routeName: '/dashboard/ci/recipe',
 			params: params
 		}, function (error, response) {
 			overlayLoading.hide();
@@ -432,27 +423,28 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			}
 			else {
 				$scope.displayAlert('success', 'Recipe deleted successfully');
-				$scope.listRecipes();
+				$scope.listUniqueProviders();
 			}
 		});
 	};
 	
-	$scope.filterData = function (query, tabIndex) {
+	$scope.filterData = function (provider, query) {
+		if(!$scope.originalRecipes){
+			$scope.originalRecipes = angular.copy($scope.providers[provider]);
+		}
+		
 		if (query && query !== "") {
 			query = query.toLowerCase();
 			var filtered = [];
-			var recipes = $scope.recipes;
-			for (var i = 0; i < recipes.length; i++) {
-				if (recipes[i].name.toLowerCase().indexOf(query) !== -1 || recipes[i].type.toLowerCase().indexOf(query) !== -1 || recipes[i].description.toLowerCase().indexOf(query) !== -1 ||recipes[i].subtype && recipes[i].subtype.toLowerCase().indexOf(query) !== -1) {
-					filtered.push(recipes[i]);
+			for (var i = 0; i < $scope.providers[provider].length; i++) {
+				if ($scope.providers[provider][i].name.toLowerCase().indexOf(query) !== -1) {
+					filtered.push($scope.providers[provider][i]);
 				}
 			}
-			$scope.recipes = filtered;
+			$scope.providers[provider] = filtered;
 		} else {
-			if ($scope.recipes && $scope.originalRecipes) {
-				$scope.recipes = $scope.originalRecipes;
-				
-			}
+			$scope.providers[provider] = $scope.originalRecipes;
+			delete $scope.originalRecipes;
 		}
 	};
 	

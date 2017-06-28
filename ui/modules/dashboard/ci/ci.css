@@ -31,3 +31,7 @@
     background-color:#eee;
     opacity: 0.7;
 }
+
+div.entryBox .body .btn-primary{
+    top: 0;
+}
