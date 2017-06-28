@@ -265,7 +265,8 @@ var errors = {
 	"956": "Authentication failed. The deploy token provided is not valid.",
 
 	"960": "Elasticsearch analytics cluster not found",
-
+	
+	"967": "Continuous Integration recipe name already exists for this provider.",
 	"968": "This Account already has a Continuous Integration configured with the selected provider.",
     "969": "The chosen Continuous Integration Service does not exist",
     "970": "The chosen driver does not support the selected function",
