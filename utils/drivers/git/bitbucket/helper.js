@@ -287,7 +287,12 @@ var lib = {
 					}
 
 					if(oneRepo.type !== 'multi') {
-						allRepos[i].serviceName = oneRepo.serviceName;
+						if(oneRepo.serviceName){
+							allRepos[i].serviceName = oneRepo.serviceName;
+						}
+						else if(oneRepo.name){
+							allRepos[i].serviceName = oneRepo.name.split("/");
+						}
 					}
 
 					allRepos[i].type = oneRepo.type;
