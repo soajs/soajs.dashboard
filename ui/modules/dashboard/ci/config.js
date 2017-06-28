@@ -25,8 +25,24 @@ var ciAppConfig = {
 		f2: {
 			entries: [
 				{
+					'name': 'template',
+					'label': 'Existing Recipe Template',
+					'type': 'select',
+					'value': [],
+					'required': true
+				},
+				{
+					'name': 'name',
+					'label': 'Recipe Name',
+					'type': 'text',
+					'value': '',
+					'placeholder': "My Custom Recipe",
+					'required': true,
+					'fieldMsg': "Enter the name of the recipe"
+				},
+				{
 					'name': 'recipe',
-					'label': 'Continuous Integration Recipe',
+					'label': 'Recipe Content',
 					'type': 'textarea',
 					'value': '',
 					'required': true,

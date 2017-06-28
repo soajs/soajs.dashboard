@@ -1,9 +1,9 @@
 <section ng-controller="ciAppCtrl">
 	<tabset>
-		<tab heading="Accounts">
+		<tab heading="Accounts" ng-click="listAccounts()">
 			<br />
 			<div ng-if="accounts && accounts.length === 0">
-				<alert type="warning">ma l2it shi please rou7 3ala git accounts w add them ....</alert>
+				<alert type="warning">Did not find any Git Accounts activated. <a href="#/repositories">Click here</a> to activate a Git Account so you can proceed.</alert>
 			</div>
 			<div ng-if="accounts.length > 0">
 				<div class="entryBoxes entryBoxesGrid">
@@ -44,8 +44,74 @@
 				</div>
 			</div>
 		</tab>
-		<tab heading="Recipes">
-			
+		<tab heading="Recipes" ng-click="listUniqueProviders()">
+			<br />
+			<div ng-show="!providers || Object.keys(providers).length === 0">
+				<alert type="warning">Did not Find any Providers Configured. Please Integrate with at least one provider in the previous tab before you can proceed.</alert>
+			</div>
+			<!--<div ng-show="providers && Object.keys(providers).length > 0">-->
+			<div >
+				<div class="entryBoxes entryBoxesGrid">
+					<div id="a_{{provider}}" ng-repeat="(provider, recipes) in providers track by provider" class="entryBox customEntryBox">
+						<div class="header opened">
+							{{provider}}
+						</div>
+						<div class="body">
+							<div class="inner">
+								
+								<div class="f-right w20 searchBoxContainer">
+									<input type="text" name="tag" ng-model="query" ng-keyup="filterData(provider, query, $index)" class="form-control text-field-align-right mb5" placeholder="Search"/>
+								</div>
+								<div class="dropdown f-left">
+									<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+										Add New Recipe&nbsp;<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
+										<li ng-show="recipes.length > 0">
+											<a href="" ng-click="addRecipe(provider, 'template')"><span class="icon icon-copy"></span>&nbsp;Use Existing Template</a>
+										</li>
+										<li>
+											<a href="" ng-click="addRecipe(provider, 'blank')"><span class="icon icon-file-empty"></span>&nbsp;StartFrom Blank Template</a>
+										</li>
+									</ul>
+								</div>
+								<div ng-if="recipes && recipes.length === 0">
+									<br/>
+									<alert type="warning">No Continuous Integration recipes found</alert>
+								</div>
+								<!--<div ng-if="access.list">-->
+									<!--<div ng-if="recipes && recipes.length > 0" class="entryBoxes">-->
+										<!--<br/>-->
+										<!--<div ng-repeat="recipe in recipes" class="entryBox recipe-box" ng-class="{blueRecipeBox: !recipe.locked, greenRecipeBox: (recipe.type === 'soajs' && !recipe.locked)}">-->
+											<!--<div class="header" ng-class="{blueBoxHeader: !recipe.locked, greenBoxHeader: (recipe.type ==='soajs' && !recipe.locked)}">-->
+												<!--{{recipe.name}}<span ng-if="recipe.type ==='soajs'"><em>(soajs)</em></span>-->
+												<!--<span ng-if="recipe.locked" class="icon icon-lock"></span>-->
+												<!--<div class="rightActions" style="display:inline;">-->
+													<!--<a href="" ng-if="access.delete && !recipe.locked" ng-click="deleteRecipe(recipe)" ng-confirm-click="Are you sure you want to delete this recipe?">-->
+														<!--<span class="icon icon-cross" tooltip="Delete Recipe"></span>-->
+													<!--</a>-->
+													<!--<a href="" ng-if="access.update && !recipe.locked" ng-click="updateRecipe(recipe)">-->
+														<!--<span class="icon icon-pencil" tooltip="Update Recipe"></span>-->
+													<!--</a>-->
+													<!--<a href="" ng-if="access.list" ng-click="viewRecipe(recipe)">-->
+														<!--<span class="icon icon-zoom-in" tooltip="View Recipe"></span>-->
+													<!--</a>-->
+												<!--</div>-->
+											<!--</div>-->
+											<!--<div class="body">-->
+												<!--<img ng-src="{{catalogImage}}" class="catalogIcon" width="32px" height="32px"/>-->
+												<!--<label>{{recipe.type|capitalizeFirst}} Recipe</label>-->
+												<!--<p>{{recipe.description}}</p>-->
+											<!--</div>-->
+										<!--</div>-->
+									<!--</div>-->
+								<!--</div>-->
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</tab>
 	</tabset>
 </section>
