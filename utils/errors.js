@@ -266,6 +266,7 @@ var errors = {
 
 	"960": "Elasticsearch analytics cluster not found",
 
+	"968": "This Account already has a Continuous Integration configured with the selected provider.",
     "969": "The chosen Continuous Integration Service does not exist",
     "970": "The chosen driver does not support the selected function",
     "971": "Unable to submit your request to the service.",

@@ -70,10 +70,8 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 					}
 				});
 				
-				if($scope.accounts.length === 1){
-					$scope.accounts[0].hide = false;
-					$scope.accounts[0].icon = 'minus';
-				}
+				$scope.accounts[0].hide = false;
+				$scope.accounts[0].icon = 'minus';
 			}
 		});
 	};
@@ -93,16 +91,134 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				$scope.displayAlert('danger', error.message);
 			} else {
 				$scope.displayAlert('success', "Provider has been deactivated");
+				$scope.listAccounts();
 			}
 		});
 	};
 	
-	$scope.activateAccount = function(provider){
+	$scope.activateAccount = function(owner, provider){
+		var formConfig = angular.copy(ciAppConfig.form.f1);
 		
+		switch(provider.provider){
+			case 'travis':
+				formConfig.entries[0].value = 'api.travis-ci.org';
+				break;
+		}
+		
+		var options = {
+			timeout: $timeout,
+			form: formConfig,
+			name: 'continuousIntegration',
+			label: 'Integrating with ' + provider.provider,
+			actions: [
+				{
+					type: 'submit',
+					label: "Submit",
+					btn: 'success',
+					action: function (formData) {
+						var data = {
+							"domain": formData.domain,
+							"gitToken": formData.gitToken,
+							"owner": owner,
+							"provider": provider.provider
+						};
+
+						overlayLoading.show();
+						getSendDataFromServer($scope, ngDataApi, {
+							method: 'post',
+							routeName: '/dashboard/ci/provider',
+							data: data
+						}, function (error, response) {
+							overlayLoading.hide();
+							if (error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.displayAlert('success', 'Provider has been integrated');
+								$scope.form.formData = {};
+								if ($scope.modalInstance) {
+									$scope.modalInstance.close();
+								}
+								$scope.listAccounts();
+							}
+						});
+					}
+				},
+				{
+					type: "reset",
+					label: "Cancel",
+					btn: "danger",
+					action: function(){
+						$scope.form.formData = {};
+						$scope.modalInstance.close();
+					}
+				}
+			]
+		};
+		buildFormWithModal($scope, $modal, options);
 	};
 	
 	$scope.updateAccount = function(provider){
+		var formConfig = angular.copy(ciAppConfig.form.f1);
+		switch(provider.provider){
+			case 'travis':
+				formConfig.entries[0].value = 'api.travis-ci.org';
+				break;
+		}
 		
+		var options = {
+			timeout: $timeout,
+			form: formConfig,
+			name: 'continuousIntegration',
+			label: 'Updating Integrating with ' + provider.provider,
+			data: provider,
+			actions: [
+				{
+					type: 'submit',
+					label: "Submit",
+					btn: 'success',
+					action: function (formData) {
+						var data = {
+							"id": provider._id,
+							"domain": formData.domain,
+							"gitToken": formData.gitToken,
+							"owner": provider.owner,
+							"provider": provider.provider
+						};
+						
+						overlayLoading.show();
+						getSendDataFromServer($scope, ngDataApi, {
+							method: 'post',
+							routeName: '/dashboard/ci/provider',
+							data: data
+						}, function (error, response) {
+							overlayLoading.hide();
+							if (error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.displayAlert('success', 'Provider integration has been updated');
+								$scope.form.formData = {};
+								if ($scope.modalInstance) {
+									$scope.modalInstance.close();
+								}
+								$scope.listAccounts();
+							}
+						});
+					}
+				},
+				{
+					type: "reset",
+					label: "Cancel",
+					btn: "danger",
+					action: function(){
+						$scope.form.formData = {};
+						$scope.modalInstance.close();
+					}
+				}
+			]
+		};
+		buildFormWithModal($scope, $modal, options);
 	};
 	
 	$scope.showHide = function (account) {

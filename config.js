@@ -1961,6 +1961,13 @@ module.exports = {
                     "l": "Activate CI Provider",
                     "group": "Continuous Integration"
                 },
+	            "id": {
+		            "source": ['body.id'],
+		            "required": false,
+		            "validation": {
+			            "type": "string"
+		            }
+	            },
 	            "domain": {
 		            "source": ['body.domain'],
 		            "required": true,

@@ -20,7 +20,7 @@
 											<img class="ci_logo" ng-src="{{provider.icon}}" alt="{{provider.icon}}" />
 											<span class="repoFullName">{{provider.provider}}</span>
 											<div class="rightActions" ng-show="!provider.locked">
-												<a href="" ng-if="!provider.ciToken" ng-click="activateAccount(provider)" ng-style="{'margin-top': '-19px'}">
+												<a href="" ng-if="!provider.ciToken" ng-click="activateAccount(account.owner, provider)" ng-style="{'margin-top': '-19px'}">
 													<span class="icon icon-switch" tooltip="{{translation.activate[LANG]}}"></span>
 												</a>
 												<a href="" ng-if="provider.ciToken" ng-click="deactivateAccount(provider)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this provider?">

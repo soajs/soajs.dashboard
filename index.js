@@ -1392,7 +1392,7 @@ service.init(function () {
 	 */
 	service.get("/ci/recipe/download", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			BL.downloadRecipe(config, req, res, dashboardBL.ci.driver, function (error, data) {
+			BL.downloadRecipe(config, req, res, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1405,7 +1405,7 @@ service.init(function () {
 	 */
 	service.get("/ci/script/download", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			BL.downloadScript(config, req, res, dashboardBL.ci.driver, function (error, data) {
+			BL.downloadScript(config, req, res, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
