@@ -1114,6 +1114,27 @@ module.exports = {
 		        "_apiInfo": {
 			        "l": "Get CI Accounts",
 			        "group": "Continuous Integration"
+		        },
+		        "owner": {
+			        "source": ['query.owner'],
+			        "required": false,
+			        "validation": {
+				        "type": "string"
+			        }
+		        },
+		        "variables": {
+			        "source": ['query.variables'],
+			        "required": false,
+			        "validation": {
+				        "type": "boolean"
+			        }
+		        },
+		        "port": {
+			        "source": ['query.port'],
+			        "required": false,
+			        "validation": {
+				        "type": "integer"
+			        }
 		        }
 	        },
 
