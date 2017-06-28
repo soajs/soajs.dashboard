@@ -8,7 +8,7 @@
             <div ng-if="access.listAccounts" id="a_{{account._id}}" ng-repeat="account in accounts" class="entryBox customEntryBox">
                 <div class="header opened">
                     <span class="icon icon-github" ng-if="account.provider === 'github'"></span>
-                    <span class="icon" ng-if="account.provider === 'bitbucket_org'"><i class="fa fa-lg fa-bitbucket"></i></span>
+                    <span class="icon" ng-if="account.provider === 'bitbucket'"><i class="fa fa-lg fa-bitbucket"></i></span>
                     <span class="icon" ng-if="account.provider === 'bitbucket_enterprise'"><i class="fa fa-lg fa-bitbucket"></i></span>
                     {{account.label|uppercase}}&nbsp;&nbsp;[{{account.owner}}]
                 </div>
