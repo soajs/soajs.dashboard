@@ -254,26 +254,22 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	
 	$scope.addRecipe = function (provider, type) {
 		var formConfig = angular.copy(ciAppConfig.form.f2);
-		console.log(type);
+		
 		if (type === 'blank') {
 			formConfig.entries.splice(0, 1);
-			
 		}
 		else{
-			var recipes = [];
 			$scope.providers[provider].forEach(function (oneRecipe) {
 				var label = oneRecipe.name;
 				formConfig.entries[0].value.push({ l: label, v: oneRecipe });
 			});
 			
-			formConfig.entries[0].value = recipes;
 			formConfig.entries[0].onAction = function (id, data, form) {
-				// var recipeTemplate = JSON.parse(data);
-				// delete recipeTemplate._id;
-				// delete recipeTemplate.locked;
-				//
-				// form.entries[1].ngModel = JSON.stringify(recipeTemplate, null, 2);
-				console.log(arguments);
+				var recipeTemplate = JSON.parse(data);
+				delete recipeTemplate._id;
+				delete recipeTemplate.locked;
+				form.formData.name = recipeTemplate.name;
+				form.formData.recipe = recipeTemplate.recipe;
 			};
 		}
 		

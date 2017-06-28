@@ -1340,7 +1340,7 @@ service.init(function () {
 	 */
 	service.post("/ci/recipe", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			BL.addRecipe(config, req, dashboardBL.ci.driver, function (error, data) {
+			BL.addRecipe(config, req, soajs.hasher, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1353,7 +1353,7 @@ service.init(function () {
 	 */
 	service.put("/ci/recipe", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			BL.addRecipe(config, req, dashboardBL.ci.driver, function (error, data) {
+			BL.addRecipe(config, req, soajs.hasher, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
