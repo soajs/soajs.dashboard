@@ -2003,8 +2003,8 @@ module.exports = {
 			        "l": "Add New CI Recipe",
 			        "group": "Continuous Integration"
 		        },
-		        "domain": {
-			        "source": ['body.domain'],
+		        "provider": {
+			        "source": ['body.provider'],
 			        "required": true,
 			        "validation": {
 				        "type": "string"
@@ -3341,6 +3341,7 @@ module.exports = {
 			        "l": "Edit CI Recipe",
 			        "group": "Continuous Integration"
 		        },
+		        "commonFields": ["id"],
 		        "provider": {
 			        "source": ['body.provider'],
 			        "required": true,
