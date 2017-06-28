@@ -8,7 +8,7 @@
             <div ng-if="access.listAccounts" id="a_{{account._id}}" ng-repeat="account in accounts" class="entryBox customEntryBox">
                 <div class="header opened">
                     <span class="icon icon-github" ng-if="account.provider === 'github'"></span>
-                    <span class="icon" ng-if="account.provider === 'bitbucket_org'"><i class="fa fa-lg fa-bitbucket"></i></span>
+                    <span class="icon" ng-if="account.provider === 'bitbucket'"><i class="fa fa-lg fa-bitbucket"></i></span>
                     <span class="icon" ng-if="account.provider === 'bitbucket_enterprise'"><i class="fa fa-lg fa-bitbucket"></i></span>
                     {{account.label|uppercase}}&nbsp;&nbsp;[{{account.owner}}]
                 </div>
@@ -50,7 +50,7 @@
 						                <a href="" ng-if="access.syncRepo && repo.status === 'active'" ng-click="syncRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
 							                <span class="icon icon-loop2" tooltip="{{translation.sync[LANG]}}"></span>
 						                </a>
-						                <a href="" ng-if="repo.status" ng-click="configureRepo(repo)" ng-style="{'margin-top': '-19px'}">
+						                <a href="" ng-if="repo.status" ng-click="configureRepo(repo, account)" ng-style="{'margin-top': '-19px'}">
 							                <span tooltip="Configure" class="icon icon-cog"></span>
 						                </a>
 					                </div>
@@ -151,18 +151,26 @@
 
 <script type="text/ng-template" id="configureRepo.tmpl">
 	<div class="modal-body">
+		<div ng-show="alerts.length >0">
+			<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)" dismiss-on-timeout="5000">
+				{{alert.msg}}
+			</alert>
+			<br>
+		</div>
 		<div ng-if="noCiConfig">
 			<alert type="warning">No Continuous Integration Configuration Found. Please visit
-				<a href="" ng-click="goTOCI()">Continuous Integration</a> Section and configure a provider before you can proceed.
+				<a href="" ng-click="goTOCI()">Continuous Integration</a> Section and configure a provider before you
+				can proceed.
 			</alert>
 		</div>
-        <div ng-if="noRepoCiConfig && !noCiConfig">
-			<alert type="warning">This repository does not belong to the specified Continuous Integration Strategy.</alert>
+		<div ng-if="noRepoCiConfig && !noCiConfig">
+			<alert type="warning">This repository does not belong to the specified Continuous Integration Strategy.
+			</alert>
 		</div>
 		<div ng-if="!noCiConfig && !noRepoCiConfig">
 			<tabset>
 				<tab heading="Continuous Integration">
-					<br />
+					<br/>
 					<div ng-show="activateRepo">
 						<div class="table w100 c-both">
 							<div class="f-left">
@@ -188,15 +196,19 @@
 						</div>
 						<hr>
 					</div>
-					<div ng-show="alerts.length >0">
-						<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-					</div>
 					<ngform></ngform>
 				</tab>
 				<tab heading="Continuous Delivery" ng-click="getCDRecipe()">
 					<br>
-					<div class="configCd entryBoxes entryBoxesGrid">
-						
+					<div ng-show="cdEnvs.length === 0">
+						<alert type="danger">
+							<p>
+								You have no environments besides the DASHBOARD created.<br />
+								<a href="#/environments">Click here</a> to create at least one environment to have access to continuous delivery setting.
+							</p>
+						</alert>
+					</div>
+					<div ng-show="cdEnvs.length > 0" class="configCd entryBoxes entryBoxesGrid">
 						<div ng-repeat="(oneSrv, cdData) in cdConfiguration" class="entryBox customEntryBox">
 							<div ng-show="cdData.display === false">
 								<div class="header opened">
@@ -224,80 +236,101 @@
 										</a>
 									</div>
 									<tabset class="inner" id="cdc_{{cdData.name}}">
-										<tab ng-repeat="oneEnv in cdEnvs" heading="{{oneEnv}}" >
-											<br />
-											<div ng-show="!cdData[oneEnv].display">
-												<alert type="info">The following entry is not deployed in any environment.</alert>
-											</div>
-											<div ng-show="cdData[oneEnv].display">
-												<p>
-													Default Environment Strategy is set to <b>Notify</b> when updates are pushed to branch <b>Master</b>.
-												</p>
-												<fieldset>
-													<legend class="font-16">Default Strategy</legend>
+										<tab ng-repeat="oneEnv in cdEnvs" heading="{{oneEnv}}">
+											<br/>
+											<div ng-show="!envDeployed[oneEnv]">
+												<alert type="danger">
 													<p>
-												<span ng-if="cdData[oneEnv].cdData.default">
-													This service has not Custom Strategy and is currently configured to use the Environment's Default.
-												</span>
-														<span ng-if="!cdData[oneEnv].cdData.branch">
-													The strategy of this service overrides the Environment's default as follow:
-												</span>
+														You have not deployed this environment yet.<br />
+														<a href="#/environments-hacloud">Click here</a> to deploy this environment to have access to continuous delivery setting.
 													</p>
-													<div class="clearfix">
-														<div class="halfPage branchLabel">
-															<label>Branch:</label>
-															<select class="form-control" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.branch">
-																<option ng-repeat="myBranch in cdData[oneEnv].obj.branches" value="{{myBranch}}">{{myBranch}}</option>
-															</select>
-														</div>
-														<div class="halfPage">
-															<label>Strategy:</label>
-															<select class="form-control" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.strategy">
-																<option value="notify">notify</option>
-																<option value="update">update</option>
-															</select>
-														</div>
-													</div>
-													<div class="fieldMsg">This Strategy is applicable on all versions of <b>{{cdData.name}}</b> in this Environment.</div>
-												</fieldset>
-												
-												<table width="100%" border="0">
-													<tr ng-repeat="(version, versionInfo) in cdData[oneEnv].obj.ha">
-														<td>
-															<fieldset>
-																<legend  class="font-14">
-																	<input ng-click="setVersion(oneEnv, version, oneSrv)" ng-checked="cdConfiguration[oneSrv][oneEnv].cdData.versions[version]" type="checkbox">&nbsp;&nbsp;<label class="version">Version:</label> {{version}}
-																</legend>
-																<div ng-show="cdConfiguration[oneSrv][oneEnv].cdData.versions[version]">
-																	<p>
-																		Override the default <b>{{cdData.name}}</b> strategy for version <b>{{version}}</b>.
-																	</p>
-																	<div class="halfPage branchLabel">
-																		<label class="">Branch:</label> {{versionInfo.branch}}
-																	</div>
-																	<div class="halfPage">
-																		<label class="">Strategy:</label>
-																		<select class="form-control" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].strategy">
-																			<option value="notify">notify</option>
-																			<option value="update">update</option>
-																		</select>
-																	</div>
-																	<div class="fieldMsg">This Strategy is applicable only for <b>{{cdData.name}}</b> Version <b>{{version.versionLabel}}</b> and in this Environment.</div>
-																</div>
-															</fieldset>
-														</td>
-													</tr>
-												</table>
+												</alert>
 											</div>
-										</tab>
-									</tabset>
+											<div ng-show="envDeployed[oneEnv]">
+												<div ng-show="!cdData[oneEnv].display">
+													<alert type="info">The following entry is not deployed in any environment.</alert>
+												</div>
+												<div ng-show="cdData[oneEnv].display">
+													<tabset>
+														<tab ng-repeat="(version, versionInfo) in cdData[oneEnv].obj.ha">
+															<tab-heading ng-class="{'deployed': versionInfo.deployed}">{{tabLabel}}{{version}}</tab-heading>
+															<br>
+															<input ng-click="setVersion(oneEnv, version, oneSrv)" ng-checked="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active" type="checkbox">&nbsp;&nbsp;<label class="version">First Deploy</label>
+															<div ng-show="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active">
+																<div class="halfPage branchLabel">
+																	<label>{{translation.branch[LANG]}}:</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingBranches">
+																	<select class="form-control" ng-disabled="versionInfo.deployed" ng-if="!loadingBranches" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch" ng-change="updateGitBranch(oneSrv, oneEnv, version)">
+																		<option ng-repeat="myBranch in branches" value="{{myBranch.name}}">
+																			{{myBranch.name}}
+																		</option>
+																	</select>
+																</div>
+																<div class="halfPage branchLabel">
+																	<label>Strategy:</label>
+																	<select class="form-control" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].strategy">
+																		<option value="notify">notify</option>
+																		<option value="update">update</option>
+																	</select>
+																</div>
+																<div class="halfPage">
+																	<input ng-click="setDeploy(oneEnv, version, oneSrv, false, 0)" ng-checked="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].deploy" type="checkbox">&nbsp;&nbsp;<label class="version">Deploy</label>
+																</div>
+																<div ng-show="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].deploy">
+																	<div class="f-left form-g">
+																		<fieldset>
+																			<legend>Deployment Options</legend>
+																			<div>
+																				<label>Deployment Mode</label>
+																				<select class="form-control" ng-required="true" ng-options="mode for mode in deploymentModes" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode"></select>
+																				<label class="fieldMsg">Global/Daemonset mode deploys one replica of the service on each node.</label>
+																				<label class="fieldMsg">Replicated/Deployment mode deploys the specified number of replicas based on the availability of resources.</label>
+																				<br>
+																			</div>
+																			<div ng-if="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'replicated' || cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'deployment'">
+																				<label>Replica Count</label>
+																				<input type="number" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas" ng-required="true"/>
+																				<label class="fieldMsg">Enter a Replica Count that is greater or equal to 1</label>
+																				<br>
+																			</div>
+																			<div>
+																				<label>Memory Limit Per Instance (in
+																					MBytes)</label>
+																				<input type="number" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit" ng-required="true"/>
+																				<label class="fieldMsg">Specify the Maximum memory limit that should be provided when running your service/daemon.</label>
+																				<br/>
+																			</div>
+																			<div>
+																				<label>Catalog
+																					Recipe</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingRecipes">
+																				<select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name group by recipe.type for recipe in myRecipes" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.recipe" ng-change="injectCatalogEntries(oneEnv, version, oneSrv, false)"></select>
+																				<label class="fieldMsg">Choose a catalog recipe and define the deployment strategy in this environment.</label>
+																				<br>
+																			</div>
+																			<div ng-include="'modules/dashboard/gitAccounts/directives/list-cloud-catalogInputs.tmpl'"></div>
+																		</fieldset>
+																		<fieldset ng-if="allowGitOverride && cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.groupConfigs">
+																			<legend>Service Options</legend>
+																			<div ng-if="groupConfigs">
+																				<label>{{translation.daemonGroupConfig[LANG]}}</label>
+																				<select class="form-control" ng-required="true" ng-options="group as group.daemonConfigGroup for group in groupConfigs" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.daemonGroup"></select>
+																				<br>
+																			</div>
+																		</fieldset>
+																	</div>
+																</div>
+																<div class="fieldMsg">This Strategy is applicable only for <b>{{cdData.name}}</b> Version <b>{{version.versionLabel}}</b> and in this Environment.
+																</div>
+															</div>
+														</tab>
+													</tabset>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
-						</div>
-						
 						<div class="table c-both w100" ng-show="maxEntries > 0">
 							<input class="btn btn-sm btn-primary f-right" ng-click="saveRecipe()" value="Save Settings" type="submit">
-						</div>
 					</div>
 				</tab>
 			</tabset>

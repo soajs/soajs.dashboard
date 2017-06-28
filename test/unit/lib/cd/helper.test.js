@@ -115,15 +115,18 @@ describe("testing helper soajs.cd.js", function () {
 			},
 			strategy: 'update'
 		};
+		var options = {
+			
+		};
 		it("Success update", function (done) {
-			helpers.processOneService(req, BL, oneService, deployer, function (error, body) {
+			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
 				done();
 			});
 		});
 
 		it("Success notify", function (done) {
 			oneService.pause = true;
-			helpers.processOneService(req, BL, oneService, deployer, function (error, body) {
+			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
 				done();
 			});
 		});

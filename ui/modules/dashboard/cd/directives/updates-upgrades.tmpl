@@ -6,6 +6,7 @@
 			<a href="" class="btn btn-sm btn-primary f-right" ng-click="getLedger()">
 				<span class="icon icon-loop2"></span> Refresh
 			</a>
+			<br /><br />
 			<div class="grid" ng-show="ledger && ledger.length > 0">
 				<div class="table">
 					<div ng-repeat="oneEntry in ledger" ng-class="{'first': $first, 'last': $last, 'notread' : !oneEntry.read }" ng-class-odd="'odd'" ng-class-even="'even'" class="row w100 c-both">

@@ -484,8 +484,8 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
         });
     };
 	
-	$scope.configureRepo = function (oneRepo) {
-		repoSrv.configureRepo($scope, oneRepo, gitAccountsAppConfig);
+	$scope.configureRepo = function (oneRepo, gitAccount) {
+		repoSrv.configureRepo($scope, oneRepo, gitAccount, gitAccountsAppConfig);
 	};
 	
 	$scope.showHide = function (account) {
