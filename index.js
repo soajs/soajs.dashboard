@@ -1386,19 +1386,6 @@ service.init(function () {
 	});
 
 	/**
-	 * Delete a CI configuration
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.delete("/ci", function (req, res) {
-		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			BL.deleteConfig(config, req, dashboardBL.ci.driver, function (error, data) {
-				return res.jsonp(req.soajs.buildResponse(error, data));
-			});
-		});
-	});
-
-	/**
 	 * Download a CI recipe
 	 * @param {String} API route
 	 * @param {Function} API middleware
@@ -1566,19 +1553,6 @@ service.init(function () {
 	service.put('/gitAccounts/repo/sync', function (req, res) {
 		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
 			BL.syncRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
-			});
-		});
-	});
-
-	/**
-	 * Update repo CI settings
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.put('/gitAccounts/ci', function (req, res) {
-		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
-			BL.updateRepoCI(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});

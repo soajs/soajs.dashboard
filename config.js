@@ -3308,35 +3308,6 @@ module.exports = {
                 }
             },
 
-	        "/gitAccounts/ci":{
-		        "_apiInfo": {
-			        "l": "Update Repo CI Settings",
-			        "group": "Continuous Integration"
-		        },
-		        "commonFields":["id"],
-		        "repo": {
-			        "source": ['body.repo'],
-			        "required": true,
-			        "validation": {
-				        "type": "string"
-			        }
-		        },
-		        "provider": {
-			        "source": ['body.provider'],
-			        "required": true,
-			        "validation": {
-				        "type": "string"
-			        }
-		        },
-		        "recipe": {
-			        "source": ['body.recipe'],
-			        "required": true,
-			        "validation": {
-				        "type": "string"
-			        }
-		        }
-	        },
-
 	        "/ci/provider": {
 		        "_apiInfo": {
 			        "l": "Deactivate CI Provider",
