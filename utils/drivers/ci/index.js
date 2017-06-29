@@ -153,5 +153,13 @@ module.exports = {
 				strategy.updateSettings(options, cb);
 			});
 		});
+	},
+	
+	getFileName(options, cb){
+		getStrategy(options, (error, strategy) => {
+			checkError(error, 969, cb, () => {
+				strategy.getFileName(cb);
+			});
+		});
 	}
 };

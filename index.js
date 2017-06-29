@@ -1366,7 +1366,7 @@ service.init(function () {
 	 */
 	service.delete("/ci/recipe", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			BL.deleteRecipe(config, req, dashboardBL.ci.driver, function (error, data) {
+			BL.deleteRecipe(config, req, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1405,9 +1405,7 @@ service.init(function () {
 	 */
 	service.get("/ci/script/download", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			BL.downloadScript(config, req, res, function (error, data) {
-				return res.jsonp(req.soajs.buildResponse(error, data));
-			});
+			BL.downloadScript(config, req, res);
 		});
 	});
 
@@ -1432,6 +1430,19 @@ service.init(function () {
 	service.put("/ci/settings", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
 			BL.updateRepoSettings(config, req, dashboardBL.ci.driver, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+	
+	/**
+	 * get the content of the ci file from provider for this repo
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/ci/repo/remote/config", function(req, res){
+		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
+			BL.getRepoYamlFile(config, req, dashboardBL.ci.driver, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});

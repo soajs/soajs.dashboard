@@ -1208,6 +1208,34 @@ module.exports = {
                     }
                 }
             },
+	        
+	        "/ci/repo/remote/config": {
+            	"_apiInfo":{
+		            "l": "Get the CI configuration file of the repository from provider",
+		            "group": "Continuous Integration"
+	            },
+		        "provider":{
+            		"source": ['query.provider'],
+			        "required": true,
+			        "validation":{
+            			"type": "string"
+			        }
+		        },
+		        "repo":{
+			        "source": ['query.repo'],
+			        "required": true,
+			        "validation":{
+				        "type": "string"
+			        }
+		        },
+		        "owner":{
+			        "source": ['query.owner'],
+			        "required": true,
+			        "validation":{
+				        "type": "string"
+			        }
+		        }
+	        },
 
             "/gitAccounts/accounts/list": {
                 "_apiInfo": {

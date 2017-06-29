@@ -30,6 +30,14 @@ let utils = {
 
 var lib = {
 	/**
+	 * return how this driver names its configuration build recipe
+	 * @param cb
+	 */
+	getFileName (cb) {
+		return cb('.travis.yml');
+	},
+	
+	/**
 	 * Generate a travis token from a Github token
 	 * @param opts
 	 * @param cb
