@@ -1186,6 +1186,20 @@ module.exports = {
                         'type': 'number'
                     }
                 },
+	            'provider':{
+		            'source': ['query.provider'],
+		            'required': true,
+		            'validation':{
+			            'type': 'string'
+		            }
+	            },
+	            'owner':{
+		            'source': ['query.owner'],
+		            'required': true,
+		            'validation':{
+			            'type': 'string'
+		            }
+	            },
                 'enable':{
                     'source': ['query.enable'],
                     'required': true,
@@ -1206,7 +1220,21 @@ module.exports = {
                     'validation':{
                         'type': 'number'
                     }
-                }
+                },
+	            'provider':{
+		            'source': ['query.provider'],
+		            'required': true,
+		            'validation':{
+			            'type': 'string'
+		            }
+	            },
+	            'owner':{
+		            'source': ['query.owner'],
+		            'required': true,
+		            'validation':{
+			            'type': 'string'
+		            }
+	            }
             },
 	        
 	        "/ci/repo/remote/config": {
@@ -3426,6 +3454,20 @@ module.exports = {
                         "type": "number"
                     }
                 },
+	            'provider':{
+		            'source': ['query.provider'],
+		            'required': true,
+		            'validation':{
+			            'type': 'string'
+		            }
+	            },
+	            'owner':{
+		            'source': ['query.owner'],
+		            'required': true,
+		            'validation':{
+			            'type': 'string'
+		            }
+	            },
                 'port':{
                     'source': ['body.port'],
                     'required': true,
