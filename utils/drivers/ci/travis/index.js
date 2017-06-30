@@ -113,7 +113,9 @@ var lib = {
 				opts.log.debug(params);
 				//send the request to obtain the repos
 				request.get(params, function (error, response, body) {
-					
+					if(body && body.repo){
+						body.repos = [body.repo];
+					}
 					//Check for errors in the request function
 					utils.checkError(error, { code: 971 }, cb, () => {
 						//Check if the requested owner has repos
