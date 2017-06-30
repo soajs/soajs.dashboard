@@ -40,7 +40,7 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 						};
 						
 						response.forEach(function(oneEntryAgain){
-							if(oneEntryAgain.owner === oneAccount.owner){
+							if(oneEntryAgain.owner === oneAccount.owner && $scope.images[oneEntryAgain.provider]){
 								oneEntryAgain.icon = $scope.images[oneEntryAgain.provider];
 								oneEntryAgain.locked = ($scope.unsupported.indexOf(oneEntryAgain.provider) !== -1);
 								oneAccount.providers.push(oneEntryAgain);
