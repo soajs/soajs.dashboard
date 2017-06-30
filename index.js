@@ -1340,7 +1340,7 @@ service.init(function () {
 	 */
 	service.post("/ci/recipe", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			BL.addRecipe(config, req, soajs.hasher, function (error, data) {
+			BL.addRecipe(config, req, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1353,7 +1353,7 @@ service.init(function () {
 	 */
 	service.put("/ci/recipe", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			BL.addRecipe(config, req, soajs.hasher, function (error, data) {
+			BL.addRecipe(config, req, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1440,10 +1440,12 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.get("/ci/repo/remote/config", function(req, res){
+	service.get("/ci/repo/remote/config", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			BL.getRepoYamlFile(config, req, dashboardBL.ci.driver, function (error, data) {
-				return res.jsonp(req.soajs.buildResponse(error, data));
+			initBLModel(req, res, dashboardBL.git.module, dbModel, function (gitBL) {
+				BL.getRepoYamlFile(config, req, dashboardBL.ci.driver, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, gitBL, function (error, data) {
+					return res.jsonp(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
