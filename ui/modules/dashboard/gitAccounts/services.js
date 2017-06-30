@@ -5,8 +5,8 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 	function configureRepo(currentScope, oneRepo, gitAccount, config) {
 		// var noCiConfig = false;
 		// var noRepoCiConfig = false;
-		// var envDeployer = $cookies.getObject("myEnv").deployer;
-		// var envPlatform = envDeployer.selected.split('.')[1];
+		var envDeployer = $cookies.getObject("myEnv").deployer;
+		var envPlatform = envDeployer.selected.split('.')[1];
 		// if (!currentScope.ciData || !currentScope.ciData.settings || !currentScope.ciData.settings.settings || Object.keys(currentScope.ciData.settings.settings).length === 0) {
 		// 	noCiConfig = true;
 		// }
