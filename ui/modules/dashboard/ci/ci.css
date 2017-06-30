@@ -35,3 +35,13 @@
 div.entryBox .body .btn-primary{
     top: 0;
 }
+
+.recipe-box{
+    width:20% !important;
+    padding: 0 !important;
+}
+
+.recipe-box .header{
+    border-radius: 8px !important;
+    border-bottom: none !important;
+}
