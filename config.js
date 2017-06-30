@@ -1228,6 +1228,13 @@ module.exports = {
 				        "type": "string"
 			        }
 		        },
+		        "branch":{
+			        "source": ['query.branch'],
+			        "required": true,
+			        "validation":{
+				        "type": "string"
+			        }
+		        },
 		        "owner":{
 			        "source": ['query.owner'],
 			        "required": true,
