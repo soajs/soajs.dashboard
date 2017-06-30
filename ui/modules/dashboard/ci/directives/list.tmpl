@@ -16,7 +16,7 @@
 								<label>Providers</label>
 								<div id="reposList">
 									<ul>
-										<li ng-repeat="provider in account.providers" ng-style="{'width': '99%'}" ng-class="{'locked': provider.locked}">
+										<li ng-repeat="provider in account.providers" ng-style="{'width': '99%'}" ng-class="{'locked': provider.locked, 'active': provider.ciToken}">
 											<img class="ci_logo" ng-src="{{provider.icon}}" alt="{{provider.icon}}" />
 											<span class="repoFullName">{{provider.provider}}</span>
 											<div class="rightActions" ng-show="!provider.locked">
