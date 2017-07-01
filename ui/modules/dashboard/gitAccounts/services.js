@@ -36,6 +36,12 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				$scope.gitAccount = gitAccount;
 				$scope.alerts = [];
 				$scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
+				$scope.images = {
+					travis: "./themes/" + themeToUse + "/img/travis_logo.png",
+					drone: "./themes/" + themeToUse + "/img/drone_logo.png",
+					jenkins: "./themes/" + themeToUse + "/img/jenkins_logo.png",
+					teamcity: "./themes/" + themeToUse + "/img/teamcity_logo.png"
+				};
 				
 				$scope.goTOCI = function () {
 					currentScope.$parent.go('#/continuous-integration');
@@ -107,6 +113,9 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 								
 								var customEnvs = response.envs;
 								var formConfig = angular.copy(config.form.settings);
+								
+								var providerSettings = angular.copy(config.providers[oneProvider.provider]);
+								formConfig.entries[0].entries = providerSettings;
 								
 								for (var oneVar in oneProvider.variables) {
 									formConfig.entries[1].entries.push({

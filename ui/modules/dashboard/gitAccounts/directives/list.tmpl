@@ -168,7 +168,7 @@
 								can proceed.
 							</alert>
 						</div>
-						<tab ng-if="!noCiConfig" ng-repeat="oneProvider in ciProviders" heading="{{oneProvider.provider}}" ng-click="showCIConfigForm(oneProvider)">
+						<tab ng-if="!noCiConfig" ng-repeat="oneProvider in ciProviders" class="{{oneProvider.provider}}" heading="{{oneProvider.provider}}" ng-click="showCIConfigForm(oneProvider)">
 							<br />
 							<div ng-show="activateRepo">
 								<div class="table w100 c-both">

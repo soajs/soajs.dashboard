@@ -1,3 +1,11 @@
+.travis a{
+    background-image: url(/themes/default/img/travis_icon.png);
+    background-position: 2px 5px;
+    background-repeat: no-repeat;
+    background-size: 32px 32px;
+    padding-left: 35px !important;
+}
+
 .customEntryBox {
     width: 100% !important;
     /*min-height: 196px !important;*/

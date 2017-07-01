@@ -183,34 +183,7 @@ var gitAccountsAppConfig = {
 					'label': "General Settings",
 					"type": "group",
 					"entries": [
-						{
-							'name': 'builds_only_with_travis_yml',
-							'label': 'Build only if .travis.yml is present',
-							'type': 'radio',
-							'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No'}],
-							'required': true
-						},
-						{
-							'name': 'build_pushes',
-							'label': 'Build branch updates',
-							'type': 'radio',
-							'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No'}],
-							'required': true
-						},
-						{
-							'name': 'build_pull_requests',
-							'label': 'Build pull request updates',
-							'type': 'radio',
-							'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No'}],
-							'required': true
-						},
-						{
-							'name': 'maximum_number_of_builds',
-							'label': 'Limit concurent jobs to a maximum of',
-							'type': 'number',
-							'value': 0,
-							'required': false
-						},
+						
 					]
 				},
 				{
@@ -285,6 +258,40 @@ var gitAccountsAppConfig = {
 			]
 		},
 	},
+	
+	providers:{
+		travis: [
+			{
+				'name': 'builds_only_with_travis_yml',
+				'label': 'Build only if .travis.yml is present',
+				'type': 'radio',
+				'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No'}],
+				'required': true
+			},
+			{
+				'name': 'build_pushes',
+				'label': 'Build branch updates',
+				'type': 'radio',
+				'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No'}],
+				'required': true
+			},
+			{
+				'name': 'build_pull_requests',
+				'label': 'Build pull request updates',
+				'type': 'radio',
+				'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No'}],
+				'required': true
+			},
+			{
+				'name': 'maximum_number_of_builds',
+				'label': 'Limit concurent jobs to a maximum of',
+				'type': 'number',
+				'value': 0,
+				'required': false
+			},
+		]
+	},
+	
 	'permissions': {
 		listAccounts: ['dashboard', '/gitAccounts/accounts/list', 'get'],
 		login: ['dashboard', '/gitAccounts/login', 'post'],
