@@ -1,6 +1,6 @@
 "use strict";
 var repoService = soajsApp.components;
-repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', function (ngDataApi, $timeout, $modal, $cookies) {
+repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '$window', '$compile', 'detectBrowser', function (ngDataApi, $timeout, $modal, $cookies, $window, $compile, detectBrowser) {
 
 	function configureRepo(currentScope, oneRepo, gitAccount, config) {
 		// var noCiConfig = false;
@@ -22,7 +22,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 		// if (!ciRepo) {
 		// 	noRepoCiConfig = true;
 		// }
-
+		
 		var configureRepo = $modal.open({
 			templateUrl: 'configureRepo.tmpl',
 			size: 'lg',
@@ -42,6 +42,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 					jenkins: "./themes/" + themeToUse + "/img/jenkins_logo.png",
 					teamcity: "./themes/" + themeToUse + "/img/teamcity_logo.png"
 				};
+				$scope.myBrowser = detectBrowser();
 				
 				$scope.goTOCI = function () {
 					currentScope.$parent.go('#/continuous-integration');
@@ -173,71 +174,148 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 									}
 								});
 								
-								var options = {
-									timeout: $timeout,
-									entries: formConfig.entries,
-									name: 'repoSettings',
-									data: response.settings,
-									actions: [
-										{
-											type: 'submit',
-											label: "Update Settings",
-											btn: 'primary',
-											action: function (formData) {
-												var data = {
-													"port": (mydomainport || 80),
-													"settings": {
-														"build_pull_requests": formData.build_pull_requests,
-														"build_pushes": formData.build_pushes,
-														"builds_only_with_travis_yml": formData.builds_only_with_travis_yml,
-														"maximum_number_of_builds": formData.maximum_number_of_builds
+								formConfig.entries.push({
+									type: "html",
+									value: "<hr />"
+								});
+								getProviderRecipes($scope, {
+									'provider': oneProvider.provider,
+									'owner': oneProvider.owner
+								}, function(providerRecipes){
+									var groupInfo = {
+										'name': 'recipes',
+										'label': "Continuous Integration Recipes",
+										"type": "group",
+										"entries": [
+										
+										]
+									};
+									
+									buildRecipeGroup($scope, gitAccount, oneProvider, oneRepo, groupInfo, providerRecipes, function(recipeGroup){
+										
+										var newButtons = {
+											type: 'html',
+											value: "<hr /><label>" + oneProvider.provider + " Recipes</label><br /><span class='fieldMsg'>The following Recipes are available at <b>" + oneProvider.provider + "</b>, you can download them and use the in your repository.</span><div id='recipebuttons' class='table w-100 c-both'></div><hr />"
+										};
+										groupInfo.entries.push(newButtons);
+										
+										var recipebuttons = '';
+										$scope.providerRecipes = providerRecipes[oneProvider.provider];
+										providerRecipes[oneProvider.provider].forEach(function(oneRecipe){
+											recipebuttons += "<a href='' id='recipe" + oneRecipe._id.toString() + "' class='recipeButtons btn btn-sm btn-default' ng-class=\"{'highlighted': (oneRecipe.highlighted === true)}\"" +
+												" ng-click=\"downloadRecipe('" + oneRecipe._id + "')\" tooltip='Click to Download this Recipe'>" +
+												"<span class='icon icon-download3'></span>&nbsp;" + oneRecipe.name +
+												"</a>";
+										});
+										
+										formConfig.entries.push(recipeGroup);
+										
+										var options = {
+											timeout: $timeout,
+											entries: formConfig.entries,
+											name: 'repoSettings',
+											data: response.settings,
+											actions: [
+												{
+													type: 'submit',
+													label: "Update Settings",
+													btn: 'primary',
+													action: function (formData) {
+														var data = {
+															"port": (mydomainport || 80),
+															"settings": {
+																"build_pull_requests": formData.build_pull_requests,
+																"build_pushes": formData.build_pushes,
+																"builds_only_with_travis_yml": formData.builds_only_with_travis_yml,
+																"maximum_number_of_builds": formData.maximum_number_of_builds
+															}
+														};
+														
+														data.variables = {};
+														for (var i = 0; i < count; i++) {
+															if (!oneProvider.variables[formData['envName' + i]]) {
+																data.variables[formData['envName' + i]] = formData['envVal' + i];
+															}
+														}
+														
+														overlayLoading.show();
+														getSendDataFromServer(currentScope, ngDataApi, {
+															method: 'put',
+															routeName: '/dashboard/ci/settings',
+															params: {
+																'id': response.settings.repoCiId,
+																"provider": oneProvider.provider,
+																"owner": oneProvider.owner
+															},
+															data: data
+														}, function (error, response) {
+															overlayLoading.hide();
+															if (error) {
+																$scope.form.displayAlert('danger', error.message);
+															}
+															else {
+																currentScope.displayAlert('success', 'Repository Settings Updated.');
+																$scope.form.formData = {};
+																$scope.showCIConfigForm(oneProvider);
+															}
+														});
 													}
-												};
-												
-												data.variables = {};
-												for (var i = 0; i < count; i++) {
-													if (!oneProvider.variables[formData['envName' + i]]) {
-														data.variables[formData['envName' + i]] = formData['envVal' + i];
+												},
+												{
+													type: 'reset',
+													label: 'Cancel',
+													btn: 'danger',
+													action: function () {
+														$scope.form.formData = {};
+														$scope.cancel();
 													}
 												}
-												
-												overlayLoading.show();
-												getSendDataFromServer(currentScope, ngDataApi, {
-													method: 'put',
-													routeName: '/dashboard/ci/settings',
-													params: {
-														'id': response.settings.repoCiId,
-														"provider": oneProvider.provider,
-														"owner": oneProvider.owner
-													},
-													data: data
-												}, function (error, response) {
-													overlayLoading.hide();
-													if (error) {
-														$scope.form.displayAlert('danger', error.message);
+											]
+										};
+										
+										if($scope.providerRecipes.length > 0){
+											options.actions.unshift({
+												"type": "button",
+												"label": "Download CD Script",
+												"btn": "success",
+												"action": function(){
+													if($scope.myBrowser === 'safari'){
+														$window.alert("The Downloader is not compatible with Safari, please choose another browser.");
+														return null;
 													}
-													else {
-														currentScope.displayAlert('success', 'Repository Settings Updated.');
-														$scope.form.formData = {};
-														$scope.showCIConfigForm(oneProvider);
-													}
-												});
-											}
-										},
-										{
-											type: 'reset',
-											label: 'Cancel',
-											btn: 'danger',
-											action: function () {
-												$scope.form.formData = {};
-												$scope.cancel();
-											}
+													
+													overlayLoading.show();
+													getSendDataFromServer(currentScope, ngDataApi, {
+														method: 'get',
+														routeName: '/dashboard/ci/script/download',
+														headers: {
+															"Accept": "application/zip"
+														},
+														responseType: 'arraybuffer',
+														params: {
+															'provider': oneProvider.provider
+														}
+													}, function (error, response) {
+														overlayLoading.hide();
+														if (error) {
+															currentScope.form.displayAlert('danger', error.message);
+														}
+														else {
+															openSaveAsDialog("soajs.cd.zip", response, "application/zip");
+														}
+													});
+												}
+											});
 										}
-									]
-								};
-								
-								buildForm($scope, null, options, function () {
-									
+										
+										buildForm($scope, null, options, function () {
+											$timeout(function(){
+												var el = angular.element(document.getElementById('recipebuttons'));
+												el.html(recipebuttons);
+												$compile(el.contents())($scope);
+											}, 200);
+										});
+									});
 								});
 							}
 						});
@@ -435,6 +513,10 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 					});
 				};
 				
+				$scope.downloadRecipe = function(oneRecipeId){
+					downloadProviderRecipe($scope, oneRecipeId);
+				};
+				
 				getCIRecipe($scope, gitAccount, function(ciProviders){
 					$scope.ciProviders = ciProviders;
 					if(ciProviders.length> 0){
@@ -444,6 +526,149 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 						$scope.showCIConfigForm(null);
 					}
 				});
+			}
+		});
+	}
+	
+	function downloadProviderRecipe(currentScope, oneRecipeId){
+		if(currentScope.myBrowser === 'safari'){
+			$window.alert("The Downloader is not compatible with Safari, please choose another browser.");
+			return null;
+		}
+		
+		currentScope.providerRecipes.forEach(function(myRecipe){
+			if(myRecipe._id.toString() === oneRecipeId.toString()){
+				overlayLoading.show();
+				getSendDataFromServer(currentScope, ngDataApi, {
+					method: 'get',
+					routeName: '/dashboard/ci/recipe/download',
+					headers: {
+						"Accept": "application/zip"
+					},
+					responseType: 'arraybuffer',
+					params: {
+						'id': oneRecipeId.toString()
+					}
+				}, function (error, response) {
+					overlayLoading.hide();
+					if (error) {
+						currentScope.form.displayAlert('danger', error.message);
+					}
+					else {
+						openSaveAsDialog(myRecipe.name + ".zip", response, "application/zip");
+					}
+				});
+			}
+		});
+	}
+	
+	function buildRecipeGroup(currentScope, gitAccount, provider, repo, groupInfo, providerRecipes, cb){
+		
+		getServiceBranches(currentScope, {
+			gitAccount: gitAccount,
+			repo: repo,
+			cd:false
+		}, function(gitBranchResponse){
+			var newInput = {
+				'name': 'branch',
+				'label': 'Branch',
+				'type': 'select',
+				'value': [],
+				'fieldMsg': 'Select a branch to retrieve its Continuous Integration Recipe',
+				'required': true,
+				'onAction': function(id, data, form){
+					
+					getRepoCIremoteRecipe(currentScope, {
+						provider: provider.provider,
+						owner: gitAccount.owner,
+						repo: repo.name,
+						branch: data
+					}, function(response){
+						var fileContent = response.file;
+						var fileSHA = response.sha;
+						
+						var firstTime = true;
+						form.entries[form.entries.length -1].entries.forEach(function(oneInput){
+							if(oneInput.name === 'myRepoRecipe'){
+								firstTime = false;
+							}
+						});
+						
+						if(firstTime){
+							form.entries[form.entries.length -1].entries.push({
+								'readonly': true,
+								'name': 'myRepoRecipe',
+								'label': 'Current Repo Recipe',
+								'type': 'textarea',
+								'value': fileContent,
+								'rows': 20,
+								'cols': 100,
+								'fieldMsg': 'The following Recipe is available in your repo and is compatible with provider: <b>' + provider.provider + '</b>'
+							});
+						}
+						form.formData.myRepoRecipe = fileContent;
+						
+						var rButtons = document.getElementsByClassName('recipeButtons');
+						for(var i =0; i  < rButtons.length; i++){
+							rButtons[i].className = "recipeButtons btn btn-sm btn-default";
+						}
+						
+						providerRecipes[provider.provider].forEach(function(oneRecipe){
+							oneRecipe.highlighted = false;
+							if(fileSHA === oneRecipe.sha){
+								oneRecipe.highlighted = true;
+								var foundrButton = document.getElementById("recipe" + oneRecipe._id.toString());
+								foundrButton.className = "recipeButtons btn btn-sm btn-primary";
+							}
+						});
+					});
+				}
+			};
+			gitBranchResponse.branches.forEach(function (oneBranch) {
+				delete oneBranch.commit.url;
+				newInput.value.push({'v': oneBranch.name, 'l': oneBranch.name});
+			});
+			groupInfo.entries.push(newInput);
+			return cb(groupInfo);
+		});
+	}
+	
+	function getProviderRecipes(currentScope, opts, cb){
+		getSendDataFromServer(currentScope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/ci/providers',
+			params: {
+				'provider': opts.provider,
+				"owner": opts.owner,
+			}
+		}, function (error, response) {
+			if (error) {
+				currentScope.form.displayAlert('danger', error.message);
+			}
+			else {
+				return cb(response);
+			}
+		});
+	}
+	
+	function getRepoCIremoteRecipe(currentScope, opts, cb){
+		// overlayLoading.show();
+		getSendDataFromServer(currentScope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/ci/repo/remote/config',
+			params: {
+				'provider': opts.provider,
+				"repo": opts.repo,
+				"owner": opts.owner,
+				"branch": opts.branch
+			}
+		}, function (error, response) {
+			// overlayLoading.hide();
+			if (error) {
+				currentScope.form.displayAlert('danger', error.message);
+			}
+			else {
+				return cb(response);
 			}
 		});
 	}
@@ -518,7 +743,36 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 			}
 		});
 	}
-
+	
+	function getServiceBranches(currentScope, opts, cb) {
+		currentScope.loadingBranches = true;
+		getSendDataFromServer(currentScope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/gitAccounts/getBranches',
+			params: {
+				'id': opts.gitAccount._id,
+				'provider': opts.gitAccount.provider,
+				'name': opts.repo.full_name,
+				'type': 'repo'
+			}
+		}, function (error, response) {
+			if (error) {
+				currentScope.form.displayAlert('danger', error.message);
+			} else {
+				if(opts.cd){
+					currentScope.branches = response.branches;
+				}
+			}
+			if(opts.cd){
+				currentScope.loadingBranches = false;
+				cb();
+			}
+			else{
+				return cb(response);
+			}
+		});
+	}
+	
 	function getCDRecipe(currentScope, oneRepo, cb) {
 		currentScope.cdConfiguration = null;
 		overlayLoading.show();
@@ -572,7 +826,11 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 										currentScope.maxEntries++;
 									}
 								}
-								getServiceBranches(function () {
+								getServiceBranches(currentScope, {
+									gitAccount: currentScope.gitAccount,
+									repo: oneRepo,
+									cd: true
+								}, function () {
 									return cb();
 								});
 							}
@@ -619,28 +877,6 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 
 		function getEnvServices(envCode, serviceName, mCb) {
 			getServiceInEnv(currentScope, envCode, serviceName, mCb);
-		}
-
-		function getServiceBranches(cb) {
-			currentScope.loadingBranches = true;
-			getSendDataFromServer(currentScope, ngDataApi, {
-				method: 'get',
-				routeName: '/dashboard/gitAccounts/getBranches',
-				params: {
-					'id': currentScope.gitAccount._id,
-					'provider': currentScope.gitAccount.provider,
-					'name': oneRepo.full_name,
-					'type': 'repo'
-				}
-			}, function (error, response) {
-				if (error) {
-					currentScope.displayAlert('danger', error.message);
-				} else {
-					currentScope.branches = response.branches;
-				}
-				currentScope.loadingBranches = false;
-				cb();
-			});
 		}
 
 		var getService = {

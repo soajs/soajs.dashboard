@@ -1,12 +1,17 @@
 "use strict";
 var swaggerEditorSrv = soajsApp.components;
 
-swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function ($timeout, ngDataApi) {
+swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', '$window', 'detectBrowser', function ($timeout, ngDataApi, $window, detectBrowser) {
 	/*
 	* This function generate the service by testing all the required fields in the service info tab and the YAML code
 	* in the swagger documentation , catching their values and downloading the service files following the composer notation.
 	 */
 	function generateService(currentScope){
+		if(currentScope.myBrowser === 'safari'){
+			$window.alert("The Downloader is not compatible with Safari, please choose another browser.");
+			return null;
+		}
+		
 		var extKeyRequired = false;
 		var urac= false;
 		var urac_Profile= false;

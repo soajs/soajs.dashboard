@@ -159,6 +159,12 @@ li.accountType {
     padding-top:45px;
 }
 
+#repoSettings #recipes .recipeButtons{
+    float:left;
+    margin:1%;
+    width:30%;
+    text-align: left;
+}
 
 .configCd .entryServiceBoxes .service-container .serviceNameHead{
     background-color: white;

@@ -1,7 +1,7 @@
 "use strict";
 var swaggerEditorApp = soajsApp.components;
 
-swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectFiles', 'swaggerEditorSrv', 'swaggerParser', 'swaggerClient', '$cookies', function ($scope, $timeout, injectFiles, swaggerEditorSrv, swaggerParser, swaggerClient, $cookies) {
+swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectFiles', 'swaggerEditorSrv', 'swaggerParser', 'swaggerClient', '$cookies', 'detectBrowser', function ($scope, $timeout, injectFiles, swaggerEditorSrv, swaggerParser, swaggerClient, $cookies, detectBrowser) {
 	$scope.$parent.isUserLoggedIn();
 	$scope.access = {};
 	$scope.schemaCode = '';
@@ -9,6 +9,14 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 	$scope.hideToolTip = ($cookies.get("swagger_tooltip_hide")=== "true") || false;
 	$scope.collapsed = false;
 	$scope.swaggerCode = false;
+	
+	$scope.myBrowser = detectBrowser();
+	if($scope.myBrowser === 'safari'){
+		$scope.isSafari = true;
+	}
+	else{
+		$scope.isSafari = false;
+	}
 	
 	constructModulePermissions($scope, $scope.access, swaggerEditorConfig.permissions);
 	// This scope will show and hide the editor containing the yaml code and make the swagger ui collapse and expand accordingly.

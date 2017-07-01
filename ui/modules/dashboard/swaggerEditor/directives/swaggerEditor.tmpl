@@ -1,5 +1,9 @@
 <section ng-controller="swaggerEditorCtrl">
 	<h3>Welcome to Swagger Microservice Generator</h3><br>
+	<div ng-show="isSafari">
+		<alert type="danger">The Downloader of this module is not compatible with safari. Please use another browser.</alert>
+		<br />
+	</div>
 	<div ng-hide="hideToolTip">
 		<p>
 			This module provides you with the ability to generate a microservice by writing its documentation.<br />
@@ -80,6 +84,6 @@
 	<div class="w100 c-both text-center">
 		<br /><hr /><br />
 		<input type="button" value="Generate Service" disabled class="btn btn-primary" ng-show="!swaggerCode"/>
-		<input type="button" value="Generate Service" ng-click="GenerateService()" class="btn btn-primary" ng-show="swaggerCode"/>
+		<input type="button" value="Generate Service" ng-click="GenerateService()" class="btn btn-primary" ng-show="swaggerCode && !isSafari"/>
 	</div>
 </section>

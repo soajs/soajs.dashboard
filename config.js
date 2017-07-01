@@ -1149,7 +1149,14 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
-				}
+				},
+	            "provider": {
+		            "source": ['query.provider'],
+		            "required": false,
+		            "validation": {
+			            "type": "string"
+		            }
+	            }
             },
 
             "/ci/recipe/download": {
