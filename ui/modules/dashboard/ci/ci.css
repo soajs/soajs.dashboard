@@ -42,8 +42,9 @@ div.entryBox .body .btn-primary{
 }
 
 .recipe-box{
-    width:20% !important;
+    width:48% !important;
     padding: 0 !important;
+    margin: 1% !important;
 }
 
 .recipe-box .header{
