@@ -1243,7 +1243,7 @@ module.exports = {
 		            }
 	            }
             },
-	        
+
 	        "/ci/repo/remote/config": {
             	"_apiInfo":{
 		            "l": "Get the CI configuration file of the repository from provider",
@@ -1320,7 +1320,14 @@ module.exports = {
                         "type": "number",
                         "minimum": 1
                     }
-                }
+                },
+				"activeOnly": {
+					"source": ['query.activeOnly'],
+                    "required": false,
+                    "validation": {
+                        "type": "boolean"
+                    }
+				}
             },
 
             "/gitAccounts/getBranches": {
@@ -2542,7 +2549,7 @@ module.exports = {
                 }
             }
         },
-        
+
 	    "put": {
             "/services/settings/update": {
                 "_apiInfo": {
