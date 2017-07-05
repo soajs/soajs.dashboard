@@ -297,7 +297,9 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				};
 				
 				$scope.updateGitBranch = function(oneSrv, oneEnv, version){
-					$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch;
+					if($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options){
+						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch;
+					}
 				};
 				
 				$scope.setDeploy = function (oneEnv, version, oneSrv, first, counter) {
@@ -336,7 +338,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode = 'replicated';
 								}
 							}
-							var service = $scope.services[oneSrv.replace("soajs.", "")];
+							var service = $scope.services[oneSrv];
 							$scope.groupConfigs = '';
 							if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit) {
 								if (service && service.prerequisites && service.prerequisites.memory && service.prerequisites.memory.trim().length > 0) {
@@ -548,7 +550,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 			var types = ['service', 'daemon', 'custom'];
 			if (serviceName && currentScope.cdConfiguration[serviceName] && currentScope.cdConfiguration[serviceName].type && types.indexOf(currentScope.cdConfiguration[serviceName].type) !== -1) {
 				var serviceType = currentScope.cdConfiguration[serviceName].type;
-				getService[serviceType.toLowerCase()](serviceName.replace("soajs.", ""), function () {
+				getService[serviceType.toLowerCase()](serviceName, function () {
 					if (!currentScope.cdData[oneCDEnv.toUpperCase()]) {
 						currentScope.cdData[oneCDEnv.toUpperCase()] = defaultCD;
 					}
@@ -648,7 +650,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 	}
 
 	function buildFormData(currentScope, env, serviceName, activatedVersions, cb) {
-		var service = currentScope.services[serviceName.replace("soajs.", "")];
+		var service = currentScope.services[serviceName];
 		var dashboardServices = ['dashboard', 'proxy'];
 		if (dashboardServices.indexOf(serviceName) !== -1) {
 			return cb();
@@ -796,6 +798,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 			if (!configuration[oneEnv]) {
 				configuration[oneEnv] = {};
 			}
+			
 			for (var oneRepo in currentScope.cdConfiguration) {
 				if (!configuration[oneEnv][oneRepo]) {
 					configuration[oneEnv][oneRepo] = {};
@@ -821,10 +824,6 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 								}
 								configuration[oneEnv][oneRepo].options = currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options;
 							}
-							
-							if(Object.keys(configuration[oneEnv][oneRepo]).length > 2){
-								delete configuration[oneEnv][oneRepo];
-							}
 						}
 						else {
 							configuration[oneEnv][oneRepo]['v' + version] = {
@@ -841,10 +840,6 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 						}
 						if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options && currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig && currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit) {
 							currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit *= 1048576;
-						}
-						
-						if(Object.keys(configuration[oneEnv][oneRepo]['v' + version]).length > 2){
-							delete configuration[oneEnv][oneRepo]['v' + version];
 						}
 					}
 				}
