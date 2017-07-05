@@ -166,6 +166,11 @@ li.accountType {
     text-align: left;
 }
 
+#repoSettings #recipes .recipeButtons span{
+    position:relative;
+    top: 2px;
+}
+
 .configCd .entryServiceBoxes .service-container .serviceNameHead{
     background-color: white;
     border-bottom: none;

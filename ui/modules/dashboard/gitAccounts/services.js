@@ -190,23 +190,13 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 										
 										]
 									};
+									$scope.providerRecipes = providerRecipes[oneProvider.provider];
+									groupInfo.entries.push({
+										"type":"html",
+										"value": "<div id='recipebuttons' class='table w-100 c-both'></div><hr />"
+									});
 									
 									buildRecipeGroup($scope, gitAccount, oneProvider, oneRepo, groupInfo, providerRecipes, function(recipeGroup){
-										
-										var newButtons = {
-											type: 'html',
-											value: "<hr /><label>" + oneProvider.provider + " Recipes</label><br /><span class='fieldMsg'>The following Recipes are available at <b>" + oneProvider.provider + "</b>, you can download them and use the in your repository.</span><div id='recipebuttons' class='table w-100 c-both'></div><hr />"
-										};
-										groupInfo.entries.push(newButtons);
-										
-										var recipebuttons = '';
-										$scope.providerRecipes = providerRecipes[oneProvider.provider];
-										providerRecipes[oneProvider.provider].forEach(function(oneRecipe){
-											recipebuttons += "<a href='' id='recipe" + oneRecipe._id.toString() + "' class='recipeButtons btn btn-sm btn-default' ng-class=\"{'highlighted': (oneRecipe.highlighted === true)}\"" +
-												" ng-click=\"downloadRecipe('" + oneRecipe._id + "')\" tooltip='Click to Download this Recipe'>" +
-												"<span class='icon icon-download3'></span>&nbsp;" + oneRecipe.name +
-												"</a>";
-										});
 										
 										formConfig.entries.push(recipeGroup);
 										
@@ -309,11 +299,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 										}
 										
 										buildForm($scope, null, options, function () {
-											$timeout(function(){
-												var el = angular.element(document.getElementById('recipebuttons'));
-												el.html(recipebuttons);
-												$compile(el.contents())($scope);
-											}, 200);
+											printRecipesFound($scope, oneProvider, providerRecipes, null, null);
 										});
 									});
 								});
@@ -517,6 +503,10 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 					downloadProviderRecipe($scope, oneRecipeId);
 				};
 				
+				$scope.previewRecipe = function(oneRecipeId){
+					previewRecipeRecipe($scope, oneRecipeId);
+				};
+				
 				getCIRecipe($scope, gitAccount, function(ciProviders){
 					$scope.ciProviders = ciProviders;
 					if(ciProviders.length> 0){
@@ -562,8 +552,98 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 		});
 	}
 	
-	function buildRecipeGroup(currentScope, gitAccount, provider, repo, groupInfo, providerRecipes, cb){
+	function previewRecipeRecipe(currentScope, oneRecipeId){
+		var recipeContent = "";
+		var recipeName = "";
+		currentScope.providerRecipes.forEach(function(oneRecipe){
+			if(oneRecipe._id.toString() === oneRecipeId){
+				recipeContent = oneRecipe.recipe;
+				recipeName = oneRecipe.name;
+			}
+		});
 		
+		if(recipeContent && recipeContent !== ''){
+			currentScope.form.entries.forEach(function(oneFormEntry){
+				if(oneFormEntry.name === 'recipes'){
+					if(!currentScope.originalRecipeFieldsetLength){
+						currentScope.originalRecipeFieldsetLength = oneFormEntry.entries.length;
+					}
+					else{
+						oneFormEntry.entries.length = currentScope.originalRecipeFieldsetLength;
+					}
+					$timeout(function(){
+						oneFormEntry.entries.push({
+							"type": "textarea",
+							"name": "previewRecipeBox",
+							"label": "Previewing Recipe " + recipeName + " Content",
+							"value": recipeContent.toString(),
+							'readonly': true,
+							'rows': 20,
+							'cols': 100
+						});
+						currentScope.form.formData.previewRecipeBox = recipeContent.toString();
+					}, 200);
+				}
+			})
+		}
+	}
+	
+	function printRecipesFound(currentScope, provider, providerRecipes, fileSHA, fileContent){
+		var recipebuttons = "<hr /><label class='capitalize'>" + provider.provider + " Recipes</label><br /><span class='fieldMsg'>The following Recipes are available at <b>" + provider.provider + "</b>, and might be compatible to run the build of your repository code.</span><br />";
+		var matchingRecipe = false;
+		currentScope.providerRecipes = providerRecipes[provider.provider];
+		providerRecipes[provider.provider].forEach(function(oneRecipe){
+			var className = "recipeButtons btn btn-sm btn-default";
+			oneRecipe.highlighted = false;
+			
+			if(fileSHA && fileSHA === oneRecipe.sha){
+				oneRecipe.highlighted = true;
+				className = "recipeButtons btn btn-sm btn-primary";
+				matchingRecipe = true;
+			}
+			
+			recipebuttons += "<a href='' id='recipe" + oneRecipe._id.toString() + "' class='" + className + "' ng-class=\"{'highlighted': (oneRecipe.highlighted === true)}\" >" +
+				oneRecipe.name + "&nbsp;";
+			
+			if(!fileSHA || fileSHA !== oneRecipe.sha){
+				recipebuttons += "<span class='icon icon-download3 f-right' ng-click=\"downloadRecipe('" + oneRecipe._id + "')\"></span>";
+			}
+			
+			recipebuttons += "<span class='icon icon-search f-right' ng-click=\"previewRecipe('" + oneRecipe._id + "')\"></span>&nbsp;&nbsp;&nbsp;";
+			recipebuttons += "</a>";
+		});
+		
+		if(fileContent && !matchingRecipe){
+			var customRecipe = {
+				_id: "custom",
+				provider: provider.provider,
+				name: "Custom Recipe Detected",
+				sha: fileSHA,
+				recipe: fileContent
+			};
+			providerRecipes[provider.provider].push(customRecipe);
+			
+			recipebuttons += "<a href='' id='recipe" + customRecipe._id.toString() + "' class='recipeButtons btn btn-sm btn-primary' ng-class=\"{'highlighted': (oneRecipe.highlighted === true)}\" >" + customRecipe.name + "&nbsp;" +
+				"<span class='icon icon-download3 f-right' tooltip='Preview Recipe Content' ng-click=\"downloadRecipe('" + customRecipe._id + "')\"></span>&nbsp;&nbsp;" +
+				"</a>";
+			
+			if(fileContent){
+				recipebuttons += "<br /><div class='c-both w100 table'><alert type=''>The Repository CI recipe for provider <b class='capitalize'>" + provider.provider + "</b> contains custom configuration, it does not match any of recipes in the list above yet it is highlighted for you to spot.</alert></div>";
+			}
+		}
+		else if(fileContent){
+			recipebuttons += "<br /><div class='c-both w100 table'><alert type='info'>The Repository CI recipe for provider <b class='capitalize'>" + provider.provider + "</b> matches the highlighted recipe from the list above.</alert></div>";
+		}
+		
+		
+		$timeout(function(){
+			var el = angular.element(document.getElementById('recipebuttons'));
+			el.html(recipebuttons);
+			$compile(el.contents())(currentScope);
+		}, 500);
+	}
+	
+	function buildRecipeGroup(currentScope, gitAccount, provider, repo, groupInfo, providerRecipes, cb){
 		getServiceBranches(currentScope, {
 			gitAccount: gitAccount,
 			repo: repo,
@@ -574,9 +654,13 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 				'label': 'Branch',
 				'type': 'select',
 				'value': [],
-				'fieldMsg': 'Select a branch to retrieve its Continuous Integration Recipe',
+				'fieldMsg': 'Select a branch from your repository to load the associated Continuous Integration Recipe.',
 				'required': true,
 				'onAction': function(id, data, form){
+					
+					if(currentScope.originalRecipeFieldsetLength){
+						groupInfo.entries.length = currentScope.originalRecipeFieldsetLength;
+					}
 					
 					getRepoCIremoteRecipe(currentScope, {
 						provider: provider.provider,
@@ -587,40 +671,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 						var fileContent = response.file;
 						var fileSHA = response.sha;
 						
-						var firstTime = true;
-						form.entries[form.entries.length -1].entries.forEach(function(oneInput){
-							if(oneInput.name === 'myRepoRecipe'){
-								firstTime = false;
-							}
-						});
-						
-						if(firstTime){
-							form.entries[form.entries.length -1].entries.push({
-								'readonly': true,
-								'name': 'myRepoRecipe',
-								'label': 'Current Repo Recipe',
-								'type': 'textarea',
-								'value': fileContent,
-								'rows': 20,
-								'cols': 100,
-								'fieldMsg': 'The following Recipe is available in your repo and is compatible with provider: <b>' + provider.provider + '</b>'
-							});
-						}
-						form.formData.myRepoRecipe = fileContent;
-						
-						var rButtons = document.getElementsByClassName('recipeButtons');
-						for(var i =0; i  < rButtons.length; i++){
-							rButtons[i].className = "recipeButtons btn btn-sm btn-default";
-						}
-						
-						providerRecipes[provider.provider].forEach(function(oneRecipe){
-							oneRecipe.highlighted = false;
-							if(fileSHA === oneRecipe.sha){
-								oneRecipe.highlighted = true;
-								var foundrButton = document.getElementById("recipe" + oneRecipe._id.toString());
-								foundrButton.className = "recipeButtons btn btn-sm btn-primary";
-							}
-						});
+						printRecipesFound(currentScope, provider, providerRecipes, fileSHA, fileContent);
 					});
 				}
 			};
