@@ -19,7 +19,7 @@ var cdNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'order': 2,
+		'order': 3,
 		'scripts': ['modules/dashboard/cd/config.js', 'modules/dashboard/cd/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	},
@@ -41,7 +41,7 @@ var cdNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'order': 8,
+		'order': 9,
 		'scripts': ['modules/dashboard/cd/config.js', 'modules/dashboard/cd/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	}

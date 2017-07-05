@@ -207,3 +207,24 @@ ul {
     width: 15% !important;
     float: right;
 }
+
+
+.customEntryBox {
+    width: 100% !important;
+    padding-left: 0px !important;
+}
+
+.alignCenter {
+    text-align: center !important;
+}
+
+.loadingImageLarge {
+    display: block;
+    margin: 0 auto;
+}
+
+#loadingNotification {
+    height: 290px;
+    width: 100%;
+    padding-top: 40px;
+}

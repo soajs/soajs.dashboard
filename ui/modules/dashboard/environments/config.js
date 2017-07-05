@@ -829,6 +829,10 @@ var environmentsConfig = {
 			"getSettings": ["dashboard", "/analytics/getSettings", "get"],
 			"activate": ["dashboard", "/analytics/activateAnalytics", "get"],
 			"deactivate": ["dashboard", "/analytics/deactivateAnalytics", "get"]
+		},
+		"git": {
+			"listAccounts": ["dashboard", "/gitAccounts/accounts/list", "get"],
+			"listAccountRepos": ["dashboard", "/gitAccounts/getRepos", "get"]
 		}
 	}
 };

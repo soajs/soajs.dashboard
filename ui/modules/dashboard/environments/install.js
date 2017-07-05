@@ -9,6 +9,10 @@ var envTranslation ={
 		"ENG": "Registries",
 		"FRA": "Registries"
 	},
+	"repositories": {
+		"ENG": "Repositories",
+		"FRA": "Repositories"
+	},
 	"platformsAndCertificates": {
 		"ENG": "Platforms & Certificates",
 		"FRA": "Platforms & Certificates"
@@ -847,7 +851,7 @@ var envTranslation ={
 		"ENG": "Refresh Token Lifetime in seconds. Default is 14 days.",
 		"FRA": "Refresh Token Lifetime in seconds. Default is 14 days."
 	},
-	
+
 	"enterCommaSeparatedValues": {
 		"ENG": "Enter comma separated values",
 		"FRA": "Enter comma separated values"
@@ -1471,6 +1475,28 @@ var environmentsNav = [
 		'ancestor': [translation.home[LANG]]
 	},
 	{
+		'id': 'repositories',
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/gitAccounts/accounts/list',
+			'method': 'get'
+		},
+		'label': translation.repositories[LANG],
+		'url': '#/deploy-repositories',
+		'tplPath': 'modules/dashboard/environments/directives/list-repos.tmpl',
+		'icon': 'git',
+		'pillar':{
+			'name': 'deployment',
+			'label': translation.deploy[LANG],
+			'position': 3
+		},
+		'order': 2,
+		'mainMenu': true,
+		'tracker': true,
+		'scripts': ['modules/dashboard/environments/config.js','modules/dashboard/environments/repos-ctrl.js', 'modules/dashboard/environments/services/repos.js'],
+		'ancestor': [translation.home[LANG]]
+	},
+	{
 		'id': 'environments-platforms',
 		'checkPermission': {
 			'service': 'dashboard',
@@ -1486,7 +1512,7 @@ var environmentsNav = [
 			'label': translation.deploy[LANG],
 			'position': 3
 		},
-		'order': 3,
+		'order': 4,
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/platforms-ctrl.js', 'modules/dashboard/environments/services/platforms.js'],
@@ -1508,7 +1534,7 @@ var environmentsNav = [
 			'label': translation.deploy[LANG],
 			'position': 3
 		},
-		'order': 4,
+		'order': 5,
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/clusters-ctrl.js', 'modules/dashboard/environments/services/clusters.js'],
@@ -1530,7 +1556,7 @@ var environmentsNav = [
 			'label': translation.deploy[LANG],
 			'position': 3
 		},
-		'order': 5,
+		'order': 6,
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/dbs-ctrl.js', 'modules/dashboard/environments/services/database.js'],
@@ -1552,7 +1578,7 @@ var environmentsNav = [
 			'label': translation.deploy[LANG],
 			'position': 3
 		},
-		'order': 6,
+		'order': 7,
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/hosts-ctrl.js', 'modules/dashboard/environments/services/hosts.js', 'modules/dashboard/environments/services/deploy.js'],
@@ -1593,7 +1619,7 @@ var environmentsNav = [
 			'label': translation.deploy[LANG],
 			'position': 3
 		},
-		'order': 6,
+		'order': 7,
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/hacloud-ctrl.js', 'modules/dashboard/environments/services/nodes.js', 'modules/dashboard/environments/services/hacloud.js', 'modules/dashboard/environments/services/deploy.js'],

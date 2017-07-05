@@ -1,0 +1,62 @@
+<section ng-controller="deployReposCtrl">
+    <div ng-if="accounts && accounts.length === 0">
+        <alert type="warning">{{translation.noGitAccountsAdded[LANG]}}</alert>
+    </div>
+    <div ng-if="accounts.length > 0">
+        <div class="entryBoxes entryBoxesGrid">
+            <div ng-if="access.git.listAccounts" id="a_{{account._id}}" ng-repeat="account in accounts" class="entryBox customEntryBox">
+                <div class="header opened">
+                    <span class="icon icon-github" ng-if="account.provider === 'github'"></span>
+                    <span class="icon" ng-if="account.provider === 'bitbucket'"><i class="fa fa-lg fa-bitbucket"></i></span>
+                    <span class="icon" ng-if="account.provider === 'bitbucket_enterprise'"><i class="fa fa-lg fa-bitbucket"></i></span>
+                    {{account.label|uppercase}}&nbsp;&nbsp;[{{account.owner}}]
+                </div>
+                <div class="body" ng-if="account.loading">
+                    <div id="loadingNotification">
+                        <img class="loadingImageLarge" ng-src="{{imagePath}}" width="32px" height="32px"><br>
+                        <h5 class="alignCenter">{{translation.gettingReposPleaseWait[LANG]}}</h5>
+                    </div>
+                </div>
+                <div class="body" ng-if="!account.loading">
+	                <div class="inner" ng-class="{'hidden': account.hide}">
+                        <label>Active Repositories</label>
+		                <span style="float: right; padding-right: 1%" class="icon icon-search">&nbsp;
+		                <input ng-model="searchKeyword" />&nbsp;
+		                <a href="" ng-if="access.git.listAccountRepos" ng-click="listRepos(account, 'getRepos');">
+                            <span class="icon icon-loop2" tooltip="{{translation.syncRepo[LANG]}}"></span>
+                        </a>
+	                </span>
+		                <div ng-if="account.repos && account.repos.length === 0">
+			                <alert type="warning">{{translation.noReposFound[LANG]}}</alert>
+		                </div>
+		                <div ng-if="access.git.listAccountRepos" id="reposList">
+			                <ul class="blueListing">
+				                <li class="blueLi row-list" ng-repeat="repo in account.repos| filter: searchKeyword" ng-style="{'width': '99%'}">
+					                <span class="repoFullName">{{repo.full_name}}</span>
+					                <div class="rightActions" style="float: right;">
+                                        <button class="btn btn-default" type="button">
+                                            CI
+                                        </button>
+                                        <button class="btn btn-default" type="button">
+                                            CD
+                                        </button>
+                                        <button class="btn btn-default" type="button">
+                                            Deploy
+                                        </button>
+					                </div>
+				                </li>
+			                </ul>
+			                <a href="" class="loadMore btn btn-block" ng-click="listRepos(account, 0, 'loadMore')" ng-if="account.allowLoadMore">Load More</a>
+		                </div>
+	                </div>
+
+                    <div class="entryAction">
+	                    <a href="" ng-click="showHide(account)">
+		                    <span class="icon icon-{{account.icon || 'plus'}}"></span>
+	                    </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
