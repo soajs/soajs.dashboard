@@ -182,23 +182,46 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 									'provider': oneProvider.provider,
 									'owner': oneProvider.owner
 								}, function(providerRecipes){
-									var groupInfo = {
-										'name': 'recipes',
-										'label': "Continuous Integration Recipes",
-										"type": "group",
-										"entries": [
-										
-										]
-									};
+									
 									$scope.providerRecipes = providerRecipes[oneProvider.provider];
-									groupInfo.entries.push({
-										"type":"html",
-										"value": "<div id='recipebuttons' class='table w-100 c-both'></div><hr />"
+									var recipesGroup = {
+										"type": "group",
+										"name": "providerRecipes",
+										"label": "Available " + oneProvider.provider + " Recipes",
+										"collapsed": true,
+										"entries": [
+											{
+												"type":"html",
+												"value": "<div id='recipebuttons' class='table w-100 c-both'></div>"
+											}
+										],
+										"fieldMsg": "The following Recipes are available at <b>" + oneProvider.provider + "</b>, and might be compatible to run the build of your repository code."
+									};
+									var recipes = [];
+									providerRecipes[oneProvider.provider].forEach(function(oneRecipe){
+										recipes.push({
+											"type": "html",
+											"value": "<a id='recipe" + oneRecipe._id.toString() + "' class='btn btn-default recipeButtons' tooltip='Click to Download Recipe'>" + oneRecipe.name +
+											"<span class='f-right' style='top:0;'>&nbsp;Download</span>" +
+											"<span class='icon icon-download3 f-right'></span>" +
+											"</a>",
+											"onAction": function(id, data, form){
+												$scope.downloadRecipe(oneRecipe._id);
+												return false;
+											}
+										});
 									});
 									
-									buildRecipeGroup($scope, gitAccount, oneProvider, oneRepo, groupInfo, providerRecipes, function(recipeGroup){
-										
-										formConfig.entries.push(recipeGroup);
+									recipesGroup.entries = recipesGroup.entries.concat(recipes);
+									formConfig.entries.push(recipesGroup);
+									
+									getRepoRecipeFromBranch($scope, gitAccount, oneProvider, oneRepo, providerRecipes, function(branchInput){
+										formConfig.entries.push({
+											"type": "group",
+											"name": "repoRecipe",
+											"label": "Repository Recipe",
+											"entries": [branchInput]
+										});
 										
 										var options = {
 											timeout: $timeout,
@@ -299,7 +322,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 										}
 										
 										buildForm($scope, null, options, function () {
-											printRecipesFound($scope, oneProvider, providerRecipes, null, null);
+											
 										});
 									});
 								});
@@ -552,98 +575,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 		});
 	}
 	
-	function previewRecipeRecipe(currentScope, oneRecipeId){
-		var recipeContent = "";
-		var recipeName = "";
-		currentScope.providerRecipes.forEach(function(oneRecipe){
-			if(oneRecipe._id.toString() === oneRecipeId){
-				recipeContent = oneRecipe.recipe;
-				recipeName = oneRecipe.name;
-			}
-		});
-		
-		if(recipeContent && recipeContent !== ''){
-			currentScope.form.entries.forEach(function(oneFormEntry){
-				if(oneFormEntry.name === 'recipes'){
-					if(!currentScope.originalRecipeFieldsetLength){
-						currentScope.originalRecipeFieldsetLength = oneFormEntry.entries.length;
-					}
-					else{
-						oneFormEntry.entries.length = currentScope.originalRecipeFieldsetLength;
-					}
-					$timeout(function(){
-						oneFormEntry.entries.push({
-							"type": "textarea",
-							"name": "previewRecipeBox",
-							"label": "Previewing Recipe " + recipeName + " Content",
-							"value": recipeContent.toString(),
-							'readonly': true,
-							'rows': 20,
-							'cols': 100
-						});
-						currentScope.form.formData.previewRecipeBox = recipeContent.toString();
-					}, 200);
-				}
-			})
-		}
-	}
-	
-	function printRecipesFound(currentScope, provider, providerRecipes, fileSHA, fileContent){
-		var recipebuttons = "<hr /><label class='capitalize'>" + provider.provider + " Recipes</label><br /><span class='fieldMsg'>The following Recipes are available at <b>" + provider.provider + "</b>, and might be compatible to run the build of your repository code.</span><br />";
-		var matchingRecipe = false;
-		currentScope.providerRecipes = providerRecipes[provider.provider];
-		providerRecipes[provider.provider].forEach(function(oneRecipe){
-			var className = "recipeButtons btn btn-sm btn-default";
-			oneRecipe.highlighted = false;
-			
-			if(fileSHA && fileSHA === oneRecipe.sha){
-				oneRecipe.highlighted = true;
-				className = "recipeButtons btn btn-sm btn-primary";
-				matchingRecipe = true;
-			}
-			
-			recipebuttons += "<a href='' id='recipe" + oneRecipe._id.toString() + "' class='" + className + "' ng-class=\"{'highlighted': (oneRecipe.highlighted === true)}\" >" +
-				oneRecipe.name + "&nbsp;";
-			
-			if(!fileSHA || fileSHA !== oneRecipe.sha){
-				recipebuttons += "<span class='icon icon-download3 f-right' ng-click=\"downloadRecipe('" + oneRecipe._id + "')\"></span>";
-			}
-			
-			recipebuttons += "<span class='icon icon-search f-right' ng-click=\"previewRecipe('" + oneRecipe._id + "')\"></span>&nbsp;&nbsp;&nbsp;";
-			recipebuttons += "</a>";
-		});
-		
-		if(fileContent && !matchingRecipe){
-			var customRecipe = {
-				_id: "custom",
-				provider: provider.provider,
-				name: "Custom Recipe Detected",
-				sha: fileSHA,
-				recipe: fileContent
-			};
-			providerRecipes[provider.provider].push(customRecipe);
-			
-			recipebuttons += "<a href='' id='recipe" + customRecipe._id.toString() + "' class='recipeButtons btn btn-sm btn-primary' ng-class=\"{'highlighted': (oneRecipe.highlighted === true)}\" >" + customRecipe.name + "&nbsp;" +
-				"<span class='icon icon-download3 f-right' tooltip='Preview Recipe Content' ng-click=\"downloadRecipe('" + customRecipe._id + "')\"></span>&nbsp;&nbsp;" +
-				"</a>";
-			
-			if(fileContent){
-				recipebuttons += "<br /><div class='c-both w100 table'><alert type=''>The Repository CI recipe for provider <b class='capitalize'>" + provider.provider + "</b> contains custom configuration, it does not match any of recipes in the list above yet it is highlighted for you to spot.</alert></div>";
-			}
-		}
-		else if(fileContent){
-			recipebuttons += "<br /><div class='c-both w100 table'><alert type='info'>The Repository CI recipe for provider <b class='capitalize'>" + provider.provider + "</b> matches the highlighted recipe from the list above.</alert></div>";
-		}
-		
-		
-		$timeout(function(){
-			var el = angular.element(document.getElementById('recipebuttons'));
-			el.html(recipebuttons);
-			$compile(el.contents())(currentScope);
-		}, 500);
-	}
-	
-	function buildRecipeGroup(currentScope, gitAccount, provider, repo, groupInfo, providerRecipes, cb){
+	function getRepoRecipeFromBranch(currentScope, gitAccount, provider, repo, providerRecipes, cb){
 		getServiceBranches(currentScope, {
 			gitAccount: gitAccount,
 			repo: repo,
@@ -657,11 +589,6 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 				'fieldMsg': 'Select a branch from your repository to load the associated Continuous Integration Recipe.',
 				'required': true,
 				'onAction': function(id, data, form){
-					
-					if(currentScope.originalRecipeFieldsetLength){
-						groupInfo.entries.length = currentScope.originalRecipeFieldsetLength;
-					}
-					
 					getRepoCIremoteRecipe(currentScope, {
 						provider: provider.provider,
 						owner: gitAccount.owner,
@@ -671,7 +598,55 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 						var fileContent = response.file;
 						var fileSHA = response.sha;
 						
-						printRecipesFound(currentScope, provider, providerRecipes, fileSHA, fileContent);
+						var type = "warning";
+						var message = "The Recipe in your repository is custom made and does not match any of the provider's recipes.";
+						providerRecipes[provider.provider].forEach(function(oneRecipe){
+							if(oneRecipe.sha === fileSHA){
+								message = "The Recipe in your repository matches the provider's recipe named [ " + oneRecipe.name + " ].";
+								type = "info";
+							}
+						});
+						
+						var customRecipe = {
+							_id: "custom",
+							provider: provider.provider,
+							name: "Custom Recipe Detected",
+							sha: fileSHA,
+							recipe: fileContent
+						};
+						
+						var match = false;
+						providerRecipes[provider.provider].forEach(function(recipes){
+							if(recipes._id === customRecipe._id){
+								recipes = customRecipe;
+								match = true;
+							}
+						});
+						
+						if(!match){
+							providerRecipes[provider.provider].push(customRecipe);
+						}
+						
+						message = "<alert class='w100 c-both' type='" + type + "'><span>" + message + "</span>";
+						message += "<a class='btn btn-default f-right' onclick='expandCustomRecipeContent(); return false;' id='customRepoRecipeContentBTN' style='position: relative; top: -6px;'>Show Recipe Content</a>";
+						message += "</alert><br /><div>" +
+							"<pre id='customRepoRecipeContent' style='width:100%; display:none;'><code class='yaml' >" + fileContent + "</code></pre>" +
+							"</div>";
+						
+						form.entries.forEach(function(oneFormEntry){
+							if(oneFormEntry.type === 'group' && oneFormEntry.name === 'repoRecipe'){
+								oneFormEntry.entries.push({
+									"type": "html",
+									"value": "<br /><div id='repoRecipeBranchAnswer'></div>"
+								});
+								
+								$timeout(function(){
+									var ele = angular.element(document.getElementById('repoRecipeBranchAnswer'));
+									ele.html(message);
+									$compile(ele.contents())(currentScope);
+								}, 700);
+							}
+						});
 					});
 				}
 			};
@@ -679,8 +654,8 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 				delete oneBranch.commit.url;
 				newInput.value.push({'v': oneBranch.name, 'l': oneBranch.name});
 			});
-			groupInfo.entries.push(newInput);
-			return cb(groupInfo);
+			
+			return cb(newInput);
 		});
 	}
 	
@@ -1223,3 +1198,34 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 		"configureRepo": configureRepo
 	}
 }]);
+
+function expandRecipeContent(elId){
+	var cssProp = jQuery('#', elId).css('display');
+	if(cssProp === 'none'){
+		jQuery('#e_' + elId).slideDown();
+		// jQuery('#customRepoRecipeContentBTN').html('Hide Recipe Content');
+		jQuery('#e_'+ elId + ' code').each(function(i, block) {
+			hljs.highlightBlock(block);
+		});
+	}
+	else{
+		jQuery('#' + elId).slideUp();
+		// jQuery('#customRepoRecipeContentBTN').html('Show Recipe Content');
+	}
+	
+}
+
+function expandCustomRecipeContent(){
+	var cssProp = jQuery('#customRepoRecipeContent').css('display');
+	if(cssProp === 'none'){
+		jQuery('#customRepoRecipeContent').slideDown();
+		jQuery('#customRepoRecipeContentBTN').html('Hide Recipe Content');
+		jQuery('#customRepoRecipeContent code').each(function(i, block) {
+			hljs.highlightBlock(block);
+		});
+	}
+	else{
+		jQuery('#customRepoRecipeContent').slideUp();
+		jQuery('#customRepoRecipeContentBTN').html('Show Recipe Content');
+	}
+}
