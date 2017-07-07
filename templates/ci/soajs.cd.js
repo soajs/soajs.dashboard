@@ -105,7 +105,8 @@ var utils = {
 			"repo" : gitRepo,
 			"branch": gitBranch,
 			"owner": gitOwner,
-			"ciProvider": ciProvider
+			"ciProvider": ciProvider,
+			"commit": gitCommit
 		};
 		//if not a multi repo
 		if(config && config.type && config.type !== "multi" && config.serviceName){
