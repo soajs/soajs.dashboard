@@ -4,6 +4,7 @@ var gitRepo = null;
 var gitOwner = null;
 var gitBranch = null;
 var ciProvider = null;
+var gitCommit = null;
 
 var authKey = process.env.SOAJS_CD_AUTH_KEY;
 var deployToken = process.env.SOAJS_CD_DEPLOY_TOKEN;
@@ -33,6 +34,7 @@ var utils = {
 			gitOwner = repoSlug[0].toLowerCase();
 			gitRepo = repoSlug[1].toLowerCase();
 			gitBranch = process.env.TRAVIS_BRANCH.toLowerCase();
+			gitCommit = process.env.TRAVIS_COMMIT;
 		}
 		else if(process.env.DRONE){
 			console.log("Drone build environment detected");
@@ -46,6 +48,7 @@ var utils = {
 			gitOwner = process.env.DRONE_REPO_OWNER.toLowerCase();
 			gitRepo = process.env.DRONE_REPO_NAME.toLowerCase();
 			gitBranch = process.env.DRONE_REPO_BRANCH.toLowerCase();
+			gitCommit = process.env.DRONE_COMMIT;
 		}
 		else {
 			console.log("Could not find any build environment. Aborting...");
