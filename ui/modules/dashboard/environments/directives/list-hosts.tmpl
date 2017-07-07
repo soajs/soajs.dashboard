@@ -46,7 +46,7 @@
 													</td>
 												</tr>
 												<tr>
-													<td valign="top" width="7.0%">
+													<td valign="top" width="10%">
 														<a href="" ng-click="executeHeartbeatTest(envCode, oneIp)" title="{{translation.executeHeartbeatOperation[LANG]}}">
 															<span class="icon icon-heart"></span>&nbsp;
 														</a>
@@ -57,6 +57,10 @@
 
 														<a href="" ng-show="oneIp.heartbeat" ng-click="reloadRegistry(envCode, oneIp)" title="{{translation.reloadRegistryOperation[LANG]}}">
 															<span class="icon icon-undo"></span>&nbsp;
+														</a>
+														
+														<a href="" ng-show="oneIp.heartbeat" ng-click="loadProvisioning(envCode, oneIp)" title="{{translation.loadProvisionOperation[LANG]}}">
+															<span class="icon icon-download3"></span>&nbsp;
 														</a>
 													</td>
 												</tr>
@@ -123,7 +127,7 @@
 																				<span class="icon icon-undo"></span>&nbsp;
 																			</a>
 
-																			<a href="" ng-show="oneIp.healthy" ng-click="loadProvisioning(envCode, oneIp)" title="{{translation.loadProvisionOperation[LANG]}}">
+																			<a href="" ng-show="oneIp.healthy && hosts[service].name === 'oauth'" ng-click="loadProvisioning(envCode, oneIp)" title="{{translation.loadProvisionOperation[LANG]}}">
 																				<span class="icon icon-download3"></span>&nbsp;
 																			</a>
 
