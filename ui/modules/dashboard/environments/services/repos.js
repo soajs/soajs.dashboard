@@ -146,25 +146,27 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', fu
 
 				currentScope.cdSettings = response[currentScope.envCode.toUpperCase()];
 				currentScope.accounts.forEach(function(oneAccount) {
-					oneAccount.repos.forEach(function (oneRepo) {
-						if (currentScope.cdSettings[oneRepo.name]) {
-							oneRepo.deploySettings = currentScope.cdSettings[oneRepo.name];
-						}
-
-						oneRepo.servicesList.forEach(function (oneService) {
-							if (currentScope.cdSettings[oneService.name]) {
-								oneService.deploySettings = currentScope.cdSettings[oneService.name];
-
-								if (oneService.versions && oneService.versions.length > 0) {
-									oneService.versions.forEach(function (oneVersion) {
-										if (currentScope.cdSettings[oneService.name]['v' + oneVersion.v]) {
-											oneVersion.deploySettings = currentScope.cdSettings[oneService.name]['v' + oneVersion.v];
-										}
-									});
-								}
+					if (oneAccount.repos && oneAccount.repos.length > 0) {
+						oneAccount.repos.forEach(function (oneRepo) {
+							if (currentScope.cdSettings[oneRepo.name]) {
+								oneRepo.deploySettings = currentScope.cdSettings[oneRepo.name];
 							}
+
+							oneRepo.servicesList.forEach(function (oneService) {
+								if (currentScope.cdSettings[oneService.name]) {
+									oneService.deploySettings = currentScope.cdSettings[oneService.name];
+
+									if (oneService.versions && oneService.versions.length > 0) {
+										oneService.versions.forEach(function (oneVersion) {
+											if (currentScope.cdSettings[oneService.name]['v' + oneVersion.v]) {
+												oneVersion.deploySettings = currentScope.cdSettings[oneService.name]['v' + oneVersion.v];
+											}
+										});
+									}
+								}
+							});
 						});
-					});
+					}
 				});
 			}
 		});
@@ -182,36 +184,38 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', fu
 				currentScope.displayAlert('danger', error.message);
 			} else {
 				currentScope.accounts.forEach(function (oneAccount) {
-					oneAccount.repos.forEach(function (oneRepo) {
-						if (oneRepo.servicesList) {
-							oneRepo.servicesList.forEach(function (oneService) {
-								response.forEach(function (oneDeployedEntry) {
-									if (oneDeployedEntry.labels && oneDeployedEntry.labels['soajs.service.name'] && oneDeployedEntry.labels['soajs.service.name'] === oneService.name) {
-										oneService.deployed = true;
-										oneService.deployedVersionsCounter = 0;
-										if (oneService.versions) {
-											oneService.versions.forEach(function (oneVersion) {
-												if (oneDeployedEntry.labels && oneDeployedEntry.labels['soajs.service.version'] && oneDeployedEntry.labels['soajs.service.version'] === oneVersion.v) {
-													oneVersion.deployed = true;
-													oneService.deployedVersionsCounter++;
-												}
-											});
-										}
-										else {
+					if (oneAccount.repos && oneAccount.repos.length > 0) {
+						oneAccount.repos.forEach(function (oneRepo) {
+							if (oneRepo.servicesList) {
+								oneRepo.servicesList.forEach(function (oneService) {
+									response.forEach(function (oneDeployedEntry) {
+										if (oneDeployedEntry.labels && oneDeployedEntry.labels['soajs.service.name'] && oneDeployedEntry.labels['soajs.service.name'] === oneService.name) {
 											oneService.deployed = true;
+											oneService.deployedVersionsCounter = 0;
+											if (oneService.versions) {
+												oneService.versions.forEach(function (oneVersion) {
+													if (oneDeployedEntry.labels && oneDeployedEntry.labels['soajs.service.version'] && oneDeployedEntry.labels['soajs.service.version'] === oneVersion.v) {
+														oneVersion.deployed = true;
+														oneService.deployedVersionsCounter++;
+													}
+												});
+											}
+											else {
+												oneService.deployed = true;
+											}
 										}
+									});
+								});
+							}
+							else {
+								response.forEach(function (oneDeployedEntry) {
+									if (oneDeployedEntry.labels && oneDeployedEntry.labels['service.repo'] && oneDeployedEntry.labels['service.repo'] === oneRepo.name) {
+										oneRepo.deployed = true;
 									}
 								});
-							});
-						}
-						else {
-							response.forEach(function (oneDeployedEntry) {
-								if (oneDeployedEntry.labels && oneDeployedEntry.labels['service.repo'] && oneDeployedEntry.labels['service.repo'] === oneRepo.name) {
-									oneRepo.deployed = true;
-								}
-							});
-						}
-					});
+							}
+						});
+					}
 				});
 			}
 		});

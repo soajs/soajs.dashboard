@@ -36,7 +36,7 @@
                                     {{repo.name}}
                                 </div>
                                 <div class="body">
-                                    <accordion close-others="true">
+                                    <accordion close-others="true" ng-if="repo.servicesList && repo.servicesList.length > 0">
             							<accordion-group is-open="false" ng-repeat="service in repo.servicesList" class="blueAccordion" ng-class="{greenAccordion: service.deployed}">
             								<accordion-heading>
                                                 <span class="icon icon-cloud"></span>{{service.name}} [{{service.type}}]
@@ -65,6 +65,11 @@
                                             </div>
             							</accordion-group>
             						</accordion>
+                                    <div class="entryBoxes entryBoxesGrid noVersionsBox" ng-if="!repo.servicesList || repo.servicesList.length === 0">
+                                        <a href="" class="btn btn-m btn-default" ng-if="!service.deploySettings"><span class="icon icon-cog"></span>Configure Deployment</a>
+                                        <a href="" class="btn btn-m btn-default" ng-if="service.deploySettings"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
+                                        <a href="" class="btn btn-m btn-default" ng-class="{disabled: (service.deployed || !service.deploySettings)}"><span class="icon icon-power-cord"></span>First Time Deploy</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
