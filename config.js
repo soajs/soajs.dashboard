@@ -1065,7 +1065,14 @@ module.exports = {
                     "validation": {
                         "type": "boolean"
                     }
-                }
+                },
+	            'specifyGit': {
+		            "source": ['query.specifyGit'],
+		            "required": false,
+		            "validation": {
+			            "type": "boolean"
+		            }
+	            }
             },
 
             "/catalog/recipes/get": {
@@ -2212,6 +2219,13 @@ module.exports = {
                         "type": "string"
                     }
                 },
+	            "commit": {
+		            "source": ['body.commit'],
+		            "required": true,
+		            "validation": {
+			            "type": "string"
+		            }
+	            },
 				"ciProvider": {
 					"source": ['body.ciProvider'],
                     "required": true,

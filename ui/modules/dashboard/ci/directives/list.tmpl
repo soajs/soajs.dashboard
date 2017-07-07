@@ -1,6 +1,6 @@
 <section ng-controller="ciAppCtrl">
 	<tabset>
-		<tab heading="Accounts" ng-click="listAccounts()">
+		<tab heading="Accounts" ng-click="listAccounts()" ng-show="access.get">
 			<br />
 			<div ng-if="accounts && accounts.length === 0">
 				<alert type="warning">Did not find any Git Accounts activated. <a href="#/repositories">Click here</a> to activate a Git Account so you can proceed.</alert>
@@ -20,13 +20,13 @@
 											<img class="ci_logo" ng-src="{{provider.icon}}" alt="{{provider.icon}}" />
 											<span class="repoFullName">{{provider.provider}}</span>
 											<div class="rightActions" ng-show="!provider.locked">
-												<a href="" ng-if="!provider.ciToken" ng-click="activateAccount(account.owner, provider)" ng-style="{'margin-top': '-19px'}">
+												<a href="" ng-if="!provider.ciToken && access.activate" ng-click="activateAccount(account.owner, provider)" ng-style="{'margin-top': '-19px'}">
 													<span class="icon icon-switch" tooltip="{{translation.activate[LANG]}}"></span>
 												</a>
-												<a href="" ng-if="provider.ciToken" ng-click="deactivateAccount(provider)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this provider?">
+												<a href="" ng-if="provider.ciToken && access.deactivate" ng-click="deactivateAccount(provider)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this provider?">
 													<span class="icon icon-cross" tooltip="{{translation.deactivate[LANG]}}"></span>
 												</a>
-												<a href="" ng-if="provider.ciToken" ng-click="updateAccount(provider)" ng-style="{'margin-top': '-19px'}">
+												<a href="" ng-if="provider.ciToken && access.activate" ng-click="updateAccount(provider)" ng-style="{'margin-top': '-19px'}">
 													<span tooltip="Configure" class="icon icon-cog"></span>
 												</a>
 											</div>
@@ -44,7 +44,7 @@
 				</div>
 			</div>
 		</tab>
-		<tab heading="Recipes" ng-click="listUniqueProviders()">
+		<tab heading="Recipes" ng-click="listUniqueProviders()" ng-show="access.providers">
 			<br />
 			<div ng-show="!providers || Object.keys(providers).length === 0">
 				<alert type="warning">Did not Find any Providers Configured. Please Integrate with at least one provider in the previous tab before you can proceed.</alert>
@@ -59,7 +59,7 @@
 						<div class="body">
 							<div class="inner">
 								
-								<div class="dropdown f-left">
+								<div class="dropdown f-left" ng-show="access.add">
 									<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 										Add New Recipe&nbsp;<span class="caret"></span>
 									</button>
@@ -85,10 +85,10 @@
 										<div class="header" ng-class="{blueBoxHeader: !recipe.locked}">{{recipe.name}}
 											<span ng-if="recipe.locked" class="icon icon-lock"></span>
 											<div class="rightActions" style="display:inline;">
-												<a href="" ng-if="!recipe.locked" ng-click="deleteRecipe(recipe)" ng-confirm-click="Are you sure you want to delete this recipe?">
+												<a href="" ng-if="!recipe.locked && access.delete" ng-click="deleteRecipe(recipe)" ng-confirm-click="Are you sure you want to delete this recipe?">
 													<span class="icon icon-cross" tooltip="Delete Recipe"></span>
 												</a>
-												<a href="" ng-if="!recipe.locked" ng-click="updateRecipe(recipe)">
+												<a href="" ng-if="!recipe.locked && access.edit" ng-click="updateRecipe(recipe)">
 													<span class="icon icon-pencil" tooltip="Update Recipe"></span>
 												</a>
 												<a href="" ng-click="viewRecipe(recipe)">

@@ -26,7 +26,7 @@
 .grid .table .row{
     margin: 0;
     height:55px;
-    padding:10px;
+    padding:0 0 0 10px;
 }
 .grid .table .row.first {
     border-top: solid 1px #cccccc;
@@ -45,6 +45,11 @@
 .grid .table .row.notread,
 .grid .table .row:hover {
     background-color: lightgoldenrodyellow;
+}
+
+.grid .table .row.updateError,
+.grid .table .row.updateError:hover {
+    background-color: lightcoral;
 }
 
 .mt-5{
@@ -109,4 +114,11 @@
 
 .font-14{
     font-size:14px;
+}
+
+a.readBox{
+    height: 40px;
+    display: block;
+    width: 30px;
+    float: left;
 }

@@ -300,7 +300,21 @@ var gitAccountsAppConfig = {
 		deactivateRepo: ['dashboard', '/gitAccounts/repo/deactivate', 'put'],
 		syncRepo: ['dashboard', '/gitAccounts/repo/sync', 'put'],
 		getRepos: ['dashboard', '/gitAccounts/getRepos', 'get'],
-		getBranches: ['dashboard', '/gitAccounts/getBranches', 'get']
+		getBranches: ['dashboard', '/gitAccounts/getBranches', 'get'],
+		
+		//ci
+		getCIRepoSettings: ['dashboard', '/ci/settings', 'get'],
+		updateCIRepoSettings: ['dashboard', '/ci/settings', 'put'],
+		
+		downloadCDScript: ['dashboard', '/ci/script/download', 'get'],
+		downloadCIRecipe: ['dashboard', '/ci/recipe/download', 'get'],
+		
+		
+		getCIProviders: ['dashboard', '/ci/providers', 'get'],
+		getCIRepoCustomRecipe: ['dashboard', '/ci/repo/remote/config', 'get'],
+		
+		getCIAccountInfo: ['dashboard', '/ci', 'get'],
+		enableDisableCIRepo: ['dashboard', '/ci/status', 'get'],
 	},
 
 	"blacklistedRepos": [

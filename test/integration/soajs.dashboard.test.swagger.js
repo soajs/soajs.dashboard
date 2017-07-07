@@ -116,7 +116,7 @@ describe("Swagger", function () {
 			});
 		});
 		
-		describe("Testing simulation api", function () {
+		describe.skip("Testing simulation api", function () {
 			it("success - will check input", function (done) {
 				var params = {
 					"form": {
