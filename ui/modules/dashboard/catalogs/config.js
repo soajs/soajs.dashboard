@@ -7,7 +7,7 @@ var catalogAppConfig = {
                 {
 					'name': 'recipe',
 					'label': 'Recipe',
-                    'fieldMsg': "Click <a href='https://soajsorg.atlassian.net/wiki/display/SOAJ/Catalog+Recipes' target='_blank'>here</a> to see the list of environment variables available for each recipe type",
+                    'fieldMsg': "Click <a href='https://soajsorg.atlassian.net/wiki/display/SOAJ/Catalog+Recipes' target='_blank'>here</a> to learn how to build a catalog recipe",
 					'type': 'jsoneditor',
                     'readonly': true,
 					'height': '450px',
@@ -29,7 +29,8 @@ var catalogAppConfig = {
                 {
 					'name': 'recipe',
 					'label': 'Recipe',
-					'type': 'jsoneditor',
+	                'fieldMsg': "Click <a href='https://soajsorg.atlassian.net/wiki/display/SOAJ/Catalog+Recipes' target='_blank'>here</a> to learn how to build a catalog recipe",
+	                'type': 'jsoneditor',
 					'height': '450px',
                     'fixedHeight': true,
 					'value': {},

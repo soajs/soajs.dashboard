@@ -1065,7 +1065,14 @@ module.exports = {
                     "validation": {
                         "type": "boolean"
                     }
-                }
+                },
+	            'specifyGit': {
+		            "source": ['query.specifyGit'],
+		            "required": false,
+		            "validation": {
+			            "type": "boolean"
+		            }
+	            }
             },
 
             "/catalog/recipes/get": {

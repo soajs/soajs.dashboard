@@ -631,25 +631,25 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 						                    currentScope["_ci_service_" + envVariable] = catalogRecipe.recipe.buildOptions.env[envVariable].default || "";
 					                    }
 				                    }
-
-				                    if(catalogRecipe.recipe.deployOptions.specifyGitConfiguration){
-					                    currentScope.service = '';
-					                    currentScope.version = '';
-					                    currentScope.groupConfig = '';
-					                    currentScope.branch = '';
-
-					                    // currentScope.allowGitOverride = true;
-					                    getServices(function () {
-						                    getDaemons(function () {
-							                    if (Object.keys(currentScope.services).length === 0) {
-								                    currentScope.generateNewMsg(env, 'danger', "There are no new services to deploy");
-							                    }
-							                    else {
-							                    	currentScope.allowGitOverride = true;
-							                    }
-						                    });
-					                    });
-				                    }
+				                    
+				                    // if(catalogRecipe.recipe.deployOptions.specifyGitConfiguration){
+					                 //    currentScope.service = '';
+					                 //    currentScope.version = '';
+					                 //    currentScope.groupConfig = '';
+					                 //    currentScope.branch = '';
+				                    //
+					                 //    // currentScope.allowGitOverride = true;
+					                 //    getServices(function () {
+						             //        getDaemons(function () {
+							         //            if (Object.keys(currentScope.services).length === 0) {
+								     //                currentScope.generateNewMsg(env, 'danger', "There are no new services to deploy");
+							         //            }
+							         //            else {
+							         //            	currentScope.allowGitOverride = true;
+							         //            }
+						             //        });
+					                 //    });
+				                    // }
 			                    }
 		                    });
 	                    }
@@ -782,59 +782,62 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             });
         }
 
-        function getServices(cb) {
-            getSendDataFromServer(currentScope, ngDataApi, {
-                method: 'post',
-                routeName: '/dashboard/services/list'
-            }, function (error, response) {
-                if (error) {
-                    currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveListServices[LANG]);
-                } else {
-	                currentScope.services =[];
-                    response.records.forEach(function (oneService) {
-                        oneService.type = 'service';
-                        if (oneService.name === 'controller') {
-                            oneService.UIGroup = 'Controllers';
-                        } else {
-                            oneService.UIGroup = 'Services';
-                        }
-                        if (allowListing(env, oneService)) {
-                            currentScope.services.push(oneService);
-                        }
-                    });
-                    return cb();
-                }
-            });
-        }
-
-        function getDaemons(cb) {
-            getSendDataFromServer(currentScope, ngDataApi, {
-                method: 'post',
-                routeName: '/dashboard/daemons/list',
-                params: {
-                    'getGroupConfigs': true
-                }
-            }, function (error, response) {
-                if (error) {
-                    currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveDaemonsHostsInformation[LANG]);
-                } else {
-                    response.forEach(function (oneDaemon) {
-                        if (allowListing(env, oneDaemon)) {
-                            oneDaemon.type = 'daemon';
-                            oneDaemon.UIGroup = 'Daemons';
-                            currentScope.services.push(oneDaemon);
-                        }
-                    });
-                    return cb();
-                }
-            });
-        }
+        // function getServices(cb) {
+        //     getSendDataFromServer(currentScope, ngDataApi, {
+        //         method: 'post',
+        //         routeName: '/dashboard/services/list'
+        //     }, function (error, response) {
+        //         if (error) {
+        //             currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveListServices[LANG]);
+        //         } else {
+	     //            currentScope.services =[];
+        //             response.records.forEach(function (oneService) {
+        //                 oneService.type = 'service';
+        //                 if (oneService.name === 'controller') {
+        //                     oneService.UIGroup = 'Controllers';
+        //                 } else {
+        //                     oneService.UIGroup = 'Services';
+        //                 }
+        //                 if (allowListing(env, oneService)) {
+        //                     currentScope.services.push(oneService);
+        //                 }
+        //             });
+        //             return cb();
+        //         }
+        //     });
+        // }
+	    
+        // function getDaemons(cb) {
+        //     getSendDataFromServer(currentScope, ngDataApi, {
+        //         method: 'post',
+        //         routeName: '/dashboard/daemons/list',
+        //         params: {
+        //             'getGroupConfigs': true
+        //         }
+        //     }, function (error, response) {
+        //         if (error) {
+        //             currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveDaemonsHostsInformation[LANG]);
+        //         } else {
+        //             response.forEach(function (oneDaemon) {
+        //                 if (allowListing(env, oneDaemon)) {
+        //                     oneDaemon.type = 'daemon';
+        //                     oneDaemon.UIGroup = 'Daemons';
+        //                     currentScope.services.push(oneDaemon);
+        //                 }
+        //             });
+        //             return cb();
+        //         }
+        //     });
+        // }
 
         function getCatalogRecipes(cb) {
             currentScope.loadingRecipes = true;
             getSendDataFromServer(currentScope, ngDataApi, {
                 method: 'get',
-                routeName: '/dashboard/catalog/recipes/list'
+                routeName: '/dashboard/catalog/recipes/list',
+	            params: {
+		            specifyGit : false
+	            }
             }, function (error, response) {
                 currentScope.loadingRecipes = false;
                 if (error) {
@@ -846,74 +849,77 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                         if (!currentScope.recipes[oneRecipe.type]) {
                             currentScope.recipes[oneRecipe.type] = [];
                         }
-                        currentScope.recipes[oneRecipe.type].push(oneRecipe);
+                         if(!Object.hasOwnProperty.call(oneRecipe.recipe.deployOptions, 'specifyGitConfiguration') || !oneRecipe.recipe.deployOptions.specifyGitConfiguration ){
+	                         currentScope.recipes[oneRecipe.type].push(oneRecipe);
+                         }
+                        
                     });
                     return cb();
                 }
             });
         }
 
-        function allowListing(env, service) {
-            var dashboardServices = ['controller', 'dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
-            var nonDashboardServices = ['controller', 'urac', 'oauth']; //locked services that non dashboard environments are allowed to have
-            if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(service.name) !== -1) {
-                return filterServiceInfo(service);
-            } else if (env.toLowerCase() !== 'dashboard' &&
-                // service.name !== 'controller' && //controller is added later manually
-                (
-                    //not a locked service for dashboard and non dashboard environments
-                    (dashboardServices.indexOf(service.name) !== -1 && nonDashboardServices.indexOf(service.name) !== -1) ||
-                    //a locked service that is common for dashboard and non dash envs (urac, oauth)
-                    (dashboardServices.indexOf(service.name) === -1 && nonDashboardServices.indexOf(service.name) === -1)
-                )
-            ) {
-                return filterServiceInfo(service);
-            }
-            return false;
-        }
+        // function allowListing(env, service) {
+        //     var dashboardServices = ['controller', 'dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
+        //     var nonDashboardServices = ['controller', 'urac', 'oauth']; //locked services that non dashboard environments are allowed to have
+        //     if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(service.name) !== -1) {
+        //         return filterServiceInfo(service);
+        //     } else if (env.toLowerCase() !== 'dashboard' &&
+        //         // service.name !== 'controller' && //controller is added later manually
+        //         (
+        //             //not a locked service for dashboard and non dashboard environments
+        //             (dashboardServices.indexOf(service.name) !== -1 && nonDashboardServices.indexOf(service.name) !== -1) ||
+        //             //a locked service that is common for dashboard and non dash envs (urac, oauth)
+        //             (dashboardServices.indexOf(service.name) === -1 && nonDashboardServices.indexOf(service.name) === -1)
+        //         )
+        //     ) {
+        //         return filterServiceInfo(service);
+        //     }
+        //     return false;
+        // }
 
         //filter out service information that already exist
-        function filterServiceInfo(service) {
-            var deployedServices = currentScope.rawServicesResponse;
-
-            if (!service.group && service.name === 'controller') {
-                if (currentScope.hosts.soajs.groups) {
-                    var found = false;
-                    for (var groupName in currentScope.hosts.soajs.groups) {
-                        currentScope.hosts.soajs.groups[groupName].list.forEach(function (oneService) {
-                            if (oneService.name === env.toLowerCase() + '-controller') {
-                                found = true;
-                            }
-                        });
-                    }
-                    if (!found) {
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            else {
-                var serviceVersions = Object.keys(service.versions);
-                serviceVersions.forEach(function (version) {
-                    for (var i = 0; i < deployedServices.length; i++) {
-                        //if a version of that service is found to be deployed, delete it from the service information
-                        if (service.name === deployedServices[i].labels['soajs.service.name'] && version == deployedServices[i].labels['soajs.service.version']) {
-                            delete service.versions[version];
-                        }
-                    }
-                });
-
-                //if all the versions of the service are found to be deployed, return false
-                //else, return true, after having removed the deployed versions
-                if (Object.keys(service.versions).length === 0)
-                    return false;
-                else
-                    return true;
-            }
-        }
+        // function filterServiceInfo(service) {
+        //     var deployedServices = currentScope.rawServicesResponse;
+        //
+        //     if (!service.group && service.name === 'controller') {
+        //         if (currentScope.hosts.soajs.groups) {
+        //             var found = false;
+        //             for (var groupName in currentScope.hosts.soajs.groups) {
+        //                 currentScope.hosts.soajs.groups[groupName].list.forEach(function (oneService) {
+        //                     if (oneService.name === env.toLowerCase() + '-controller') {
+        //                         found = true;
+        //                     }
+        //                 });
+        //             }
+        //             if (!found) {
+        //                 return true;
+        //             }
+        //             else {
+        //                 return false;
+        //             }
+        //         }
+        //         return true;
+        //     }
+        //     else {
+        //         var serviceVersions = Object.keys(service.versions);
+        //         serviceVersions.forEach(function (version) {
+        //             for (var i = 0; i < deployedServices.length; i++) {
+        //                 //if a version of that service is found to be deployed, delete it from the service information
+        //                 if (service.name === deployedServices[i].labels['soajs.service.name'] && version == deployedServices[i].labels['soajs.service.version']) {
+        //                     delete service.versions[version];
+        //                 }
+        //             }
+        //         });
+        //
+        //         //if all the versions of the service are found to be deployed, return false
+        //         //else, return true, after having removed the deployed versions
+        //         if (Object.keys(service.versions).length === 0)
+        //             return false;
+        //         else
+        //             return true;
+        //     }
+        // }
 
         //Start here
         if (currentScope.hosts && currentScope.controllers) {
