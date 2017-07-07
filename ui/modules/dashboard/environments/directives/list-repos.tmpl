@@ -52,16 +52,16 @@
                                                         <span style="float: right; color: green;" ng-if="version.deployed"><span class="icon icon-checkmark"></span>Deployed</span>
                                                     </div>
                                                     <div class="body serviceVersionBox">
-                                                        <a href="" ng-if="!version.deployed" class="btn btn-sm btn-default" style="float: right;"><span class="icon icon-cog"></span>First Time Deploy</a>
-                                                        <a href="" ng-if="version.deployed" class="btn btn-sm btn-default" style="float: right;"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
-                                                        <a href="" class="btn btn-sm btn-default" ng-class="{disabled: version.deployed}" style="float: right;"><span class="icon icon-cog"></span>Configure Deployment</a>
+                                                        <a href="" class="btn btn-sm btn-default" ng-class="{disabled: (version.deployed || !version.deploySettings)}" style="float: right;"><span class="icon icon-power-cord"></span>First Time Deploy</a>
+                                                        <a href="" class="btn btn-sm btn-default" ng-if="!version.deploySettings" style="float: right;"><span class="icon icon-cog"></span>Configure Deployment</a>
+                                                        <a href="" class="btn btn-sm btn-default" ng-if="version.deploySettings" style="float: right;"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="entryBoxes entryBoxesGrid noVersionsBox" ng-if="service.versions.length === 0">
-                                                <a href="" class="btn btn-m btn-default" ng-class="{disabled: version.deployed}"><span class="icon icon-cog"></span>Configure Deployment</a>
-                                                <a href="" ng-if="!version.deployed" class="btn btn-m btn-default"><span class="icon icon-cog"></span>First Time Deploy</a>
-                                                <a href="" ng-if="version.deployed" class="btn btn-m btn-default"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
+                                                <a href="" class="btn btn-m btn-default" ng-if="!service.deploySettings"><span class="icon icon-cog"></span>Configure Deployment</a>
+                                                <a href="" class="btn btn-m btn-default" ng-if="service.deploySettings"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
+                                                <a href="" class="btn btn-m btn-default" ng-class="{disabled: (service.deployed || !service.deploySettings)}"><span class="icon icon-power-cord"></span>First Time Deploy</a>
                                             </div>
             							</accordion-group>
             						</accordion>
