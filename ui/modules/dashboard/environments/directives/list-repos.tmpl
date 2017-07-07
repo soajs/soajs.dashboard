@@ -20,6 +20,7 @@
                 <div class="body" ng-if="!account.loading">
 	                <div class="inner" ng-class="{'hidden': account.hide}">
                         <label>Active Repositories</label>
+                        <span ng-if="account.loadingMsg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img class="loadingImageSmall" ng-src="{{imagePath}}" width="16px" height="16px">&nbsp;<b>{{account.loadingMsg}}</b></span>
 		                <span style="float: right; padding-right: 1%" class="icon icon-search">&nbsp;
 		                <input ng-model="searchKeyword" />&nbsp;
 		                <a href="" ng-if="access.git.listAccountRepos" ng-click="listRepos(account, 'getRepos');">
@@ -29,25 +30,44 @@
 		                <div ng-if="account.repos && account.repos.length === 0">
 			                <alert type="warning">{{translation.noReposFound[LANG]}}</alert>
 		                </div>
-		                <div ng-if="access.git.listAccountRepos" id="reposList">
-			                <ul class="blueListing">
-				                <li class="blueLi row-list" ng-repeat="repo in account.repos| filter: searchKeyword" ng-style="{'width': '99%'}">
-					                <span class="repoFullName">{{repo.full_name}}</span>
-					                <div class="rightActions" style="float: right;">
-                                        <button class="btn btn-default" type="button">
-                                            CI
-                                        </button>
-                                        <button class="btn btn-default" type="button">
-                                            CD
-                                        </button>
-                                        <button class="btn btn-default" type="button">
-                                            Deploy
-                                        </button>
-					                </div>
-				                </li>
-			                </ul>
-			                <a href="" class="loadMore btn btn-block" ng-click="listRepos(account, 0, 'loadMore')" ng-if="account.allowLoadMore">Load More</a>
-		                </div>
+                        <div class="entryBoxes">
+                            <div ng-repeat="repo in account.repos| filter: searchKeyword" class="entryBox pl0" ng-style="{'width': '99%'}">
+                                <div class="header opened">
+                                    {{repo.name}}
+                                </div>
+                                <div class="body">
+                                    <accordion close-others="true">
+            							<accordion-group is-open="false" ng-repeat="service in repo.servicesList" class="blueAccordion" ng-class="{greenAccordion: service.deployed}">
+            								<accordion-heading>
+                                                <span class="icon icon-cloud"></span>{{service.name}} [{{service.type}}]
+                                                <div style="float: right;" ng-if="service.deployed">
+                                                    <span ng-if="service.versions.length > 0" style="margin-right: 30px;"><span class="icon icon-power-cord"></span>{{service.deployedVersionsCounter}} out of {{service.versions.length}} version(s) are plugged</span>
+                                                    <span style="float: right; color: green;" ng-if="service.deployed"><span class="icon icon-checkmark"></span>Deployed</span>
+                                                </div>
+                                            </accordion-heading>
+                                            <div class="entryBoxes entryBoxesGrid" ng-if="service.versions.length > 0">
+                                                <div class="entryBox pl0" style="width: 32%" ng-repeat="version in service.versions" ng-class="{greenBox: version.deployed}">
+                                                    <div class="header opened" ng-class="{greenBoxHeader: version.deployed}">
+                                                        Version {{version.v}}
+                                                        <span style="float: right; color: green;" ng-if="version.deployed"><span class="icon icon-checkmark"></span>Deployed</span>
+                                                    </div>
+                                                    <div class="body serviceVersionBox">
+                                                        <a href="" ng-if="!version.deployed" class="btn btn-sm btn-default" style="float: right;"><span class="icon icon-cog"></span>First Time Deploy</a>
+                                                        <a href="" ng-if="version.deployed" class="btn btn-sm btn-default" style="float: right;"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
+                                                        <a href="" class="btn btn-sm btn-default" ng-class="{disabled: version.deployed}" style="float: right;"><span class="icon icon-cog"></span>Configure Deployment</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="entryBoxes entryBoxesGrid noVersionsBox" ng-if="service.versions.length === 0">
+                                                <a href="" class="btn btn-m btn-default" ng-class="{disabled: version.deployed}"><span class="icon icon-cog"></span>Configure Deployment</a>
+                                                <a href="" ng-if="!version.deployed" class="btn btn-m btn-default"><span class="icon icon-cog"></span>First Time Deploy</a>
+                                                <a href="" ng-if="version.deployed" class="btn btn-m btn-default"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
+                                            </div>
+            							</accordion-group>
+            						</accordion>
+                                </div>
+                            </div>
+                        </div>
 	                </div>
 
                     <div class="entryAction">

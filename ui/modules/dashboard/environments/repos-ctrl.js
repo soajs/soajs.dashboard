@@ -12,18 +12,46 @@ environmentsApp.controller('deployReposCtrl', ['$scope', '$cookies', 'injectFile
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
 
-	$scope.listGitAccounts = function () {
-		deployRepos.listGitAccounts($scope);
+	$scope.showHide = function (account) {
+		if (!account.hide) {
+			jQuery('#a_' + account._id + " .body .inner").slideUp();
+			account.icon = 'plus';
+			account.hide = true;
+		}
+		else {
+			jQuery('#a_' + account._id + " .body .inner").slideDown();
+			account.icon = 'minus';
+			account.hide = false;
+		}
+	};
+
+	$scope.listGitAccounts = function (cb) {
+		deployRepos.listGitAccounts($scope, cb);
 	};
 
 	$scope.listRepos = function (account, action) {
 		deployRepos.listRepos($scope, account, action);
 	};
 
+	$scope.getCdData = function () {
+		deployRepos.getCdData($scope);
+	};
+
+	$scope.getDeployedServices = function () {
+		deployRepos.getDeployedServices($scope);
+	};
+
+	$scope.configureCD = function (repo) {
+		deployRepos.configureCD($scope, repo);
+	};
+
 	injectFiles.injectCss("modules/dashboard/environments/environments.css");
 	//default operation
 	if ($scope.access.git.listAccounts) {
 		$scope.envCode = $cookies.getObject("myEnv").code;
-		$scope.listGitAccounts();
+		$scope.listGitAccounts(function () {
+			$scope.getCdData();
+			$scope.getDeployedServices();
+		});
 	}
 }]);

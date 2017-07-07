@@ -50,11 +50,6 @@ ul {
     width: 18px !important;
 }
 
-.customEntryBox {
-    width: 48% !important;
-    padding-left: 0px !important;
-}
-
 .customInput {
     width:49% !important;
 }
@@ -227,4 +222,56 @@ ul {
     height: 290px;
     width: 100%;
     padding-top: 40px;
+}
+
+.pl0 {
+    padding-left: 0px !important;
+}
+
+.blueAccordion{
+    border: solid 1px #337ab7;
+}
+
+.blueAccordion .panel-heading{
+    background: #DEF1F7;
+}
+
+.blueAccordion .panel-body{
+    border-top-color: #337ab7 !important;
+}
+
+.serviceVersionBox a {
+    margin-top: 2px;
+    margin-right: 2px;
+    margin-bottom: 2px;
+    width: 49%;
+}
+
+.noVersionsBox {
+    text-align: center;
+}
+
+.noVersionsBox a {
+    display: inline;
+    margin-top: 2px;
+    margin-right: 2px;
+    margin-bottom: 2px;
+    width: 40% !important;
+}
+
+.greenBox {
+    border: solid 1px #3c763d !important;
+}
+
+.greenBoxHeader {
+    background-color: #dff0d8 !important;
+    border-bottom-color: #3c763d !important;
+}
+
+.greenAccordion{
+    border-color: #3c763d !important;
+}
+
+.greenAccordion .panel-heading{
+    background-color: #dff0d8 !important;
 }
