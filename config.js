@@ -2212,6 +2212,13 @@ module.exports = {
                         "type": "string"
                     }
                 },
+	            "commit": {
+		            "source": ['body.commit'],
+		            "required": true,
+		            "validation": {
+			            "type": "string"
+		            }
+	            },
 				"ciProvider": {
 					"source": ['body.ciProvider'],
                     "required": true,
