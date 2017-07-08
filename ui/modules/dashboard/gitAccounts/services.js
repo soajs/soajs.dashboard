@@ -454,17 +454,23 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 						repo: repo.name,
 						branch: data
 					}, function(response){
-						var fileContent = response.file;
-						var fileSHA = response.sha;
-						
+						var fileContent, fileSHA, message;
 						var type = "warning";
-						var message = "The Recipe in your repository is custom made and does not match any of the provider's recipes.";
-						providerRecipes[provider.provider].forEach(function(oneRecipe){
-							if(oneRecipe.sha === fileSHA){
-								message = "The Recipe in your repository matches the provider's recipe named [ " + oneRecipe.name + " ].";
-								type = "info";
-							}
-						});
+						
+						if(response){
+							fileContent = response.file;
+							fileSHA = response.sha;
+							message = "The Recipe in your repository is custom made and does not match any of the provider's recipes.";
+							providerRecipes[provider.provider].forEach(function(oneRecipe){
+								if(oneRecipe.sha === fileSHA){
+									message = "The Recipe in your repository matches the provider's recipe named [ " + oneRecipe.name + " ].";
+									type = "info";
+								}
+							});
+						}
+						else{
+							message = "No Recipe found in your repository, you can download any of the above recipes from the provider's.";
+						}
 						
 						var customRecipe = {
 							_id: "custom",
@@ -487,17 +493,30 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 						}
 						
 						message = "<alert class='w100 c-both' type='" + type + "'><span>" + message + "</span>";
-						message += "<a class='btn btn-default f-right' onclick='expandCustomRecipeContent(); return false;' id='customRepoRecipeContentBTN' style='position: relative; top: -6px;'>Show Recipe Content</a>";
-						message += "</alert><br /><div>" +
-							"<pre id='customRepoRecipeContent' style='width:100%; display:none;'><code class='yaml' >" + fileContent + "</code></pre>" +
-							"</div>";
+						if(response){
+							message += "<a class='btn btn-default f-right' onclick='expandCustomRecipeContent(); return false;' id='customRepoRecipeContentBTN' style='position: relative; top: -6px;'>Show Recipe Content</a>";
+						}
+						message += "</alert><br />";
+						
+						if(response){
+							message +=  "<div><pre id='customRepoRecipeContent' style='width:100%; display:none;'><code class='yaml' >" + fileContent + "</code></pre></div>";
+						}
 						
 						form.entries.forEach(function(oneFormEntry){
 							if(oneFormEntry.type === 'group' && oneFormEntry.name === 'repoRecipe'){
-								oneFormEntry.entries.push({
-									"type": "html",
-									"value": "<br /><div id='repoRecipeBranchAnswer'></div>"
+								var divExists = false;
+								oneFormEntry.entries.forEach(function(oneSubEntry){
+									if(oneSubEntry.name === 'repoRecipeBranchAnswer'){
+										divExists = true;
+									}
 								});
+								if(!divExists){
+									oneFormEntry.entries.push({
+										"type": "html",
+										"name": "repoRecipeBranchAnswer",
+										"value": "<br /><div id='repoRecipeBranchAnswer'></div>"
+									});
+								}
 								
 								$timeout(function(){
 									var ele = angular.element(document.getElementById('repoRecipeBranchAnswer'));

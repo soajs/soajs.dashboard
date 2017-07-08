@@ -6,6 +6,15 @@
     padding-left: 35px !important;
 }
 
+.ciFormHeader{
+    background-color: #9EBC5D !important;
+    border: solid 1px #8A9E5B !important;
+    border-radius: 5px;
+    width: 98%;
+    margin: 10px auto;
+    color: white;
+}
+
 .customEntryBox {
     width: 100% !important;
     /*min-height: 196px !important;*/

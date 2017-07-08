@@ -129,16 +129,20 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 			for (var i in response) {
 				resp[i] = response[i];
 			}
-			
-			if (typeof(resp.data) !== 'object') {
-				if (typeof(resp.data) === 'string') {
-					resp.data = {
-						data: resp.data
-					};
+			if(resp.data){
+				if (typeof(resp.data) !== 'object') {
+					if (typeof(resp.data) === 'string') {
+						resp.data = {
+							data: resp.data
+						};
+					}
+					else {
+						resp.data = {};
+					}
 				}
-				else {
-					resp.data = {};
-				}
+			}
+			else {
+				resp.data = {};
 			}
 			resp.data.soajsauth = resp.soajsauth;
 			return cb(null, resp.data);
