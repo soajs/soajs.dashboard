@@ -457,7 +457,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 						var fileContent, fileSHA, message;
 						var type = "warning";
 						
-						if(response){
+						if(response && response.sha){
 							fileContent = response.file;
 							fileSHA = response.sha;
 							message = "The Recipe in your repository is custom made and does not match any of the provider's recipes.";
@@ -493,12 +493,12 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 						}
 						
 						message = "<alert class='w100 c-both' type='" + type + "'><span>" + message + "</span>";
-						if(response){
+						if(response && response.sha){
 							message += "<a class='btn btn-default f-right' onclick='expandCustomRecipeContent(); return false;' id='customRepoRecipeContentBTN' style='position: relative; top: -6px;'>Show Recipe Content</a>";
 						}
 						message += "</alert><br />";
 						
-						if(response){
+						if(response && response.sha){
 							message +=  "<div><pre id='customRepoRecipeContent' style='width:100%; display:none;'><code class='yaml' >" + fileContent + "</code></pre></div>";
 						}
 						
