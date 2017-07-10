@@ -4,6 +4,7 @@
     </div>
     <div ng-if="accounts.length > 0">
         <div class="entryBoxes entryBoxesGrid">
+            <button ng-if="access.git.listAccounts" class="btn btn-primary" style="float: right;" ng-click="listGitAccounts()"><span class="icon icon-loop2"></span>Refresh</button>
             <div ng-if="access.git.listAccounts" id="a_{{account._id}}" ng-repeat="account in accounts" class="entryBox customEntryBox">
                 <div class="header opened">
                     <span class="icon icon-github" ng-if="account.provider === 'github'"></span>
@@ -23,9 +24,6 @@
                         <span ng-if="account.loadingMsg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img class="loadingImageSmall" ng-src="{{imagePath}}" width="16px" height="16px">&nbsp;<b>{{account.loadingMsg}}</b></span>
 		                <span style="float: right; padding-right: 1%" class="icon icon-search">&nbsp;
 		                <input ng-model="searchKeyword" />&nbsp;
-		                <a href="" ng-if="access.git.listAccountRepos" ng-click="listRepos(account, 'getRepos');">
-                            <span class="icon icon-loop2" tooltip="{{translation.syncRepo[LANG]}}"></span>
-                        </a>
 	                </span>
 		                <div ng-if="account.repos && account.repos.length === 0">
 			                <alert type="warning">{{translation.noReposFound[LANG]}}</alert>

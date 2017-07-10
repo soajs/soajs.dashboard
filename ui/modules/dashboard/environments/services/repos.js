@@ -2,7 +2,7 @@
 var deployReposService = soajsApp.components;
 deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', function (ngDataApi, $timeout, $modal) {
 
-	function listGitAccounts(currentScope, cb) {
+	function listGitAccounts(currentScope) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			'method': 'get',
 			'routeName': '/dashboard/gitAccounts/accounts/list'
@@ -17,8 +17,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', fu
 				});
 
 				if (currentScope.accounts.length > 0) {
-					var counter = 0;
-					listRepos(currentScope, 'getRepos', cb);
+					listRepos(currentScope, 'getRepos');
 				}
 				if(currentScope.accounts.length === 1){
 					currentScope.accounts[0].hide = false;
@@ -28,7 +27,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', fu
 		});
 	}
 
-	function listRepos(currentScope, action, cb) {
+	function listRepos(currentScope, action) {
 		if (!Array.isArray(currentScope.accounts)) {
 			currentScope.accounts = [currentScope.accounts];
 		}
@@ -101,9 +100,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', fu
 									});
 								});
 
-								if (cb) {
-									return cb();
-								}
+								getCdData(currentScope, function () {
+									getDeployedServices(currentScope);
+								});
 							});
 						});
 			        }
@@ -138,7 +137,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', fu
 		}
 	}
 
-	function getCdData (currentScope) {
+	function getCdData (currentScope, cb) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/cd"
@@ -148,7 +147,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', fu
 			} else {
 				if (!response[currentScope.envCode.toUpperCase()] || Object.keys(response[currentScope.envCode.toUpperCase()]).length === 0) {
 					currentScope.cdSettings = {};
-					return;
+					return cb();
 				}
 
 				currentScope.cdSettings = response[currentScope.envCode.toUpperCase()];
@@ -175,6 +174,8 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', fu
 						});
 					}
 				});
+
+				return cb();
 			}
 		});
 	}
