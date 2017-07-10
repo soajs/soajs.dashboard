@@ -1485,6 +1485,7 @@ var environmentsNav = [
 		'url': '#/deploy-repositories',
 		'tplPath': 'modules/dashboard/environments/directives/list-repos.tmpl',
 		'icon': 'git',
+		'excludedEnvs': ['dashboard'],
 		'pillar':{
 			'name': 'deployment',
 			'label': translation.deploy[LANG],
