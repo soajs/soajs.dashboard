@@ -8,7 +8,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
     constructModulePermissions($scope, $scope.access, gitAccountsAppConfig.permissions);
 
     $scope.referToDoc = 'Refer to the online documentation at ' + '<a target="_blank" href="http://soajs.org/#/documentation">SOAJS Website.</a>';
-    $scope.excludedSOAJSRepos = gitAccountsAppConfig.blacklistedRepos;
+    $scope.whitelistedRepos = whitelistedRepos;
 
     $scope.defaultPageNumber = 1;
     $scope.defaultPerPage = 100;
@@ -208,7 +208,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                         if (oneAccount.owner === 'soajs') {
                             oneAccount.repos = [];
                             response.forEach (function (oneRepo) {
-                                if ($scope.excludedSOAJSRepos.indexOf(oneRepo.full_name) === -1) {
+                                if ($scope.whitelistedRepos.indexOf(oneRepo.full_name) !== -1) {
                                     oneAccount.repos.push(oneRepo);
                                 }
                             });
@@ -235,7 +235,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
 
         if (account.owner === 'soajs') {
             repos.forEach (function (oneRepo) {
-                if ($scope.excludedSOAJSRepos.indexOf(oneRepo.full_name) === -1) {
+                if ($scope.whitelistedRepos.indexOf(oneRepo.full_name) !== -1) {
                     account.repos.push(oneRepo);
                 }
             });

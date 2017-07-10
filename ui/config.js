@@ -73,3 +73,13 @@ var modules = {
 		}
 	}
 };
+
+var whitelistedRepos = [
+	'soajs/soajs.examples',
+	'soajs/soajs.jsconf',
+	'soajs/soajs.artifact',
+	'soajs/soajs.quick.demo',
+	'soajs/soajs.nodejs.express',
+	'soajs/soajs.nodejs.hapi',
+	'soajs/soajs.java.jaxrs_jersey'
+];

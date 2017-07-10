@@ -240,6 +240,11 @@ ul {
     border-top-color: #337ab7 !important;
 }
 
+.serviceVersionBox{
+    display:table;
+    width:100%;
+}
+
 .serviceVersionBox a {
     margin-top: 2px;
     margin-right: 2px;

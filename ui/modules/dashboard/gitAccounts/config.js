@@ -315,27 +315,5 @@ var gitAccountsAppConfig = {
 		
 		getCIAccountInfo: ['dashboard', '/ci', 'get'],
 		enableDisableCIRepo: ['dashboard', '/ci/status', 'get'],
-	},
-
-	"blacklistedRepos": [
-		'soajs/connect-mongo-soajs',
-		'soajs/soajs',
-		'soajs/soajs.agent',
-		'soajs/soajs.composer',
-		'soajs/soajs.dash.example',
-		'soajs/soajs.gcs',
-		'soajs/soajs.mongodb.data',
-		'soajs/soajs.utilities',
-		'soajs/soajs.website.contactus',
-		'soajs/soajs.jsconfbeirut',
-		"soajs/soajs.installer",
-		"soajs/soajs.sdk",
-		"soajs/soajs.dashboard.ui",
-		"soajs/soajs.website.ui",
-		"soajs/grunt-soajs",
-		"soajs/soajs.urac.driver",
-		"soajs/soajs.core.drivers",
-		"soajs/soajs.core.modules",
-		"soajs/soajs.core.libs"
-	]
+	}
 };
