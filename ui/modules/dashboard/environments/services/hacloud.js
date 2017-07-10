@@ -262,7 +262,11 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		});
 	}
 
-	function deleteService(currentScope, service) {
+	function deleteService(currentScope, service, groupName) {
+		if (groupName && (groupName === 'soajs' || groupName === 'nginx') && currentScope.envCode.toLowerCase() === 'dashboard') {
+			return;
+		}
+
 		var params = {
 			env: currentScope.envCode,
 			serviceId: service.id,
@@ -286,7 +290,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		});
 	}
 
-	function scaleService(currentScope, service) {
+	function scaleService(currentScope, service, groupName) {
 		$modal.open({
 			templateUrl: "scaleService.tmpl",
 			size: 'm',
@@ -300,6 +304,16 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 				$scope.onSubmit = function () {
 					overlayLoading.show();
+
+					if (groupName && (groupName === 'soajs' || groupName === 'nginx') && currentScope.envCode.toLowerCase() === 'dashboard') {
+						if ($scope.newScale < 1) {
+							overlayLoading.hide();
+							$scope.message = {
+								danger: 'The minimum allowed scale for SOAJS services deployed in DASHBOARD environment is 1.'
+							};
+							return;
+						}
+					}
 					getSendDataFromServer(currentScope, ngDataApi, {
 						method: 'put',
 						routeName: '/dashboard/cloud/services/scale',
