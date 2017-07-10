@@ -59,8 +59,15 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', fu
 			            appendNewRepos(oneAccount, response);
 			        }
 			        else if (action === 'getRepos') {
-			            oneAccount.repos = response;
+						if (oneAccount.owner === 'soajs') {
+							for (var i = response.length - 1; i >= 0; i--) {
+								if (['soajs.dashboard', 'soajs.gcs'].indexOf(response[i].name) !== -1) {
+									response.splice(i, 1);
+								}
+							}
+						}
 
+			            oneAccount.repos = response;
 						oneAccount.repos.forEach(function (oneRepo) {
 							var repoServices = [];
 							if (oneRepo.type === 'service' || oneRepo.type === 'daemon') {
