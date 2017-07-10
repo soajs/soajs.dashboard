@@ -11,6 +11,7 @@ environmentsApp.controller('deployReposCtrl', ['$scope', '$cookies', 'injectFile
 
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
+	$scope.$parent.rerenderMenuAfterEnvExclude(environmentsNav);
 
 	$scope.showHide = function (account) {
 		if (!account.hide) {
