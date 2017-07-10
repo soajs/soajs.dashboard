@@ -66,19 +66,15 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	};
 
 	$scope.pauseRecipe = function(pause){
-		$scope.cdData[$scope.myEnv].pause = pause;
-
-		var data = $scope.cdData;
-		delete data._id;
-		delete data.type;
-		delete data.soajsauth;
-
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			method: 'post',
-			routeName: '/dashboard/cd',
+			routeName: '/dashboard/cd/pause',
 			data: {
-				"config": data
+				"config": {
+					"env": $scope.myEnv,
+					"pause": pause
+				}
 			}
 		}, function (error, response) {
 			overlayLoading.hide();
@@ -94,24 +90,23 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		});
 	};
 
-	$scope.saveRecipe = function() {
-
-		var configuration={};
-		for(var service in $scope.configuration){
-			configuration[service] = {
+	$scope.saveRecipe = function(service) {
+		var data={
+			env: $scope.myEnv,
+			serviceName: service,
+			default: {
 				branch: $scope.configuration[service].branch,
 				strategy: $scope.configuration[service].strategy
-			};
-			for(var version in $scope.configuration[service].versions){
-				configuration[service][version] = $scope.configuration[service].versions[version];
 			}
+		};
+		
+		for(var version in $scope.configuration[service].versions){
+			if(!data.versions){
+				data.versions = {};
+			}
+			
+			data.versions[version] = $scope.configuration[service].versions[version];
 		}
-
-		$scope.cdData[$scope.myEnv] = configuration;
-		var data = $scope.cdData;
-		delete data._id;
-		delete data.type;
-		delete data.soajsauth;
 
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {

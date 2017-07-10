@@ -2133,7 +2133,7 @@ module.exports = {
 
             "/cd": {
                 "_apiInfo": {
-                    "l": "Save CD Configuration",
+                    "l": "Save CD Configuration for a specific Service",
                     "group": "Continuous Delivery"
                 },
                 "config": {
@@ -2141,50 +2141,65 @@ module.exports = {
                     "required": false,
                     "validation": {
 	                    "type": "object",
-	                    "patternProperties": {
-		                    "^[a-zA-Z]{2,}$": {//env code
-			                    "type": "object",
-			                    "required": true,
-			                    "properties": {
-				                    "pause": {"type": "boolean", "required": false}
+	                    "properties": {
+	                    	"env": {"type":"string","required": true},
+		                    "serviceName": {"type":"string", "required": true},
+		                    "default": {
+	                    		"type": "object",
+			                    "properties":{
+				                    "branch": {"type": "string", "required": false, "minLengh": 1, 'pattern': /[a-z]+/},
+				                    "strategy": {"type": "string", "enum": ["notify", "update"], "required": false},
+				                    "deploy": {"type": "boolean", "required": false},
+				                    "options": {
+					                    "type":"object",
+					                    "properties": cdOptions
+				                    }
 			                    },
-			                    "patternProperties": { //service
-				                    "^(?!(pause))[a-z0-9]+$": {
+			                    "additionalProperties": false
+		                    },
+		                    "versions": {
+	                    		"type":"object",
+			                    "patternProperties":{
+				                    "^v[0-9]+$": {
 					                    "type": "object",
-					                    "required": false,
+					                    "required": true,
 					                    "properties": {
-						                    "branch": {"type": "string", "required": false, "minLengh": 1, 'pattern': /[a-z]+/},
-						                    "strategy": {"type": "string", "enum": ["notify", "update"], "required": false},
+						                    "branch": {"type": "string", "required": true, "minLengh": 1, 'pattern': /[a-z]+/},
+						                    "strategy": {"type": "string", "enum": ["notify", "update"], "required": true},
 						                    "deploy": {"type": "boolean", "required": false},
 						                    "options": {
 							                    "type":"object",
 							                    "properties": cdOptions
 						                    }
-					                    },
-					                    "patternProperties": {
-						                    "^v[0-9]+$": {
-							                    "type": "object",
-							                    "required": true,
-							                    "properties": {
-								                    "branch": {"type": "string", "required": true, "minLengh": 1, 'pattern': /[a-z]+/},
-								                    "strategy": {"type": "string", "enum": ["notify", "update"], "required": true},
-								                    "deploy": {"type": "boolean", "required": false},
-								                    "options": {
-									                    "type":"object",
-									                    "properties": cdOptions
-								                    }
-							                    }
-						                    }
-					                    },
-					                    "additionalProperties": false
+					                    }
 				                    }
-			                    }
+			                    },
+			                    "additionalProperties": false
 		                    }
 	                    },
 	                    "additionalProperties": false
                     }
                 }
             },
+	
+	        "/cd/pause": {
+		        "_apiInfo": {
+			        "l": "Pause CD Configuration",
+			        "group": "Continuous Delivery"
+		        },
+		        "config": {
+			        "source": ['body.config'],
+			        "required": false,
+			        "validation": {
+				        "type": "object",
+				        "properties":{
+				        	"env": {"type": "string", "required": true},
+					        "pause": {"type": "boolean", "required": false}
+				        },
+				        "additionalProperties": false
+			        }
+		        }
+	        },
 
             "/cd/deploy": {
                 "_apiInfo": {
