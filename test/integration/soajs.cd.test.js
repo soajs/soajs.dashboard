@@ -19,7 +19,7 @@ function executeMyRequest (params, apiPath, method, cb) {
 		assert.ok(body);
 		return cb(body);
 	});
-	
+
 	function requester (apiName, method, params, cb) {
 		var options = {
 			uri: 'http://localhost:4000/dashboard/' + apiName,
@@ -28,7 +28,7 @@ function executeMyRequest (params, apiPath, method, cb) {
 			},
 			json: true
 		};
-		
+
 		if (params.headers) {
 			for (var h in params.headers) {
 				if (params.headers.hasOwnProperty(h)) {
@@ -36,19 +36,19 @@ function executeMyRequest (params, apiPath, method, cb) {
 				}
 			}
 		}
-		
+
 		if (params.timeout) {
 			options.timeout = params.timeout;
 		}
-		
+
 		if (params.form) {
 			options.body = params.form;
 		}
-		
+
 		if (params.qs) {
 			options.qs = params.qs;
 		}
-		
+
 		if (params.formData) {
 			options.formData = params.formData;
 		}
@@ -58,7 +58,7 @@ function executeMyRequest (params, apiPath, method, cb) {
 			if (error && error.code && error.code === 'ESOCKETTIMEDOUT') {
 				return cb(null, 'ESOCKETTIMEDOUT');
 			}
-			
+
 			assert.ifError(error);
 			assert.ok(body);
 			return cb(null, body);
@@ -95,13 +95,13 @@ function deleteService (options, cb) {
 describe("testing hosts deployment", function () {
 	var soajsauth, recipesInfo;
 	var Authorization;
-	
+
 	before(function (done) {
 		process.env.SOAJS_ENV_WORKDIR = process.env.APP_DIR_FOR_CODE_COVERAGE;
 		console.log("***************************************************************");
 		console.log("* Setting CD functionality");
 		console.log("***************************************************************");
-		
+
 		var options1 = {
 			uri: 'http://localhost:4000/oauth/authorization',
 			headers: {
@@ -110,12 +110,12 @@ describe("testing hosts deployment", function () {
 			},
 			json: true
 		};
-		
+
 		request.get(options1, function (error, response, body) {
 			assert.ifError(error);
 			assert.ok(body);
 			Authorization = body.data;
-			
+
 			var options = {
 				uri: 'http://localhost:4000/oauth/token',
 				headers: {
@@ -134,7 +134,7 @@ describe("testing hosts deployment", function () {
 				assert.ifError(error);
 				assert.ok(body);
 				access_token = body.access_token;
-				
+
 				var validDeployerRecord = {
 					"type": "container",
 					"selected": "container.docker.local",
@@ -159,9 +159,9 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-		
+
 	});
-	
+
 	before("Perform cleanup of any previous services deployed", function (done) {
 		console.log('Deleting previous deployments ...');
 		shell.exec('docker service rm $(docker service ls -q) && docker rm -f $(docker ps -qa)');
@@ -169,7 +169,7 @@ describe("testing hosts deployment", function () {
 			done();
 		}, 1500);
 	});
-	
+
 	before('create dashboard environment record', function (done) {
 		var dashEnv = {
 			"code": "DASHBOARD",
@@ -311,7 +311,7 @@ describe("testing hosts deployment", function () {
 			done();
 		});
 	});
-	
+
 	before('Activate swarm mode for local docker engine and create overlay network', function (done) {
 		var params = {
 			method: 'POST',
@@ -326,10 +326,10 @@ describe("testing hosts deployment", function () {
 				"ForceNewCluster": true
 			}
 		};
-		
+
 		request(params, function (error, response, nodeId) {
 			assert.ifError(error);
-			
+
 			params = {
 				method: 'POST',
 				uri: 'http://unix:/var/run/docker.sock:/networks/create',
@@ -348,14 +348,14 @@ describe("testing hosts deployment", function () {
 					}
 				}
 			};
-			
+
 			request(params, function (error, response, body) {
 				assert.ifError(error);
 				done();
 			});
 		});
 	});
-	
+
 	after(function (done) {
 		mongo.closeDb();
 		console.log('Deleting deployments and cleaning up...');
@@ -364,30 +364,33 @@ describe("testing hosts deployment", function () {
 			done();
 		}, 1500);
 	});
-	
+
 	describe("testing service deployment", function () {
-		
+
 		function mimicCall(token, version, cb){
 			var options = {
 				qs: {
 					deploy_token: token
 				},
 				form: {
+					owner: 'soajs',
 					repo: 'soajs.controller',
 					branch: 'master',
+					commit: '1fea60a6d26efd7fcbaeeb95d52fc651d6c3eba5',
+					ciProvider: 'travis',
 					services: [{serviceName: 'controller'}]
 				}
 			};
-			
+
 			if(version){
 				options.form.services[0].serviceVersion = version;
 			}
-			
+
 			executeMyRequest(options, "cd/deploy", "post", function (body) {
 				cb(body);
 			});
 		}
-		
+
 		function configureCD(config, cb){
 			var options = {
 				qs: {
@@ -397,12 +400,12 @@ describe("testing hosts deployment", function () {
 					"config": config
 				}
 			};
-			
+
 			executeMyRequest(options, "cd/", "post", function (body) {
 				return cb(body);
 			});
 		}
-		
+
 		it("update catalog recipe", function(done){
 			var recipes = [
 				{
@@ -570,7 +573,7 @@ describe("testing hosts deployment", function () {
 									"type": "computed",
 									"value": "$SOAJS_NX_SITE_DOMAIN"
 								},
-								
+
 								"SOAJS_NX_CONTROLLER_NB": {
 									"type": "computed",
 									"value": "$SOAJS_NX_CONTROLLER_NB"
@@ -583,7 +586,7 @@ describe("testing hosts deployment", function () {
 									"type": "computed",
 									"value": "$SOAJS_NX_CONTROLLER_PORT"
 								},
-								
+
 								"SOAJS_DEPLOY_HA": {
 									"type": "computed",
 									"value": "$SOAJS_DEPLOY_HA"
@@ -592,7 +595,7 @@ describe("testing hosts deployment", function () {
 									"type": "computed",
 									"value": "$SOAJS_HA_NAME"
 								}
-								
+
 							},
 							"cmd": {
 								"deploy": {
@@ -735,7 +738,7 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 		it("success - deploy 1 service using catalog 1", function (done) {
 			var params = {
 				qs: {
@@ -771,7 +774,7 @@ describe("testing hosts deployment", function () {
 				}, 1000);
 			});
 		});
-		
+
 		it("success - deploy 1 service using catalog2", function (done) {
 			var params = {
 				qs: {
@@ -801,7 +804,7 @@ describe("testing hosts deployment", function () {
 				}, 700);
 			});
 		});
-		
+
 		it("success - deploy 1 service using catalog3", function (done) {
 			var params = {
 				qs: {
@@ -835,8 +838,8 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
-		it("configuring ci", function(done){
+
+		it.skip("configuring ci", function(done){
 			let doc = {
 				"$set":{
 					"driver": "travis",
@@ -853,15 +856,15 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 		it("mimic call to cd/deploy, nothing should happen", function(done){
-			mimicCall("1234567890", null, function(body){
+			mimicCall("myGitToken", null, function(body){
 				assert.equal(body.result, true);
 				assert.ok(body.data);
 				done();
 			});
 		});
-		
+
 		it("fail - mimic call for cd/deploy of controller in dev", function(done){
 			mimicCall("invalid", null, function(body){
 				assert.equal(body.result, false);
@@ -869,24 +872,22 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 		it("mimic call for cd/deploy of controller in dev", function(done){
-			mimicCall("1234567890", null, function(body){
+			mimicCall("myGitToken", null, function(body){
 				assert.equal(body.result, true);
 				assert.ok(body.data);
 				done();
 			});
 		});
-		
+
 		it("configure cd again with specific entry for controller", function(done){
 			configureCD({
-				"DEV": {
-					// "branch": "master",
-					// "strategy": "notify",
-					"controller":{
-						"branch": "master",
-						"strategy": "notify"
-					}
+				"env": "DEV",
+				"serviceName": "controller",
+				"default": {
+					"branch": "master",
+					"strategy": "notify"
 				}
 			}, function(body){
 				assert.ok(body.result);
@@ -894,28 +895,23 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 		it("mimic call for cd/deploy of controller in dev again", function(done){
-			mimicCall("1234567890", null, function(body){
+			mimicCall("myGitToken", null, function(body){
 				assert.equal(body.result, true);
 				assert.ok(body.data);
 				done();
 			});
 		});
-		
+
 		it("configure cd again with specific version for controller", function(done){
 			configureCD({
-				"DEV": {
-					// "branch": "master",
-					// "strategy": "notify",
-					"controller":{
-						"branch": "master",
-						"strategy": "notify",
-						"v1":{
-							"branch": "master",
-							"strategy": "notify"
-						}
-					}
+				"env": "DEV",
+				"serviceName": "controller",
+				"version": {
+					"v": "v1",
+					"branch": "master",
+					"strategy": "notify"
 				}
 			}, function(body){
 				assert.ok(body.result);
@@ -923,15 +919,15 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 		it("mimic call for cd/deploy of controller in dev again", function(done){
-			mimicCall("1234567890", 1, function(body){
+			mimicCall("myGitToken", 1, function(body){
 				assert.equal(body.result, true);
 				assert.ok(body.data);
 				done();
 			});
 		});
-		
+
 		it("get ledger", function(done){
 			var options = {
 				qs: {
@@ -939,11 +935,11 @@ describe("testing hosts deployment", function () {
 					env: 'dev'
 				}
 			};
-			
+
 			executeMyRequest(options, "cd/ledger", "get", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
-				
+
 				var list = body.data;
 				if(list.length === 0){
 					done();
@@ -959,7 +955,7 @@ describe("testing hosts deployment", function () {
 							}
 						}
 					};
-					
+
 					executeMyRequest(options, "cd/ledger/read", "put", function (body) {
 						assert.ok(body.result);
 						assert.ok(body.data);
@@ -968,7 +964,7 @@ describe("testing hosts deployment", function () {
 				}
 			});
 		});
-		
+
 		it("mark all ledger entries as read", function(done){
 			var options = {
 				qs: {
@@ -980,21 +976,21 @@ describe("testing hosts deployment", function () {
 					}
 				}
 			};
-			
+
 			executeMyRequest(options, "cd/ledger/read", "put", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
 				done();
 			});
 		});
-		
+
 		it("trigger catalog update", function(done){
 			mongo.update('catalogs', {'name': "soajsCatalog"}, {$set:{v: 2, ts: new Date().getTime()}}, function(error){
 				assert.ifError(error);
 				done();
 			});
 		});
-		
+
 		it("get updates", function(done){
 			var options = {
 				qs: {
@@ -1002,27 +998,22 @@ describe("testing hosts deployment", function () {
 					env: 'dev'
 				}
 			};
-			
+
 			executeMyRequest(options, "cd/updates", "get", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
 				done();
 			});
 		});
-		
+
 		it("configure cd for automatic controller update", function(done){
 			configureCD({
-				"DEV": {
-					// "branch": "master",
-					// "strategy": "notify",
-					"controller":{
-						"branch": "master",
-						"strategy": "update",
-						"v2":{
-							"branch": "master",
-							"strategy": "notify"
-						}
-					}
+				"env": "DEV",
+				"serviceName": "controller",
+				"version": {
+					"v": "v2",
+					"branch": "master",
+					"strategy": "update"
 				}
 			}, function(body){
 				assert.ok(body.result);
@@ -1030,15 +1021,15 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 		it("mimic call for cd/deploy of controller in dev again", function(done){
-			mimicCall("1234567890", 1, function(body){
+			mimicCall("myGitToken", 1, function(body){
 				assert.equal(body.result, true);
 				assert.ok(body.data);
 				done();
 			});
 		});
-		
+
 		//todo: need to trigger get action api, redeploy and rebuild
 		it("calling take action on redeploy", function(done){
 			var options = {
@@ -1051,7 +1042,7 @@ describe("testing hosts deployment", function () {
 			executeMyRequest(options, "cd/ledger", "get", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
-				
+
 				var list = body.data;
 				var oneUpdate;
 				for(var i =0; i < list.length; i++){
@@ -1060,7 +1051,7 @@ describe("testing hosts deployment", function () {
 						break;
 					}
 				}
-				
+
 				var options = {
 					qs: {
 						deploy_token: access_token
@@ -1076,7 +1067,7 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-		
+
 		it("calling take action on rebuild", function(done){
 			getServices('dev', function(list){
 				var lastEntry = list[list.length -1];
