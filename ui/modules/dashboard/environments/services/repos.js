@@ -332,34 +332,12 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 					}
 				};
 				
-				// $scope.setVersion = function (oneEnv, version, oneSrv) {
-				// 	var deployedBranch = '';
-				// 	if($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch){
-				// 		deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch;
-				// 	}
-				// 	if($scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version] && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch']){
-				// 		deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch'];
-				// 	}
-				// 	if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active) {
-				// 		delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active;
-				// 	}
-				// 	else if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version]){
-				// 		$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] = {
-				// 			branch: deployedBranch,
-				// 			active: true
-				// 		};
-				// 	}
-				// 	else{
-				// 		$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active = true;
-				// 	}
-				// };
-				
 				$scope.updateGitBranch = function (oneSrv, oneEnv, version) {
 					$scope.branches.forEach(function (oneBranch) {
 						if (oneBranch.name = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch){
 							if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options) {
 								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch;
-								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.commit = oneBranch.commit;
+								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.commit = oneBranch.commit.sha;
 							}
 						}
 					});
@@ -425,12 +403,12 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = 500;
 							}
 						}
-						else {
+						else if(first) {
 							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit /= 1048576;
-							
 							if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit < 1) {
 								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = 500;
 							}
+						
 						}
 						
 						if (service.type === 'daemon' && service.grpConf) {
@@ -544,9 +522,6 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 		var oneRepo = currentScope.oneSrv;
 		configuration.serviceName = oneRepo;
 		configuration.env = oneEnv;
-		// if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options && currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig && currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit) {
-		// 	currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit *= 1048576;
-		// }
 		if (version === 'Default') {
 			configuration.default = {
 				branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].branch,
@@ -561,7 +536,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				if (configuration.default.options && configuration.default.options.deployConfig && configuration.default.options.deployConfig.memoryLimit) {
 					configuration.default.options.deployConfig.memoryLimit *= 1048576;
 				}
-				configuration.version.deploy = true;
+				configuration.default.deploy = true;
 			}
 		}
 		else {
@@ -577,6 +552,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 					delete currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas;
 				}
 				configuration.version.options = currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options;
+				if (configuration.version.options && configuration.version.options.deployConfig && configuration.version.options.deployConfig.memoryLimit) {
+					configuration.version.options.deployConfig.memoryLimit *= 1048576;
+				}
 				configuration.version.deploy = true;
 			}
 		}
@@ -768,7 +746,6 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				'type': 'repo'
 			}
 		}, function (error, response) {
-			console.log(response);
 			if (error) {
 				currentScope.form.displayAlert('danger', error.message);
 			} else {
@@ -921,11 +898,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 	}
 	
 	function doDeploy(currentScope, params) {
-		
 		if (params.custom && params.custom.version) {
 			params.custom.version = parseInt(params.custom.version);
 		}
-		console.log(params);
 		// if (currentScope.service.latest) {
 		// 	params.version = parseInt(currentScope.service.latest) || 1;
 		// }
@@ -977,7 +952,6 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			}
 			else {
 				currentScope.displayAlert('success', 'Service rebuilt successfully');
-				currentScope.cancel();
 			}
 		});
 	}
@@ -987,7 +961,8 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 		'listRepos': listRepos,
 		'getCdData': getCdData,
 		'getDeployedServices': getDeployedServices,
-		'deployService': deployService
+		'deployService': deployService,
+		'doDeploy': doDeploy
 	};
 	
 }]);

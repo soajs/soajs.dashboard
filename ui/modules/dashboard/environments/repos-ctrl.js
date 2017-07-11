@@ -50,6 +50,10 @@ environmentsApp.controller('deployReposCtrl', ['$scope', '$cookies', 'injectFile
 		deployRepos.deployService($scope, oneRepo, service, version, gitAccount);
 	};
 	
+	$scope.doDeploy = function (params) {
+		deployRepos.doDeploy($scope, params);
+	};
+	
 	injectFiles.injectCss("modules/dashboard/environments/environments.css");
 	//default operation
 	if ($scope.access.git.listAccounts) {
