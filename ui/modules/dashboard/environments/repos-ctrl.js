@@ -11,6 +11,7 @@ environmentsApp.controller('deployReposCtrl', ['$scope', '$cookies', 'injectFile
 
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
+	$scope.$parent.rerenderMenuAfterEnvExclude(environmentsNav);
 
 	$scope.showHide = function (account) {
 		if (!account.hide) {
@@ -25,16 +26,16 @@ environmentsApp.controller('deployReposCtrl', ['$scope', '$cookies', 'injectFile
 		}
 	};
 
-	$scope.listGitAccounts = function (cb) {
-		deployRepos.listGitAccounts($scope, cb);
+	$scope.listGitAccounts = function () {
+		deployRepos.listGitAccounts($scope);
 	};
 
 	$scope.listRepos = function (account, action) {
 		deployRepos.listRepos($scope, account, action);
 	};
 
-	$scope.getCdData = function () {
-		deployRepos.getCdData($scope);
+	$scope.getCdData = function (cb) {
+		deployRepos.getCdData($scope, cb);
 	};
 
 	$scope.getDeployedServices = function () {
@@ -53,9 +54,6 @@ environmentsApp.controller('deployReposCtrl', ['$scope', '$cookies', 'injectFile
 	//default operation
 	if ($scope.access.git.listAccounts) {
 		$scope.envCode = $cookies.getObject("myEnv").code;
-		$scope.listGitAccounts(function () {
-			$scope.getCdData();
-			$scope.getDeployedServices();
-		});
+		$scope.listGitAccounts();
 	}
 }]);

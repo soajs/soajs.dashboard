@@ -72,11 +72,11 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	if($cookies.getObject('selectedInterval')){
 		$scope.selectedInterval = $cookies.getObject('selectedInterval');
 	}
-	
+
 	$scope.changeSectionType = function(sectionType){
 		$scope.sectionType = sectionType;
 	};
-	
+
 	$scope.changeInterval = function(oneInt){
 		$scope.refreshIntervals.forEach(function(oneInterval){
 			if(oneInterval.v === oneInt.v){
@@ -152,12 +152,12 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 		hacloudSrv.listNamespaces($scope, cb);
 	};
 
-	$scope.deleteService = function (service) {
-		hacloudSrv.deleteService($scope, service);
+	$scope.deleteService = function (service, groupName) {
+		hacloudSrv.deleteService($scope, service, groupName);
 	};
 
-	$scope.scaleService = function (service) {
-		hacloudSrv.scaleService($scope, service);
+	$scope.scaleService = function (service, groupName) {
+		hacloudSrv.scaleService($scope, service, groupName);
 	};
 
 	$scope.redeployService = function (service) {
@@ -199,15 +199,15 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	$scope.hostLogs = function (task) {
 		hacloudSrv.hostLogs($scope, task);
 	};
-	
+
 	$scope.metrics = function (task, serviceName, type, shipper, mode) {
 		hacloudSrv.metrics($scope, task, serviceName, type, shipper, mode);
 	};
-	
+
 	$scope.getSettings = function () {
 		hacloudSrv.getSettings($scope);
 	};
-	
+
 	$scope.activateAnalytics = function () {
 		hacloudSrv.activateAnalytics($scope);
 		$timeout(function(){
@@ -216,14 +216,14 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 			});
 		}, 30000);
 	};
-	
+
 	$scope.deactivateAnalytics = function () {
 		hacloudSrv.deactivateAnalytics($scope);
 		$timeout(function(){
 			$scope.listServices(function(){});
 		}, 5000);
 	};
-	
+
 	$scope.showHideFailures = function(service){
 		service.tasks.forEach(function(oneTask){
 			if(Object.hasOwnProperty.call(oneTask, 'hideIt')){

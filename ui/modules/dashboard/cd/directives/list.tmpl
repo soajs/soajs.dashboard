@@ -1,6 +1,6 @@
 <section ng-controller="cdAppCtrl">
 	<div class="configCd entryBoxes entryBoxesGrid" ng-init="getRecipe()">
-		
+
 		<div ng-show="maxEntries === 0">
 			<alert type="info">No Continuous Delivery Strategy is configured in this environment.</alert>
 		</div>
@@ -15,7 +15,7 @@
 			</div>
 			<div ng-repeat="(oneSrv, cdData) in configuration" class="entryBox customEntryBox">
 				<div class="header opened">{{oneSrv}}</div>
-				
+
 				<div class="body">
 					<div class="entryAction">
 						<a href="" ng-click="cdShowHide(oneSrv)">
@@ -24,10 +24,10 @@
 					</div>
 					<div class="inner" id="cdc_{{oneSrv}}">
 						<br/>
-						<fieldset>
+						<fieldset ng-if="!cdData.versions">
 							<legend class="font-16">Default Strategy</legend>
 							<p>
-								The default strategy of this service in this Environment is:
+								Define the Continuous Delivery strategy of this repository in this Environment:
 							</p>
 							<div>
 								<div class="halfPage branchLabel">
@@ -40,10 +40,13 @@
 										<option value="update">update</option>
 									</select>
 								</div>
+								<div class="f-right">
+									<input class="btn btn-sm btn-primary f-right" ng-click="saveRecipe(oneSrv)" value="Update Settings" type="submit">
+								</div>
 							</div>
 						</fieldset>
-						
-						<table width="100%" border="0">
+
+						<table width="100%" border="0" ng-if="cdData.versions">
 							<tr ng-repeat="(version, versionInfo) in cdData.versions">
 								<td>
 									<fieldset>
@@ -52,7 +55,7 @@
 										</legend>
 										<div ng-show="cdData.versions[version]">
 											<p>
-												Override the default strategy for version <b>{{version}}</b>.
+												Define the Continuous Delivery strategy of this service for this version <b>{{version}}</b> in this Environment:
 											</p>
 											<div class="halfPage branchLabel">
 												<label class="">Branch:</label>&nbsp;{{versionInfo.branch}}
@@ -65,15 +68,15 @@
 												</select>
 											</div>
 										</div>
+										<div class="f-right">
+											<input class="btn btn-sm btn-primary f-right" ng-click="saveRecipe(oneSrv, version)" value="Update Settings" type="submit">
+										</div>
 									</fieldset>
 								</td>
 							</tr>
 						</table>
 					</div>
 				</div>
-			</div>
-			<div class="table c-both w100">
-				<input class="btn btn-sm btn-primary f-right" ng-click="saveRecipe()" value="Save Settings" type="submit">
 			</div>
 		</div>
 	</div>

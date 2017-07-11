@@ -59,6 +59,9 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 								delete $scope.configuration[service][i];
 							}
 						}
+						if (Object.keys($scope.configuration[service].versions).length === 0) {
+							delete $scope.configuration[service].versions;
+						}
 					}
 				}
 			}
@@ -66,19 +69,15 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	};
 
 	$scope.pauseRecipe = function(pause){
-		$scope.cdData[$scope.myEnv].pause = pause;
-
-		var data = $scope.cdData;
-		delete data._id;
-		delete data.type;
-		delete data.soajsauth;
-
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			method: 'post',
-			routeName: '/dashboard/cd',
+			routeName: '/dashboard/cd/pause',
 			data: {
-				"config": data
+				"config": {
+					"env": $scope.myEnv,
+					"pause": pause
+				}
 			}
 		}, function (error, response) {
 			overlayLoading.hide();
@@ -94,24 +93,31 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		});
 	};
 
-	$scope.saveRecipe = function() {
+	$scope.saveRecipe = function(service, version) {
+		var data={
+			env: $scope.myEnv,
+			serviceName: service
+		};
 
-		var configuration={};
-		for(var service in $scope.configuration){
-			configuration[service] = {
+		if ($scope.configuration[service].versions && Object.keys($scope.configuration[service].versions).length > 0) {
+			data.version = {
+				v: version
+			};
+
+			for (var i in $scope.configuration[service].versions[version]) {
+				data.version[i] = $scope.configuration[service].versions[version][i];
+			}
+		}
+		else {
+			data.default = {
 				branch: $scope.configuration[service].branch,
 				strategy: $scope.configuration[service].strategy
 			};
-			for(var version in $scope.configuration[service].versions){
-				configuration[service][version] = $scope.configuration[service].versions[version];
+			if ($scope.configuration[service].deploy) {
+				data.default.deploy = $scope.configuration[service].deploy;
+				data.default.options = $scope.configuration[service].options;
 			}
 		}
-
-		$scope.cdData[$scope.myEnv] = configuration;
-		var data = $scope.cdData;
-		delete data._id;
-		delete data.type;
-		delete data.soajsauth;
 
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {

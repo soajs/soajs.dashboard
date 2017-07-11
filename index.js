@@ -1224,6 +1224,19 @@ service.init(function () {
 			});
 		});
 	});
+	
+	/**
+	 * Pause CD in an environment
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/cd/pause", function (req, res) {
+		initBLModel(req, res, dashboardBL.cd.module, dbModel, function (BL) {
+			BL.pauseCD(config, req, dashboardBL.cd.helper, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
 
 	/**
 	 * Trigger CD deploy operation
