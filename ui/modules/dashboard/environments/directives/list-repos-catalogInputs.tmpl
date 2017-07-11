@@ -1,0 +1,25 @@
+<div ng-show="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.prefix">
+	<label>Image Prefix</label>
+	<input type="text" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.prefix"/>
+	<div class="fieldMsg hint">Override the image prefix if you want</div>
+	<br />
+</div>
+<div ng-show="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.name">
+	<label>Image Name</label>
+	<input type="text" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.name"/>
+	<div class="fieldMsg hint">Override the image name if you want</div>
+	<br />
+</div>
+<div ng-show="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.tag">
+	<label>Image Tag</label>
+	<input type="text" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.tag"/>
+	<div class="fieldMsg hint">Override the image tag if you want</div>
+	<br />
+</div>
+
+<div ng-repeat="(userInputName,userInput) in cdConfiguration[oneSrv][oneEnv].cdData.versions[version].custom">
+	<label>{{userInput.label || userInput.name}}</label>
+	<input type="text" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env[userInputName]" value="{{userInput.value}}" ng-required="userInput.required"/>
+	<div class="fieldMsg hint">{{userInput.fieldMsg}}</div>
+	<br />
+</div>

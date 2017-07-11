@@ -1,0 +1,65 @@
+		<div class="f-left form-g">
+					<fieldset>
+						<legend>Deployment Options</legend>
+						<div class="halfPage branchLabel">
+							<label>{{translation.branch[LANG]}}:</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingBranches">
+							<select class="form-control" ng-disabled="versionInfo.deployed" ng-if="!loadingBranches" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch" ng-change="updateGitBranch(oneSrv, oneEnv, version)">
+								<option ng-repeat="myBranch in branches" value="{{myBranch.name}}">
+									{{myBranch.name}}
+								</option>
+							</select>
+						</div>
+						<div>
+							<label>Memory Limit Per Instance (in MBytes)</label>
+							<input type="number" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit" ng-required="true"/>
+							<label class="fieldMsg">Specify the Maximum memory limit that should be provided when running your service/daemon.</label>
+							<br/>
+						</div>
+						<div>
+							<label>Catalog Recipe</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingRecipes">
+							<select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name group by recipe.type for recipe in myRecipes" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.recipe" ng-change="injectCatalogEntries(oneEnv, version, oneSrv, false)"></select>
+							<label class="fieldMsg">Choose a catalog recipe and define the deployment strategy in this environment.</label>
+							<br>
+						</div>
+						<div ng-include="'modules/dashboard/environments/directives/list-repos-catalogInputs.tmpl'"></div>
+					</fieldset>
+					<fieldset ng-if="allowGitOverride && cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.groupConfigs">
+						<legend>Service Options</legend>
+						<div ng-if="groupConfigs">
+							<label>{{translation.daemonGroupConfig[LANG]}}</label>
+							<select class="form-control" ng-required="true" ng-options="group as group.daemonConfigGroup for group in groupConfigs" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.daemonGroup"></select>
+							<br>
+						</div>
+					</fieldset>
+					<fieldset>
+						<legend>Environment Configuration</legend>
+						<div>
+							<label>Deployment Mode</label>
+							<select class="form-control" ng-required="true" ng-options="mode for mode in deploymentModes" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode"></select>
+							<label class="fieldMsg">Global/Daemonset mode deploys one replica of the service on each node.</label>
+							<label class="fieldMsg">Replicated/Deployment mode deploys the specified number of replicas based on the availability of resources.</label>
+							<br>
+						</div>
+						<div ng-if="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'replicated' || cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'deployment'">
+							<label>Replica Count</label>
+							<input type="number" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas" ng-required="true"/>
+							<label class="fieldMsg">Enter a Replica Count that is greater or equal to 1</label>
+							<br>
+						</div>
+					</fieldset>
+					<fieldset>
+						<legend>Continuous Deployment</legend>
+						<div class="halfPage branchLabel">
+							<label>{{translation.branch[LANG]}}:</label>&nbsp;{{cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch}}
+						</div>
+						<div class="halfPage branchLabel">
+							<label>Strategy:</label>
+							<select class="form-control" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].strategy">
+								<option value="notify">notify</option>
+								<option value="update">update</option>
+							</select>
+						</div>
+					</fieldset>
+				</div>
+			<div class="fieldMsg">This Strategy is applicable only for <b>{{cdData.name}}</b> Version <b>{{version.versionLabel}}</b> and in this Environment.
+			</div>
