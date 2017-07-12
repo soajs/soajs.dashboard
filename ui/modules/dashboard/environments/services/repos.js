@@ -447,7 +447,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.name = catalogRecipe.recipe.deployOptions.image.name;
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.tag = catalogRecipe.recipe.deployOptions.image.tag;
 								}
-								else if (!first) {
+								else {
 									delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image;
 								}
 								//append inputs whose type is userInput
@@ -474,7 +474,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 								if (catalogRecipe.recipe.deployOptions.specifyGitConfiguration) {
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.name = oneSrv;
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.type = $scope.cdConfiguration[oneSrv].type;
-									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.version = version;
+									if(version !== 'Default'){
+										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.version = version;
+									}
 									$scope.allowGitOverride = true;
 								}
 							}
@@ -529,6 +531,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				deploy: false
 			};
 			if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options) {
+				if(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.custom && currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.custom.version){
+					delete currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.custom.version;
+				}
 				if (modes.indexOf(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.mode) === -1) {
 					delete currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas;
 				}
