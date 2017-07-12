@@ -319,71 +319,74 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 		});
 	});
 
-	it.skip("Success - Enable Repo", function (done) {
-		// var params = {
-		// 	"qs": {
-		// 		"id": repoToUse.id,
-		// 		"provider": "travis",
-		// 		"owner": "soajs",
-		// 		"enable": true
-		// 	}
-		// };
-		//
-		// executeMyRequest(params, 'ci/status', 'get', function (body) {
-		// 	done();
-		// });
+	it("Success - Enable Repo", function (done) {
+		var params = {
+			"qs": {
+				"id": repoToUse.id,
+				"provider": "travis",
+				"owner": "soajs",
+				"enable": true
+			}
+		};
+
+		executeMyRequest(params, 'ci/status', 'get', function (body) {
+			assert.ok(body);
+			done();
+		});
 	});
 
-	it.skip("Success - get repo settings", function (done) {
-		// var params = {
-		// 	"qs": {
-		// 		"id": 12464664
-		// 	}
-		// };
-		//
-		// executeMyRequest(params, 'ci/settings', 'get', function (body) {
-		// 	// assert.ok(body.result);
-		// });
-		// done();
+	it("Success - get repo settings", function (done) {
+		var params = {
+			"qs": {
+				"id": 12464664,
+				"provider": "travis",
+				"owner": "soajs"
+			}
+		};
+
+		executeMyRequest(params, 'ci/settings', 'get', function (body) {
+			assert.ok(body);
+			done();
+		});
 	});
 
-	it.skip("Success - change repo settings", function (done) {
-		// var params = {
-		// 	"qs": {
-		// 		"id": 12464664
-		// 	},
-		// 	"form": {
-		// 		"port": 80,
-		// 		"settings": {
-		// 			build_pull_requests: false,
-		// 			build_pushes: true,
-		// 			builds_only_with_travis_yml: true,
-		// 			maximum_number_of_builds: 0
-		// 		},
-		// 		"variables": {
-		// 			"var1": "val1",
-		// 			"var2": "val2"
-		// 		}
-		// 	}
-		// };
-		//
-		// executeMyRequest(params, 'ci/settings', 'put', function (body) {
-		// 	// assert.ok(body.data);
-		// 	// assert.ok(body.result);
-		// });
-		// done();
+	it("Success - change repo settings", function (done) {
+		var params = {
+			"qs": {
+				"id": 12464664,
+				"provider": "travis",
+				"owner": "soajs"
+			},
+			"form": {
+				"port": 80,
+				"settings": {
+					build_pull_requests: false,
+					build_pushes: true,
+					builds_only_with_travis_yml: true,
+					maximum_number_of_builds: 0
+				},
+				"variables": {
+					"var1": "val1",
+					"var2": "val2"
+				}
+			}
+		};
+
+		executeMyRequest(params, 'ci/settings', 'put', function (body) {
+			assert.ok(body);
+			done();
+		});
 	});
 
-	it.skip("Success - getRepoYamlFile", function (done) {
-		// var params = {
-		// 	"qs": {
-		// 		"port": 80
-		// 	}
-		// };
-		// executeMyRequest(params, 'ci/sync', 'get', function (body) {
-		// 	// assert.ok(body.result);
-		// 	// assert.ok(body.data);
-		// });
-		// done();
+	it("Success - getRepoYamlFile", function (done) {
+		var params = {
+			"qs": {
+				"port": 80
+			}
+		};
+		executeMyRequest(params, 'ci/repo/remote/config', 'get', function (body) {
+			assert.ok(body);
+			done();
+		});
 	});
 });

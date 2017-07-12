@@ -86,6 +86,28 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 			});
 		});
 
+		describe("update service settings tests", function () {
+
+			it("success - will update settings", function(done) {
+				//NOTE: this test only calls the api for coverage, functionality is tested in unit tests
+				var params = {
+					qs: {
+						id: 'dummyServiceId'
+					},
+					form: {
+						"env": "dev",
+						"version": "1",
+						"settings": {}
+					}
+				};
+				executeMyRequest(params, 'services/settings/update', 'put', function (body) {
+					assert.ok(body);
+					done();
+				});
+			});
+
+		});
+
 	});
 
 	describe("daemons/groups tests", function () {
