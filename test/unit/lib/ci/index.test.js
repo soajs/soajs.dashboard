@@ -25,6 +25,11 @@ var ciDriver = {
 	},
 	listSettings: function (options, cb) {
 		return cb(null, []);
+	},
+	getFileName: function (options, cb) {
+		var filename = '';
+		if (options.driver === 'travis') filename = '.travis.yml';
+		return cb(filename);
 	}
 };
 
@@ -49,6 +54,28 @@ var mongoStub = {
 	},
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
+	}
+};
+
+//git files are used for getRepoYamlFile
+var git = {};
+
+var gitBL = {
+	model: {}
+};
+
+var gitModel = {
+	getAccount: function(soajs, model, options, cb) {
+		return cb(null, {});
+	}
+};
+
+var gitHelpers = {
+	doGetFile: function(req, BL, git, gitModel, account, branch, cb) {
+		var filedata = {
+			content: "language: node_js\nnode_js: 6.9.5\nafter_success:\n    - 'node ./soajs.cd.js'\n"
+		};
+		return cb(null, filedata);
 	}
 };
 
@@ -101,7 +128,7 @@ describe("testing ci.js", function () {
 		};
 	});
 
-	describe.skip("testing init", function () {
+	describe("testing init", function () {
 
 		it("No Model Requested", function (done) {
 			utils.init(null, function (error, body) {
@@ -128,217 +155,27 @@ describe("testing ci.js", function () {
 
 	});
 
-	// describe("testing getConfig", function () {
-	//
-	// 	before(() => {
-	// 	});
-	// 	after(() => {
-	// 	});
-	//
-	// 	it("Fail mongo", function (done) {
-	// 		mongoStub.findEntry = function (soajs, opts, cb) {
-	// 			cb({ code: 400 }, null);
-	// 		};
-	// 		ci.getConfig(config, req, ciDriver, function (error, body) {
-	// 			assert.ok(error);
-	// 			assert.ok(error.code);
-	// 			done();
-	// 		});
-	// 	});
-	// 	it("Success. Not found", function (done) {
-	// 		mongoStub.findEntry = function (soajs, opts, cb) {
-	// 			cb(null, null);
-	// 		};
-	// 		ci.getConfig(config, req, ciDriver, function (error, body) {
-	// 			assert.ok(body);
-	// 			assert.equal(body.list, 0);
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// 	it("Success. Found 1", function (done) {
-	// 		ci.getConfig(config, req, ciDriver, function (error, body) {
-	// 			assert.ok(body);
-	// 			assert.ok(body.variables);
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// 	it("Success. Found 2", function (done) {
-	// 		var record = {
-	// 			_id: '592806440effddeec7d52b55',
-	// 			driver: 'travis',
-	// 			settings: {
-	// 				domain: 'api.travis-ci.org',
-	// 				owner: 'soajsTestAccount',
-	// 				ciToken: '1234'
-	// 			},
-	// 			recipe: 'sudo',
-	// 			type: 'ci'
-	// 		};
-	// 		mongoStub.findEntry = function (soajs, opts, cb) {
-	// 			return cb(null, record);
-	// 		};
-	// 		ci.getConfig(config, req, ciDriver, function (error, body) {
-	// 			assert.ok(body);
-	// 			done();
-	// 		});
-	// 	});
-	// });
-	//
-	// describe("testing saveConfig", function () {
-	//
-	// 	before(() => {
-	// 	});
-	// 	after(() => {
-	// 	});
-	//
-	// 	it("Success saveConfig with recipe", function (done) {
-	// 		var path = __dirname + "/../../../uploads/.travis.yml";
-	// 		fs.readFile(path, { "encoding": "utf8" }, function (error, data) {
-	// 			assert.ifError(error);
-	// 			// assert.ok(data);
-	//
-	// 			var configData = {
-	// 				"config": {
-	// 					"driver": "travis",
-	// 					"settings": {
-	// 						"domain": "api.travis-ci.org",
-	// 						"owner": "soajsTestAccount",
-	// 						"gitToken": '11111'
-	// 					},
-	// 					"recipe": data
-	// 				}
-	// 			};
-	// 			req.soajs.inputmaskData = {
-	// 				config: configData.config
-	// 			};
-	// 			ci.saveConfig(config, req, ciDriver, function (error, body) {
-	// 				assert.ok(body);
-	// 				done();
-	// 			});
-	// 		});
-	// 	});
-	//
-	// 	it("Success saveConfig without recipe", function (done) {
-	// 		var configData = {
-	// 			"config": {
-	// 				"driver": "travis",
-	// 				"settings": {
-	// 					"domain": "api.travis-ci.org",
-	// 					"owner": "soajsTestAccount",
-	// 					"gitToken": '11111'
-	// 				},
-	// 				"recipe": ""
-	// 			}
-	// 		};
-	// 		req.soajs.inputmaskData = {
-	// 			config: configData.config
-	// 		};
-	// 		ci.saveConfig(config, req, ciDriver, function (error, body) {
-	// 			assert.ok(body);
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// 	it("Failed recipe", function (done) {
-	// 		var configData = {
-	// 			"config": {
-	// 				"driver": "travis",
-	// 				"settings": {
-	// 					"domain": "api.travis-ci.org",
-	// 					"owner": "soajsTestAccount",
-	// 					"gitToken": '11111'
-	// 				},
-	// 				"recipe": 'sudo:'
-	// 			}
-	// 		};
-	// 		req.soajs.inputmaskData = {
-	// 			config: configData.config
-	// 		};
-	// 		ci.saveConfig(config, req, ciDriver, function (error, body) {
-	// 			assert.ok(body);
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// 	it("Failed recipe - non object", function (done) {
-	// 		var configData = {
-	// 			"config": {
-	// 				"driver": "travis",
-	// 				"settings": {
-	// 					"domain": "api.travis-ci.org",
-	// 					"owner": "soajsTestAccount",
-	// 					"gitToken": '11111'
-	// 				},
-	// 				"recipe": '"string"'
-	// 			}
-	// 		};
-	// 		req.soajs.inputmaskData = {
-	// 			config: configData.config
-	// 		};
-	// 		ci.saveConfig(config, req, ciDriver, function (error, body) {
-	// 			assert.ok(error);
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// 	it("Failed recipe malformed data", function (done) {
-	// 		var path = __dirname + "/../../../uploads/invalid.yml";
-	// 		fs.readFile(path, { "encoding": "utf8" }, function (error, data) {
-	// 			assert.ifError(error);
-	// 			// assert.ok(data);
-	//
-	// 			var configData = {
-	// 				"config": {
-	// 					"driver": "travis",
-	// 					"settings": {
-	// 						"domain": "api.travis-ci.org",
-	// 						"owner": "soajsTestAccount",
-	// 						"gitToken": '11111'
-	// 					},
-	// 					"recipe": data
-	// 				}
-	// 			};
-	// 			req.soajs.inputmaskData = {
-	// 				config: configData.config
-	// 			};
-	// 			ci.saveConfig(config, req, ciDriver, function (error, body) {
-	// 				assert.ok(error);
-	// 				done();
-	// 			});
-	// 		});
-	// 	});
-	//
-	// });
-	//
-	// describe("testing deleteConfig", function () {
-	//
-	// 	before(() => {
-	// 	});
-	// 	after(() => {
-	// 	});
-	//
-	// 	it("Success deleteConfig", function (done) {
-	//
-	// 		ci.deleteConfig(config, req, ciDriver, function (error, body) {
-	// 			// assert.ok(body);
-	// 			done();
-	// 		});
-	// 	});
-	//
-	// });
+	describe("testing toggleRepoStatus", function () {
 
-	describe.skip("testing toggleRepoStatus", function () {
+		before(function(done) {
+			ciDriver.listRepos = function (options, cb) {
+				var repos = [
+					{
+						id: 'ciRepoId'
+					}
+				];
+				return cb(null, repos);
+			};
 
-		before(() => {
-		});
-		after(() => {
+			done();
 		});
 
 		it("Success - enable", function (done) {
 			req.soajs.inputmaskData = {
-				enable: true
+				id: 'ciRepoId',
+				enable: true,
+				owner: 'soajs',
+				provider: 'travis'
 			};
 			ci.toggleRepoStatus(config, req, ciDriver, function (error, body) {
 				assert.ok(body);
@@ -348,7 +185,10 @@ describe("testing ci.js", function () {
 
 		it("Success - disable", function (done) {
 			req.soajs.inputmaskData = {
-				enable: false
+				id: 'ciRepoId',
+				enable: false,
+				owner: 'soajs',
+				provider: 'travis'
 			};
 			ci.toggleRepoStatus(config, req, ciDriver, function (error, body) {
 				assert.ok(body);
@@ -358,28 +198,40 @@ describe("testing ci.js", function () {
 
 	});
 
-	describe.skip("testing getRepoSettings", function () {
+	describe("testing getRepoSettings", function () {
 
-		before(() => {
-		});
-		after(() => {
+		before(function (done) {
+			ciDriver.listEnvVars = function(options, cb) {
+				var envs = [
+					"TEST_ENV_1=test1",
+					"TEST_ENV_2=test2"
+				];
+				return cb(null, envs);
+			};
+
+			ciDriver.listSettings = function (options, cb) {
+				var settings = {
+					"builds_only_with_travis_yml": true,
+					"build_pushes": true,
+					"build_pull_requests": true,
+					"maximum_number_of_builds": 0
+				};
+				return cb(null, settings);
+			};
+
+			done();
 		});
 
 		it("Success getRepoSettings", function (done) {
 			ci.getRepoSettings(config, req, ciDriver, function (error, body) {
-				// assert.ok(body);
+				assert.ok(body);
 				done();
 			});
 		});
 
 	});
 
-	describe.skip("testing updateRepoSettings", function () {
-
-		before(() => {
-		});
-		after(() => {
-		});
+	describe("testing updateRepoSettings", function () {
 
 		it("Success", function (done) {
 			req.soajs.inputmaskData = {
@@ -392,7 +244,24 @@ describe("testing ci.js", function () {
 				}
 			};
 			ci.updateRepoSettings(config, req, ciDriver, function (error, body) {
-				// assert.ok(body);
+				assert.ok(body);
+				done();
+			});
+		});
+
+	});
+
+	describe("testing getRepoYamlFile", function() {
+
+		it("success - will get file", function (done) {
+			req.soajs.inputmaskData = {
+				provider: 'travis',
+				owner: 'soajs',
+				repo: 'soajs.test',
+				branch: 'testBranch'
+			};
+			ci.getRepoYamlFile(config, req, ciDriver, git, gitHelpers, gitModel, gitBL, function (error, body) {
+				assert.ok(body);
 				done();
 			});
 		});

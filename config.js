@@ -2157,23 +2157,18 @@ module.exports = {
 			                    },
 			                    "additionalProperties": false
 		                    },
-		                    "versions": {
+		                    "version": {
 	                    		"type":"object",
-			                    "patternProperties":{
-				                    "^v[0-9]+$": {
-					                    "type": "object",
-					                    "required": true,
-					                    "properties": {
-						                    "branch": {"type": "string", "required": true, "minLengh": 1, 'pattern': /[a-z]+/},
-						                    "strategy": {"type": "string", "enum": ["notify", "update"], "required": true},
-						                    "deploy": {"type": "boolean", "required": false},
-						                    "options": {
-							                    "type":"object",
-							                    "properties": cdOptions
-						                    }
-					                    }
-				                    }
-			                    },
+								"properties": {
+									"v": {"type": "string", "required": true, "pattern": /v[0-9]+$/},
+									"branch": {"type": "string", "required": true, "minLengh": 1, 'pattern': /[a-z]+/},
+									"strategy": {"type": "string", "enum": ["notify", "update"], "required": true},
+									"deploy": {"type": "boolean", "required": false},
+									"options": {
+										"type":"object",
+										"properties": cdOptions
+									}
+								},
 			                    "additionalProperties": false
 		                    }
 	                    },
@@ -2181,7 +2176,7 @@ module.exports = {
                     }
                 }
             },
-	
+
 	        "/cd/pause": {
 		        "_apiInfo": {
 			        "l": "Pause CD Configuration",

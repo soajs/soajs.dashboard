@@ -59,6 +59,9 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 								delete $scope.configuration[service][i];
 							}
 						}
+						if (Object.keys($scope.configuration[service].versions).length === 0) {
+							delete $scope.configuration[service].versions;
+						}
 					}
 				}
 			}
@@ -90,22 +93,30 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		});
 	};
 
-	$scope.saveRecipe = function(service) {
+	$scope.saveRecipe = function(service, version) {
 		var data={
 			env: $scope.myEnv,
-			serviceName: service,
-			default: {
+			serviceName: service
+		};
+
+		if ($scope.configuration[service].versions && Object.keys($scope.configuration[service].versions).length > 0) {
+			data.version = {
+				v: version
+			};
+
+			for (var i in $scope.configuration[service].versions[version]) {
+				data.version[i] = $scope.configuration[service].versions[version][i];
+			}
+		}
+		else {
+			data.default = {
 				branch: $scope.configuration[service].branch,
 				strategy: $scope.configuration[service].strategy
+			};
+			if ($scope.configuration[service].deploy) {
+				data.default.deploy = $scope.configuration[service].deploy;
+				data.default.options = $scope.configuration[service].options;
 			}
-		};
-		
-		for(var version in $scope.configuration[service].versions){
-			if(!data.versions){
-				data.versions = {};
-			}
-			
-			data.versions[version] = $scope.configuration[service].versions[version];
 		}
 
 		overlayLoading.show();

@@ -50,7 +50,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 		if (params.qs) {
 			options.qs = params.qs;
 		}
-		
+
 		request[method](options, function (error, response, body) {
 			assert.ifError(error);
 			assert.ok(body);
@@ -72,9 +72,11 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 		}
 	};
 
+	var recipeRecord = {};
+
 	it("Success - list Accounts", function (done) {
 		var params = {};
-		
+
 		mongo.insert("git_accounts", {
 			"label": "Test Account",
 			"owner": "beaver",
@@ -85,7 +87,7 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 			"repos": []
 		}, function(error){
 			assert.ifError(error);
-			
+
 			executeMyRequest(params, 'ci', 'get', function (body) {
 				assert.ok(body.data);
 				assert.ok(body.result);
@@ -93,21 +95,21 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 			});
 		});
 	});
-	
+
 	it("Success - list Accounts with variables", function (done) {
 		var params = {
 			qs: {
 				variables: true
 			}
 		};
-		
+
 		executeMyRequest(params, 'ci', 'get', function (body) {
 			assert.ok(body.data);
 			assert.ok(body.result);
 			done();
 		});
 	});
-	
+
 	it("Success - list Accounts for specific owner", function (done) {
 		var params = {
 			qs: {
@@ -115,26 +117,35 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 				variables: true
 			}
 		};
-		
+
 		executeMyRequest(params, 'ci', 'get', function (body) {
 			assert.ok(body.data);
 			assert.ok(body.result);
 			done();
 		});
 	});
-	
-	
+
+	it("success - activate provider", function(done){
+		var params = {
+			form: {
+				domain: 'travis-ci.org',
+				gitToken: 'myGitToken',
+				owner: "soajs",
+				provider: "travis"
+			}
+		};
+
+		executeMyRequest(params, 'ci/provider', 'post', function (body) {
+			assert.ok(body.data);
+			assert.ok(body.result);
+			done();
+		});
+	});
+
+
 	it("Success - list Providers", function (done) {
-		
+
 		mongo.insert("cicd", [
-			{
-				"provider": "travis",
-				"type": "account",
-				"owner": "soajs",
-				"domain": "api.travis-ci.org",
-				"gitToken": "myGitToken",
-				"ciToken": "1234"
-			},
 			{
 				"provider": "travis",
 				"type": "recipe",
@@ -144,7 +155,7 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 			}
 		], function(error){
 			assert.ifError(error);
-			
+
 			var params = {};
 			executeMyRequest(params, 'ci/providers', 'get', function (body) {
 				assert.ok(body.data);
@@ -153,9 +164,9 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 			});
 		});
 	});
-	
+
 	it("Success - list Providers for specific provider", function (done) {
-		
+
 		mongo.insert("cicd", {
 			"owner": "soajs",
 			"provider": "drone",
@@ -165,13 +176,13 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 			"ciToken": "1234"
 		}, function(error) {
 			assert.ifError(error);
-			
+
 			var params = {
 				qs: {
 					provider: 'travis'
 				}
 			};
-			
+
 			executeMyRequest(params, 'ci/providers', 'get', function (body) {
 				assert.ok(body.data);
 				assert.ok(body.result);
@@ -179,23 +190,23 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 			});
 		});
 	});
-	
+
 	it("Success - list Providers for specific owner", function (done) {
 		var params = {
 			qs: {
 				owner: "soajs"
 			}
 		};
-		
+
 		executeMyRequest(params, 'ci/providers', 'get', function (body) {
 			assert.ok(body.data);
 			assert.ok(body.result);
 			done();
 		});
 	});
-	
-	
-	
+
+
+
 	it("Success - deactivate provider", function (done) {
 		var params = {
 			form: {
@@ -203,70 +214,126 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 				provider: "drone"
 			}
 		};
-		
+
 		executeMyRequest(params, 'ci/provider', 'put', function (body) {
 			assert.ok(body.data);
 			assert.ok(body.result);
 			done();
 		});
 	});
-	
-	it.skip("success - activate provider", function(done){
-		
-	});
-	
-	
-	it.skip("success = add new recipe", function(done){
-		
-	});
-	
-	it.skip("success = add new recipe", function(done){
-		
-	});
-	
-	it.skip("success = edit recipe", function(done){
-		
-	});
-	
-	it.skip("success = delete recipe", function(done){
-		
+
+	it("success - add new recipe", function(done){
+		var params = {
+			form: {
+				name: 'My Test Recipe',
+				provider: "travis",
+				recipe: "language: node_js\nnode_js: 6.9.5\nservices:\n    - mongodb\nenv:\n    - CXX=g++-4.8\nbranches:\n    only:\n        - master\naddons:\n    apt:\n        sources:\n            - ubuntu-toolchain-r-test\n        packages:\n            - g++-4.8\n    hosts:\n        - localhost\nbefore_install:\n    - 'sudo apt-get update && sudo apt-get install sendmail python make g++'\nbefore_script:\n    - 'npm install -g grunt-cli'\n    - 'sleep 10'\nscript:\n    - 'grunt coverage'\nafter_success:\n    - 'node ./soajs.cd.js'\n",
+			}
+		};
+
+		executeMyRequest(params, 'ci/recipe', 'post', function (body) {
+			assert.ok(body.data);
+			assert.ok(body.result);
+			done();
+		});
 	});
 
-	it.skip("Success - download recipe", function (done) {
-		// var options = {
-		// 	uri: 'http://localhost:4000/dashboard/ci/recipe/download',
-		// 	headers: {
-		// 		'Content-Type': 'application/json',
-		// 		'Accept': 'application/zip',
-		// 		key: extKey
-		// 	},
-		// 	json: true
-		// };
-		// request.get(options).pipe(fs.createWriteStream("./ci.zip")).on('close', function () {
-		// 	fs.exists("./ci.zip", function (exists) {
-		// 		assert.equal(exists, true);
-		// 		done();
-		// 	});
-		// });
+	it("success - get recipe record from database", function(done) {
+		mongo.findOne('cicd', { type: 'recipe', name: 'My Test Recipe', provider: 'travis' }, function (error, recipe) {
+			assert.ifError(error);
+			recipeRecord = recipe;
+			done();
+		});
 	});
-	
-	it.skip("success - download script", function(done){
-		
+
+	it("success - edit recipe", function(done){
+		var params = {
+			qs: {
+				id: recipeRecord._id.toString()
+			},
+			form: {
+				name: 'My Edited Test Recipe',
+				provider: "travis",
+				recipe: "language: node_js\nnode_js: 6.9.5\nservices:\n    - mongodb\nenv:\n    - CXX=g++-4.8\nbranches:\n    only:\n        - master\naddons:\n    apt:\n        sources:\n            - ubuntu-toolchain-r-test\n        packages:\n            - g++-4.8\n    hosts:\n        - localhost\nbefore_install:\n    - 'sudo apt-get update && sudo apt-get install sendmail python make g++'\nbefore_script:\n    - 'npm install -g grunt-cli'\n    - 'sleep 10'\nscript:\n    - 'grunt coverage'\nafter_success:\n    - 'node ./soajs.cd.js'\n",
+			}
+		};
+
+		executeMyRequest(params, 'ci/recipe', 'put', function (body) {
+			assert.ok(body.data);
+			assert.ok(body.result);
+			done();
+		});
+	});
+
+	it("Success - download recipe", function (done) {
+		var options = {
+			uri: 'http://localhost:4000/dashboard/ci/recipe/download',
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/zip',
+				key: extKey
+			},
+			json: true,
+			qs: {
+				id: recipeRecord._id.toString()
+			}
+		};
+
+		request.get(options).pipe(fs.createWriteStream("./ci.zip")).on('close', function () {
+			fs.exists("./ci.zip", function (exists) {
+				assert.equal(exists, true);
+				done();
+			});
+		});
+	});
+
+	it("success - delete recipe", function(done){
+		var params = {
+			qs: {
+				id: recipeRecord._id.toString()
+			}
+		};
+
+		executeMyRequest(params, 'ci/recipe', 'delete', function (body) {
+			assert.ok(body.data);
+			assert.ok(body.result);
+			done();
+		});
+	});
+
+	it("success - download script", function(done){
+		var options = {
+			uri: 'http://localhost:4000/dashboard/ci/script/download',
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/zip',
+				key: extKey
+			},
+			json: true
+		};
+		request.get(options).pipe(fs.createWriteStream("./soajs.cd.zip")).on('close', function () {
+			fs.exists("./soajs.cd.zip", function (exists) {
+				assert.equal(exists, true);
+				done();
+			});
+		});
 	});
 
 	it.skip("Success - Enable Repo", function (done) {
 		// var params = {
 		// 	"qs": {
 		// 		"id": repoToUse.id,
+		// 		"provider": "travis",
+		// 		"owner": "soajs",
 		// 		"enable": true
 		// 	}
 		// };
 		//
 		// executeMyRequest(params, 'ci/status', 'get', function (body) {
+		// 	done();
 		// });
-		// done();
 	});
-	
+
 	it.skip("Success - get repo settings", function (done) {
 		// var params = {
 		// 	"qs": {

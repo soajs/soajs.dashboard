@@ -26,16 +26,16 @@ environmentsApp.controller('deployReposCtrl', ['$scope', '$cookies', 'injectFile
 		}
 	};
 
-	$scope.listGitAccounts = function (cb) {
-		deployRepos.listGitAccounts($scope, cb);
+	$scope.listGitAccounts = function () {
+		deployRepos.listGitAccounts($scope);
 	};
 
 	$scope.listRepos = function (account, action) {
 		deployRepos.listRepos($scope, account, action);
 	};
 
-	$scope.getCdData = function () {
-		deployRepos.getCdData($scope);
+	$scope.getCdData = function (cb) {
+		deployRepos.getCdData($scope, cb);
 	};
 
 	$scope.getDeployedServices = function () {
@@ -45,14 +45,19 @@ environmentsApp.controller('deployReposCtrl', ['$scope', '$cookies', 'injectFile
 	$scope.configureCD = function (repo) {
 		deployRepos.configureCD($scope, repo);
 	};
-
+	
+	$scope.deployService = function (oneRepo, service,version, gitAccount) {
+		deployRepos.deployService($scope, oneRepo, service, version, gitAccount);
+	};
+	
+	$scope.doDeploy = function (params) {
+		deployRepos.doDeploy($scope, params);
+	};
+	
 	injectFiles.injectCss("modules/dashboard/environments/environments.css");
 	//default operation
 	if ($scope.access.git.listAccounts) {
 		$scope.envCode = $cookies.getObject("myEnv").code;
-		$scope.listGitAccounts(function () {
-			$scope.getCdData();
-			$scope.getDeployedServices();
-		});
+		$scope.listGitAccounts();
 	}
 }]);
