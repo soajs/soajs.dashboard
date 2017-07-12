@@ -33,7 +33,7 @@ var mongoStub = {
 };
 var registry = {
 	loadByEnv: function () {
-		
+
 	}
 };
 var deployer = {};
@@ -47,13 +47,13 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-				
+
 			},
 			error: function (data) {
-				
+
 			},
 			info: function (data) {
-				
+
 			}
 		},
 		inputmaskData: {}
@@ -160,24 +160,24 @@ describe("testing services.js", function () {
 	});
 	after(() => {
 	});
-	
+
 	describe("testing init", function () {
-		
+
 		it("No Model Requested", function (done) {
 			utils.init(null, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-		
+
 		it("Model Name not found", function (done) {
-			
+
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-		
+
 		it("Init model", function (done) {
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
@@ -186,11 +186,11 @@ describe("testing services.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing updateRepoSettings", function () {
-		
+
 		it("Success with id", function (done) {
 			req.soajs.inputmaskData = {
 				data: {
@@ -203,7 +203,7 @@ describe("testing services.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Success", function (done) {
 			req.soajs.inputmaskData = {
 				data: {
@@ -220,7 +220,7 @@ describe("testing services.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Success without serviceVersion", function (done) {
 			req.soajs.inputmaskData = {
 				data: {
@@ -236,11 +236,11 @@ describe("testing services.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing getLedger", function () {
-		
+
 		it("Success", function (done) {
 			req.soajs.inputmaskData = {
 				start: 1,
@@ -251,11 +251,11 @@ describe("testing services.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing getUpdates", function () {
-		
+
 		it("Success getUpdates", function (done) {
 			mongoStub.findEntries = function (soajs, opts, cb) {
 				var records = [
@@ -316,11 +316,11 @@ describe("testing services.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing cdDeploy", function () {
-		
+
 		it.skip("Success cdDeploy", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'cicd') {
@@ -359,7 +359,7 @@ describe("testing services.js", function () {
 			// 	}
 				cb(null, []);
 			};
-			
+
 			req.soajs.inputmaskData = {
 				deploy_token: "aaaabbbb"
 			};
@@ -369,7 +369,7 @@ describe("testing services.js", function () {
 				done();
 			});
 		});
-		
+
 	});
 
 	describe("testing markRead", function () {
@@ -399,15 +399,18 @@ describe("testing services.js", function () {
 		});
 
 	});
-	
+
 	describe("testing saveConfig", function () {
 
 		it("Success saveConfig", function (done) {
 			req.soajs.inputmaskData = {
-				config: {}
+				config: {
+					env: 'DEV',
+					serviceName: 'testSrv'
+				}
 			};
 			cd.saveConfig(config, req, helpers, function (error, body) {
-				// assert.ok(body);
+				assert.ok(body);
 				done();
 			});
 		});
