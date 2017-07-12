@@ -278,6 +278,10 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				$scope.deployed = false;
 				$scope.oneSrv = (service && service.name) ? service.name : oneRepo.name;
 				$scope.serviceType = (service && service.type) ? service.type : 'custom';
+				$scope.showCD = true;
+				if(SOAJSRMS.indexOf(oneRepo.name) !== -1){
+					$scope.showCD = false;
+				}
 				if ((service && service.deployed && version ==='Default') || (version && version.deployed)) {
 					$scope.serviceId = version.serviceId || service.serviceId;
 					$scope.deployed = true;
@@ -335,9 +339,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				
 				$scope.updateGitBranch = function (oneSrv, oneEnv, version) {
 					$scope.branches.forEach(function (oneBranch) {
-						if (oneBranch.name = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch){
+						if (oneBranch.name = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch){
 							if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options) {
-								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch;
+								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch;
 								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.commit = oneBranch.commit.sha;
 							}
 						}
@@ -348,8 +352,8 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				$scope.setDeploy = function (oneEnv, version, oneSrv, first) {
 					var isKubernetes = (envPlatform.toLowerCase() === "kubernetes");
 					var deployedBranch = '';
-					if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch) {
-						deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch;
+					if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch) {
+						deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch;
 					}
 					if ($scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version] && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch']) {
 						deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch'];
@@ -378,8 +382,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 						if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options) {
 							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options = {'deployConfig': {'replication': {}}};
 						}
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource = {};
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch;
+						if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource){
+							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource = {};
+						}
 						
 						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.owner = $scope.gitAccount.owner;
 						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.repo = oneRepo.name;
@@ -525,11 +530,14 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 		configuration.env = oneEnv;
 		currentScope.updateGitBranch(oneRepo, oneEnv, version);
 		if (version === 'Default') {
-			configuration.default = {
-				branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].branch,
-				strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy,
-				deploy: false
-			};
+			configuration.default = {};
+			if(currentScope.showCD){
+				configuration.default = {
+					branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.gitSource.branch,
+					strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy,
+					deploy: false
+				};
+			}
 			if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options) {
 				if(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.custom && currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.custom.version){
 					delete currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.custom.version;
@@ -545,13 +553,18 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			}
 		}
 		else {
-			configuration.version = {};
 			configuration.version = {
 				v: 'v' + version,
-				branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].branch,
-				strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy,
-				deploy: false
+				deploy : false
 			};
+			if(currentScope.showCD){
+				configuration.version = {
+					v: 'v' + version,
+					branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.gitSource.branch,
+					strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy,
+					deploy: false
+				};
+			}
 			if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options) {
 				if (modes.indexOf(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.mode) === -1) {
 					delete currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas;

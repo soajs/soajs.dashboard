@@ -92,23 +92,23 @@
 			</alert>
 			<br>
 		</div>
-			<div class="configCd entryBoxes entryBoxesGrid">
-				<div class="modal-header cdFormHeader">
-					<h3 class="modal-title">{{oneSrv}}</h3>
+		<div class="configCd entryBoxes entryBoxesGrid">
+			<div class="modal-header cdFormHeader">
+				<h3 class="modal-title capitalize">Configure {{oneSrv}} Deployment</h3>
+			</div>
+			<div class="body">
+				<div class="entryAction" ng-show="maxEntries > 1">
+					<a href="" ng-click="cdShowHide(oneSrv, cdData.name)">
+						<span class="icon icon-{{cdData.icon || 'plus'}}"></span>
+					</a>
 				</div>
-					<div class="body">
-						<div class="entryAction" ng-show="maxEntries > 1">
-							<a href="" ng-click="cdShowHide(oneSrv, cdData.name)">
-								<span class="icon icon-{{cdData.icon || 'plus'}}"></span>
-							</a>
-						</div>
-							<div ng-include="'modules/dashboard/environments/directives/cd.tmpl'"></div>
-					</div>
+				<div ng-include="'modules/dashboard/environments/directives/cd.tmpl'"></div>
+			</div>
 		</div>
 	<div class="modal-footer">
 		<button ng-show="maxEntries > 0" class="btn btn-success" ng-click="saveRecipe()">Save</button>
 		<button ng-show="maxEntries > 0" ng-if="!deployed" class="btn btn-primary" ng-click="saveRecipe('deploy')">First Time Deploy</button>
-		<button ng-show="maxEntries > 0" ng-if="deployed" class="btn btn-warning" ng-click="saveRecipe('rebuild')">Save & Rebuild</button>
+		<button ng-show="maxEntries > 0" ng-if="deployed" class="btn btn-info" ng-click="saveRecipe('rebuild')">Save & Rebuild</button>
 		<button class="btn btn-danger" ng-click="cancel()">Close</button>
 	</div>
 </script>

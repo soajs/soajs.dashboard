@@ -2161,8 +2161,8 @@ module.exports = {
 	                    		"type":"object",
 								"properties": {
 									"v": {"type": "string", "required": true, "pattern": /v[0-9]+$/},
-									"branch": {"type": "string", "required": true, "minLengh": 1, 'pattern': /[a-z]+/},
-									"strategy": {"type": "string", "enum": ["notify", "update"], "required": true},
+									"branch": {"type": "string", "required": false, "minLengh": 1, 'pattern': /[a-z]+/},
+									"strategy": {"type": "string", "enum": ["notify", "update"], "required": false},
 									"deploy": {"type": "boolean", "required": false},
 									"options": {
 										"type":"object",

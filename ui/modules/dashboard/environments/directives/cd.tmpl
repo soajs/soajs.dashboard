@@ -3,7 +3,7 @@
 						<legend>Deployment Options</legend>
 						<div class="halfPage branchLabel">
 							<label>{{translation.branch[LANG]}}:</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingBranches">
-							<select class="form-control" ng-disabled="versionInfo.deployed" ng-if="!loadingBranches" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch" ng-change="updateGitBranch(oneSrv, oneEnv, version)">
+							<select class="form-control" ng-disabled="versionInfo.deployed" ng-if="!loadingBranches" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch" ng-change="updateGitBranch(oneSrv, oneEnv, version)">
 								<option ng-repeat="myBranch in branches" value="{{myBranch.name}}">
 									{{myBranch.name}}
 								</option>
@@ -47,7 +47,7 @@
 							<br>
 						</div>
 					</fieldset>
-					<fieldset>
+					<fieldset ng-show="showCD">
 						<legend>Continuous Delivery</legend>
 						<div class="halfPage branchLabel">
 							<label>{{translation.branch[LANG]}}:</label>&nbsp;{{cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch}}
