@@ -30,13 +30,20 @@ var mongoStub = {
 	}
 };
 var deployer = {
+
 	redeployService: function (options, cb) {
 		return cb(null, true);
 	},
+
 	listServices: function (options, cb) {
 		var services = [];
 		return cb(null, services);
+	},
+
+	deployService: function(options, cb) {
+		return cb(null, true);
 	}
+
 };
 var BL = {
 	model: mongoStub
@@ -103,6 +110,128 @@ describe("testing helper soajs.cd.js", function () {
 		services: {},
 		profile: ''
 	};
+
+	describe("testing deepVersionComparison", function() {
+		var oneImage = {}, tag = "", opts = {}, newObj = {};
+		before(function(done) {
+			oneImage = { name: '1.0.x-1.0.x', last_updated: 1499852120 };
+			opts.imageInfo = { prefix: 'soajsorg' };
+			tag = '1.0.x-1.0.x';
+			newObj.image = {};
+			done();
+		});
+
+		it("success - no update detected, official image", function(done) {
+			var result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
+			assert.ok(result);
+			done();
+		});
+
+		it("success - deployer update detected, official image", function(done) {
+			oneImage.name = '1.1.x-1.0.x';
+			var result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
+			assert.ok(result);
+			assert.ok(result[0]);
+			done();
+		});
+
+		it("success - core update detected, official image", function(done) {
+			oneImage.name = '1.0.x-1.1.x';
+			var result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
+			assert.ok(result);
+			assert.ok(result[0]);
+			done();
+		});
+
+		it("success - image update, custom image", function(done) {
+			opts.imageInfo.prefix = 'soajstest';
+			oneImage.name = '2.0';
+			tag = '1.0';
+			var result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
+			assert.ok(result);
+			assert.ok(result[0]);
+			done();
+		});
+
+		it("success - image tag is not a number", function(done) {
+			tag = "testing";
+			var result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
+			assert.ok(result);
+			assert.ok(result[0]);
+			done();
+		});
+
+	});
+
+	describe("testing processUndeployedServices", function() {
+		var deployedServices = [], allServices = [], cdInfo = {};
+
+		before(function(done) {
+			allServices.push({
+				serviceName: 'testSrv',
+				serviceVersion: '1',
+				label: 'testSrv'
+			});
+
+			cdInfo = {
+				DEV: {
+					envConfig: {
+						branch: 'master',
+						strategy: 'notify',
+						testSrv: {
+							branch: 'master',
+							strategy: 'update',
+							deploy: true,
+							options: {
+								gitSource: {
+									commit: 'commitsha'
+								}
+							},
+							v1: {
+								strategy: 'notify',
+								branch: 'master',
+								deploy: true,
+								options: {
+									gitSource: {
+										commit: 'commitsha'
+									}
+								}
+							}
+						}
+					},
+					envRecord: envRecord
+				}
+			};
+			done();
+		});
+
+		it("success - will build list of undeployed services, version specified", function(done) {
+			req.soajs.inputmaskData = {
+				repo: 'testSrv-repo',
+				branch: 'master',
+				commit: 'commitsha'
+			};
+			helpers.processUndeployedServices(req, deployedServices, allServices, cdInfo, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+
+		it("success - will build list of undeployed services, version not specified", function(done) {
+			req.soajs.inputmaskData = {
+				repo: 'testSrv-repo',
+				branch: 'master',
+				commit: 'commitsha'
+			};
+			delete allServices[0].serviceVersion;
+			helpers.processUndeployedServices(req, deployedServices, allServices, cdInfo, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+
+	});
+
 	describe("processOneService", function () {
 		beforeEach(() => {
 
@@ -116,16 +245,77 @@ describe("testing helper soajs.cd.js", function () {
 			strategy: 'update'
 		};
 		var options = {
-			
+
 		};
+
+		it("success - commit error, service is deployed", function (done) {
+			oneService.commitError = true;
+			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
+				oneService.commitError = false;
+				done();
+			});
+		});
+
+		it("success - commit error, service is not deployed", function (done) {
+			oneService.commitError = true;
+			delete oneService.service.labels;
+			oneService.options = {
+				deployConfig: {
+					replication: {
+						mode: 'replicated'
+					}
+				}
+			};
+			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
+				oneService.commitError = false;
+				oneService.service.labels = {};
+				oneService.options = {};
+				done();
+			});
+		});
+
 		it("Success update", function (done) {
 			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
 				done();
 			});
 		});
 
-		it("Success notify", function (done) {
+		it("Success notify, service is deployed", function (done) {
 			oneService.pause = true;
+			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
+				oneService.pause = false;
+				done();
+			});
+		});
+
+		it("Success notify, service is not deployed", function (done) {
+			oneService.pause = true;
+			delete oneService.service.labels;
+			oneService.options = {
+				deployConfig: {
+					replication: {
+						mode: 'replicated'
+					}
+				}
+			};
+			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
+				oneService.pause = false;
+				oneService.service.labels = {};
+				oneService.options = {};
+				done();
+			});
+		});
+
+		it.skip("success - deploy", function(done) {
+			delete oneService.service.labels;
+			oneService.deploy = true;
+			oneService.options = {
+				deployConfig: {
+					replication: {
+						mode: 'replicated'
+					}
+				}
+			};
 			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
 				done();
 			});
