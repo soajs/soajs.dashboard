@@ -50,9 +50,9 @@
                                                         <span style="float: right; color: green;" ng-if="version.deployed"><span class="icon icon-checkmark"></span>Deployed</span>
                                                     </div>
                                                     <div class="body serviceVersionBox">
-                                                        <a href="" class="btn btn-sm btn-default" ng-class="{disabled: (version.deployed || !version.deploySettings)}" style="float: right;"><span class="icon icon-power-cord"></span>First Time Deploy</a>
+                                                        <a href="" class="btn btn-sm btn-default" ng-class="{disabled: (version.deployed || !version.deploySettings)}" style="float: right;" ng-click="doDeploy(version.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
                                                         <a href="" class="btn btn-sm btn-default" ng-click="deployService(repo, service, version, account)" ng-if="!version.deploySettings" style="float: right;"><span class="icon icon-cog"></span>Configure Deployment</a>
-                                                        <a href="" class="btn btn-sm btn-default" ng-click="deployService(repo, service, version, account)" ng-if="version.deploySettings" ng-click="doDeploy(version.deploySettings.options)" style="float: right;"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
+                                                        <a href="" class="btn btn-sm btn-default" ng-click="deployService(repo, service, version, account)" ng-if="version.deploySettings" style="float: right;"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -104,14 +104,12 @@
 						</div>
 							<div ng-include="'modules/dashboard/environments/directives/cd.tmpl'"></div>
 					</div>
-			<div class="modal-footer" ng-show="maxEntries > 0">
-				<input class="btn btn-sm btn-danger f-right" ng-show="deployed" ng-click="saveRecipe('rebuild')" value="Save & Rebuild" type="submit">
-				<input class="btn btn-sm btn-primary f-right" ng-show="!deployed" ng-click="saveRecipe('deploy')" value="First Time Deploy" type="submit">
-				<input class="btn btn-sm btn-success f-right" ng-click="saveRecipe()" value="Save" type="submit">
-			</div>
 		</div>
 	<div class="modal-footer">
-		<button ng-show="activateRepo || noRepoCiConfig" class="btn btn-danger" ng-click="cancel()">Close</button>
+		<button ng-show="maxEntries > 0" class="btn btn-success" ng-click="saveRecipe()">Save</button>
+		<button ng-show="maxEntries > 0" ng-if="!deployed" class="btn btn-primary" ng-click="saveRecipe('deploy')">First Time Deploy</button>
+		<button ng-show="maxEntries > 0" ng-if="deployed" class="btn btn-warning" ng-click="saveRecipe('rebuild')">Save & Rebuild</button>
+		<button class="btn btn-danger" ng-click="cancel()">Close</button>
 	</div>
 </script>
 

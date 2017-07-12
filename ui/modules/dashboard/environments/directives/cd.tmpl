@@ -32,7 +32,7 @@
 						</div>
 					</fieldset>
 					<fieldset>
-						<legend>Environment Configuration</legend>
+						<legend>Environment Scaling</legend>
 						<div>
 							<label>Deployment Mode</label>
 							<select class="form-control" ng-required="true" ng-options="mode for mode in deploymentModes" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode"></select>
@@ -48,7 +48,7 @@
 						</div>
 					</fieldset>
 					<fieldset>
-						<legend>Continuous Deployment</legend>
+						<legend>Continuous Delivery</legend>
 						<div class="halfPage branchLabel">
 							<label>{{translation.branch[LANG]}}:</label>&nbsp;{{cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch}}
 						</div>
@@ -61,5 +61,3 @@
 						</div>
 					</fieldset>
 				</div>
-			<div class="fieldMsg">This Strategy is applicable only for <b>{{cdData.name}}</b> Version <b>{{version.versionLabel}}</b> and in this Environment.
-			</div>
