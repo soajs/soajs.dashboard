@@ -16,7 +16,7 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		teamcity: "./themes/" + themeToUse + "/img/teamcity_logo.png"
 	};
 	
-	$scope.unsupported = ['jenkins', 'teamcity'];
+	$scope.unsupported = ['drone', 'jenkins', 'teamcity'];
 	
 	$scope.listAccounts = function () {
 		overlayLoading.show();
