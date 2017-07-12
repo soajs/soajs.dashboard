@@ -893,6 +893,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			currentScope.tabLabel = '';
 			currentScope.default = true;
 			if (activatedVersions.versionless) {
+				if(!activatedVersions['Default']){
+					activatedVersions['Default'] = {};
+				}
 				activatedVersions['Default'].deployed = true;
 				currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj.ha['Default'] = activatedVersions.versionless;
 			}
