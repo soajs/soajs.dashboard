@@ -65,6 +65,9 @@ let catalog = {
                     "target": 84
                 }
             ],
+            "labels": {
+                "soajs.test": "true"
+            }
         }
     }
 };
@@ -218,7 +221,7 @@ describe("Testing Catalog Functionality", function() {
             });
         });
     });
-	
+
 	describe("Testing Catalog GET API", function(){
 		it("fail - invalid catalog id", function(done){
 			params = {
@@ -226,7 +229,7 @@ describe("Testing Catalog Functionality", function() {
 					"id": "invalidId"
 				}
 			};
-			
+
 			executeMyRequest(params, "catalog/recipes/get", 'get', function (result) {
 				assert.ok(result.errors);
 				assert.deepEqual(result.errors.details[0], {
@@ -236,21 +239,21 @@ describe("Testing Catalog Functionality", function() {
 				done();
 			});
 		});
-		
+
 		it("success- valid catalog id", function(done){
 			params = {
 				"qs": {
 					"id": catalogId
 				}
 			};
-			
+
 			executeMyRequest(params, "catalog/recipes/get", 'get', function (result) {
 				assert.ok(result.data);
 				done();
 			});
 		});
 	});
-	
+
     describe("Testing Catalog DELETE API", function() {
         //Delete a record that doesn't exist
         it("Fail - Delete a record that doesn't exist", function (done) {
@@ -304,5 +307,5 @@ describe("Testing Catalog Functionality", function() {
             });
         });
     });
-	
+
 });
