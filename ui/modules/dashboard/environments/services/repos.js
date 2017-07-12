@@ -501,7 +501,10 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 		currentScope.loadingRecipes = true;
 		getSendDataFromServer(currentScope, ngDataApi, {
 			method: 'get',
-			routeName: '/dashboard/catalog/recipes/list'
+			routeName: '/dashboard/catalog/recipes/list',
+			params: {
+				specifyGit : true
+			}
 		}, function (error, response) {
 			currentScope.loadingRecipes = false;
 			if (error) {
