@@ -731,7 +731,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 					if (error) {
 						currentScope.displayAlert('danger', translation.unableRetrieveDaemonsHostsInformation[LANG]);
 					} else {
-						currentScope.services[serviceName] = response.records[0];
+						currentScope.services[daemonName] = response[0];
 						return cb();
 					}
 				});
