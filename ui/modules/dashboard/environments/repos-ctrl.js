@@ -51,7 +51,7 @@ environmentsApp.controller('deployReposCtrl', ['$scope', '$cookies', 'injectFile
 	};
 	
 	$scope.doDeploy = function (params) {
-		deployRepos.doDeploy($scope, params);
+		deployRepos.doDeploy($scope, params, true);
 	};
 	
 	injectFiles.injectCss("modules/dashboard/environments/environments.css");

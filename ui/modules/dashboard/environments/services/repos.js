@@ -185,7 +185,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			"method": "get",
 			"routeName": "/dashboard/cloud/services/list",
 			"params": {
-				"env": currentScope.envCode
+				"env": currentScope.envCode.toLowerCase()
 			}
 		}, function (error, response) {
 			if (error) {
@@ -270,6 +270,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			keyboard: true,
 			controller: function ($scope) {
 				fixBackDrop();
+				$scope.controllerScope = currentScope;
 				$scope.deployNewService = true;
 				$scope.version = version.v || 'Default';
 				$scope.oneEnv = $cookies.getObject('myEnv').code.toUpperCase();
@@ -277,8 +278,12 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				$scope.deployed = false;
 				$scope.oneSrv = (service && service.name) ? service.name : oneRepo.name;
 				$scope.serviceType = (service && service.type) ? service.type : 'custom';
-				if ((service && service.deployed) || (version && version.deployed)) {
-					$scope.serviceId = version.id || service.id;
+				$scope.showCD = true;
+				if(SOAJSRMS.indexOf(oneRepo.name) !== -1){
+					$scope.showCD = false;
+				}
+				if ((service && service.deployed && version ==='Default') || (version && version.deployed)) {
+					$scope.serviceId = version.serviceId || service.serviceId;
 					$scope.deployed = true;
 				}
 				$scope.services = {};
@@ -334,9 +339,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				
 				$scope.updateGitBranch = function (oneSrv, oneEnv, version) {
 					$scope.branches.forEach(function (oneBranch) {
-						if (oneBranch.name = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch){
+						if (oneBranch.name = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch){
 							if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options) {
-								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch;
+								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch;
 								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.commit = oneBranch.commit.sha;
 							}
 						}
@@ -347,8 +352,8 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				$scope.setDeploy = function (oneEnv, version, oneSrv, first) {
 					var isKubernetes = (envPlatform.toLowerCase() === "kubernetes");
 					var deployedBranch = '';
-					if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch) {
-						deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch;
+					if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch) {
+						deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch;
 					}
 					if ($scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version] && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch']) {
 						deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch'];
@@ -377,8 +382,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 						if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options) {
 							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options = {'deployConfig': {'replication': {}}};
 						}
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource = {};
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].branch;
+						if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource){
+							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource = {};
+						}
 						
 						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.owner = $scope.gitAccount.owner;
 						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.repo = oneRepo.name;
@@ -446,7 +452,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.name = catalogRecipe.recipe.deployOptions.image.name;
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.tag = catalogRecipe.recipe.deployOptions.image.tag;
 								}
-								else if (!first) {
+								else {
 									delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image;
 								}
 								//append inputs whose type is userInput
@@ -473,7 +479,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 								if (catalogRecipe.recipe.deployOptions.specifyGitConfiguration) {
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.name = oneSrv;
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.type = $scope.cdConfiguration[oneSrv].type;
-									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.version = version;
+									if(version !== 'Default'){
+										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.version = version;
+									}
 									$scope.allowGitOverride = true;
 								}
 							}
@@ -482,9 +490,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				};
 				
 				$scope.saveRecipe = function (type) {
-					saveRecipe($scope, type, function () {
-					
-					});
+					saveRecipe($scope, type)
 				};
 				
 			}
@@ -514,7 +520,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 		});
 	}
 	
-	function saveRecipe(currentScope, type, cb) {
+	function saveRecipe(currentScope, type) {
 		var configuration = {};
 		var modes = ['deployment', 'replicated'];
 		var oneEnv = currentScope.oneEnv;
@@ -522,13 +528,20 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 		var oneRepo = currentScope.oneSrv;
 		configuration.serviceName = oneRepo;
 		configuration.env = oneEnv;
+		currentScope.updateGitBranch(oneRepo, oneEnv, version);
 		if (version === 'Default') {
-			configuration.default = {
-				branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].branch,
-				strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy,
-				deploy: false
-			};
+			configuration.default = {};
+			if(currentScope.showCD){
+				configuration.default = {
+					branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.gitSource.branch,
+					strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy,
+					deploy: false
+				};
+			}
 			if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options) {
+				if(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.custom && currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.custom.version){
+					delete currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.custom.version;
+				}
 				if (modes.indexOf(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.mode) === -1) {
 					delete currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas;
 				}
@@ -540,18 +553,23 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			}
 		}
 		else {
-			configuration.version = {};
 			configuration.version = {
 				v: 'v' + version,
-				branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].branch,
-				strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy,
-				deploy: false
+				deploy : false
 			};
+			if(currentScope.showCD){
+				configuration.version = {
+					v: 'v' + version,
+					branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.gitSource.branch,
+					strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy,
+					deploy: false
+				};
+			}
 			if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options) {
 				if (modes.indexOf(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.mode) === -1) {
 					delete currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas;
 				}
-				configuration.version.options = currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options;
+				configuration.version.options = angular.copy(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options);
 				if (configuration.version.options && configuration.version.options.deployConfig && configuration.version.options.deployConfig.memoryLimit) {
 					configuration.version.options.deployConfig.memoryLimit *= 1048576;
 				}
@@ -566,16 +584,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				"config": configuration
 			}
 		}, function (error) {
-			var returnCb = false;
-			if (cb && typeof cb === 'function') {
-				returnCb = true;
-			}
 			if (error) {
 				overlayLoading.hide();
 				currentScope.displayAlert('danger', error.message);
-				if (returnCb) {
-					return cb(error)
-				}
 			}
 			else {
 				var options = {};
@@ -587,20 +598,15 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				}
 				switch (type) {
 					case 'deploy':
-						overlayLoading.show();
-						doDeploy(currentScope, options);
+						doDeploy(currentScope, options, false, currentScope.controllerScope);
 						break;
 					case 'rebuild':
-						overlayLoading.show();
 						doRebuild(currentScope, options);
 						break;
 					default :
 						overlayLoading.hide();
-						currentScope.displayAlert('success', 'Recipe Saved successfully');
 						currentScope.cancel();
-						if (returnCb) {
-							cb(null, true);
-						}
+						currentScope.controllerScope.displayAlert('success', 'Recipe Saved successfully');
 				}
 			}
 		});
@@ -897,7 +903,11 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 		
 	}
 	
-	function doDeploy(currentScope, params) {
+	function doDeploy(currentScope, params, external , controllerScope) {
+		overlayLoading.show();
+		if(external || !controllerScope) {
+			controllerScope = currentScope
+		}
 		if (params.custom && params.custom.version) {
 			params.custom.version = parseInt(params.custom.version);
 		}
@@ -917,19 +927,23 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			"routeName": "/dashboard/cloud/services/soajs/deploy",
 			"data": params
 		};
-		
-		overlayLoading.show();
 		getSendDataFromServer(currentScope, ngDataApi, config, function (error) {
-			overlayLoading.hide();
 			if (error) {
 				currentScope.displayAlert('danger', error.message);
+				overlayLoading.hide();
 			} else {
-				currentScope.displayAlert('success', 'Service deployed successfully');
+				if(!external){
+					currentScope.cancel();
+				}
+				controllerScope.getDeployedServices();
+				controllerScope.displayAlert('success', 'Service deployed successfully');
+				overlayLoading.hide();
 			}
 		});
 	}
 	
 	function doRebuild(currentScope, formData) {
+		overlayLoading.show();
 		var params = {
 			env: currentScope.oneEnv,
 			serviceId: currentScope.serviceId,
@@ -940,7 +954,6 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 		if (formData.custom) {
 			params.custom = formData.custom;
 		}
-		
 		getSendDataFromServer(currentScope, ngDataApi, {
 			method: 'put',
 			routeName: '/dashboard/cloud/services/redeploy',
@@ -951,7 +964,8 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				currentScope.displayAlert('danger', error.message);
 			}
 			else {
-				currentScope.displayAlert('success', 'Service rebuilt successfully');
+				currentScope.cancel();
+				currentScope.controllerScope.displayAlert('success', 'Service rebuilt successfully');
 			}
 		});
 	}
