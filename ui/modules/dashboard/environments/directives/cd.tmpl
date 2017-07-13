@@ -17,7 +17,7 @@
 						</div>
 						<div>
 							<label>Catalog Recipe</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingRecipes">
-							<select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name group by recipe.type for recipe in myRecipes" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.recipe" ng-change="injectCatalogEntries(oneEnv, version, oneSrv, false)"></select>
+							<select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name group by recipe.type for recipe in myRecipes" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.recipe" ng-change="injectCatalogEntries(oneEnv, version, oneSrv)"></select>
 							<label class="fieldMsg">Choose a catalog recipe and define the deployment strategy in this environment.</label>
 							<br>
 						</div>

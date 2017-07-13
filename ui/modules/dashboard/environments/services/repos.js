@@ -201,7 +201,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				currentScope.accounts.forEach(function (oneAccount) {
 					if (oneAccount.repos && oneAccount.repos.length > 0) {
 						oneAccount.repos.forEach(function (oneRepo) {
-							if (oneRepo.servicesList) {
+							if (oneRepo.servicesList && oneRepo.servicesList.length > 0) {
 								oneRepo.servicesList.forEach(function (oneService) {
 									oneService.deployedVersionsCounter = 0;
 									response.forEach(function (oneDeployedEntry) {
@@ -292,15 +292,15 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				if(SOAJSRMS.indexOf(oneRepo.name) !== -1){
 					$scope.showCD = false;
 				}
-				if ((service && service.deployed && $scope.version ==='Default') || (version && version.deployed)) {
-					$scope.serviceId = version.serviceId || service.serviceId;
-					$scope.deployed = true;
-				}
 				$scope.services = {};
 				if($scope.version === 'Default'){
-					$scope.services[$scope.oneSrv] = service;
+					$scope.services[$scope.oneSrv] = service || oneRepo;
 				}else{
 					$scope.services[$scope.oneSrv] = version;
+				}
+				if ($scope.services[$scope.oneSrv].deployed) {
+					$scope.serviceId = $scope.services[$scope.oneSrv].serviceId;
+					$scope.deployed = true;
 				}
 				$scope.default = false;
 				$scope.gitAccount = gitAccount;
@@ -450,11 +450,6 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 					if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image) {
 						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image = {};
 					}
-					else {
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom = {};
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env = {};
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image = {};
-					}
 					$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].custom = {};
 					for (var type in $scope.recipes) {
 						$scope.recipes[type].forEach(function (catalogRecipe) {
@@ -464,7 +459,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.name = catalogRecipe.recipe.deployOptions.image.name;
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.tag = catalogRecipe.recipe.deployOptions.image.tag;
 								}
-								else {
+								else if(!catalogRecipe.recipe.deployOptions.image.override){
 									delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image;
 								}
 								//append inputs whose type is userInput
