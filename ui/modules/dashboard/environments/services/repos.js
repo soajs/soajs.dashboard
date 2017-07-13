@@ -628,10 +628,11 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 						doRebuild(currentScope, options);
 						break;
 					default :
-						currentScope.controllerScope.getDeployedServices();
-						currentScope.cancel();
-						overlayLoading.hide();
-						currentScope.controllerScope.displayAlert('success', 'Recipe Saved successfully');
+						currentScope.controllerScope.getCdData(function () {
+							currentScope.cancel();
+							overlayLoading.hide();
+							currentScope.controllerScope.displayAlert('success', 'Recipe Saved successfully');
+						});
 				}
 			}
 		});
@@ -837,9 +838,11 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				if(!external){
 					currentScope.cancel();
 				}
-				controllerScope.getDeployedServices();
-				controllerScope.displayAlert('success', 'Service deployed successfully');
-				overlayLoading.hide();
+				controllerScope.getCdData(function () {
+					controllerScope.getDeployedServices();
+					controllerScope.displayAlert('success', 'Service deployed successfully');
+					overlayLoading.hide();
+				});
 			}
 		});
 	}
@@ -866,9 +869,11 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				currentScope.displayAlert('danger', error.message);
 			}
 			else {
-				currentScope.controllerScope.getDeployedServices();
-				currentScope.cancel();
-				currentScope.controllerScope.displayAlert('success', 'Service rebuilt successfully');
+				currentScope.controllerScope.getCdData(function () {
+					currentScope.controllerScope.getDeployedServices();
+					currentScope.cancel();
+					currentScope.controllerScope.displayAlert('success', 'Service rebuilt successfully');
+				});
 			}
 		});
 	}
