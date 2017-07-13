@@ -80,7 +80,7 @@
 									<alert type="warning">No Continuous Integration recipes found</alert>
 								</div>
 								<div ng-if="recipes && recipes.length > 0" class="entryBoxes">
-									<br/>
+									<br/><br/>
 									<div ng-repeat="recipe in recipes" class="entryBox recipe-box" ng-class="{blueRecipeBox: !recipe.locked}">
 										<div class="header" ng-class="{blueBoxHeader: !recipe.locked}">{{recipe.name}}
 											<span ng-if="recipe.locked" class="icon icon-lock"></span>
