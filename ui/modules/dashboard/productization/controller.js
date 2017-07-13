@@ -375,6 +375,13 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 			}
 			else {
 				var code = $routeParams.code;
+				if(!response.locked){
+					for(var i = $scope.environments_codes.length -1; i>=0; i--){
+						if($scope.environments_codes[i].code === 'DASHBOARD'){
+							$scope.environments_codes.splice(i, 1);
+						}
+					}
+				}
 				for (var x = 0; x < response.packages.length; x++) {
 					if (response.packages[x].code === code) {
 						$scope.currentPackage = angular.copy(response.packages[x]);
