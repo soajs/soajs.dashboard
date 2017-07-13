@@ -394,9 +394,6 @@
 															<td class="statusHeader" ng-if="service.labels['soajs.service.name'] !== 'controller'">
 																Status
 															</td>
-															<td class="statusHeader" ng-if="service.labels['soajs.service.name'] !== 'controller'">
-																Controllers
-															</td>
 														</tr>
 													</thead>
 													<tbody>
@@ -418,13 +415,6 @@
 															<td>
 																<span ng-show="instance.status.state === 'Unreachable'" tooltip-class="ctrl-tooltip" tooltip-placement="left" tooltip-html="instance.status.error" class="red"><b>{{instance.status.state}}</b></span>
 																<span ng-show="instance.status.state !== 'Unreachable'" ng-class="{'green': instance.status.state ==='running', 'red': instance.status.state !=='running'}"><b>{{instance.status.state}}</b></span>
-															</td>
-															<td ng-if="service.labels['soajs.service.name'] !== 'controller'">
-																<span ng-repeat="ctrl in controllers">
-																	<span ng-repeat="ctrlInst in ctrl.tasks">
-																		<span class="ctrlBox" ng-class="{'ctrlBoxHealthy': ctrlInst.healthy, 'ctrlBoxUnhealthy': !ctrlInst.healthy}" tooltip-class="ctrl-tooltip" tooltip-placement="left" tooltip-html="ctrlInst.tooltip">{{ctrlInst.code}}</span>&nbsp;
-																	</span>
-																</span>
 															</td>
 														</tr>
 													</tbody>

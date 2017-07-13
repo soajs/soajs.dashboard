@@ -332,7 +332,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 						done();
 					});
 				});
-				
+
 			});
 
 		});
@@ -346,14 +346,17 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 	 * The user must activate his github/bitbucket account on the dashboard first.
 	 */
 	describe("pull from a repo in github or bitbucket", function(){
-		
+
 		it("success - the user is logged in and provided an existing repo and file path", function(done){
 			var params = {
 				qs: {
 					"owner" : "soajs",
 					"repo" : "soajs.dashboard",
 					"filepath" : "config.js",
-					"branch" : "swagger"
+					"branch" : "develop",
+					"serviceName": "dashboard",
+					"env": "dashboard",
+					"type": "service"
 				}
 			};
 			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function(body){
@@ -362,14 +365,17 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 				done();
 			});
 		});
-		
+
 		it("fail - the user isn't logged in", function(done){
 			var params = {
 				qs: {
 					"owner" : "michel-el-hajj",
 					"repo" : "soajs.dashboard",
 					"filepath" : "config.js",
-					"branch" : "swagger"
+					"branch" : "develop",
+					"serviceName": "dashboard",
+					"env": "dashboard",
+					"type": "service"
 				}
 			};
 			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function(body){
@@ -379,14 +385,17 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 				done();
 			});
 		});
-		
+
 		it("fail - the repo doesn't exist", function(done){
 			var params = {
 				qs: {
 					"owner" : "soajs",
 					"repo" : "soajs.unknown",
 					"filepath" : "config.js",
-					"branch" : "swagger"
+					"branch" : "develop",
+					"serviceName": "unknown",
+					"env": "dev",
+					"type": "service"
 				}
 			};
 			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function(body){
@@ -402,7 +411,10 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					"owner" : "soajs",
 					"repo" : "soajs.dashboard",
 					"filepath" : "configs.js",
-					"branch" : "swagger"
+					"branch" : "develop",
+					"serviceName": "dashboard",
+					"env": "dashboard",
+					"type": "service"
 				}
 			};
 			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function(body){
@@ -414,7 +426,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 			});
 		});
 	});
-	
+
 	describe("personal public acc", function () {
 		var gitAccId;
 

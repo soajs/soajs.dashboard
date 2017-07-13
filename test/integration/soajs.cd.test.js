@@ -1092,5 +1092,28 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
+
+		it("get CD", function (done) {
+			executeMyRequest({}, "cd", "get", function (body) {
+				assert.ok(body);
+				done();
+			});
+		});
+
+		it("pause CD", function (done) {
+			var params = {
+				form: {
+					"config": {
+						"env": "STG",
+						"pause": true
+					}
+				}
+			};
+
+			executeMyRequest(params, "cd/pause", "post", function (body) {
+				assert.ok(body);
+				done();
+			});
+		});
 	});
 });
