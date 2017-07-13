@@ -1,13 +1,14 @@
 		<div class="f-left form-g">
 					<fieldset>
 						<legend>Deployment Options</legend>
-						<div class="halfPage branchLabel">
+						<div>
 							<label>{{translation.branch[LANG]}}:</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingBranches">
 							<select class="form-control" ng-if="!loadingBranches" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch" ng-change="updateGitBranch(oneSrv, oneEnv, version)">
 								<option ng-repeat="myBranch in branches" value="{{myBranch.name}}">
 									{{myBranch.name}}
 								</option>
 							</select>
+							<br/>
 						</div>
 						<div>
 							<label>Memory Limit Per Instance (in MBytes)</label>
