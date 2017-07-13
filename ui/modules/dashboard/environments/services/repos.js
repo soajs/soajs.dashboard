@@ -401,7 +401,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource = {};
 						}
 						
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.owner = $scope.gitAccount.owner;
+						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.owner = oneRepo.owner.login;
 						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.repo = oneRepo.name;
 						if (isKubernetes) {
 							$scope.deploymentModes = ['deployment', 'daemonset'];
