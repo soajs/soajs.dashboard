@@ -6,7 +6,8 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	$scope.configuration={};
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, cdAppConfig.permissions);
-
+	$scope.$parent.rerenderMenuAfterEnvExclude(cdNav);
+	
 	$scope.cdData = {};
 	$scope.myEnv = $cookies.getObject('myEnv').code;
 	$scope.upgradeSpaceLink = cdAppConfig.upgradeSpaceLink;
@@ -49,18 +50,23 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				}
 				delete $scope.configuration.pause;
 				for(var service in $scope.configuration){
-					if(['pause', 'deploy', 'options'].indexOf(service) === -1){
-						$scope.maxEntries++;
-						$scope.configuration[service].icon = 'minus';
-						$scope.configuration[service].versions = {};
-						for(var i in $scope.configuration[service]){
-							if (['branch', 'strategy', 'versions', 'icon', 'deploy', 'options'].indexOf(i) === -1) {
-								$scope.configuration[service].versions[i] = angular.copy($scope.configuration[service][i]);
-								delete $scope.configuration[service][i];
+					if(SOAJSRMS.indexOf("soajs." + service) !== -1) {
+						delete $scope.configuration[service];
+					}
+					else{
+						if(['pause', 'deploy', 'options'].indexOf(service) === -1){
+							$scope.maxEntries++;
+							$scope.configuration[service].icon = 'minus';
+							$scope.configuration[service].versions = {};
+							for(var i in $scope.configuration[service]){
+								if (['branch', 'strategy', 'versions', 'icon', 'deploy', 'options'].indexOf(i) === -1) {
+									$scope.configuration[service].versions[i] = angular.copy($scope.configuration[service][i]);
+									delete $scope.configuration[service][i];
+								}
 							}
-						}
-						if (Object.keys($scope.configuration[service].versions).length === 0) {
-							delete $scope.configuration[service].versions;
+							if (Object.keys($scope.configuration[service].versions).length === 0) {
+								delete $scope.configuration[service].versions;
+							}
 						}
 					}
 				}
@@ -98,7 +104,11 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			env: $scope.myEnv,
 			serviceName: service
 		};
-
+		
+		if(SOAJSRMS.indexOf("soajs." + service) !== -1){
+			$scope.displayAlert('danger', "You cannot Apply Continuous Delivery on a SOAJS Ready Made Service.");
+		}
+		
 		if ($scope.configuration[service].versions && Object.keys($scope.configuration[service].versions).length > 0) {
 			data.version = {
 				v: version

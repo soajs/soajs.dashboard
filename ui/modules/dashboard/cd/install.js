@@ -17,6 +17,7 @@ var cdNav = [
 			'label': translation.deploy[LANG],
 			'position': 3
 		},
+		'excludedEnvs': ['dashboard'],
 		'mainMenu': true,
 		'tracker': true,
 		'order': 3,
