@@ -48,12 +48,12 @@
 									<a class="btn btn-sm btn-default" href="{{upgradeSpaceLink}}" target="_blank">Learn More</a>
 								</div>
 								<div ng-show="!oneEntry.rms">
-									<a class="btn btn-sm btn-default" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Restart Service</a>
+									<a class="btn btn-sm btn-default" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-undo"></span>&nbsp;Restart Service</a>
 								</div>
 							</div>
 							<div ng-show="oneEntry.image.prefix !== 'soajsorg'" class="dropdown serviceOpsDropdown">
 								<div ng-if="oneEntry.serviceIsDeployed">
-									<a class="btn btn-sm btn-primary" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Restart Service</a>
+									<a class="btn btn-sm btn-primary" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-undo"></span>&nbsp;Restart Service</a>
 								</div>
 								<div ng-if="!oneEntry.serviceIsDeployed && oneEntry.serviceIsDeployed !== undefined">
 									<a class="btn btn-sm btn-primary" href="" ng-click="updateEntry(oneEntry, 'deploy');"><span class="icon icon-box-add"></span>&nbsp;Deploy Service</a>
