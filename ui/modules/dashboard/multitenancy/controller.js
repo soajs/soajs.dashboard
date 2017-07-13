@@ -121,6 +121,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						prods.push({
 							'pckCode': p.packages[i].code,
 							'prodCode': p.code,
+							'locked': p.locked || false,
 							'v': p.packages[i].code,
 							'l': p.packages[i].code,
 							'acl': p.packages[i].acl
@@ -249,7 +250,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			loginMode
 		};
 		return output;
-	}
+	};
 
 	$scope.splitTenantsByType = function (tenants, callback) {
 		//Clearing previously filled tenants arrays
@@ -1239,20 +1240,31 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		//check if old or new acl
 		//if new acl, list env in acl
 		//if old acl, list all available env
+		var hideDashboard = false;
 		$scope.availablePackages.forEach(function (onePackage) {
 			if (onePackage.pckCode === packageCode) {
 				if (onePackage.acl && typeof (onePackage.acl) === 'object') {
+					
+					if(!onePackage.locked){
+						hideDashboard = true;
+					}
+					
 					if (onePackage.acl[$scope.currentEnv] && (!onePackage.acl[$scope.currentEnv].apis && !onePackage.acl[$scope.currentEnv].apisRegExp && !onePackage.acl[$scope.currentEnv].apisPermission)) {
 						//new acl
 						formConfig.entries.forEach(function (oneFormField) {
 							if (oneFormField.name === 'environment') {
 								var list = [];
 								Object.keys(onePackage.acl).forEach(function (envCode) {
-									list.push({
-										"v": envCode,
-										"l": envCode,
-										"selected": (envCode === $scope.currentEnv)
-									});
+									if(envCode.toUpperCase() === 'DASHBOARD' && hideDashboard){
+										
+									}
+									else{
+										list.push({
+											"v": envCode,
+											"l": envCode,
+											"selected": (envCode === $scope.currentEnv)
+										});
+									}
 								});
 								oneFormField.value = list;
 							}
@@ -1263,11 +1275,16 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							if (oneFormField.name === 'environment') {
 								var list = [];
 								$scope.availableEnv.forEach(function (envCode) {
-									list.push({
-										"v": envCode,
-										"l": envCode,
-										"selected": (envCode === $scope.currentEnv)
-									});
+									if(envCode.toUpperCase() === 'DASHBOARD' && hideDashboard){
+										
+									}
+									else{
+										list.push({
+											"v": envCode,
+											"l": envCode,
+											"selected": (envCode === $scope.currentEnv)
+										});
+									}
 								});
 								oneFormField.value = list;
 							}
