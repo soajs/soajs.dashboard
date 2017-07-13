@@ -64,9 +64,9 @@
             							</accordion-group>
             						</accordion>
                                     <div class="entryBoxes entryBoxesGrid noVersionsBox" ng-if="!repo.servicesList || repo.servicesList.length === 0">
-                                        <a href="" class="btn btn-m btn-default" ng-if="!service.deploySettings" ng-click="deployService(repo, service, 'Default', account)"><span class="icon icon-cog"></span>Configure Deployment</a>
-                                        <a href="" class="btn btn-m btn-default" ng-if="service.deploySettings" ng-click="deployService(repo, service, 'Default', account)"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
-                                        <a href="" class="btn btn-m btn-default" ng-class="{disabled: (service.deployed || !service.deploySettings)}" ng-click="doDeploy(service.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
+                                        <a href="" class="btn btn-m btn-default" ng-if="!repo.deploySettings" ng-click="deployService(repo, service, 'Default', account)"><span class="icon icon-cog"></span>Configure Deployment</a>
+                                        <a href="" class="btn btn-m btn-default" ng-if="repo.deploySettings" ng-click="deployService(repo, service, 'Default', account)"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
+                                        <a href="" class="btn btn-m btn-default" ng-class="{disabled: (repo.deployed || !repo.deploySettings)}" ng-click="doDeploy(repo.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
                                     </div>
                                 </div>
                             </div>
