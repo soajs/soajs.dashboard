@@ -812,17 +812,17 @@ var environmentsConfig = {
 		},
 		"hacloud": {
 			"nodes": {
-				"list": ['dashboard', '/hacloud/nodes/list', 'get'],
-				"add": ['dashboard', '/hacloud/nodes/add', 'post'],
-				"remove": ['dashboard', '/hacloud/nodes/remove', 'delete'],
-				"update": ['dashboard', '/hacloud/nodes/update', 'put'],
+				"list": ['dashboard', '/cloud/nodes/list', 'get'],
+				"add": ['dashboard', '/cloud/nodes/add', 'post'],
+				"remove": ['dashboard', '/cloud/nodes/remove', 'delete'],
+				"update": ['dashboard', '/cloud/nodes/update', 'put']
 			},
 			"services": {
-				"add": ['dashboard', '/hacloud/hosts/deployService', 'post'],
-				"delete": ['dashboard', '/hacloud/services/delete', 'delete'],
-				"scale": ['dashboard', '/hacloud/services/scale', 'put'],
-				"redeploy": ['dashboard', '/hacloud/services/redeploy', 'put'],
-				"logs": ['dashboard', '/hacloud/services/instances/logs', 'get']
+				"add": ['dashboard', '/cloud/hosts/deployService', 'post'],
+				"delete": ['dashboard', '/cloud/services/delete', 'delete'],
+				"scale": ['dashboard', '/cloud/services/scale', 'put'],
+				"redeploy": ['dashboard', '/cloud/services/redeploy', 'put'],
+				"logs": ['dashboard', '/cloud/services/instances/logs', 'get']
 			}
 		},
 		"analytics":{
