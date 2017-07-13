@@ -152,7 +152,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			}
 		}
 		return loginMode;
-	}
+	};
 	
 	$scope.turnOffOAuth = function(){
 		var data = $scope.tenant;
@@ -177,7 +177,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 				$scope.getTenant(true);
 			}
 		});
-	}
+	};
 	
 	$scope.updateOAuth = function(){
 		var formConfig = angular.copy(settingsConfig.form.updateOauth);
