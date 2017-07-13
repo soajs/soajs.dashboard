@@ -447,13 +447,13 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 					if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env) {
 						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env = {};
 					}
-					if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image) {
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image = {};
-					}
 					$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].custom = {};
 					for (var type in $scope.recipes) {
 						$scope.recipes[type].forEach(function (catalogRecipe) {
 							if (catalogRecipe._id === $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.recipe) {
+								if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image && catalogRecipe.recipe.deployOptions.image.override) {
+									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image = {};
+								}
 								if (catalogRecipe.recipe.deployOptions.image.override && Object.keys($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image).length === 0) {
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.prefix = catalogRecipe.recipe.deployOptions.image.prefix;
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.name = catalogRecipe.recipe.deployOptions.image.name;
@@ -783,7 +783,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			}
 			if (cdData.deploy) {
 				cdData.versions['Default'].deploy = cdData.deploy;
-				currentScope.setDeploy(env.toUpperCase(), 'Default', serviceName);
+				// currentScope.setDeploy(env.toUpperCase(), 'Default', serviceName);
 				delete cdData.deploy;
 			}
 			var cdDataClone = angular.copy(currentScope.cdData[env.toUpperCase()][serviceName]);
@@ -796,9 +796,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 					var v = version.replace('v', '');
 					cdData.versions[v] = cdDataClone[version];
 					cdData.versions[v].active = true;
-					if (cdDataClone[version].deploy) {
-						currentScope.setDeploy(env.toUpperCase(), v, serviceName);
-					}
+					// if (cdDataClone[version].deploy) {
+					// 	currentScope.setDeploy(env.toUpperCase(), v, serviceName);
+					// }
 				}
 			}
 			if (cdData.versions && Object.keys(cdData.versions).length === 0) {
@@ -853,6 +853,12 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 		
 		if (formData.custom) {
 			params.custom = formData.custom;
+			if(formData.gitSource && formData.gitSource.branch){
+				params.custom.branch = formData.gitSource.branch;
+			}
+			if(formData.deployConfig && formData.deployConfig.memoryLimit){
+				params.custom.memory = formData.deployConfig.memoryLimit;
+			}
 		}
 		getSendDataFromServer(currentScope, ngDataApi, {
 			method: 'put',
