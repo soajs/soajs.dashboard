@@ -1,7 +1,7 @@
 "use strict";
 var deployReposService = soajsApp.components;
 deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$cookies', function (ngDataApi, $timeout, $modal, $cookies) {
-	
+
 	function listGitAccounts(currentScope) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			'method': 'get',
@@ -203,10 +203,10 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 						oneAccount.repos.forEach(function (oneRepo) {
 							if (oneRepo.servicesList) {
 								oneRepo.servicesList.forEach(function (oneService) {
+									oneService.deployedVersionsCounter = 0;
 									response.forEach(function (oneDeployedEntry) {
 										if (oneDeployedEntry.labels && oneDeployedEntry.labels['soajs.service.name'] && oneDeployedEntry.labels['soajs.service.name'] === oneService.name) {
 											oneService.deployed = true;
-											oneService.deployedVersionsCounter = 0;
 											if (oneService.versions) {
 												oneService.versions.forEach(function (oneVersion) {
 													if (oneDeployedEntry.labels && oneDeployedEntry.labels['soajs.service.version'] && oneDeployedEntry.labels['soajs.service.version'] === oneVersion.v) {
@@ -238,7 +238,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			}
 		});
 	}
-	
+
 	function getServices(currentScope, cb) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "post",
@@ -252,7 +252,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			}
 		});
 	}
-	
+
 	function getDaemons(currentScope, cb) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "post",
@@ -269,7 +269,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			}
 		});
 	}
-	
+
 	function deployService(currentScope, oneRepo, service, version, gitAccount) {
 		var envDeployer = $cookies.getObject("myEnv").deployer;
 		var envPlatform = envDeployer.selected.split('.')[1];
@@ -309,11 +309,11 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				getCDRecipe($scope, oneRepo, function () {
 					$scope.setDeploy($scope.oneEnv, $scope.version, $scope.oneSrv)
 				});
-				
+
 				$scope.cancel = function () {
 					deployService.close();
 				};
-				
+
 				$scope.displayAlert = function (type, msg, isCode, service, orgMesg) {
 					$scope.alerts = [];
 					if (isCode) {
@@ -324,12 +324,12 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 					}
 					$scope.alerts.push({'type': type, 'msg': msg});
 				};
-				
+
 				$scope.closeAlert = function (index) {
 					$scope.alerts.splice(index, 1);
 				};
-				
-				
+
+
 				$scope.showHide = function (oneService, name) {
 					if (oneService.icon === 'minus') {
 						oneService.icon = 'plus';
@@ -340,7 +340,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 						jQuery('#cd_' + name).slideDown()
 					}
 				};
-				
+
 				$scope.cdShowHide = function (oneSrv, name) {
 					if ($scope.cdConfiguration[oneSrv].icon === 'minus') {
 						$scope.cdConfiguration[oneSrv].icon = 'plus';
@@ -351,7 +351,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 						jQuery('#cdc_' + name).slideDown()
 					}
 				};
-				
+
 				$scope.updateGitBranch = function (oneSrv, oneEnv, version) {
 					$scope.branches.forEach(function (oneBranch) {
 						if (oneBranch.name === $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch){
@@ -361,7 +361,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 							}
 						}
 					});
-				
+
 				};
 				
 				$scope.setDeploy = function (oneEnv, version, oneSrv) {
@@ -448,6 +448,11 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env = {};
 					}
 					if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image) {
+						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image = {};
+					}
+					else {
+						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom = {};
+						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env = {};
 						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image = {};
 					}
 					$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].custom = {};

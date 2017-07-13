@@ -279,8 +279,8 @@
 											<ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
 												<li><a href="" ng-click="inspectService(service)"><span class="icon icon-info"></span>&nbsp;Inspect Service</a></li>
 												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(service, groupName)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
-												<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)" ng-confirm-click="Are you sure you want to redeploy this service?"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a></li>
-												<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, 'ui')" ng-confirm-click="Are you sure you want to rebuild this service?"><span class="icon icon-loop2"></span>&nbsp;Rebuild Service</a></li>
+												<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)" ng-confirm-click="Are you sure you want to restart this service?"><span class="icon icon-undo"></span>&nbsp;Restart Service</a></li>
+												<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, 'ui')" ng-confirm-click="Are you sure you want to redeploy this service?"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a></li>
 												<li><a href="" ng-if="access.hacloud.services.delete && !(envCode.toLowerCase() === 'dashboard' && groupName === 'nginx')" ng-click="deleteService(service, groupName)" ng-confirm-click="Are you sure you want to delete this service?"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
 												<li ng-if="['elk','db'].indexOf(groupName) === -1 && showAnalytics && envPlatform === 'docker'"> <a href="" ng-click="metrics('', service.name,'other','metricbeat',service.labels['soajs.service.mode'])"><span class="icon icon-stats-bars"></span>&nbsp;Get Service Metrics</a></li>
 											</ul>
@@ -372,8 +372,8 @@
 													<li><a href="" ng-if="['controller','oauth'].indexOf(service.labels['soajs.service.name']) !== -1" ng-click="loadServiceProvision(service)"><span class="icon icon-download3"></span>&nbsp;Load Provision</a></li>
 													<li><a href="" ng-click="reloadServiceRegistry(service)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
 													<li><a href="" ng-if="access.hacloud.services.scale && service.labels['soajs.service.mode'] !== 'global' && service.labels['soajs.service.mode'] !== 'daemonset'" ng-click="scaleService(service, groupName)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
-													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-undo" ng-confirm-click="Are you sure you want to redeploy this service?"></span>&nbsp;Redeploy Service</a></li>
-													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, '')"><span class="icon icon-loop2" ng-confirm-click="Are you sure you want to rebuild this service?"></span>&nbsp;Rebuild Service</a></li>
+													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-undo" ng-confirm-click="Are you sure you want to restart this service?"></span>&nbsp;Restart Service</a></li>
+													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, '')"><span class="icon icon-loop2" ng-confirm-click="Are you sure you want to redeploy this service?"></span>&nbsp;Redeploy Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.delete  && envCode.toLowerCase() !== 'dashboard'" ng-click="deleteService(service, groupName)" ng-confirm-click="Are you sure you want to delete this service?"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
 													<li ng-if="showAnalytics && envPlatform === 'docker'"><a href="" ng-click="metrics('', service.name,'service','metricbeat',service.labels['soajs.service.mode'])"><span class="icon icon-stats-bars"></span>&nbsp;Get Service Metrics</a></li><li>
 												</ul>
@@ -393,9 +393,6 @@
 															</td>
 															<td class="statusHeader" ng-if="service.labels['soajs.service.name'] !== 'controller'">
 																Status
-															</td>
-															<td class="statusHeader" ng-if="service.labels['soajs.service.name'] !== 'controller'">
-																Controllers
 															</td>
 														</tr>
 													</thead>
@@ -418,13 +415,6 @@
 															<td>
 																<span ng-show="instance.status.state === 'Unreachable'" tooltip-class="ctrl-tooltip" tooltip-placement="left" tooltip-html="instance.status.error" class="red"><b>{{instance.status.state}}</b></span>
 																<span ng-show="instance.status.state !== 'Unreachable'" ng-class="{'green': instance.status.state ==='running', 'red': instance.status.state !=='running'}"><b>{{instance.status.state}}</b></span>
-															</td>
-															<td ng-if="service.labels['soajs.service.name'] !== 'controller'">
-																<span ng-repeat="ctrl in controllers">
-																	<span ng-repeat="ctrlInst in ctrl.tasks">
-																		<span class="ctrlBox" ng-class="{'ctrlBoxHealthy': ctrlInst.healthy, 'ctrlBoxUnhealthy': !ctrlInst.healthy}" tooltip-class="ctrl-tooltip" tooltip-placement="left" tooltip-html="ctrlInst.tooltip">{{ctrlInst.code}}</span>&nbsp;
-																	</span>
-																</span>
 															</td>
 														</tr>
 													</tbody>
