@@ -476,9 +476,14 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image = {};
 								}
 								if (catalogRecipe.recipe.deployOptions.image.override && Object.keys($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image).length === 0) {
-									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.prefix = catalogRecipe.recipe.deployOptions.image.prefix;
-									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.name = catalogRecipe.recipe.deployOptions.image.name;
-									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.tag = catalogRecipe.recipe.deployOptions.image.tag;
+									if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.prefix)
+										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.prefix = catalogRecipe.recipe.deployOptions.image.prefix;
+									
+									if($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.name)
+										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.name = catalogRecipe.recipe.deployOptions.image.name;
+									
+									if($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.tag)
+										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.tag = catalogRecipe.recipe.deployOptions.image.tag;
 								}
 								else if(!catalogRecipe.recipe.deployOptions.image.override){
 									delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image;
