@@ -475,7 +475,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 								if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image && catalogRecipe.recipe.deployOptions.image.override) {
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image = {};
 								}
-								if (catalogRecipe.recipe.deployOptions.image.override && Object.keys($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image).length === 0) {
+								if (catalogRecipe.recipe.deployOptions.image.override) {
 									if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.prefix)
 										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.prefix = catalogRecipe.recipe.deployOptions.image.prefix;
 									
