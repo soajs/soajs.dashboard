@@ -85,6 +85,12 @@ var gitDriver = {
 };
 var gitModel = {};
 
+var configGenerator = {
+	generate: function(soajsFilePath, swaggerFilePath, cb) {
+		return cb(null, {});
+	}
+};
+
 describe("testing helper git.js", function () {
 	var soajs = {
 		registry: {},
@@ -103,10 +109,9 @@ describe("testing helper git.js", function () {
 		soajs: soajs
 	};
 	var res = {};
-	
+
 	describe("getCustomRepoFiles", function () {
-		beforeEach(() => {
-		});
+
 		it("Fail 1: soa.js", function (done) {
 			gitDriver.getJSONContent = function (soajs, gitModel, model, obj, cb) {
 				var error = {
@@ -128,7 +133,7 @@ describe("testing helper git.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Fail 2: swagger.yml", function (done) {
 			gitDriver.getAnyContent = function (soajs, gitModel, model, options, cb) {
 				var error = {
@@ -136,7 +141,7 @@ describe("testing helper git.js", function () {
 				};
 				return cb(error);
 			};
-			
+
 			gitDriver.getJSONContent = function (soajs, gitModel, model, obj, cb) {
 				var repoConfig = {};
 				cb(null, repoConfig);
@@ -155,8 +160,34 @@ describe("testing helper git.js", function () {
 				done();
 			});
 		});
+
+		it("success", function(done) {
+			gitDriver.getJSONContent = function(soajs, gitModel, model, options, cb) {
+				var content = {};
+				return cb(null, content, 'sha');
+			};
+			gitDriver.getAnyContent = function(soajs, gitModel, model, options, cb) {
+				var content = '';
+				return cb(null, content);
+			};
+			soajs.inputmaskData = {};
+			var options = {
+				gitConfig: {
+					provider: 'github'
+				},
+				gitModel: gitModel,
+				git: gitDriver,
+				configGenerator: configGenerator,
+				model: mongoStub
+			};
+
+			helpers.getCustomRepoFiles(options, req, function (error, result) {
+				done();
+			});
+		});
+
 	});
-	
+
 	describe("comparePaths", function () {
 		beforeEach(() => {
 		});
@@ -188,7 +219,7 @@ describe("testing helper git.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Success: will sync", function (done) {
 			remote = ['/sample1', '/sample2', '/sample3', '/sample4'];
 			local = [
@@ -221,14 +252,34 @@ describe("testing helper git.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
+	describe("testing removePath", function() {
+
+		it("success - type service", function(done) {
+			var path = { contentName: 'testSrv', contentType: 'service' };
+			helpers.removePath(mongoStub, req.soajs, path, function(error, result) {
+				assert.ok(result);
+				done();
+			});
+		});
+
+		it("success - type daemon", function(done) {
+			var path = { contentName: 'testSrv', contentType: 'daemon' };
+			helpers.removePath(mongoStub, req.soajs, path, function(error, result) {
+				assert.ok(result);
+				done();
+			});
+		});
+
+	});
+
 	describe("extractAPIsList", function () {
 		beforeEach(() => {
-			
+
 		});
-		
+
 		it("Success new style", function (done) {
 			var schema = {
 				commonFields: {},
@@ -252,7 +303,7 @@ describe("testing helper git.js", function () {
 			helpers.extractAPIsList(schema);
 			done();
 		});
-		
+
 		it("Success old style", function (done) {
 			var schema = {
 				'/one': {
@@ -266,12 +317,12 @@ describe("testing helper git.js", function () {
 			helpers.extractAPIsList(schema);
 			done();
 		});
-		
+
 	});
-	
+
 	describe("validateFileContents", function () {
 		beforeEach(() => {
-			
+
 		});
 		it("No type", function (done) {
 			var repoConfig = {
@@ -282,13 +333,13 @@ describe("testing helper git.js", function () {
 				main: 'index.js',
 				prerequisites: {},
 				schema: {}
-				
+
 			};
 			helpers.validateFileContents(req, res, repoConfig, function () {
 				done();
 			});
 		});
-		
+
 		it("Success service", function (done) {
 			var repoConfig = {
 				type: 'service',
@@ -319,13 +370,13 @@ describe("testing helper git.js", function () {
 						}
 					}
 				}
-				
+
 			};
 			helpers.validateFileContents(req, res, repoConfig, function () {
 				done();
 			});
 		});
-		
+
 		it("Success daemon", function (done) {
 			var repoConfig = {
 				type: 'daemon',
@@ -356,15 +407,15 @@ describe("testing helper git.js", function () {
 						}
 					}
 				}
-				
+
 			};
 			helpers.validateFileContents(req, res, repoConfig, function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("analyzeConfigSyncFile", function () {
 		var path;
 		var configSHA = {};
@@ -384,13 +435,13 @@ describe("testing helper git.js", function () {
 				main: 'index.js',
 				prerequisites: {},
 				schema: {}
-				
+
 			};
 			helpers.analyzeConfigSyncFile(req, repoConfig, path, configSHA, flags, function () {
 				done();
 			});
 		});
-		
+
 		it("Success service", function (done) {
 			var repoConfig = {
 				type: 'service',
@@ -421,13 +472,13 @@ describe("testing helper git.js", function () {
 						}
 					}
 				}
-				
+
 			};
 			helpers.analyzeConfigSyncFile(req, repoConfig, path, configSHA, flags, function () {
 				done();
 			});
 		});
-		
+
 		it("Success daemon", function (done) {
 			var repoConfig = {
 				type: 'daemon',
@@ -458,18 +509,18 @@ describe("testing helper git.js", function () {
 						}
 					}
 				}
-				
+
 			};
 			helpers.analyzeConfigSyncFile(req, repoConfig, path, configSHA, flags, function () {
 				done();
 			});
 		});
-		
+
 		it("Success Multi", function (done) {
 			var repoConfig = {
 				type: 'multi',
 				folders: []
-				
+
 			};
 			helpers.analyzeConfigSyncFile(req, repoConfig, path, configSHA, flags, function () {
 				done();
@@ -492,10 +543,10 @@ describe("testing helper git.js", function () {
 			});
 		});
 	});
-	
+
 	describe("buildDeployerOptions", function () {
 		beforeEach(() => {
-			
+
 		});
 		var envRecord = {
 			_id: '',
@@ -545,7 +596,7 @@ describe("testing helper git.js", function () {
 			assert.ok(options.deployerConfig);
 			done();
 		});
-		
+
 	});
 
 	describe("getServiceInfo", function () {
@@ -735,5 +786,5 @@ describe("testing helper git.js", function () {
 		});
 
 	});
-	
+
 });

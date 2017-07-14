@@ -745,7 +745,7 @@ describe("testing hosts deployment", function () {
 					access_token: access_token
 				},
 				"form": {
-					env: 'dev',
+					env: 'stg',
 					custom: {
 						type: 'service',
 						name: 'controller'
@@ -781,7 +781,7 @@ describe("testing hosts deployment", function () {
 					access_token: access_token
 				},
 				"form": {
-					env: 'dev',
+					env: 'stg',
 					custom: {
 						type: 'nginx',
 						name: 'nginx'
@@ -811,7 +811,7 @@ describe("testing hosts deployment", function () {
 					access_token: access_token
 				},
 				"form": {
-					env: 'dev',
+					env: 'stg',
 					custom: {
 						type: 'service',
 						name: 'urac',
@@ -835,24 +835,6 @@ describe("testing hosts deployment", function () {
 			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
-				done();
-			});
-		});
-
-		it.skip("configuring ci", function(done){
-			let doc = {
-				"$set":{
-					"driver": "travis",
-					"settings": {
-						"domain": "api.travis-ci.org",
-						"owner": "soajs",
-						"gitToken": "1234567890",
-						"ciToken": "abcd1234"
-					}
-				}
-			};
-			mongo.update("cicd", {"type":"ci"}, doc, {"upsert": true, safe: true, multi: false}, function(error){
-				assert.ifError(error);
 				done();
 			});
 		});
@@ -883,7 +865,7 @@ describe("testing hosts deployment", function () {
 
 		it("configure cd again with specific entry for controller", function(done){
 			configureCD({
-				"env": "DEV",
+				"env": "STG",
 				"serviceName": "controller",
 				"default": {
 					"branch": "master",
@@ -906,7 +888,7 @@ describe("testing hosts deployment", function () {
 
 		it("configure cd again with specific version for controller", function(done){
 			configureCD({
-				"env": "DEV",
+				"env": "STG",
 				"serviceName": "controller",
 				"version": {
 					"v": "v1",
@@ -932,7 +914,7 @@ describe("testing hosts deployment", function () {
 			var options = {
 				qs: {
 					deploy_token: access_token,
-					env: 'dev'
+					env: 'stg'
 				}
 			};
 
@@ -995,7 +977,7 @@ describe("testing hosts deployment", function () {
 			var options = {
 				qs: {
 					deploy_token: access_token,
-					env: 'dev'
+					env: 'stg'
 				}
 			};
 
@@ -1008,7 +990,7 @@ describe("testing hosts deployment", function () {
 
 		it("configure cd for automatic controller update", function(done){
 			configureCD({
-				"env": "DEV",
+				"env": "STG",
 				"serviceName": "controller",
 				"version": {
 					"v": "v2",
@@ -1035,7 +1017,7 @@ describe("testing hosts deployment", function () {
 			var options = {
 				qs: {
 					deploy_token: access_token,
-					env: 'dev'
+					env: 'stg'
 				}
 			};
 
@@ -1069,7 +1051,7 @@ describe("testing hosts deployment", function () {
 		});
 
 		it("calling take action on rebuild", function(done){
-			getServices('dev', function(list){
+			getServices('stg', function(list){
 				var lastEntry = list[list.length -1];
 				var options = {
 					qs: {
@@ -1077,7 +1059,7 @@ describe("testing hosts deployment", function () {
 					},
 					form:{
 						data:{
-							"env": 'dev',
+							"env": 'stg',
 							"action": 'rebuild',
 							"mode": lastEntry.labels['soajs.service.mode'],
 							"serviceId": lastEntry.id,

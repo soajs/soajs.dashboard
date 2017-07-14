@@ -341,7 +341,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 
-				it("success - will add package", function (done) {
+				it("success - will add package, no locked product -> acl will be ignored for dashboard's env", function (done) {
 					var params = {
 						qs: {'id': productId},
 						form: {
@@ -373,18 +373,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"name": "basic package",
 								"description": "this is a dummy description",
 								"_TTL": 12 * 3600 * 1000,
-								"acl": {
-									"dev": {
-										"urac": {
-											'access': false,
-											'apis': {
-												'/account/changeEmail': {
-													'access': true
-												}
-											}
-										}
-									}
-								}
+								"acl": {}
 							});
 							done();
 
@@ -400,18 +389,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"name": "some package",
 							"description": 'this is a dummy description',
 							"_TTL": '12',
-							"acl": {
-								"dev": {
-									"urac": {
-										'access': false,
-										'apis': {
-											'/account/changeEmail': {
-												'access': true
-											}
-										}
-									}
-								}
-							}
+							"acl": {}
 						}
 					};
 					executeMyRequest(params, 'product/packages/add', 'post', function (body) {
@@ -424,18 +402,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"name": "some package",
 								"description": "this is a dummy description",
 								"_TTL": 12 * 3600 * 1000,
-								"acl": {
-									"dev": {
-										"urac": {
-											'access': false,
-											'apis': {
-												'/account/changeEmail': {
-													'access': true
-												}
-											}
-										}
-									}
-								}
+								"acl": {}
 							});
 							done();
 
@@ -591,7 +558,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 
-				it("success - will update package", function (done) {
+				it("success - will update package, acl will be ignored", function (done) {
 					var params = {
 						qs: {'id': productId, "code": "BASIC"},
 						form: {
@@ -623,18 +590,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"name": "basic package 2",
 								"description": "this is a dummy updated description",
 								"_TTL": 24 * 3600 * 1000,
-								"acl": {
-									"dev": {
-										"urac": {
-											'access': false,
-											'apis': {
-												'/account/changeEmail': {
-													'access': true
-												}
-											}
-										}
-									}
-								}
+								"acl": {}
 							});
 							done();
 
@@ -827,18 +783,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"name": "basic package 2",
 							"description": "this is a dummy updated description",
 							"_TTL": 24 * 3600 * 1000,
-							"acl": {
-								"dev": {
-									"urac": {
-										'access': false,
-										'apis': {
-											'/account/changeEmail': {
-												'access': true
-											}
-										}
-									}
-								}
-							}
+							"acl": {}
 						});
 						done();
 					});
@@ -861,18 +806,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"code": "TPROD_BASIC",
 								"name": "basic package 2",
 								"description": "this is a dummy updated description",
-								"acl": {
-									"dev": {
-										"urac": {
-											'access': false,
-											'apis': {
-												'/account/changeEmail': {
-													'access': true
-												}
-											}
-										}
-									}
-								},
+								"acl": {},
 								"_TTL": 24 * 3600 * 1000
 							}
 						]

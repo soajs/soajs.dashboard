@@ -74,6 +74,13 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 
 	var recipeRecord = {};
 
+	before("clean data", function(done) {
+		mongo.remove("cicd", {}, function (error) {
+			assert.ifError(error);
+			done();
+		})
+	});
+
 	it("Success - list Accounts", function (done) {
 		var params = {};
 
