@@ -955,14 +955,14 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			if(oneDeployedEntry.labels['soajs.service.version']){
 				deploySettings.options.custom.version = oneDeployedEntry.labels['soajs.service.version'];
 			}
-			if(oneDeployedEntry.labels['soajs.image.prefix']) {
-				deploySettings.options.custom.image.prefix = oneDeployedEntry.labels['soajs.image.prefix'];
+			if(oneDeployedEntry.labels['service.image.prefix']) {
+				deploySettings.options.custom.image.prefix = oneDeployedEntry.labels['service.image.prefix'];
 			}
-			if(oneDeployedEntry.labels['soajs.image.name']){
-				deploySettings.options.custom.image.name = oneDeployedEntry.labels['soajs.image.name'];
+			if(oneDeployedEntry.labels['service.image.name']){
+				deploySettings.options.custom.image.name = oneDeployedEntry.labels['service.image.name'];
 			}
-			if(oneDeployedEntry.labels['soajs.image.tag']){
-				deploySettings.options.custom.image.tag = oneDeployedEntry.labels['soajs.image.tag'];
+			if(oneDeployedEntry.labels['service.image.tag']){
+				deploySettings.options.custom.image.tag = oneDeployedEntry.labels['service.image.tag'];
 			}
 		}
 		if(oneDeployedEntry.env) {
