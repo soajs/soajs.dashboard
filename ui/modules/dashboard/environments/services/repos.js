@@ -207,7 +207,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 									response.forEach(function (oneDeployedEntry) {
 										if (oneDeployedEntry.labels && oneDeployedEntry.labels['soajs.service.name'] && oneDeployedEntry.labels['soajs.service.name'] === oneService.name) {
 											oneService.deployed = true;
-											if (oneService.versions) {
+											if (oneService.versions && oneService.versions.length > 0) {
 												oneService.versions.forEach(function (oneVersion) {
 													if (oneDeployedEntry.labels && oneDeployedEntry.labels['soajs.service.version'] && oneDeployedEntry.labels['soajs.service.version'] === oneVersion.v) {
 														oneVersion.deployed = true;
