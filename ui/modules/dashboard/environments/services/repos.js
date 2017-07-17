@@ -394,10 +394,11 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 					if ($scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version] && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch']) {
 						deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch'];
 					}
-					if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active) {
+					if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active) {
 						delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active;
 					}
-					else if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version]) {
+					else if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions || !$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version]) {
+						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions = {};
 						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] = {
 							branch: deployedBranch,
 							active: true
@@ -766,7 +767,6 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 	}
 	
 	function buildFormData(currentScope, env, serviceName, cb) {
-		var service = currentScope.services[serviceName];
 		var dashboardServices = ['dashboard', 'proxy'];
 		if (dashboardServices.indexOf(serviceName) !== -1) {
 			return cb();
@@ -814,9 +814,6 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 					var v = version.replace('v', '');
 					cdData.versions[v] = cdDataClone[version];
 					cdData.versions[v].active = true;
-					// if (cdDataClone[version].deploy) {
-					// 	currentScope.setDeploy(env.toUpperCase(), v, serviceName);
-					// }
 				}
 			}
 			if (cdData.versions && Object.keys(cdData.versions).length === 0) {

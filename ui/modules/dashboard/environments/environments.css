@@ -324,3 +324,6 @@ ul {
 .configCd .branchLabel{
     padding-top: 8px;
 }
+.responsive-width {
+    font-size: 0.8vw;
+}
