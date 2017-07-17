@@ -168,9 +168,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				if (failure === 0) {
 					oneController.color = 'green';
 				}
-				else if (failure > 0 && failure < oneController.tasks.length) {
-					oneController.color = 'yellow';
-				}
 				else if (failure === oneController.tasks.length) {
 					oneController.color = 'red';
 				}
@@ -857,9 +854,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 				if (failCount === heartbeatResponse.length) {
 					service.color = 'red';
-				}
-				else if (failCount > 0 && failCount < heartbeatResponse.length) {
-					service.color = 'yellow';
 				}
 				else {
 					service.color = 'green';
