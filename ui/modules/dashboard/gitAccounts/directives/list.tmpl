@@ -41,16 +41,16 @@
 					                <span ng-if="repo.status === 'active'" class="f-right mr11"><span class="icon icon-checkmark"></span>{{translation.activeRepo[LANG]}}</span>
 					                <span ng-if="repo.status === 'outOfSync'" class="f-right mr11"><span class="icon icon-warning"></span>{{translation.repoOutOfSync[LANG]}}</span>
 					                <div class="rightActions">
-						                <a href="" ng-if="access.activateRepo && !repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-24px'}">
+						                <a href="" ng-if="access.activateRepo && !repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
 							                <span class="icon icon-switch" tooltip="{{translation.activate[LANG]}}"></span>
 						                </a>
-						                <a href="" ng-if="access.deactivateRepo && repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-24px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
+						                <a href="" ng-if="access.deactivateRepo && repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
 							                <span class="icon icon-cross" tooltip="{{translation.deactivate[LANG]}}"></span>
 						                </a>
-						                <a href="" ng-if="access.syncRepo && repo.status === 'active'" ng-click="syncRepo(account, repo)" ng-style="{'margin-top': '-24px'}">
+						                <a href="" ng-if="access.syncRepo && repo.status === 'active'" ng-click="syncRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
 							                <span class="icon icon-loop2" tooltip="{{translation.sync[LANG]}}"></span>
 						                </a>
-						                <a href="" ng-if="access.getCIRepoSettings && access.getCIAccountInfo && repo.status" ng-click="configureRepo(repo, account)" ng-style="{'margin-top': '-24px'}">
+						                <a href="" ng-if="access.getCIRepoSettings && access.getCIAccountInfo && repo.status" ng-click="configureRepo(repo, account)" ng-style="{'margin-top': '-19px'}">
 							                <span tooltip="Configure" class="icon icon-cog"></span>
 						                </a>
 					                </div>
