@@ -67,12 +67,16 @@ var driver = {
 						}
 					}
 					else if (options.access === 'private') {//create token for account and save
-						driver.helper.createAuthToken(options, function (error, tokenInfo) {
+						driver.helper.checkUserRecord(options, function (error) {
 							checkIfError(error, {}, cb, function () {
-								delete options.password;
-								options.token = tokenInfo.token;
-								options.authId = tokenInfo.authId;
-								data.saveNewAccount(soajs, model, options, cb);
+								driver.helper.createAuthToken(options, function (error, tokenInfo) {
+									checkIfError(error, {}, cb, function () {
+										delete options.password;
+										options.token = tokenInfo.token;
+										options.authId = tokenInfo.authId;
+										data.saveNewAccount(soajs, model, options, cb);
+									});
+								});
 							});
 						});
 					}

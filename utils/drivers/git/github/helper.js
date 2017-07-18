@@ -109,7 +109,9 @@ var lib = {
 				}
 				return cb(error);
 			}
-
+			if(result.login){
+				options.owner = result.login;
+			}
 			return cb();
 		});
 	},
@@ -125,7 +127,9 @@ var lib = {
 				}
 				return cb(error);
 			}
-
+			if(result.login){
+				options.owner = result.login;
+			}
 			return cb();
 		});
 	},

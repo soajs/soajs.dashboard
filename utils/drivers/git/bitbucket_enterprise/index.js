@@ -51,33 +51,34 @@ var driver = {
 						});
 					}
 					else if (options.access === 'private') {
-						options.token = options.owner + ":" + options.password;
-						
-						var domain = 'https://' + config.gitAccounts.bitbucket_enterprise.apiDomain.replace('%PROVIDER_DOMAIN%', options.domain);
-						var tempClient = new BitbucketClient(domain, {
-							type: 'basic',
-							username: options.owner,
-							password: options.password
-						});
-						
-						// if able to get user's settings, it means we have valid credentials
-						tempClient.settings.get(options.owner)
-							.then(function () {
-								delete options.password;
-								bitbucketClient = driver.helper.authenticate(options);
-								
-								options.token = new Buffer(options.token).toString('base64');
-								data.saveNewAccount(soajs, model, options, cb);
-							})
-							.catch(function (error) {
-								return cb(error);
-							})
-							.finally(function () {
-								// delete temp client
-								tempClient = null;
+						driver.helper.checkUserRecord(options, function (error) {
+							checkIfError(error, {}, cb, function () {
+								options.token = options.owner + ":" + options.password;
+								var domain = 'https://' + config.gitAccounts.bitbucket_enterprise.apiDomain.replace('%PROVIDER_DOMAIN%', options.domain);
+								var tempClient = new BitbucketClient(domain, {
+									type: 'basic',
+									username: options.owner,
+									password: options.password
+								});
+								// if able to get user's settings, it means we have valid credentials
+								tempClient.settings.get(options.owner)
+									.then(function () {
+										delete options.password;
+										bitbucketClient = driver.helper.authenticate(options);
+										
+										options.token = new Buffer(options.token).toString('base64');
+										data.saveNewAccount(soajs, model, options, cb);
+									})
+									.catch(function (error) {
+										return cb(error);
+									})
+									.finally(function () {
+										// delete temp client
+										tempClient = null;
+									});
 							});
+						});
 					}
-					
 				});
 			});
 		});
