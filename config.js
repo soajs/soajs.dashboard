@@ -1534,7 +1534,8 @@ module.exports = {
                     }
                 }
             },
-            "/environment/add": {
+            
+	        "/environment/add": {
                 _apiInfo: {
                     "l": "Add Environment",
                     "group": "Environment"

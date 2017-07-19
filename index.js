@@ -1219,7 +1219,7 @@ service.init(function () {
 	 */
 	service.post("/cd", function (req, res) {
 		initBLModel(req, res, dashboardBL.cd.module, dbModel, function (BL) {
-			BL.saveConfig(config, req, dashboardBL.cd.helper, function (error, data) {
+			BL.saveConfig(config, req, dashboardBL.cd.helper, soajs.utils, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
