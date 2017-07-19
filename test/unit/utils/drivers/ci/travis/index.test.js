@@ -14,7 +14,7 @@ describe("testing ci travis index.js", function () {
 		driver: 'travis',
 		settings: {
 			domain: 'my.travis',
-			owner: 'soajsTestAccount',
+			repo: 'soajsTestAccount',
 			gitToken: 'mygitToken',
 			ciToken: 'access1'
 		},
@@ -125,6 +125,7 @@ describe("testing ci travis index.js", function () {
 				SOAJS_CD_DASHBOARD_PORT: '80',
 				SOAJS_CD_DASHBOARD_PROTOCOL: 'http'
 			};
+			console.log(options)
 			utils.listRepos(options, function (error, body) {
 				assert.ok(body);
 				done();
