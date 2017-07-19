@@ -214,7 +214,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			var pillarInfo;
 			var envCode = $cookies.getObject("myEnv").code;
 			moduleMenu.forEach(function(oneEntry){
-				if(oneEntry.excludedEnvs && Array.isArray(oneEntry.excludedEnvs) && oneEntry.excludedEnvs.length > 0){
+				if(oneEntry.url && $location.url() === oneEntry.url.split("#")[1] && oneEntry.excludedEnvs && Array.isArray(oneEntry.excludedEnvs) && oneEntry.excludedEnvs.length > 0){
 					if(oneEntry.excludedEnvs.indexOf(envCode.toLowerCase()) !== -1){
 						pillarInfo = oneEntry.pillar;
 						for(var i =0; i < $scope.mainMenu.links.length; i++){

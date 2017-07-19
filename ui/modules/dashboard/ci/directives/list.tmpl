@@ -9,6 +9,9 @@
 				<div class="entryBoxes entryBoxesGrid">
 					<div id="a_{{account.owner}}" ng-repeat="account in accounts" class="entryBox customEntryBox">
 						<div class="header opened">
+							<span class="icon icon-github" ng-if="account.gitProvider === 'github'"></span>
+							<span class="icon" ng-if="account.gitProvider === 'bitbucket'"><i class="fa fa-lg fa-bitbucket"></i></span>
+							<span class="icon" ng-if="account.gitProvider === 'bitbucket_enterprise'"><i class="fa fa-lg fa-bitbucket"></i></span>
 							{{account.owner}}
 						</div>
 						<div class="body">

@@ -89,8 +89,7 @@ var lib = {
 		utils.checkError(!opts.settings.ciToken, { code: 974 }, cb, () => {
 			//check if the repositories owner name is provided
 			utils.checkError(!opts.settings && !opts.settings.owner, { code: 975 }, cb, () => {
-				let finalUrl = config.headers.api.url.listRepos + "/" + opts.settings.owner;
-				
+				let finalUrl = config.headers.api.url.listRepos;
 				opts.log.debug(opts.settings);
 				if (opts.settings.repo) {
 					finalUrl += "/" + opts.settings.repo;

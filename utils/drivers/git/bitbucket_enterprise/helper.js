@@ -53,6 +53,9 @@ var lib = {
 
 		tempClient.users.getUser(options.owner)
 			.then(function (user) {
+				if (user.name) {
+					options.owner = user.name;
+				}
 				return cb(null, user);
 			})
 			.catch(function (error) {
