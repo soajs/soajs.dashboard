@@ -326,4 +326,5 @@ ul {
 }
 .responsive-width {
     font-size: 0.8vw;
+    float: right;
 }

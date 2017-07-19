@@ -50,9 +50,9 @@
                                                         <span style="float: right; color: green;" ng-if="version.deployed"><span class="icon icon-checkmark"></span>Deployed</span>
                                                     </div>
                                                     <div class="body serviceVersionBox">
-                                                        <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (version.deployed || !version.deploySettings)}" style="float: right;" ng-click="doDeploy(version.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
-                                                        <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account)" ng-if="!version.deploySettings" style="float: right;"><span class="icon icon-cog"></span>Configure Deployment</a>
-                                                        <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account)" ng-if="version.deploySettings" style="float: right;"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
+                                                        <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (version.deployed || !version.deploySettings)}"  ng-click="doDeploy(version.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
+                                                        <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account)" ng-if="!version.deploySettings" ><span class="icon icon-cog"></span>Configure Deployment</a>
+                                                        <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account)" ng-if="version.deploySettings" ><span class="icon icon-cog"></span>Reconfigure Deployment</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -62,9 +62,9 @@
 										            <span style="float: right; color: green;" ng-if="service.deployed"><span class="icon icon-checkmark"></span>Deployed</span>
 									            </div>
 									            <div class="body serviceVersionBox">
-										            <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (service.deployed || !service.deploySettings)}" style="float: right;" ng-click="doDeploy(service.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
-										            <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, 'Default', account)" ng-if="!service.deploySettings" style="float: right;"><span class="icon icon-cog"></span>Configure Deployment</a>
-										            <a href="" class="btn btn-sm btn-default responsive-width" ng-if="service.deploySettings" style="float: right;" ng-click="deployService(repo, service, 'Default', account)"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
+										            <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (service.deployed || !service.deploySettings)}"  ng-click="doDeploy(service.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
+										            <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, 'Default', account)" ng-if="!service.deploySettings" ><span class="icon icon-cog"></span>Configure Deployment</a>
+										            <a href="" class="btn btn-sm btn-default responsive-width" ng-if="service.deploySettings"  ng-click="deployService(repo, service, 'Default', account)"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
 									            </div>
 								            </div>
             							</accordion-group>
@@ -75,16 +75,15 @@
 			                                <span style="float: right; color: green;" ng-if="repo.deployed"><span class="icon icon-checkmark"></span>Deployed</span>
 		                                </div>
 		                                <div class="body serviceVersionBox">
+			                                <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (repo.deployed || !repo.deploySettings)}" ng-click="doDeploy(repo.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
 			                                <a href="" class="btn btn-sm btn-default responsive-width" ng-if="!repo.deploySettings" ng-click="deployService(repo, service, 'Default', account)"><span class="icon icon-cog"></span>Configure Deployment</a>
 			                                <a href="" class="btn btn-sm btn-default responsive-width" ng-if="repo.deploySettings" ng-click="deployService(repo, service, 'Default', account)"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
-			                                <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (repo.deployed || !repo.deploySettings)}" ng-click="doDeploy(repo.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
 		                                </div>
 	                                </div>
                                 </div>
                             </div>
                         </div>
 	                </div>
-
                     <div class="entryAction">
 	                    <a href="" ng-click="showHide(account)">
 		                    <span class="icon icon-{{account.icon || 'plus'}}"></span>
