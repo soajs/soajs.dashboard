@@ -14,7 +14,7 @@ describe("testing ci travis index.js", function () {
 		driver: 'travis',
 		settings: {
 			domain: 'my.travis',
-			owner: 'soajsTestAccount',
+			repo: 'soajsTestAccount',
 			gitToken: 'mygitToken',
 			ciToken: 'access1'
 		},

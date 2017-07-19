@@ -31,12 +31,13 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				$scope.accounts = [];
 				var processed = [];
 				response.forEach(function(oneEntry){
-					if(processed.indexOf(oneEntry.owner) === -1){
+					if(processed.indexOf(oneEntry.owner + oneEntry.provider) === -1){
 						var oneAccount = {
 							owner: oneEntry.owner,
 							hide: true,
 							icon: 'plus',
-							providers: []
+							providers: [],
+							gitProvider: oneEntry.provider
 						};
 						
 						response.forEach(function(oneEntryAgain){
@@ -48,7 +49,7 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 						});
 						
 						$scope.accounts.push(oneAccount);
-						processed.push(oneEntry.owner);
+						processed.push(oneEntry.owner + oneEntry.provider);
 					}
 				});
 				

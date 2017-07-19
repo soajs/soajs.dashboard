@@ -24,65 +24,65 @@ function checkForMongo(soajs) {
         mongo = new Mongo(soajs.registry.coreDB.provision);
 
         //services
-		mongo.ensureIndex(servicesCollectionName, {port: 1}, {unique: true}, errorLogger);
-		mongo.ensureIndex(servicesCollectionName, {'src.owner': 1, 'src.repo': 1}, errorLogger);
-		mongo.ensureIndex(servicesCollectionName, {name: 1, port: 1, 'src.owner': 1, 'src.repo': 1}, errorLogger);
-		mongo.ensureIndex(servicesCollectionName, {gcId: 1}, errorLogger);
-		mongo.ensureIndex(servicesCollectionName, {name: 1, gcId: 1}, errorLogger);
-		mongo.ensureIndex(servicesCollectionName, {port: 1, gcId: 1}, errorLogger);
+		mongo.createIndex(servicesCollectionName, {port: 1}, {unique: true}, errorLogger);
+		mongo.createIndex(servicesCollectionName, {'src.owner': 1, 'src.repo': 1}, errorLogger);
+		mongo.createIndex(servicesCollectionName, {name: 1, port: 1, 'src.owner': 1, 'src.repo': 1}, errorLogger);
+		mongo.createIndex(servicesCollectionName, {gcId: 1}, errorLogger);
+		mongo.createIndex(servicesCollectionName, {name: 1, gcId: 1}, errorLogger);
+		mongo.createIndex(servicesCollectionName, {port: 1, gcId: 1}, errorLogger);
 
 		//daemons
-		mongo.ensureIndex(daemonsCollectionName, {name: 1}, {unique: true}, errorLogger);
-		mongo.ensureIndex(daemonsCollectionName, {port: 1}, {unique: true}, errorLogger);
-		mongo.ensureIndex(daemonsCollectionName, {name: 1, port: 1}, {unique: true}, errorLogger);
-		mongo.ensureIndex(daemonsCollectionName, {'src.owner': 1, 'src.repo': 1}, errorLogger);
-		mongo.ensureIndex(daemonsCollectionName, {name: 1, port: 1, 'src.owner': 1, 'src.repo': 1}, errorLogger);
+		mongo.createIndex(daemonsCollectionName, {name: 1}, {unique: true}, errorLogger);
+		mongo.createIndex(daemonsCollectionName, {port: 1}, {unique: true}, errorLogger);
+		mongo.createIndex(daemonsCollectionName, {name: 1, port: 1}, {unique: true}, errorLogger);
+		mongo.createIndex(daemonsCollectionName, {'src.owner': 1, 'src.repo': 1}, errorLogger);
+		mongo.createIndex(daemonsCollectionName, {name: 1, port: 1, 'src.owner': 1, 'src.repo': 1}, errorLogger);
 
 		//daemon_grpconf
-		mongo.ensureIndex(groupConfigCollectionName, {daemon: 1}, errorLogger);
-		mongo.ensureIndex(groupConfigCollectionName, {name: 1}, errorLogger);
+		mongo.createIndex(groupConfigCollectionName, {daemon: 1}, errorLogger);
+		mongo.createIndex(groupConfigCollectionName, {name: 1}, errorLogger);
 
 		//environment
-		mongo.ensureIndex(environmentCollectionName, {locked: 1}, errorLogger);
+		mongo.createIndex(environmentCollectionName, {locked: 1}, errorLogger);
 
 		//fs.files
-		// mongo.ensureIndex(gridfsCollectionName, {filename: 1}, {unique: true}, errorLogger);
-		mongo.ensureIndex(gridfsCollectionName, {filename: 1, 'metadata.type': 1}, errorLogger);
-		mongo.ensureIndex(gridfsCollectionName, {'metadata.type': 1}, errorLogger);
-		mongo.ensureIndex(gridfsCollectionName, {'metadata.env': 1}, errorLogger);
+		// mongo.createIndex(gridfsCollectionName, {filename: 1}, {unique: true}, errorLogger);
+		mongo.createIndex(gridfsCollectionName, {filename: 1, 'metadata.type': 1}, errorLogger);
+		mongo.createIndex(gridfsCollectionName, {'metadata.type': 1}, errorLogger);
+		mongo.createIndex(gridfsCollectionName, {'metadata.env': 1}, errorLogger);
 
 		//tenants
-		mongo.ensureIndex(tenantCollectionName, {_id: 1, locked: 1}, errorLogger);
-		mongo.ensureIndex(tenantCollectionName, {name: 1}, errorLogger);
-		mongo.ensureIndex(tenantCollectionName, {type: 1}, errorLogger);
-		mongo.ensureIndex(tenantCollectionName, {'application.keys.extKeys.env': 1}, errorLogger);
+		mongo.createIndex(tenantCollectionName, {_id: 1, locked: 1}, errorLogger);
+		mongo.createIndex(tenantCollectionName, {name: 1}, errorLogger);
+		mongo.createIndex(tenantCollectionName, {type: 1}, errorLogger);
+		mongo.createIndex(tenantCollectionName, {'application.keys.extKeys.env': 1}, errorLogger);
 
 		//products
-		mongo.ensureIndex(productsCollectionName, {code: 1, "packages.code": 1}, errorLogger);
+		mongo.createIndex(productsCollectionName, {code: 1, "packages.code": 1}, errorLogger);
 
 		//hosts
 	    if (!process.env.SOAJS_DEPLOY_HA) {
-		    mongo.ensureIndex(hostsCollectionName, {_id: 1, locked: 1}, errorLogger);
-		    mongo.ensureIndex(hostsCollectionName, {env: 1, name: 1, hostname: 1}, errorLogger);
-		    mongo.ensureIndex(hostsCollectionName, {env: 1, name: 1, ip: 1, hostname: 1}, errorLogger);
-		    mongo.ensureIndex(hostsCollectionName, {env: 1, type: 1, running: 1}, errorLogger);
+		    mongo.createIndex(hostsCollectionName, {_id: 1, locked: 1}, errorLogger);
+		    mongo.createIndex(hostsCollectionName, {env: 1, name: 1, hostname: 1}, errorLogger);
+		    mongo.createIndex(hostsCollectionName, {env: 1, name: 1, ip: 1, hostname: 1}, errorLogger);
+		    mongo.createIndex(hostsCollectionName, {env: 1, type: 1, running: 1}, errorLogger);
 	    }
 	    
 		//oauth_urac
-		mongo.ensureIndex(oauthUracCollectionName, {tId: 1, _id: 1}, errorLogger);
-		mongo.ensureIndex(oauthUracCollectionName, {tId: 1, userId: 1, _id: 1}, errorLogger);
+		mongo.createIndex(oauthUracCollectionName, {tId: 1, _id: 1}, errorLogger);
+		mongo.createIndex(oauthUracCollectionName, {tId: 1, userId: 1, _id: 1}, errorLogger);
 
 		//git_accounts
-		mongo.ensureIndex(gitAccountsCollectionName, {_id: 1, 'repos.name': 1}, errorLogger);
-		mongo.ensureIndex(gitAccountsCollectionName, {'repos.name': 1}, errorLogger);
-		mongo.ensureIndex(gitAccountsCollectionName, {owner: 1, provider: 1}, errorLogger);
+		mongo.createIndex(gitAccountsCollectionName, {_id: 1, 'repos.name': 1}, errorLogger);
+		mongo.createIndex(gitAccountsCollectionName, {'repos.name': 1}, errorLogger);
+		mongo.createIndex(gitAccountsCollectionName, {owner: 1, provider: 1}, errorLogger);
 
 		//gc
-		mongo.ensureIndex(gcCollectionName, {name: 1}, errorLogger);
-		mongo.ensureIndex(gcCollectionName, {_id: 1, refId: 1, v: 1}, errorLogger);
+		mongo.createIndex(gcCollectionName, {name: 1}, errorLogger);
+		mongo.createIndex(gcCollectionName, {_id: 1, refId: 1, v: 1}, errorLogger);
 		
 		//analytics
-	    mongo.ensureIndex(analyticsCollection, {id: 1}, errorLogger);
+	    mongo.createIndex(analyticsCollection, {id: 1}, errorLogger);
     }
 
     function errorLogger(error) {
