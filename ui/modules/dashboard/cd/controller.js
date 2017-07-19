@@ -58,10 +58,27 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							$scope.maxEntries++;
 							$scope.configuration[service].icon = 'minus';
 							$scope.configuration[service].versions = {};
-							for(var i in $scope.configuration[service]){
-								if (['branch', 'strategy', 'versions', 'icon', 'deploy', 'options'].indexOf(i) === -1) {
-									$scope.configuration[service].versions[i] = angular.copy($scope.configuration[service][i]);
-									delete $scope.configuration[service][i];
+							
+							if($scope.configuration[service].type ==='daemon'){
+								for(var i in $scope.configuration[service]){
+									if (['type', 'branch', 'strategy', 'versions', 'icon', 'deploy', 'options'].indexOf(i) === -1) {
+										
+										$scope.configuration[service].versions[i] = {};
+										for(var groupName in $scope.configuration[service][i]){
+											$scope.configuration[service].versions[i][groupName] = angular.copy($scope.configuration[service][i][groupName]);
+										}
+										delete $scope.configuration[service][i];
+									}
+								}
+								
+							}
+							else{
+								for(var i in $scope.configuration[service]){
+									
+									if (['type', 'branch', 'strategy', 'versions', 'icon', 'deploy', 'options'].indexOf(i) === -1) {
+										$scope.configuration[service].versions[i] = angular.copy($scope.configuration[service][i]);
+										delete $scope.configuration[service][i];
+									}
 								}
 							}
 							if (Object.keys($scope.configuration[service].versions).length === 0) {
@@ -128,24 +145,75 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				data.default.options = $scope.configuration[service].options;
 			}
 		}
-
+		
 		overlayLoading.show();
-		getSendDataFromServer($scope, ngDataApi, {
-			method: 'post',
-			routeName: '/dashboard/cd',
-			data: {
-				"config": data
-			}
-		}, function (error, response) {
-			overlayLoading.hide();
-			if (error) {
-				$scope.displayAlert('danger', error.message);
-			}
-			else {
+		if($scope.configuration[service].type ==='daemon'){
+			var newData = {
+				env: data.env,
+				serviceName: data.serviceName,
+				version:{}
+			};
+			
+			var max = Object.keys(data.version).length;
+			updateDaemonsGroupCD(data.version, 0, function(){
+				overlayLoading.hide();
 				$scope.displayAlert('success', 'Recipe Saved successfully');
 				$scope.getRecipe();
+			});
+		}
+		else{
+			getSendDataFromServer($scope, ngDataApi, {
+				method: 'post',
+				routeName: '/dashboard/cd',
+				data: {
+					"config": data
+				}
+			}, function (error, response) {
+				overlayLoading.hide();
+				if (error) {
+					$scope.displayAlert('danger', error.message);
+				}
+				else {
+					$scope.displayAlert('success', 'Recipe Saved successfully');
+					$scope.getRecipe();
+				}
+			});
+		}
+		
+		function updateDaemonsGroupCD(version, counter, cb){
+			var groupName = Object.keys(version)[counter];
+			if(groupName === 'v'){
+				counter++;
+				updateDaemonsGroupCD(version, counter, cb);
 			}
-		});
+			else{
+				var daemonGroupData = angular.copy(newData);
+				daemonGroupData.version = data.version[groupName];
+				daemonGroupData.version.v = data.version.v;
+				
+				getSendDataFromServer($scope, ngDataApi, {
+					method: 'post',
+					routeName: '/dashboard/cd',
+					data: {
+						"config": daemonGroupData
+					}
+				}, function (error, response) {
+					if (error) {
+						overlayLoading.hide();
+						$scope.displayAlert('danger', error.message);
+					}
+					else {
+						counter++;
+						if (counter === max) {
+							return cb();
+						}
+						else{
+							updateDaemonsGroupCD(version, counter, cb);
+						}
+					}
+				});
+			}
+		}
 	};
 
 	$scope.getUpdates = function () {

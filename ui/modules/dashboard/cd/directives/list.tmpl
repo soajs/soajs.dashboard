@@ -57,16 +57,38 @@
 											<p>
 												Define the Continuous Delivery strategy of this service for this version <b>{{version}}</b> in this Environment:
 											</p>
-											<div class="halfPage branchLabel">
-												<label class="">Branch:</label>&nbsp;{{versionInfo.branch}}
+											
+											<div ng-show="cdData.type ==='daemon'">
+												<div class="c-both w100" ng-repeat="(groupName, versionInfo) in versionInfo">
+													<div class="thirdPage  branchLabel">
+														<label class="">Daemon Group:</label>&nbsp;{{groupName}}
+													</div>
+													<div class="thirdPage  branchLabel">
+														<label class="">Branch:</label>&nbsp;{{versionInfo.branch}}
+													</div>
+													<div class="thirdPage ">
+														<label class="">Strategy:</label>&nbsp;
+														<select class="form-control" data-ng-model="versionInfo.strategy">
+															<option value="notify">notify</option>
+															<option value="update">update</option>
+														</select>
+													</div>
+												</div>
 											</div>
-											<div class="halfPage">
-												<label class="">Strategy:</label>&nbsp;
-												<select class="form-control" data-ng-model="versionInfo.strategy">
-													<option value="notify">notify</option>
-													<option value="update">update</option>
-												</select>
+											
+											<div ng-show="cdData.type ==='service'">
+												<div class="halfPage branchLabel">
+													<label class="">Branch:</label>&nbsp;{{versionInfo.branch}}
+												</div>
+												<div class="halfPage">
+													<label class="">Strategy:</label>&nbsp;
+													<select class="form-control" data-ng-model="versionInfo.strategy">
+														<option value="notify">notify</option>
+														<option value="update">update</option>
+													</select>
+												</div>
 											</div>
+											
 										</div>
 										<div class="f-right">
 											<input class="btn btn-sm btn-primary f-right" ng-click="saveRecipe(oneSrv, version)" value="Update Settings" type="submit">

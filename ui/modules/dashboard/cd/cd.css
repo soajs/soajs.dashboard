@@ -100,6 +100,11 @@
     min-width: 120px;
 }
 
+.configCd .thirdPage {
+    float: left;
+    width: 30%;
+}
+
 .configCd .halfPage {
     float: left;
     width: 35%;
