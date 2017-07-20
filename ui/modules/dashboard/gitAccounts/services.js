@@ -244,11 +244,12 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 																			"allow_push": formData.allow_push,
 																			"allow_pr": formData.allow_pr,
 																			"allow_tags": formData.allow_tags,
+																			"allow_tag": formData.allow_tag,
 																			"allow_deploys": formData.allow_deploys,
-																			"trusted": formData.trusted,
-																			"gated": formData.gated,
-																			"timeout": formData.timeout
+																			"allow_deploy": formData.allow_deploys,
+																			"gated": formData.gated
 																		};
+																		response.settings.repoCiId = response.settings.name;
 																		break;
 																}
 																

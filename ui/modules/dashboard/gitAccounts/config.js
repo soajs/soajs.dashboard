@@ -320,25 +320,11 @@ var gitAccountsAppConfig = {
 				'required': true
 			},
 			{
-				'name': 'trusted',
-				'label': 'Trusted',
-				'type': 'radio',
-				'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No'}],
-				'required': true
-			},
-			{
 				'name': 'gated',
 				'label': 'Gated',
 				'type': 'radio',
 				'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No'}],
 				'required': true
-			},
-			{
-				'name': 'timeout',
-				'label': 'Timeout',
-				'type': 'number',
-				'value': 60,
-				'required': false
 			}
 			
 		]

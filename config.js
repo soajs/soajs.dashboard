@@ -3498,7 +3498,7 @@ module.exports = {
                     "source": ['query.id'],
                     "required": true,
                     "validation": {
-                        "type": "number"
+                        "type": "string"
                     }
                 },
 	            'provider':{

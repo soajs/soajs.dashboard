@@ -176,7 +176,6 @@ let lib = {
 	/**
 	 * modifies the environment variables of a repo based on the supplied env variables
 	 * @param opts
-	 * @param id
 	 * @param cb
 	 */
 	ensureRepoVars(opts, cb) {
@@ -189,11 +188,11 @@ let lib = {
 				settings: {
 					domain: opts.settings.domain,
 					owner: opts.settings.owner,
-					repo: opts.settings.repo,
+					repo: opts.settings.repo || opts.params.repoId,
 					ciToken: opts.settings.ciToken
 				}
 			};
-			
+			options.log = opts.log;
 			// List the env variables
 			lib.listEnvVars(options, (err, repoVars) => {
 				// delete all the environment variables
@@ -212,6 +211,7 @@ let lib = {
 						options.settings.envVar = {
 							name: inputVar,
 							value: inputVariables[inputVar],
+							event: ["push", "tag","deployment"]
 						};
 						
 						lib.addEnvVar(options, callback);
@@ -392,15 +392,19 @@ let lib = {
 				utils.checkError(error, {code: 971}, cb, () => {
 					// Check if the requested owner has repos
 					if (body && Array.isArray(body) && body.length > 0) {
+						settings = body[0];
+						settings.repoCiId = opts.settings.repo;
 						return cb(null, body[0]);
 					}
 					else {
+						settings.repoCiId = opts.settings.repo;
 						return cb(null, settings);
 					}
 				});
 			}
 			else {
 				settings = {
+					repoCiId: opts.settings.repo,
 					id: null,
 					active: false,
 					owner: opts.settings.owner,
@@ -425,17 +429,17 @@ let lib = {
 	updateSettings(opts, cb) {
 		let params = {};
 		//check if an access token is provided
-		utils.checkError(!opts.settings.ciToken, { code: 974 }, cb, () => {
+		utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
 			//check if the repositories owner name is provided
-			utils.checkError(!opts.settings && !opts.settings.owner, { code: 975 }, cb, () => {
+			utils.checkError(!opts.settings && !opts.settings.owner, {code: 975}, cb, () => {
 				let settings;
 				let uri = `http://${opts.settings.domain}`;
 				
 				// getting repos list or one repo is 2 different endpoints completely
-				if (opts.settings.owner && opts.settings.repo) {
+				if (opts.settings.owner && opts.params.repoId) {
 					uri += config.api.url.updateSettings
 						.replace('#OWNER#', opts.settings.owner)
-						.replace('#REPO#', opts.settings.repo);
+						.replace('#REPO#', opts.params.repoId);
 				} else {
 					uri += config.api.url.updateSettings
 				}
@@ -447,20 +451,52 @@ let lib = {
 				params.headers['Authorization'] = opts.settings.ciToken;
 				params.headers['Host'] = opts.settings.domain;
 				
-				// async.
-				// opts.log.debug(params);
-				// request.patch(params, (error, response, body) => {
-				// 	if (body && body.error) {
-				// 		opts.log.error(body);
-				// 	}
-				// 	utils.checkError(error, { code: 982 }, cb, () => {
-				// 		utils.checkError(body === "no access token supplied" || body === "access denied", { code: 974 }, cb, () => {
-				// 			return cb(null, true);
-				// 		});
-				// 	});
-				// });
+				delete opts.params.settings.allow_deploy;
+				delete opts.params.settings.allow_tag;
+				
+				var repoSettings = Object.keys(opts.params.settings);
+				
+				async.eachSeries(repoSettings, function(oneSetting, cb){
+					doOneSetting(params, oneSetting, cb);
+				}, function (error) {
+					utils.checkError(error, {code: 982}, cb, () => {
+						return cb(null, true);
+					});
+				});
 			});
 		});
+		
+		function doOneSetting(params, oneSetting, cb) {
+			params.body = {};
+			params.body[oneSetting] = opts.params.settings[oneSetting];
+			
+			if(oneSetting === 'allow_deploys'){
+				params.body['allow_deploy'] = opts.params.settings[oneSetting];
+			}
+			
+			if(oneSetting === 'allow_tags'){
+				params.body['allow_tag'] = opts.params.settings[oneSetting];
+			}
+			
+			params.body.name = opts.params.repoId;
+			params.body.owner = opts.settings.owner;
+			
+			opts.log.debug(params);
+			request.patch(params, (error, response, body) => {
+				if (body && body.error) {
+					opts.log.error(body);
+				}
+				if(body === "Insufficient privileges"){
+					error = new Error("Insufficient privileges to modify: ", oneSetting);
+				}
+				
+				utils.checkError(error, {code: 982}, cb, () => {
+					utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {
+						return cb(null, true);
+					});
+				});
+			});
+		}
 	}
 };
 
