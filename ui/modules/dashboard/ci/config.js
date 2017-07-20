@@ -36,11 +36,11 @@ var ciAppConfig = {
 					},
 					{
 						'name': 'gitToken',
-						'label': 'Username',
+						'label': 'Drone Token',
 						'type': 'text',
 						'value': '',
 						'required': true,
-						'fieldMsg': "Enter the Username of this account"
+						'fieldMsg': "Enter Your Drone Token (provided in your Drone account)"
 					}
 				]
 			}
