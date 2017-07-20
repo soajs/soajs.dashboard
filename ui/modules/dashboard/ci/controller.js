@@ -128,10 +128,10 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							"owner": owner,
 							"provider": provider.provider
 						};
+						//test if protocol is supplied
 						var regex = /^[^:]+(?=:\/\/)/;
-						if (regex.test(formData.domain) && formData.domain.match(regex)[0] !== 'http' || formData.domain.match(regex)[0] !== 'https') {
+						if (regex.test(formData.domain) && formData.domain.match(regex)[0] !== 'http' && formData.domain.match(regex)[0] !== 'https') {
 							$scope.form.displayAlert('danger', "Invalid domain name provided!");
-							
 						}
 						else {
 							overlayLoading.show();
@@ -203,10 +203,10 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							"owner": provider.owner,
 							"provider": provider.provider
 						};
+						//test if protocol is supplied
 						var regex = /^[^:]+(?=:\/\/)/;
-						if (regex.test(formData.domain) && formData.domain.match(regex)[0] !== 'http' || formData.domain.match(regex)[0] !== 'https') {
+						if (regex.test(formData.domain) && formData.domain.match(regex)[0] !== 'http' && formData.domain.match(regex)[0] !== 'https') {
 							$scope.form.displayAlert('danger', "Invalid domain name provided!");
-							
 						}
 					    else {
 							overlayLoading.show();
