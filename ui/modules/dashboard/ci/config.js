@@ -32,7 +32,7 @@ var ciAppConfig = {
 						'value': '',
 						'placeholder': "",
 						'required': true,
-						'fieldMsg': "Enter the domain value"
+						'fieldMsg': "Enter the domain URL value. EX: http://mydoronedomain.com:8000"
 					},
 					{
 						'name': 'gitToken',
