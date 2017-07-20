@@ -351,8 +351,11 @@ let lib = {
 		
 		// allow_push/allow_pr/allow_deploy/etc = true/false
 		opts.log.debug(params);
+		
+		var method = (opts.hook.active) ? "post" : "delete";
+		
 		//send the request to obtain the Travis token
-		request.post(params, function (error, response, body) {
+		request[method](params, function (error, response, body) {
 			//Check for errors in the request function
 			utils.checkError(error, {code: 971}, cb, () => {
 				return cb(null, true);
