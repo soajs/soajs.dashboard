@@ -89,22 +89,14 @@ let lib = {
 				else {
 					repos.push({
 						id: null,
+						active: false,
 						owner: opts.settings.owner,
 						name: opts.settings.repo,
 						full_name: opts.settings.owner + "/" + opts.settings.repo,
 						scm: "",
 						clone_url: "",
 						default_branch: "",
-						timeout: 60,
-						visibility: "public",
-						trusted: false,
-						gated: false,
-						allow_pr: true,
-						allow_push: true,
-						allow_deploys: false,
-						allow_tags: false,
-						last_build: 0,
-						config_file: ".drone.yml"
+						visibility: "public"
 					});
 					return cb(null, repos);
 				}
@@ -370,7 +362,58 @@ let lib = {
 	 *
 	 */
 	listSettings (opts, cb) {
-		return cb(null, 'Not supported by Drone');
+		let settings;
+		let uri = `http://${opts.settings.domain}`;
+		
+		// getting repos list or one repo is 2 different endpoints completely
+		if (opts.settings.owner && opts.settings.repo) {
+			uri += config.api.url.listSettings
+				.replace('#OWNER#', opts.settings.owner)
+				.replace('#REPO#', opts.settings.repo);
+		} else {
+			uri += config.api.url.listSettings
+		}
+		const params = {
+			uri: uri,
+			headers: config.headers,
+			json: true
+		};
+		params.headers['Authorization'] = opts.settings.ciToken;
+		params.headers['Host'] = opts.settings.domain;
+		
+		opts.log.debug(params);
+		// send the request to obtain the repos
+		request.get(params, function (error, response, body) {
+			if (body) {
+				if (!Array.isArray(body)) {
+					body = [body];
+				}
+				// Check for errors in the request function
+				utils.checkError(error, {code: 971}, cb, () => {
+					// Check if the requested owner has repos
+					if (body && Array.isArray(body) && body.length > 0) {
+						return cb(null, body[0]);
+					}
+					else {
+						return cb(null, settings);
+					}
+				});
+			}
+			else {
+				settings = {
+					id: null,
+					active: false,
+					owner: opts.settings.owner,
+					name: opts.settings.repo,
+					full_name: opts.settings.owner + "/" + opts.settings.repo,
+					scm: "",
+					clone_url: "",
+					default_branch: "",
+					visibility: "public"
+				};
+				return cb(null, settings);
+			}
+		});
 	},
 	
 	/**
@@ -380,7 +423,44 @@ let lib = {
 	 *
 	 */
 	updateSettings(opts, cb) {
-		return cb(null, 'Not supported by Drone');
+		let params = {};
+		//check if an access token is provided
+		utils.checkError(!opts.settings.ciToken, { code: 974 }, cb, () => {
+			//check if the repositories owner name is provided
+			utils.checkError(!opts.settings && !opts.settings.owner, { code: 975 }, cb, () => {
+				let settings;
+				let uri = `http://${opts.settings.domain}`;
+				
+				// getting repos list or one repo is 2 different endpoints completely
+				if (opts.settings.owner && opts.settings.repo) {
+					uri += config.api.url.updateSettings
+						.replace('#OWNER#', opts.settings.owner)
+						.replace('#REPO#', opts.settings.repo);
+				} else {
+					uri += config.api.url.updateSettings
+				}
+				const params = {
+					uri: uri,
+					headers: config.headers,
+					json: true
+				};
+				params.headers['Authorization'] = opts.settings.ciToken;
+				params.headers['Host'] = opts.settings.domain;
+				
+				// async.
+				// opts.log.debug(params);
+				// request.patch(params, (error, response, body) => {
+				// 	if (body && body.error) {
+				// 		opts.log.error(body);
+				// 	}
+				// 	utils.checkError(error, { code: 982 }, cb, () => {
+				// 		utils.checkError(body === "no access token supplied" || body === "access denied", { code: 974 }, cb, () => {
+				// 			return cb(null, true);
+				// 		});
+				// 	});
+				// });
+			});
+		});
 	}
 };
 

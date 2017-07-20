@@ -104,6 +104,12 @@ li.accountType {
     margin-right: 11% !important;
 }
 
+#repoSettings #allow_push-wrapper label,
+#repoSettings #allow_pr-wrapper label,
+#repoSettings #allow_tags-wrapper label,
+#repoSettings #allow_deploys-wrapper label,
+#repoSettings #trusted-wrapper label,
+#repoSettings #gated-wrapper label,
 #repoSettings #maximum_number_of_builds-wrapper label,
 #repoSettings #builds_only_with_travis_yml-wrapper label,
 #repoSettings #build_pushes-wrapper label,
@@ -111,6 +117,18 @@ li.accountType {
     width:255px;
 }
 
+#repoSettings #allow_push-wrapper label,
+#repoSettings #allow_push-wrapper ul li,
+#repoSettings #allow_pr-wrapper label,
+#repoSettings #allow_pr-wrapper ul li,
+#repoSettings #allow_tags-wrapper label,
+#repoSettings #allow_tags-wrapper ul li,
+#repoSettings #allow_deploys-wrapper label,
+#repoSettings #allow_deploys-wrapper ul li,
+#repoSettings #trusted-wrapper label,
+#repoSettings #trusted-wrapper ul li,
+#repoSettings #gated-wrapper label,
+#repoSettings #gated-wrapper ul li,
 #repoSettings #maximum_number_of_builds-wrapper label,
 #repoSettings #builds_only_with_travis_yml-wrapper label,
 #repoSettings #builds_only_with_travis_yml-wrapper ul,
@@ -124,6 +142,12 @@ li.accountType {
     float:left;
 }
 
+#repoSettings #allow_push-wrapper ul,
+#repoSettings #allow_pr-wrapper ul,
+#repoSettings #allow_tags-wrapper ul,
+#repoSettings #allow_deploys-wrapper ul,
+#repoSettings #trusted-wrapper ul,
+#repoSettings #gated-wrapper ul,
 #repoSettings #builds_only_with_travis_yml-wrapper ul,
 #repoSettings #build_pushes-wrapper ul,
 #repoSettings #build_pull_requests-wrapper ul{
@@ -131,6 +155,12 @@ li.accountType {
     list-style-type:none;
 }
 
+#repoSettings #allow_push-wrapper ul li,
+#repoSettings #allow_pr-wrapper ul li,
+#repoSettings #allow_tags-wrapper ul li,
+#repoSettings #allow_deploys-wrapper ul li,
+#repoSettings #trusted-wrapper ul li,
+#repoSettings #gated-wrapper ul li,
 #repoSettings #maximum_number_of_builds-wrapper input,
 #repoSettings #builds_only_with_travis_yml-wrapper ul li,
 #repoSettings #build_pushes-wrapper ul li,

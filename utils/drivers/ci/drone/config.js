@@ -10,6 +10,8 @@ module.exports = {
       addEnvVar: '/api/repos/#OWNER#/#REPO#/secrets',	// POST
       deleteEnvVar: '/api/repos/#OWNER#/#REPO#/secrets/#SECRET_NAME#',	// DELETE
       setHook: '/api/repos/#OWNER#/#REPO#',	// PATCH
+	  listSettings: '/api/repos/#OWNER#/#REPO#',
+	  updateSettings: '/api/repos/#OWNER#/#REPO#'
     },
   },
   headers: {

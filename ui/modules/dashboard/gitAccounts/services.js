@@ -169,10 +169,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 									type: "html",
 									value: "<hr />"
 								});
-								//removes settings in case of drone
-								if (oneProvider.provider === 'drone') {
-									formConfig.entries.shift();
-								}
+								
 								if(currentScope.access.getCIProviders) {
 									getProviderRecipes($scope, {
 										'provider': oneProvider.provider,
@@ -233,14 +230,28 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 																var data = {
 																	"port": (mydomainport || 80)
 																};
-																if (oneProvider.provider === 'travis'){
-																	data.port.settings = {
-																		"build_pull_requests": formData.build_pull_requests,
-																		"build_pushes": formData.build_pushes,
-																		"builds_only_with_travis_yml": formData.builds_only_with_travis_yml,
-																		"maximum_number_of_builds": formData.maximum_number_of_builds
-																	}
+																switch(oneProvider.provider){
+																	case 'travis':
+																		data.settings = {
+																			"build_pull_requests": formData.build_pull_requests,
+																			"build_pushes": formData.build_pushes,
+																			"builds_only_with_travis_yml": formData.builds_only_with_travis_yml,
+																			"maximum_number_of_builds": formData.maximum_number_of_builds
+																		};
+																		break;
+																	case 'drone':
+																		data.settings = {
+																			"allow_push": formData.allow_push,
+																			"allow_pr": formData.allow_pr,
+																			"allow_tags": formData.allow_tags,
+																			"allow_deploys": formData.allow_deploys,
+																			"trusted": formData.trusted,
+																			"gated": formData.gated,
+																			"timeout": formData.timeout
+																		};
+																		break;
 																}
+																
 																data.variables = {};
 																for (var i = 0; i < count; i++) {
 																	if (!oneProvider.variables[formData['envName' + i]]) {
