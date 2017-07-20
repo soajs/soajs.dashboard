@@ -289,6 +289,58 @@ var gitAccountsAppConfig = {
 				'value': 0,
 				'required': false
 			},
+		],
+		drone: [
+			{
+				'name': 'allow_push',
+				'label': 'Push Hooks',
+				'type': 'radio',
+				'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No'}],
+				'required': true
+			},
+			{
+				'name': 'allow_pr',
+				'label': 'Pull Request Hooks',
+				'type': 'radio',
+				'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No'}],
+				'required': true
+			},
+			{
+				'name': 'allow_tags',
+				'label': 'Tag Hooks',
+				'type': 'radio',
+				'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No'}],
+				'required': true
+			},
+			{
+				'name': 'allow_deploys',
+				'label': 'Deploy Hook',
+				'type': 'radio',
+				'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No'}],
+				'required': true
+			},
+			{
+				'name': 'trusted',
+				'label': 'Trusted',
+				'type': 'radio',
+				'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No'}],
+				'required': true
+			},
+			{
+				'name': 'gated',
+				'label': 'Gated',
+				'type': 'radio',
+				'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No'}],
+				'required': true
+			},
+			{
+				'name': 'timeout',
+				'label': 'Timeout',
+				'type': 'number',
+				'value': 60,
+				'required': false
+			}
+			
 		]
 	},
 	
