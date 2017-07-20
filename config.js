@@ -3524,7 +3524,7 @@ module.exports = {
                 },
                 "settings": {
                     "source": ['body.settings'],
-                    "required": true,
+                    "required": false,
                     "validation": {
                         "type": "object"
                     }

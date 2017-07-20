@@ -2,25 +2,48 @@
 var ciAppConfig = {
 	form: {
 		f1: {
-			entries: [
-				{
-					'name': 'domain',
-					'label': 'Domain',
-					'type': 'text',
-					'value': '',
-					'placeholder': "",
-					'required': true,
-					'fieldMsg': "Enter the domain value"
-				},
-				{
-					'name': 'gitToken',
-					'label': 'GIT Token',
-					'type': 'text',
-					'value': '',
-					'required': true,
-					'fieldMsg': "Enter the GIT Token Value"
-				}
-			]
+			travis: {
+				entries: [
+					{
+						'name': 'domain',
+						'label': 'Domain',
+						'type': 'text',
+						'value': '',
+						'placeholder': "",
+						'required': true,
+						'fieldMsg': "Enter the domain value"
+					},
+					{
+						'name': 'gitToken',
+						'label': 'GIT Token',
+						'type': 'text',
+						'value': '',
+						'required': true,
+						'fieldMsg': "Enter the GIT Token Value"
+					}
+				]
+			},
+			drone: {
+				entries: [
+					{
+						'name': 'domain',
+						'label': 'Domain',
+						'type': 'text',
+						'value': '',
+						'placeholder': "",
+						'required': true,
+						'fieldMsg': "Enter the domain value"
+					},
+					{
+						'name': 'gitToken',
+						'label': 'Username',
+						'type': 'text',
+						'value': '',
+						'required': true,
+						'fieldMsg': "Enter the Username of this account"
+					}
+				]
+			}
 		},
 		f2: {
 			entries: [

@@ -169,6 +169,10 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 									type: "html",
 									value: "<hr />"
 								});
+								//removes settings in case of drone
+								if (oneProvider.provider === 'drone') {
+									formConfig.entries.shift();
+								}
 								if(currentScope.access.getCIProviders) {
 									getProviderRecipes($scope, {
 										'provider': oneProvider.provider,
@@ -206,7 +210,6 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 										
 										recipesGroup.entries = recipesGroup.entries.concat(recipes);
 										formConfig.entries.push(recipesGroup);
-										
 										if(currentScope.access.getCIRepoCustomRecipe){
 											getRepoRecipeFromBranch($scope, gitAccount, oneProvider, oneRepo, providerRecipes, function (branchInput) {
 												formConfig.entries.push({
@@ -228,15 +231,16 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 															btn: 'primary',
 															action: function (formData) {
 																var data = {
-																	"port": (mydomainport || 80),
-																	"settings": {
+																	"port": (mydomainport || 80)
+																};
+																if (oneProvider.provider === 'travis'){
+																	data.port.settings = {
 																		"build_pull_requests": formData.build_pull_requests,
 																		"build_pushes": formData.build_pushes,
 																		"builds_only_with_travis_yml": formData.builds_only_with_travis_yml,
 																		"maximum_number_of_builds": formData.maximum_number_of_builds
 																	}
-																};
-																
+																}
 																data.variables = {};
 																for (var i = 0; i < count; i++) {
 																	if (!oneProvider.variables[formData['envName' + i]]) {

@@ -16,7 +16,7 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		teamcity: "./themes/" + themeToUse + "/img/teamcity_logo.png"
 	};
 	
-	$scope.unsupported = ['drone', 'jenkins', 'teamcity'];
+	$scope.unsupported = ['jenkins', 'teamcity'];
 	
 	$scope.listAccounts = function () {
 		overlayLoading.show();
@@ -98,11 +98,16 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	};
 	
 	$scope.activateAccount = function(owner, provider){
-		var formConfig = angular.copy(ciAppConfig.form.f1);
+		var formConfig;
 		
 		switch(provider.provider){
 			case 'travis':
+				formConfig = angular.copy(ciAppConfig.form.f1.travis);
 				formConfig.entries[0].value = 'api.travis-ci.org';
+				break;
+			case 'drone':
+				formConfig = angular.copy(ciAppConfig.form.f1.drone);
+				formConfig.entries[0].value = '';
 				break;
 		}
 		
@@ -160,10 +165,16 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	};
 	
 	$scope.updateAccount = function(provider){
-		var formConfig = angular.copy(ciAppConfig.form.f1);
+		var formConfig;
+		
 		switch(provider.provider){
 			case 'travis':
+				formConfig = angular.copy(ciAppConfig.form.f1.travis);
 				formConfig.entries[0].value = 'api.travis-ci.org';
+				break;
+			case 'drone':
+				formConfig = angular.copy(ciAppConfig.form.f1.drone);
+				formConfig.entries[0].value = '';
 				break;
 		}
 		
