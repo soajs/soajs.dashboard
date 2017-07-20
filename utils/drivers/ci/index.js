@@ -10,7 +10,10 @@ function getStrategy(options, cb) {
 	});
 
 	function checkStrategy(path, cb) {
-		fs.access(path, fs.constants.F_OK | fs.constants.R_OK, cb);
+		// using (fs.constants || fs) for Node compatibility issues
+		// fs.constants was introduced in Node V6.3.0 only
+		// refer to https://github.com/nodejs/node/issues/8044
+		fs.access(path, (fs.constants || fs).F_OK | (fs.constants || fs).R_OK, cb);
 	}
 }
 
@@ -25,7 +28,7 @@ function checkError(error, code, cb, fcB) {
 module.exports = {
 	/**
 	 * Generate a travis token from a Github token
-	 * @param opts
+	 * @param options
 	 * @param cb
 	 */
 	generateToken (options, cb) {
@@ -38,7 +41,7 @@ module.exports = {
 
 	/**
 	 * Lists all repos or a specific repo for a repo owner
-	 * @param opts
+	 * @param options
 	 * @param cb
 	 */
 	listRepos (options, cb) {
@@ -51,7 +54,7 @@ module.exports = {
 
 	/**
 	 * Lists all environment variables available for a repo
-	 * @param opts
+	 * @param options
 	 * @param cb
 	 */
 	listEnvVars (options, cb) {
@@ -64,7 +67,7 @@ module.exports = {
 
     /**
 	 * Update all environment variables available for a repo
-	 * @param opts
+	 * @param options
 	 * @param cb
 	 */
 	ensureRepoVars (options, cb) {
@@ -77,7 +80,7 @@ module.exports = {
 
 	/**
 	 * Add an environment variable to a repo
-	 * @param opts
+	 * @param options
 	 * @param cb
 	 */
 	addEnvVar (options, cb) {
@@ -90,7 +93,7 @@ module.exports = {
 
 	/**
 	 * LUpdate an environment variable for a repo
-	 * @param opts
+	 * @param options
 	 * @param cb
 	 */
 	updateEnvVar (options, cb) {
@@ -103,7 +106,7 @@ module.exports = {
 
 	/**
 	 * Delete an environment variable from a repo
-	 * @param opts
+	 * @param options
 	 * @param cb
 	 */
 	deleteEnvVar (options, cb) {
@@ -116,7 +119,7 @@ module.exports = {
 
 	/**
 	 * Enables/desables a repo
-	 * @param opts
+	 * @param options
 	 * @param cb
 	 */
 	setHook (options, cb) {

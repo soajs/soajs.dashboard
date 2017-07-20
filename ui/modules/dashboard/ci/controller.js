@@ -128,26 +128,32 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							"owner": owner,
 							"provider": provider.provider
 						};
-
-						overlayLoading.show();
-						getSendDataFromServer($scope, ngDataApi, {
-							method: 'post',
-							routeName: '/dashboard/ci/provider',
-							data: data
-						}, function (error, response) {
-							overlayLoading.hide();
-							if (error) {
-								$scope.form.displayAlert('danger', error.message);
-							}
-							else {
-								$scope.displayAlert('success', 'Provider has been integrated');
-								$scope.form.formData = {};
-								if ($scope.modalInstance) {
-									$scope.modalInstance.close();
+						var regex = /^[^:]+(?=:\/\/)/;
+						if (regex.test(formData.domain) && formData.domain.match(regex)[0] !== 'http' || formData.domain.match(regex)[0] !== 'https') {
+							$scope.form.displayAlert('danger', "Invalid domain name provided!");
+							
+						}
+						else {
+							overlayLoading.show();
+							getSendDataFromServer($scope, ngDataApi, {
+								method: 'post',
+								routeName: '/dashboard/ci/provider',
+								data: data
+							}, function (error, response) {
+								overlayLoading.hide();
+								if (error) {
+									$scope.form.displayAlert('danger', error.message);
 								}
-								$scope.listAccounts();
-							}
-						});
+								else {
+									$scope.displayAlert('success', 'Provider has been integrated');
+									$scope.form.formData = {};
+									if ($scope.modalInstance) {
+										$scope.modalInstance.close();
+									}
+									$scope.listAccounts();
+								}
+							});
+						}
 					}
 				},
 				{
@@ -197,26 +203,34 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							"owner": provider.owner,
 							"provider": provider.provider
 						};
-						
-						overlayLoading.show();
-						getSendDataFromServer($scope, ngDataApi, {
-							method: 'post',
-							routeName: '/dashboard/ci/provider',
-							data: data
-						}, function (error, response) {
-							overlayLoading.hide();
-							if (error) {
-								$scope.form.displayAlert('danger', error.message);
-							}
-							else {
-								$scope.displayAlert('success', 'Provider integration has been updated');
-								$scope.form.formData = {};
-								if ($scope.modalInstance) {
-									$scope.modalInstance.close();
+						var regex = /^[^:]+(?=:\/\/)/;
+						if (regex.test(formData.domain) && formData.domain.match(regex)[0] !== 'http' || formData.domain.match(regex)[0] !== 'https') {
+							$scope.form.displayAlert('danger', "Invalid domain name provided!");
+							
+						}
+					    else {
+							overlayLoading.show();
+							getSendDataFromServer($scope, ngDataApi, {
+								method: 'post',
+								routeName: '/dashboard/ci/provider',
+								data: data
+							}, function (error, response) {
+								overlayLoading.hide();
+								if (error) {
+									$scope.form.displayAlert('danger', error.message);
 								}
-								$scope.listAccounts();
-							}
-						});
+								else {
+									$scope.displayAlert('success', 'Provider integration has been updated');
+									$scope.form.formData = {};
+									if ($scope.modalInstance) {
+										$scope.modalInstance.close();
+									}
+									$scope.listAccounts();
+									
+								}
+							});
+						}
+						
 					}
 				},
 				{

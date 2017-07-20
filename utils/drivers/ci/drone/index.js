@@ -46,7 +46,7 @@ let lib = {
 		//check if an access token is provided
 		utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
 			//check if the repositories owner name is provided
-			let uri = `http://${opts.settings.domain}`;
+			let uri = utils.getDomain(opts.settings.domain);
 			
 			// getting repos list or one repo is 2 different endpoints completely
 			if (opts.settings.owner && opts.settings.repo) {
@@ -142,7 +142,7 @@ let lib = {
 	listRepoBranches(opts, cb) {
 		let branches = [];
 		const params = {
-			uri: `http://${opts.settings.domain}${config.api.url.listRepoBuilds}`
+			uri: utils.getDomain(opts.settings.domain+ config.api.url.listRepoBuilds)
 				.replace('#OWNER#', opts.settings.owner)
 				.replace('#REPO#', opts.settings.repo),
 			headers: config.headers,
@@ -236,7 +236,7 @@ let lib = {
 	 */
 	listEnvVars (opts, cb) {
 		const params = {
-			uri: `http://${opts.settings.domain}${config.api.url.listEnvVars}`
+			uri: utils.getDomain(opts.settings.domain + config.api.url.listEnvVars)
 				.replace('#OWNER#', opts.settings.owner)
 				.replace('#REPO#', opts.settings.repo),
 			headers: config.headers,
@@ -276,7 +276,7 @@ let lib = {
 	 */
 	addEnvVar (opts, cb) {
 		const params = {
-			uri: `http://${opts.settings.domain}${config.api.url.addEnvVar}`
+			uri: utils.getDomain(opts.settings.domain + config.api.url.listEnvVars)
 				.replace('#OWNER#', opts.settings.owner)
 				.replace('#REPO#', opts.settings.repo),
 			body: opts.settings.envVar,
@@ -313,7 +313,7 @@ let lib = {
 	 */
 	deleteEnvVar (opts, cb) {
 		const params = {
-			uri: `http://${opts.settings.domain}${config.api.url.deleteEnvVar}`
+			uri: utils.getDomain(opts.settings.domain + config.api.url.deleteEnvVar)
 				.replace('#OWNER#', opts.settings.owner)
 				.replace('#REPO#', opts.settings.repo)
 				.replace('#SECRET_NAME#', opts.settings.name),
@@ -340,7 +340,7 @@ let lib = {
 	setHook (opts, cb) {
 		var repoName = opts.settings.repo.split(/\/(.+)/)[1];
 		const params = {
-			uri: `http://${opts.settings.domain}${config.api.url.setHook}`
+			uri: utils.getDomain(opts.settings.domain + config.api.url.setHook)
 				.replace('#OWNER#', opts.settings.owner)
 				.replace('#REPO#', repoName),
 			headers: config.headers,
