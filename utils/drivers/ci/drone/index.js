@@ -9,6 +9,14 @@ const utils = require('../utils.js');
 
 let lib = {
 	/**
+	 * return how this driver names its configuration build recipe
+	 * @param cb
+	 */
+	getFileName (cb) {
+		return cb(null, '.drone.yml');
+	},
+	
+	/**
 	 * Generate a travis token from a Github token
 	 * @param opts
 	 * @param cb
