@@ -62,7 +62,9 @@ let lib = {
 				json: true
 			};
 			params.headers['Authorization'] = opts.settings.ciToken;
-			params.headers['Host'] = opts.settings.domain;
+			if (opts.settings.domain) {
+				params.headers['Host'] = opts.settings.domain.replace(/https?:\/\//, "");
+			}
 			
 			opts.log.debug(params);
 			// send the request to obtain the repos
@@ -113,7 +115,6 @@ let lib = {
 				active: true, // In Drone, only active repos are returned
 				description: '' // Drone does not return a description
 			};
-			
 			// grab owner/name from the repo, to get its builds
 			opts.settings.owner = oneRepo.owner;
 			opts.settings.repo = oneRepo.name;
@@ -134,14 +135,16 @@ let lib = {
 	listRepoBranches(opts, cb) {
 		let branches = [];
 		const params = {
-			uri: utils.getDomain(opts.settings.domain+ config.api.url.listRepoBuilds)
+			uri: utils.getDomain(opts.settings.domain + config.api.url.listRepoBuilds)
 				.replace('#OWNER#', opts.settings.owner)
 				.replace('#REPO#', opts.settings.repo),
 			headers: config.headers,
 			json: true
 		};
 		params.headers['Authorization'] = opts.settings.ciToken;
-		params.headers['Host'] = opts.settings.domain;
+		if (opts.settings.domain) {
+			params.headers['Host'] = opts.settings.domain.replace(/https?:\/\//, "");
+		}
 		
 		opts.log.debug(params);
 		//send the request to obtain the repository variables
@@ -211,7 +214,7 @@ let lib = {
 						options.settings.envVar = {
 							name: inputVar,
 							value: inputVariables[inputVar],
-							event: ["push", "tag","deployment"]
+							event: ["push", "tag", "deployment"]
 						};
 						
 						lib.addEnvVar(options, callback);
@@ -235,7 +238,9 @@ let lib = {
 			json: true
 		};
 		params.headers['Authorization'] = opts.settings.ciToken;
-		params.headers['Host'] = opts.settings.domain;
+		if (opts.settings.domain) {
+			params.headers['Host'] = opts.settings.domain.replace(/https?:\/\//, "");
+		}
 		
 		opts.log.debug(params);
 		// send the request to obtain the secrets
@@ -276,7 +281,9 @@ let lib = {
 			json: true
 		};
 		params.headers['Authorization'] = opts.settings.ciToken;
-		params.headers['Host'] = opts.settings.domain;
+		if (opts.settings.domain) {
+			params.headers['Host'] = opts.settings.domain.replace(/https?:\/\//, "");
+		}
 		
 		opts.log.debug(params);
 		// send the request to obtain the Travis token
@@ -312,7 +319,9 @@ let lib = {
 			headers: config.headers
 		};
 		params.headers['Authorization'] = opts.settings.ciToken;
-		params.headers['Host'] = opts.settings.domain;
+		if (opts.settings.domain) {
+			params.headers['Host'] = opts.settings.domain.replace(/https?:\/\//, "");
+		}
 		
 		opts.log.debug(params);
 		// send the request to obtain the Travis token
@@ -339,7 +348,9 @@ let lib = {
 			json: true
 		};
 		params.headers['Authorization'] = opts.settings.ciToken;
-		params.headers['Host'] = opts.settings.domain;
+		if (opts.settings.domain) {
+			params.headers['Host'] = opts.settings.domain.replace(/https?:\/\//, "");
+		}
 		
 		// allow_push/allow_pr/allow_deploy/etc = true/false
 		opts.log.debug(params);
@@ -362,9 +373,8 @@ let lib = {
 	 *
 	 */
 	listSettings (opts, cb) {
-		let settings;
-		let uri = `http://${opts.settings.domain}`;
-		
+		let settings = {};
+		let uri = utils.getDomain(opts.settings.domain);
 		// getting repos list or one repo is 2 different endpoints completely
 		if (opts.settings.owner && opts.settings.repo) {
 			uri += config.api.url.listSettings
@@ -379,7 +389,9 @@ let lib = {
 			json: true
 		};
 		params.headers['Authorization'] = opts.settings.ciToken;
-		params.headers['Host'] = opts.settings.domain;
+		if (opts.settings.domain) {
+			params.headers['Host'] = opts.settings.domain.replace(/https?:\/\//, "");
+		}
 		
 		opts.log.debug(params);
 		// send the request to obtain the repos
@@ -427,14 +439,11 @@ let lib = {
 	 *
 	 */
 	updateSettings(opts, cb) {
-		let params = {};
 		//check if an access token is provided
 		utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
 			//check if the repositories owner name is provided
 			utils.checkError(!opts.settings && !opts.settings.owner, {code: 975}, cb, () => {
-				let settings;
-				let uri = `http://${opts.settings.domain}`;
-				
+				let uri = utils.getDomain(opts.settings.domain);
 				// getting repos list or one repo is 2 different endpoints completely
 				if (opts.settings.owner && opts.params.repoId) {
 					uri += config.api.url.updateSettings
@@ -449,14 +458,15 @@ let lib = {
 					json: true
 				};
 				params.headers['Authorization'] = opts.settings.ciToken;
-				params.headers['Host'] = opts.settings.domain;
+				if (opts.settings.domain) {
+					params.headers['Host'] = opts.settings.domain.replace(/https?:\/\//, "");
+				}
 				
 				delete opts.params.settings.allow_deploy;
 				delete opts.params.settings.allow_tag;
 				
 				var repoSettings = Object.keys(opts.params.settings);
-				
-				async.eachSeries(repoSettings, function(oneSetting, cb){
+				async.eachSeries(repoSettings, function (oneSetting, cb) {
 					doOneSetting(params, oneSetting, cb);
 				}, function (error) {
 					utils.checkError(error, {code: 982}, cb, () => {
@@ -470,11 +480,11 @@ let lib = {
 			params.body = {};
 			params.body[oneSetting] = opts.params.settings[oneSetting];
 			
-			if(oneSetting === 'allow_deploys'){
+			if (oneSetting === 'allow_deploys') {
 				params.body['allow_deploy'] = opts.params.settings[oneSetting];
 			}
 			
-			if(oneSetting === 'allow_tags'){
+			if (oneSetting === 'allow_tags') {
 				params.body['allow_tag'] = opts.params.settings[oneSetting];
 			}
 			
@@ -486,7 +496,7 @@ let lib = {
 				if (body && body.error) {
 					opts.log.error(body);
 				}
-				if(body === "Insufficient privileges"){
+				if (body === "Insufficient privileges") {
 					error = new Error("Insufficient privileges to modify: ", oneSetting);
 				}
 				

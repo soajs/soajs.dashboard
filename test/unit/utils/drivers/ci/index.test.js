@@ -136,8 +136,11 @@ describe("testing ci index.js", function () {
 					}
 				},
 				params: {},
-				settings: {},
-				driver: 'drone'
+				settings: {
+					"repo": "myrepo"
+				},
+				driver: 'drone',
+				hook: {}
 			};
 			utils.setHook(options, function (error, body) {
 				assert.ok(error);
@@ -158,22 +161,6 @@ describe("testing ci index.js", function () {
 				params: {},
 				settings: {},
 				driver: 'travis'
-			};
-			utils.listSettings(options, function (error, body) {
-				assert.ok(error);
-				done();
-			});
-		});
-		
-		it("Call Drone listSettings", function (done) {
-			var options = {
-				log: {
-					debug: function () {
-					}
-				},
-				params: {},
-				settings: {},
-				driver: 'drone'
 			};
 			utils.listSettings(options, function (error, body) {
 				assert.ok(error);
@@ -230,22 +217,6 @@ describe("testing ci index.js", function () {
 				params: {},
 				settings: {},
 				driver: 'travis'
-			};
-			utils.generateToken(options, function (error, body) {
-				assert.ok(error);
-				done();
-			});
-		});
-		
-		it("Call Drone generateToken", function (done) {
-			var options = {
-				log: {
-					debug: function () {
-					}
-				},
-				params: {},
-				settings: {},
-				driver: 'drone'
 			};
 			utils.generateToken(options, function (error, body) {
 				assert.ok(error);

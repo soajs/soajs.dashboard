@@ -277,14 +277,14 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 																			$scope.form.displayAlert('danger', error.message);
 																		}
 																		else {
-																			currentScope.displayAlert('success', 'Repository Settings Updated.');
+																			$scope.displayAlert('success', 'Repository Settings Updated.');
 																			$scope.form.formData = {};
 																			$scope.showCIConfigForm(oneProvider);
 																		}
 																	});
 																}
 																else {
-																	$scope.form.displayAlert('danger', "You Do not have access to update the Repo CI Settings.");
+																	$scope.displayAlert('danger', "You Do not have access to update the Repo CI Settings.");
 																}
 															}
 														},
