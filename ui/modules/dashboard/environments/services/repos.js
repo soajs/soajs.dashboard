@@ -84,7 +84,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 
 						getServices(currentScope, function () {
 							getDaemons(currentScope, function () {
-								oneAccount.repos.forEach(function (oneRepo) {
+								oneAccount.repos.forEach(function (oneRepo, index) {
 									if(oneRepo.name === 'soajs.gcs'){
 										currentScope.originalServices.forEach(function (oneService) {
 											if(oneService.gcId && oneService.src && oneService.src.repo === 'soajs.gcs'){
@@ -92,6 +92,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 												oneRepo.servicesList.push(oneService);
 											}
 										});
+										if (oneRepo.servicesList.length === 0) {
+											oneAccount.repos.splice(index, 1)
+										}
 									}
 									oneRepo.servicesList.forEach(function (oneRepoService) {
 										var type = (oneRepoService.type === 'service') ? 'services': 'daemons';

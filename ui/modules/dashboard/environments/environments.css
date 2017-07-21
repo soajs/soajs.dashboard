@@ -327,3 +327,7 @@ ul {
 .responsive-width {
     font-size: 0.8vw;
 }
+.accordion-toggle:focus{
+    outline: none;
+    text-decoration: none;
+}
