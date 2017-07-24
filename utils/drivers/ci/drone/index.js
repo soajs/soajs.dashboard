@@ -222,9 +222,7 @@ let lib = {
 						options.settings.envVar = {
 							name: inputVar,
 							value: inputVariables[inputVar],
-							event: ["push", "tag", "deployment", "pull_request"],
-							conceal: false,
-							"skip-verify": true
+							event: ["push", "tag", "deployment"]
 						};
 						
 						lib.addEnvVar(options, callback);
