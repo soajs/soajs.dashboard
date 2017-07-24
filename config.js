@@ -3519,7 +3519,7 @@ module.exports = {
                     'source': ['body.port'],
                     'required': true,
                     'validation':{
-                        'type': 'number'
+                        'type': 'string'
                     }
                 },
                 "settings": {
