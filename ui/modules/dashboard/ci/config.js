@@ -2,25 +2,48 @@
 var ciAppConfig = {
 	form: {
 		f1: {
-			entries: [
-				{
-					'name': 'domain',
-					'label': 'Domain',
-					'type': 'text',
-					'value': '',
-					'placeholder': "",
-					'required': true,
-					'fieldMsg': "Enter the domain value"
-				},
-				{
-					'name': 'gitToken',
-					'label': 'GIT Token',
-					'type': 'text',
-					'value': '',
-					'required': true,
-					'fieldMsg': "Enter the GIT Token Value"
-				}
-			]
+			travis: {
+				entries: [
+					{
+						'name': 'domain',
+						'label': 'Domain',
+						'type': 'text',
+						'value': '',
+						'placeholder': "",
+						'required': true,
+						'fieldMsg': "Enter the domain value"
+					},
+					{
+						'name': 'gitToken',
+						'label': 'GIT Token',
+						'type': 'text',
+						'value': '',
+						'required': true,
+						'fieldMsg': "Enter the GIT Token Value"
+					}
+				]
+			},
+			drone: {
+				entries: [
+					{
+						'name': 'domain',
+						'label': 'Domain',
+						'type': 'text',
+						'value': '',
+						'placeholder': "",
+						'required': true,
+						'fieldMsg': "Enter the domain URL value. EX: http://mydoronedomain.com:8000"
+					},
+					{
+						'name': 'gitToken',
+						'label': 'Drone Token',
+						'type': 'text',
+						'value': '',
+						'required': true,
+						'fieldMsg': "Enter Your Drone Token (provided in your Drone account)"
+					}
+				]
+			}
 		},
 		f2: {
 			entries: [

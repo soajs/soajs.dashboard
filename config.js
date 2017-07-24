@@ -3498,7 +3498,7 @@ module.exports = {
                     "source": ['query.id'],
                     "required": true,
                     "validation": {
-                        "type": "number"
+                        "type": "string"
                     }
                 },
 	            'provider':{
@@ -3524,7 +3524,7 @@ module.exports = {
                 },
                 "settings": {
                     "source": ['body.settings'],
-                    "required": true,
+                    "required": false,
                     "validation": {
                         "type": "object"
                     }

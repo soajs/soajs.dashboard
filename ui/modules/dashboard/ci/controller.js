@@ -16,7 +16,7 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		teamcity: "./themes/" + themeToUse + "/img/teamcity_logo.png"
 	};
 	
-	$scope.unsupported = ['drone', 'jenkins', 'teamcity'];
+	$scope.unsupported = ['jenkins', 'teamcity'];
 	
 	$scope.listAccounts = function () {
 		overlayLoading.show();
@@ -98,11 +98,16 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	};
 	
 	$scope.activateAccount = function(owner, provider){
-		var formConfig = angular.copy(ciAppConfig.form.f1);
+		var formConfig;
 		
 		switch(provider.provider){
 			case 'travis':
+				formConfig = angular.copy(ciAppConfig.form.f1.travis);
 				formConfig.entries[0].value = 'api.travis-ci.org';
+				break;
+			case 'drone':
+				formConfig = angular.copy(ciAppConfig.form.f1.drone);
+				formConfig.entries[0].value = '';
 				break;
 		}
 		
@@ -123,26 +128,32 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							"owner": owner,
 							"provider": provider.provider
 						};
-
-						overlayLoading.show();
-						getSendDataFromServer($scope, ngDataApi, {
-							method: 'post',
-							routeName: '/dashboard/ci/provider',
-							data: data
-						}, function (error, response) {
-							overlayLoading.hide();
-							if (error) {
-								$scope.form.displayAlert('danger', error.message);
-							}
-							else {
-								$scope.displayAlert('success', 'Provider has been integrated');
-								$scope.form.formData = {};
-								if ($scope.modalInstance) {
-									$scope.modalInstance.close();
+						//test if protocol is supplied
+						var regex = /^[^:]+(?=:\/\/)/;
+						if (regex.test(formData.domain) && formData.domain.match(regex)[0] !== 'http' && formData.domain.match(regex)[0] !== 'https') {
+							$scope.form.displayAlert('danger', "Invalid domain name provided!");
+						}
+						else {
+							overlayLoading.show();
+							getSendDataFromServer($scope, ngDataApi, {
+								method: 'post',
+								routeName: '/dashboard/ci/provider',
+								data: data
+							}, function (error, response) {
+								overlayLoading.hide();
+								if (error) {
+									$scope.form.displayAlert('danger', error.message);
 								}
-								$scope.listAccounts();
-							}
-						});
+								else {
+									$scope.displayAlert('success', 'Provider has been integrated');
+									$scope.form.formData = {};
+									if ($scope.modalInstance) {
+										$scope.modalInstance.close();
+									}
+									$scope.listAccounts();
+								}
+							});
+						}
 					}
 				},
 				{
@@ -160,10 +171,16 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	};
 	
 	$scope.updateAccount = function(provider){
-		var formConfig = angular.copy(ciAppConfig.form.f1);
+		var formConfig;
+		
 		switch(provider.provider){
 			case 'travis':
+				formConfig = angular.copy(ciAppConfig.form.f1.travis);
 				formConfig.entries[0].value = 'api.travis-ci.org';
+				break;
+			case 'drone':
+				formConfig = angular.copy(ciAppConfig.form.f1.drone);
+				formConfig.entries[0].value = '';
 				break;
 		}
 		
@@ -186,26 +203,34 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							"owner": provider.owner,
 							"provider": provider.provider
 						};
-						
-						overlayLoading.show();
-						getSendDataFromServer($scope, ngDataApi, {
-							method: 'post',
-							routeName: '/dashboard/ci/provider',
-							data: data
-						}, function (error, response) {
-							overlayLoading.hide();
-							if (error) {
-								$scope.form.displayAlert('danger', error.message);
-							}
-							else {
-								$scope.displayAlert('success', 'Provider integration has been updated');
-								$scope.form.formData = {};
-								if ($scope.modalInstance) {
-									$scope.modalInstance.close();
+						//test if protocol is supplied
+						var regex = /^[^:]+(?=:\/\/)/;
+						if (regex.test(formData.domain) && formData.domain.match(regex)[0] !== 'http' && formData.domain.match(regex)[0] !== 'https') {
+							$scope.form.displayAlert('danger', "Invalid domain name provided!");
+						}
+					    else {
+							overlayLoading.show();
+							getSendDataFromServer($scope, ngDataApi, {
+								method: 'post',
+								routeName: '/dashboard/ci/provider',
+								data: data
+							}, function (error, response) {
+								overlayLoading.hide();
+								if (error) {
+									$scope.form.displayAlert('danger', error.message);
 								}
-								$scope.listAccounts();
-							}
-						});
+								else {
+									$scope.displayAlert('success', 'Provider integration has been updated');
+									$scope.form.formData = {};
+									if ($scope.modalInstance) {
+										$scope.modalInstance.close();
+									}
+									$scope.listAccounts();
+									
+								}
+							});
+						}
+						
 					}
 				},
 				{

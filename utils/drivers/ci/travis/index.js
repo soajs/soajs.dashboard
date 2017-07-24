@@ -4,29 +4,7 @@
 const async = require("async");
 const request = require("request");
 const config = require("./config.js");
-
-let utils = {
-	//return an error object if a function generates an error
-	"checkError": function (error, options, cb, callback) {
-		if (error) {
-			if (options && options.code) {
-				if (typeof(error) === 'object' && error.code) {
-					error.code = options.code;
-				}
-				else {
-					error = {
-						code: options.code,
-						message: options.message || error
-					};
-				}
-			}
-			
-			return cb(error);
-		}
-		
-		return callback();
-	}
-};
+const utils = require('../utils.js');
 
 var lib = {
 	/**
@@ -34,7 +12,7 @@ var lib = {
 	 * @param cb
 	 */
 	getFileName (cb) {
-		return cb('.travis.yml');
+		return cb(null, '.travis.yml');
 	},
 	
 	/**
