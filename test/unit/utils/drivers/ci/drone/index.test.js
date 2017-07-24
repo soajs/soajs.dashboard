@@ -33,37 +33,37 @@ describe('testing ci drone index.js', function () {
 		type: 'ci',
 		params: {repoId: 123456}
 	};
-	
+
 	beforeEach(function (done) {
 		done();
 	});
 	afterEach(function (done) {
 		done();
 	});
-	
+
 	describe('testing generateToken', function () {
-		
+
 		it('Call generateToken', function (done) {
 			utils.generateToken(options, function (error, body) {
 				assert.deepEqual(options.settings.gitToken, 'mygitToken');
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe('testing listRepos', function () {
-		
+
 		it('Call listRepos will return 1 repo only', function (done) {
 			const REPO = require('../../fixtures/drone/repos.json')[0];
 			const BUILDS = require('../../fixtures/drone/builds.json');
-			
+
 			const nocks = nock('https://my.drone', headers)
 				.get('/api/repos/dashboard')
 				.reply(200, REPO)
 				.get('/api/repos/CLOUD/dashboard/builds')
 				.reply(200, BUILDS);
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -80,19 +80,18 @@ describe('testing ci drone index.js', function () {
 				variables: {
 					SOAJS_CD_AUTH_KEY: 'aa39b54908c39565bd8d72f68ac',
 					SOAJS_CD_DEPLOY_TOKEN: 'token',
-					SOAJS_CD_DASHBOARD_DOMAIN: 'undefined.undefined',
+					SOAJS_CD_DASHBOARD_DOMAIN: 'dashboard-api.soajs.org',
 					SOAJS_CD_API_ROUTE: '/cd/deploy',
 					SOAJS_CD_DASHBOARD_PORT: '80',
 					SOAJS_CD_DASHBOARD_PROTOCOL: 'http'
 				}
 			};
-			
+
 			utils.listRepos(options, function (error, body) {
 				const EXPECTED = [
 					{
 						id: 45,
 						name: 'CLOUD/dashboard',
-						active: true,
 						description: '',
 						branches: [
 							{
@@ -110,16 +109,18 @@ describe('testing ci drone index.js', function () {
 						]
 					}
 				];
+
+				delete body[0].active;
 				assert.deepEqual(body, EXPECTED);
 				assert.equal(nocks.isDone(), true);
 				done();
 			});
 		});
-		
+
 		it('Call listRepos will return repos list', function (done) {
 			const REPOS = require('../../fixtures/drone/repos.json');
 			const BUILDS = require('../../fixtures/drone/builds.json');
-			
+
 			const nocks = nock('https://my.drone', headers)
 				.get('/api/user/repos')
 				.reply(200, REPOS)
@@ -127,7 +128,7 @@ describe('testing ci drone index.js', function () {
 				.reply(200, [BUILDS[0]])
 				.get('/api/repos/CLOUD/console-server/builds')
 				.reply(200, [BUILDS[1], BUILDS[2]]);
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -148,13 +149,12 @@ describe('testing ci drone index.js', function () {
 					SOAJS_CD_DASHBOARD_PROTOCOL: 'http'
 				}
 			};
-			
+
 			utils.listRepos(options, function (error, body) {
 				const EXPECTED = [
 					{
 						id: 45,
 						name: 'CLOUD/dashboard',
-						active: true,
 						description: '',
 						branches: [
 							{
@@ -168,7 +168,6 @@ describe('testing ci drone index.js', function () {
 					{
 						id: 46,
 						name: 'CLOUD/console-server',
-						active: true,
 						description: '',
 						branches: [
 							{
@@ -186,17 +185,20 @@ describe('testing ci drone index.js', function () {
 						]
 					}
 				];
+
+				delete body[0].active;
+				delete body[1].active;
 				assert.deepEqual(body, EXPECTED);
 				assert.equal(nocks.isDone(), true);
 				done();
 			});
 		});
-		
+
 		it('get repos on inactive', function (done) {
 			const nocks = nock('https://my.drone', headers)
 				.get('/api/user/repos')
 				.reply(200, null);
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -217,7 +219,7 @@ describe('testing ci drone index.js', function () {
 					SOAJS_CD_DASHBOARD_PROTOCOL: 'http'
 				}
 			};
-			
+
 			utils.listRepos(options, function (error, body) {
 				const EXPECTED = [{
 					id: null,
@@ -235,12 +237,12 @@ describe('testing ci drone index.js', function () {
 				done();
 			});
 		});
-		
+
 		it('no repositories found', function (done) {
 			const nocks = nock('https://my.drone', headers)
 				.get('/api/user/repos')
 				.reply(200, []);
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -261,7 +263,7 @@ describe('testing ci drone index.js', function () {
 					SOAJS_CD_DASHBOARD_PROTOCOL: 'http'
 				}
 			};
-			
+
 			utils.listRepos(options, function (error, body) {
 				const EXPECTED = [];
 				assert.deepEqual(body, EXPECTED);
@@ -269,12 +271,12 @@ describe('testing ci drone index.js', function () {
 				done();
 			});
 		});
-		
+
 		it('error while fetching repositories', function (done) {
 			const nocks = nock('https://my.drone', headers)
 				.get('/api/user/repos')
 				.reply(200, [null]);
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -295,7 +297,7 @@ describe('testing ci drone index.js', function () {
 					SOAJS_CD_DASHBOARD_PROTOCOL: 'http'
 				}
 			};
-			
+
 			utils.listRepos(options, function (error, body) {
 				assert.ok(error);
 				assert.equal(nocks.isDone(), true);
@@ -303,15 +305,15 @@ describe('testing ci drone index.js', function () {
 			});
 		});
 	});
-	
+
 	describe('testing listRepoBranches', function () {
 		const BUILDS = require('../../fixtures/drone/builds.json');
-		
+
 		it('Call listRepoBranches', function (done) {
 			const nocks = nock('https://my.drone', headers)
 				.get('/api/repos/soajsTestAccount/soajsTestRepo/builds')
 				.reply(200, BUILDS);
-			
+
 			utils.listRepoBranches(options, function (error, body) {
 				const EXPECTED = [
 					{
@@ -329,21 +331,21 @@ describe('testing ci drone index.js', function () {
 				];
 				assert.deepEqual(body, EXPECTED);
 				assert.equal(nocks.isDone(), true);
-				
+
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe('testing listEnvVars', function () {
 		it('Call listEnvVars', function (done) {
 			const SECRETS = require('../../fixtures/drone/secrets.json');
-			
+
 			const nocks = nock('https://my.drone', headers)
 				.get('/api/repos/CLOUD/dashboard/secrets')
 				.reply(200, SECRETS);
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -357,40 +359,40 @@ describe('testing ci drone index.js', function () {
 					ciToken: 'access1'
 				},
 			};
-			
+
 			utils.listEnvVars(options, function (error, body) {
 				const EXPECTED = [
 					{
 						id: 1,
 						name: 'ENV_NAME_1',
-						value: '',
+						value: 'ENV_VALUE_1',
 						public: false,
 						owner: 'CLOUD/dashboard'
 					},
 					{
 						id: 2,
 						name: 'ENV_NAME_2',
-						value: '',
+						value: 'ENV_VALUE_2',
 						public: false,
 						owner: 'CLOUD/dashboard'
 					},
 					{
 						id: 3,
 						name: 'ENV_NAME_3',
-						value: '',
+						value: 'ENV_VALUE_3',
 						public: false,
 						owner: 'CLOUD/dashboard'
 					}
 				];
-				
+
 				assert.deepEqual(body, EXPECTED);
 				assert.equal(nocks.isDone(), true);
-				
+
 				done();
 			});
 		});
 	});
-	
+
 	describe('testing addEnvVar', function () {
 		it('Call addEnvVar', function (done) {
 			const nocks = nock('https://my.drone', headers)
@@ -399,7 +401,7 @@ describe('testing ci drone index.js', function () {
 					value: '/cd/deploy'
 				})
 				.reply(200, {});
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -417,11 +419,11 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 			};
-			
+
 			utils.addEnvVar(options, function (error, body) {
 				assert.equal(body, true);
 				assert.equal(nocks.isDone(), true);
-				
+
 				done();
 			});
 		});
@@ -436,7 +438,7 @@ describe('testing ci drone index.js', function () {
 					value: '/cd/deploy'
 				})
 				.reply(200, {});
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -454,23 +456,23 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 			};
-			
+
 			utils.updateEnvVar(options, function (error, body) {
 				assert.equal(body, true);
 				assert.equal(nocks.isDone(), true);
-				
+
 				done();
 			});
 		});
 	});
-	
+
 	describe('testing deleteEnvVar', function () {
 		it('Call deleteEnvVar', function (done) {
-			
+
 			const nocks = nock('https://my.drone', headers)
 				.delete('/api/repos/CLOUD/dashboard/secrets/SECRET_NAME')
 				.reply(200, {});
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -485,20 +487,20 @@ describe('testing ci drone index.js', function () {
 					ciToken: 'access1'
 				},
 			};
-			
+
 			utils.deleteEnvVar(options, function (error, body) {
 				assert.equal(body, true);
 				assert.equal(nocks.isDone(), true);
-				
+
 				done();
 			});
 		});
 	});
-	
+
 	describe('testing ensureRepoVars', function () {
 		it('Call ensureRepoVars', function (done) {
 			const SECRETS = require('../../fixtures/drone/secrets.json');
-			
+
 			const nocks = nock('https://my.drone', headers)
 				.get('/api/repos/CLOUD/dashboard/secrets')
 				.reply(200, SECRETS)
@@ -519,7 +521,7 @@ describe('testing ci drone index.js', function () {
 					value: 'ENV_VALUE_2'
 				})
 				.reply(200, {});
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -539,16 +541,16 @@ describe('testing ci drone index.js', function () {
 					}
 				}
 			};
-			
+
 			utils.ensureRepoVars(options, function (error, body) {
 				assert.equal(body, true);
 				assert.equal(nocks.isDone(), true);
-				
+
 				done();
 			});
 		});
 	});
-	
+
 	describe('testing setHook', function () {
 		const BUILDS = require('../../fixtures/drone/builds.json');
 		it('Call activate setHook', function (done) {
@@ -574,7 +576,7 @@ describe('testing ci drone index.js', function () {
 			utils.setHook(options, function (error, body) {
 				assert.equal(body, true);
 				assert.equal(nocks.isDone(), true);
-				
+
 				done();
 			});
 		});
@@ -603,20 +605,20 @@ describe('testing ci drone index.js', function () {
 			utils.setHook(options, function (error, body) {
 				assert.equal(body, true);
 				assert.equal(nocks.isDone(), true);
-				
+
 				done();
 			});
 		});
 	});
-	
+
 	describe('testing listSettings', function () {
 		const REPO = require('../../fixtures/drone/repos.json')[0];
-		
+
 		it('Call listSettings', function (done) {
 			const nocks = nock('https://my.drone', headers)
 				.get('/api/repos/CLOUD/dashboard')
 				.reply(200, REPO);
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -645,7 +647,7 @@ describe('testing ci drone index.js', function () {
 			const nocks = nock('https://my.drone', headers)
 				.get('/api/repos/CLOUD/dashboard')
 				.reply(200, null);
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -662,7 +664,7 @@ describe('testing ci drone index.js', function () {
 					active: true
 				}
 			};
-			
+
 			utils.listSettings(options, function (error, body) {
 				const EXPECTED = {
 					id: null,
@@ -681,12 +683,12 @@ describe('testing ci drone index.js', function () {
 				done();
 			});
 		});
-		
+
 		it('no repositories found', function (done) {
 			const nocks = nock('https://my.drone', headers)
 				.get('/api/repos/CLOUD/dashboard')
 				.reply(200, []);
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -703,7 +705,7 @@ describe('testing ci drone index.js', function () {
 					active: true
 				}
 			};
-			
+
 			utils.listSettings(options, function (error, body) {
 				const EXPECTED = {
 					repoCiId: 'dashboard'
@@ -714,7 +716,7 @@ describe('testing ci drone index.js', function () {
 			});
 		});
 	});
-	
+
 	describe('testing updateSettings', function () {
 		it('Call updateSettings', function (done) {
 			const REPO = require('../../fixtures/drone/repos.json')[0];
@@ -733,7 +735,7 @@ describe('testing ci drone index.js', function () {
 					"allow_deploy": true
 				})
 				.reply(200, REPO);
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -759,9 +761,9 @@ describe('testing ci drone index.js', function () {
 				assert.equal(nocks.isDone(), true);
 				done();
 			});
-			
+
 		});
-		
+
 		it('updateSettings with Insufficient privileges', function (done) {
 			const REPO = require('../../fixtures/drone/repos.json')[0];
 			const nocks = nock('https://my.drone', headers)
@@ -779,7 +781,7 @@ describe('testing ci drone index.js', function () {
 					"allow_deploy": true
 				})
 				.reply(200, "Insufficient privileges");
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -805,9 +807,9 @@ describe('testing ci drone index.js', function () {
 				assert.equal(nocks.isDone(), true);
 				done();
 			});
-			
+
 		});
-		
+
 		it('error in updating', function (done) {
 			const REPO = require('../../fixtures/drone/repos.json')[0];
 			const nocks = nock('https://my.drone', headers)
@@ -829,7 +831,7 @@ describe('testing ci drone index.js', function () {
 						"message": "error"
 					}
 				});
-			
+
 			const options = {
 				log: {
 					debug: function (data) {
@@ -858,9 +860,9 @@ describe('testing ci drone index.js', function () {
 				assert.equal(nocks.isDone(), true);
 				done();
 			});
-			
+
 		});
 	});
-	
+
 })
 ;
