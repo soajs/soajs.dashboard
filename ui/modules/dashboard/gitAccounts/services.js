@@ -257,7 +257,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 																			"allow_deploy": formData.allow_deploys,
 																			"gated": formData.gated
 																		};
-																		response.settings.repoCiId = response.settings.name;
+																		response.settings.repoCiId = response.settings.full_name;
 																		break;
 																}
 																
@@ -607,7 +607,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 			method: 'get',
 			routeName: '/dashboard/ci',
 			params: {
-				'port': (mydomainport || 80),
+				'port': (mydomainport || '80'),
 				"variables": true,
 				"owner": gitAccount.owner
 			}

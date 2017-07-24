@@ -198,12 +198,13 @@ let lib = {
 			let options = {
 				settings: {
 					domain: opts.settings.domain,
-					owner: opts.settings.owner,
+					owner: opts.params.repoOwner,
 					repo: opts.settings.repo || opts.params.repoId,
 					ciToken: opts.settings.ciToken
 				}
 			};
 			options.log = opts.log;
+			options.log.debug(opts);
 			// List the env variables
 			lib.listEnvVars(options, (err, repoVars) => {
 				// delete all the environment variables
@@ -424,10 +425,21 @@ let lib = {
 					if (body && Array.isArray(body) && body.length > 0) {
 						settings = body[0];
 						settings.repoCiId = opts.settings.repo;
-						return cb(null, body[0]);
+						if(Object.hasOwnProperty(body[0], 'active')){
+							settings.active = body[0].active;
+						}else{
+							settings.active = false;
+						}
+						return cb(null, settings);
 					}
 					else {
 						settings.repoCiId = opts.settings.repo;
+						if(Object.hasOwnProperty(body, 'active')){
+							settings.active = body.active;
+						}else{
+							settings.active = false;
+						}
+						
 						return cb(null, settings);
 					}
 				});
@@ -463,9 +475,9 @@ let lib = {
 			utils.checkError(!opts.settings && !opts.settings.owner, {code: 975}, cb, () => {
 				let uri = utils.getDomain(opts.settings.domain);
 				// getting repos list or one repo is 2 different endpoints completely
-				if (opts.settings.owner && opts.params.repoId) {
+				if (opts.params.repoOwner && opts.params.repoId) {
 					uri += config.api.url.updateSettings
-						.replace('#OWNER#', opts.settings.owner)
+						.replace('#OWNER#', opts.params.repoOwner)
 						.replace('#REPO#', opts.params.repoId);
 				} else {
 					uri += config.api.url.updateSettings
@@ -507,7 +519,7 @@ let lib = {
 			}
 			
 			params.body.name = opts.params.repoId;
-			params.body.owner = opts.settings.owner;
+			params.body.owner = opts.params.repoOwner;
 			
 			opts.log.debug(params);
 			request.patch(params, (error, response, body) => {

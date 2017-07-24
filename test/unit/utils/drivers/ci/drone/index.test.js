@@ -41,15 +41,26 @@ describe('testing ci drone index.js', function () {
 		done();
 	});
 
-	describe('testing generateToken', function () {
+	describe('testing getFileName', function () {
 
+		it('Call getFileName', function (done) {
+			utils.getFileName(function (error, body) {
+				assert.deepEqual(body, '.drone.yml');
+				done();
+			});
+		});
+
+	});
+	
+	describe('testing generateToken', function () {
+		
 		it('Call generateToken', function (done) {
 			utils.generateToken(options, function (error, body) {
 				assert.deepEqual(options.settings.gitToken, 'mygitToken');
 				done();
 			});
 		});
-
+		
 	});
 
 	describe('testing listRepos', function () {
@@ -535,6 +546,7 @@ describe('testing ci drone index.js', function () {
 					ciToken: 'access1'
 				},
 				params: {
+					repoOwner: 'CLOUD',
 					variables: {
 						ENV_NAME_1: 'ENV_VALUE_1',
 						ENV_NAME_2: 'ENV_VALUE_2'
@@ -637,6 +649,7 @@ describe('testing ci drone index.js', function () {
 			};
 			var expected = REPO;
 			expected.repoCiId = 'dashboard';
+			expected.active = false;
 			utils.listSettings(options, function (error, body) {
 				assert.deepEqual(body, expected);
 				assert.equal(nocks.isDone(), true);
@@ -708,7 +721,8 @@ describe('testing ci drone index.js', function () {
 
 			utils.listSettings(options, function (error, body) {
 				const EXPECTED = {
-					repoCiId: 'dashboard'
+					repoCiId: 'dashboard',
+					active: false
 				};
 				assert.deepEqual(body, EXPECTED);
 				assert.equal(nocks.isDone(), true);
@@ -750,6 +764,7 @@ describe('testing ci drone index.js', function () {
 				},
 				params: {
 					repoId: 'dashboard',
+					repoOwner: 'CLOUD',
 					settings: {
 						"allow_tags": true,
 						"allow_deploys": true
@@ -795,6 +810,7 @@ describe('testing ci drone index.js', function () {
 					ciToken: 'access1'
 				},
 				params: {
+					repoOwner: 'CLOUD',
 					repoId: 'dashboard',
 					settings: {
 						"allow_tags": true,
@@ -848,6 +864,7 @@ describe('testing ci drone index.js', function () {
 					ciToken: 'access1'
 				},
 				params: {
+					repoOwner: 'CLOUD',
 					repoId: 'dashboard',
 					settings: {
 						"allow_tags": true,

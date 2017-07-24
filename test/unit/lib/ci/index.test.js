@@ -233,9 +233,25 @@ describe("testing ci.js", function () {
 
 	describe("testing updateRepoSettings", function () {
 
-		it("Success", function (done) {
+		it("Success id (number)", function (done) {
 			req.soajs.inputmaskData = {
 				"id": 12464664,
+				"port": 80,
+				"settings": {},
+				"variables": {
+					"var1": "val1",
+					"var2": "val2"
+				}
+			};
+			ci.updateRepoSettings(config, req, ciDriver, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+		
+		it("Success id (string)", function (done) {
+			req.soajs.inputmaskData = {
+				"id": "CLOUD/dashboard",
 				"port": 80,
 				"settings": {},
 				"variables": {
