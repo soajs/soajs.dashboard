@@ -347,7 +347,11 @@
 								<fieldset ng-repeat="service in group.list | filter:namespaceConfig.namespace:true">
 									<div class="entryBox mb20 {{service.color}}">
 										<div class="header table">
-											<span class="serviceLabelBox">{{service.labels['soajs.service.name']}} / Version: {{service.labels['soajs.service.version']}}</span>
+											<span class="serviceLabelBox">
+												{{service.labels['soajs.service.name']}} /
+												<span style="margin-left: 0;" ng-if="service.labels['soajs.service.type'] === 'daemon' && service.daemonGroup">Group: {{service.daemonGroup}} /</span>
+												Version: {{service.labels['soajs.service.version']}}
+											</span>
 
 											<span class="red" ng-show="service.imageUpdate || service.catalogUpdate">
 												<span class="icon icon-notification"></span>&nbsp;New Updates Available

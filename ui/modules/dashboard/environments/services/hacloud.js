@@ -101,6 +101,16 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 											currentScope.hosts.soajs.groups = {};
 										}
 
+										//check if daemon and get group config name from env variables
+										if (response[j].labels && response[j].labels['soajs.service.type'] === 'daemon' && response[j].labels['soajs.daemon.group']) {
+											response[j].daemonGroup = '';
+											for (var k = 0; k < response[j].env.length; k++) {
+												if (response[j].env[k].split("=")[0] === 'SOAJS_DAEMON_GRP_CONF') {
+													response[j].daemonGroup = response[j].env[k].split("=")[1];
+												}
+											}
+										}
+
 										response[j]['color'] = 'green';
 										response[j]['healthy'] = true;
 										var groupName = response[j].labels['soajs.service.group'];
