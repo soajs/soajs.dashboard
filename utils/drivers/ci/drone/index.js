@@ -120,7 +120,7 @@ let lib = {
 			let myRepo = {
 				id: oneRepo.id,
 				name: `${oneRepo.owner}/${oneRepo.name}`,
-				active: true, // In Drone, only active repos are returned
+				active: oneRepo.active, // In Drone, only active repos are returned
 				description: '' // Drone does not return a description
 			};
 			// grab owner/name from the repo, to get its builds
@@ -209,7 +209,12 @@ let lib = {
 				// delete all the environment variables
 				async.eachSeries(repoVars, function (oneVar, callback) {
 					options.settings.name = oneVar.name;
-					lib.deleteEnvVar(options, callback);
+					if(oneVar.value && oneVar.value.trim() !== ''){
+						lib.deleteEnvVar(options, callback);
+					}
+					else{
+						return callback(null, true);
+					}
 				}, (err) => {
 					let inputVariables = opts.params.variables;
 					
@@ -219,13 +224,18 @@ let lib = {
 					// add the supplied environment variables
 					async.eachSeries(Object.keys(inputVariables), function (inputVar, callback) {
 						// set up the env variable record
-						options.settings.envVar = {
-							name: inputVar,
-							value: inputVariables[inputVar],
-							event: ["push", "tag", "deployment"]
-						};
-						
-						lib.addEnvVar(options, callback);
+						if(inputVariables[inputVar] && inputVariables[inputVar].trim() !== ''){
+							options.settings.envVar = {
+								name: inputVar,
+								value: inputVariables[inputVar],
+								event: ["push", "tag", "deployment"]
+							};
+							
+							lib.addEnvVar(options, callback);
+						}
+						else{
+							return callback(null, true);
+						}
 					}, () => cb(null, true));
 				});
 			});

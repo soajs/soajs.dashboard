@@ -12,6 +12,8 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 			backdrop: true,
 			keyboard: true,
 			controller: function ($scope) {
+				var exceptionProviders = ['drone'];
+				
 				$scope.access = {
 					enableDisableCIRepo : currentScope.access.enableDisableCIRepo
 				};
@@ -137,6 +139,11 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 											if (oneClone[i].name.indexOf('envVal') !== -1) {
 												oneClone[i].value = enVar.value;
 											}
+											
+											if(exceptionProviders.indexOf(oneProvider.provider) !== -1 && !oneClone[i].value || oneClone[i].value === ''){
+												oneClone[i].required = false;
+												oneClone[i].fieldMsg = "If you don't want to modify this environment variable, Leave its value empty.";
+											}
 										}
 										formConfig.entries[2].entries = formConfig.entries[2].entries.concat(oneClone);
 										count++;
@@ -230,6 +237,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 																var data = {
 																	"port": (mydomainport || 80)
 																};
+																data.port = data.port.toString();
 																switch(oneProvider.provider){
 																	case 'travis':
 																		data.settings = {
