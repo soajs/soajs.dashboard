@@ -818,3 +818,411 @@ soajsApp.service('detectBrowser', ['$window', function($window) {
 	}
 	
 }]);
+
+soajsApp.service('swaggerClient', ["$q", "$http", "swaggerModules", "$cookies", "$location", function($q, $http, swaggerModules, $cookies, $location){
+	
+	/**
+	 * format API explorer response before display
+	 */
+	function formatResult1(deferred, response) {
+		var query = '',
+			data = response.data,
+			config = response.config;
+		
+		if (config.params) {
+			var parts = [];
+			for (var key in config.params) {
+				parts.push(key + '=' + encodeURIComponent(config.params[key]));
+			}
+			if (parts.length > 0) {
+				query = '?' + parts.join('&');
+			}
+		}
+		deferred.resolve({
+			url: config.url + query,
+			response: {
+				body: data ? (angular.isString(data) ? data : angular.toJson(data, true)) : 'no content',
+				status: response.status,
+				headers: angular.toJson(response.headers(), true)
+			}
+		});
+	}
+	
+	/**
+	 * format API explorer response before display
+	 */
+	function formatResult2(deferred, response) {
+		var query = '',
+			data = response.data,
+			config = response.config;
+		
+		if (config.params) {
+			var parts = [];
+			for (var key in config.params) {
+				parts.push(key + '=' + encodeURIComponent(config.params[key]));
+			}
+			if (parts.length > 0) {
+				query = '?' + parts.join('&');
+			}
+		}
+		deferred.resolve({
+			url: config.url + query,
+			response: {
+				body: data ? (angular.isString(data) ? data : angular.toJson(data, true)) : 'no content',
+				status: response.status,
+				headers: angular.toJson(response.headers(), true)
+			}
+		});
+	}
+	
+	function extractValidation (commonFields, tempInput, inputObj){
+		
+		//if param is in common field ( used for objects only )
+		if(tempInput.schema && tempInput.schema['$ref']){
+			inputObj.validation = getIMFVfromCommonFields(commonFields, tempInput.schema['$ref']);
+		}
+		//if param is a combination of array and common field
+		else if(tempInput.schema && tempInput.schema.type === 'array' && tempInput.schema.items['$ref']){
+			inputObj.validation = {
+				"type": "array",
+				"items": getIMFVfromCommonFields(commonFields, tempInput.schema.items['$ref'])
+			};
+		}
+		else if (tempInput.schema && tempInput.schema.properties && tempInput.schema.properties.items && tempInput.schema.properties.items.type === 'array' && tempInput.schema.properties.items.items['$ref']) {
+			inputObj.validation = {
+				"type": "array",
+				"items": getIMFVfromCommonFields(commonFields, tempInput.schema.properties.items.items['$ref'])
+			};
+		}
+		//if param is not a common field
+		else{
+			inputObj.validation = tempInput;
+		}
+	}
+	
+	function getIMFVfromCommonFields (commonFields, source){
+		var commonFieldInputName = source.toLowerCase().split("/");
+		commonFieldInputName = commonFieldInputName[commonFieldInputName.length -1];
+		return commonFields[commonFieldInputName].validation;
+	}
+	
+	function populateCommonFields(commonFields, cb){
+		//loop in all common fields
+		for(var oneCommonField in commonFields){
+			recursiveMapping(commonFields[oneCommonField].validation);
+		}
+		return cb();
+		
+		//loop through one common field recursively constructing and populating all its children imfv
+		function recursiveMapping(source){
+			if(source.type === 'array'){
+				if(source.items['$ref'] || source.items.type === 'object'){
+					source.items = mapSimpleField(source.items);
+				}
+				else if(source.items.type === 'object'){
+					recursiveMapping(source.items);
+				}
+			}
+			else if(source.type === 'object'){
+				for(var property in source.properties){
+					if(source.properties[property]['$ref']){
+						source.properties[property] = mapSimpleField(source.properties[property]);
+					}
+					else if(source.properties[property].type ==='object' || source.properties[property].type ==='array'){
+						recursiveMapping(source.properties[property]);
+					}
+				}
+			}
+			else {
+				//map simple inputs if nay
+				source = mapSimpleField(source);
+			}
+		}
+		
+		//if this input is a ref, get the ref and replace it.
+		function mapSimpleField(oneField){
+			if(oneField['$ref']){
+				return getIMFVfromCommonFields(commonFields, oneField['$ref']);
+			}
+			else{
+				return oneField;
+			}
+		}
+	}
+	
+	/**
+	 * override the default swagger operation
+	 */
+	function overrideDefaultInputs(definitions, operation, values){
+		var oldParams = angular.copy(operation.parameters);
+		var oldValues = angular.copy(values);
+		
+		operation.parameters = [];
+		
+		//extract common fields
+		var commonFields = {};
+		if(definitions && Object.keys(definitions).length > 0){
+			for(var onecommonInput in definitions){
+				commonFields[onecommonInput.toLowerCase()] = {
+					"validation": definitions[onecommonInput]
+				};
+			}
+			populateCommonFields(commonFields, function(){
+				resumeE();
+			});
+		}
+		else{
+			resumeE();
+		}
+		
+		function resumeE(){
+			//define new parameter for api
+			var customBody = {
+				"input": {},
+				"imfv": {}
+			};
+			
+			oldParams.forEach(function(swaggerParam){
+				var sourcePrefix = swaggerParam.in;
+				if(sourcePrefix === 'path'){
+					sourcePrefix = "params";
+				}
+				if(sourcePrefix === 'header'){
+					sourcePrefix = "headers";
+				}
+				var inputObj = {
+					"required": swaggerParam.required,
+					"source": [sourcePrefix + "." + swaggerParam.name],
+					"validation": {}
+				};
+				
+				extractValidation(commonFields, swaggerParam, inputObj);
+				
+				customBody.imfv[swaggerParam.name] = inputObj;
+				
+				if(typeof(oldValues[swaggerParam.name]) === 'string' && oldValues[swaggerParam.name] !== '' && (inputObj.validation.type === 'object' || inputObj.validation.type === 'array')){
+					try{
+						customBody.input[swaggerParam.name] = JSON.parse(oldValues[swaggerParam.name]);
+					}
+					catch(e){
+						customBody.input[swaggerParam.name] = oldValues[swaggerParam.name];
+					}
+				}
+				else{
+					customBody.input[swaggerParam.name] = oldValues[swaggerParam.name];
+				}
+			});
+			
+			operation.parameters.push(customBody);
+		}
+	}
+	
+	
+	/**
+	 * Send API explorer request
+	 */
+	this.send = function(swagger, operation, values) {
+		if($location.path() === "/swaggerEditor"){
+			var oldParams = angular.copy(operation.parameters);
+			var oldValues = angular.copy(values);
+
+			var deferred = $q.defer(),
+				query = {},
+				headers = {
+					"Accept" : "application/json",
+					"Content-Type": "application/json"
+				},
+				path = '/dashboard/swagger/simulate';
+
+			/**
+			 * call custom method to override the defaults
+			 */
+			overrideDefaultInputs(swagger.definitions, operation, values);
+			/**
+			 * hook the headers
+			 */
+			if ($cookies.get("soajs_dashboard_key")) {
+				headers.key = $cookies.get("soajs_dashboard_key").replace(/\"/g, '');
+			}
+			else {
+				headers.key = apiConfiguration.key;
+			}
+
+			// var soajsAuthCookie = $cookies.get('soajs_auth');
+			// if (soajsAuthCookie && soajsAuthCookie.indexOf("Basic ") !== -1) {
+			// headers.soajsauth = soajsAuthCookie.replace(/\"/g, '');
+			// }
+
+			var soajsAccessToken = $cookies.get('access_token');
+			if(soajsAccessToken){
+				query.access_token = $cookies.get('access_token');
+			}
+
+			// build request
+			var options = {
+					method: "post",
+					url: apiConfiguration.domain + path,
+					headers: headers,
+					data: {
+						"data": operation.parameters[0]
+					},
+					params: query
+				},
+				callback = function(response) {
+					// execute modules
+					var response = {
+						data: response.data,
+						status: response.status,
+						headers: response.headers,
+						config: response.config
+					};
+					swaggerModules
+						.execute(swaggerModules.AFTER_EXPLORER_LOAD, response)
+						.then(function() {
+							formatResult2(deferred, response);
+							operation.parameters = oldParams;
+							values = oldValues;
+						});
+				};
+
+			// execute modules
+			swaggerModules
+				.execute(swaggerModules.BEFORE_EXPLORER_LOAD, options)
+				.then(function() {
+					// send request
+					$http(options)
+						.then(callback)
+						.catch(callback);
+				});
+
+			return deferred.promise;
+		}
+		else {
+			var deferred = $q.defer(),
+				query = {},
+				headers = {"Accept" : "application/json",
+					"Content-Type": "application/json"},
+				path = operation.path,
+				body;
+
+			// build request parameters
+			for (var i = 0, params = operation.parameters || [], l = params.length; i < l; i++) {
+				//TODO manage 'collectionFormat' (csv etc.) !!
+				var param = params[i],
+					value = values[param.name];
+
+				switch (param.in) {
+					case 'query':
+						if (!!value) {
+							query[param.name] = value;
+						}
+						break;
+					case 'path':
+						path = path.replace('{' + param.name + '}', encodeURIComponent(value));
+						break;
+					case 'header':
+						if (!!value) {
+							headers[param.name] = value;
+						}
+						break;
+					case 'formData':
+						body = body || new FormData();
+						if (!!value) {
+							if (param.type === 'file') {
+								values.contentType = undefined; // make browser defining it by himself
+							}
+							body.append(param.name, value);
+						}
+						break;
+					case 'body':
+						body = body || value;
+						break;
+				}
+			}
+
+			// authorization
+			var authParams = operation.authParams;
+			if (authParams) {
+				switch (authParams.type) {
+					case 'apiKey':
+						switch (authParams.in) {
+							case 'header':
+								headers[authParams.name] = authParams.apiKey;
+								break;
+							case 'query':
+								query[authParams.name] = authParams.apiKey;
+								break;
+						}
+						break;
+					case 'basic':
+						headers.Authorization = 'Basic ' + btoa(authParams.login + ':' + authParams.password);
+						break;
+				}
+			}
+
+			/**
+			 * hook the headers
+			 */
+			if(swagger.tenantKey){
+				headers.key = swagger.tenantKey;
+			}
+			else if ($cookies.get("soajs_dashboard_key")) {
+				headers.key = $cookies.get("soajs_dashboard_key").replace(/\"/g, '');
+			}
+			else {
+				headers.key = apiConfiguration.key;
+			}
+
+			var soajsAccessToken = $cookies.get('access_token');
+			if(soajsAccessToken){
+				query.access_token = $cookies.get('access_token');
+			}
+
+			// add headers
+			headers.Accept = values.responseType;
+			headers['Content-Type'] = body ? values.contentType : 'text/plain';
+
+			// build request
+			var basePath = swagger.basePath || '',
+				baseUrl = [
+					swagger.schemes[0],
+					'://',
+					swagger.host,
+					basePath.length > 0 && basePath.substring(basePath.length - 1) === '/' ? basePath.slice(0, -1) : basePath
+				].join(''),
+				options = {
+					method: operation.httpMethod,
+					url: baseUrl + path,
+					headers: headers,
+					data: body,
+					params: query
+				},
+				callback = function(response) {
+					// execute modules
+					var response = {
+						data: response.data,
+						status: response.status,
+						headers: response.headers,
+						config: response.config
+					};
+					swaggerModules
+						.execute(swaggerModules.AFTER_EXPLORER_LOAD, response)
+						.then(function() {
+							formatResult1(deferred, response);
+						});
+				};
+
+			// execute modules
+			swaggerModules
+				.execute(swaggerModules.BEFORE_EXPLORER_LOAD, options)
+				.then(function() {
+					// send request
+					$http(options)
+						.then(callback)
+						.catch(callback);
+				});
+
+			return deferred.promise;
+		}
+	};
+}]);
