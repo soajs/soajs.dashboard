@@ -2103,7 +2103,7 @@ module.exports = {
                 },
 	            "version": {
 		            "source": ['body.version'],
-		            "required": true,
+		            "required": false,
 		            "validation": {
 			            "type": "boolean"
 		            }
