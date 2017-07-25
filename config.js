@@ -2100,7 +2100,14 @@ module.exports = {
                     "validation": {
                         "type": "string"
                     }
-                }
+                },
+	            "version": {
+		            "source": ['body.version'],
+		            "required": true,
+		            "validation": {
+			            "type": "boolean"
+		            }
+	            }
             },
 
 	        "/ci/recipe": {

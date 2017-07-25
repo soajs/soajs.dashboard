@@ -128,6 +128,16 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							"owner": owner,
 							"provider": provider.provider
 						};
+						
+						if(formData.version){
+							if(Array.isArray(formData.version)){
+								data.version = formData.version[0];
+							}
+							else{
+								data.version = formData.version;
+							}
+						}
+						
 						//test if protocol is supplied
 						var regex = /^[^:]+(?=:\/\/)/;
 						if (regex.test(formData.domain) && formData.domain.match(regex)[0] !== 'http' && formData.domain.match(regex)[0] !== 'https') {
@@ -203,6 +213,16 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							"owner": provider.owner,
 							"provider": provider.provider
 						};
+						
+						if(formData.version){
+							if(Array.isArray(formData.version)){
+								data.version = formData.version[0];
+							}
+							else{
+								data.version = formData.version;
+							}
+						}
+						
 						//test if protocol is supplied
 						var regex = /^[^:]+(?=:\/\/)/;
 						if (regex.test(formData.domain) && formData.domain.match(regex)[0] !== 'http' && formData.domain.match(regex)[0] !== 'https') {

@@ -41,6 +41,14 @@ var ciAppConfig = {
 						'value': '',
 						'required': true,
 						'fieldMsg': "Enter Your Drone Token (provided in your Drone account)"
+					},
+					{
+						'name': 'version',
+						'label': 'Backward Compatibility',
+						'type': 'checkbox',
+						'value': [{'v': true, 'l': 'Version 7 or Below'}],
+						'required': true,
+						'fieldMsg': "Check the box if Drone Version 7 or below"
 					}
 				]
 			}

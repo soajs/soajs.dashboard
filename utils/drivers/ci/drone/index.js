@@ -117,6 +117,11 @@ let lib = {
 			if (!oneRepo) {
 				return cb(new Error("Unexpected error while fetching Repo Information."));
 			}
+			
+			if(opts.settings.version && !Object.hasOwnProperty.call(oneRepo, 'active')){
+				oneRepo.active = true;
+			}
+			
 			let myRepo = {
 				id: oneRepo.id,
 				name: `${oneRepo.owner}/${oneRepo.name}`,
@@ -419,6 +424,7 @@ let lib = {
 				if (!Array.isArray(body)) {
 					body = [body];
 				}
+				
 				// Check for errors in the request function
 				utils.checkError(error, {code: 971}, cb, () => {
 					// Check if the requested owner has repos
