@@ -440,7 +440,7 @@ var servicesNav = [
 			'position': 1
 		},
 		'tracker': true,
-		'scripts': ['modules/dashboard/services/config.js', 'modules/dashboard/services/controller.js', 'modules/dashboard/services/service.js'],
+		'scripts': ['modules/dashboard/services/config.js', 'modules/dashboard/services/controller.js'],
 		'tplPath': 'modules/dashboard/services/directives/swaggerTest.tmpl'
 	}
 ];
