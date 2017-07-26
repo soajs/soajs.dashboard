@@ -46,8 +46,8 @@ environmentsApp.controller('deployReposCtrl', ['$scope', '$cookies', 'injectFile
 		deployRepos.configureCD($scope, repo);
 	};
 	
-	$scope.deployService = function (oneRepo, service,version, gitAccount) {
-		deployRepos.deployService($scope, oneRepo, service, version, gitAccount);
+	$scope.deployService = function (oneRepo, service,version, gitAccount, daemonGrpConf) {
+		deployRepos.deployService($scope, oneRepo, service, version, gitAccount, daemonGrpConf);
 	};
 	
 	$scope.doDeploy = function (params) {

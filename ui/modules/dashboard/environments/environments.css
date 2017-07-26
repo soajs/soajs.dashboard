@@ -332,3 +332,7 @@ ul {
     outline: none;
     text-decoration: none;
 }
+
+.fullWidth{
+   width: 100% !important;
+}

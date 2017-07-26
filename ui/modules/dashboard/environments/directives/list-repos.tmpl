@@ -38,22 +38,39 @@
             							<accordion-group is-open="false" ng-repeat="service in repo.servicesList" class="blueAccordion" ng-class="{greenAccordion: service.deployed}">
             								<accordion-heading>
                                                 <span class="icon icon-cloud"></span>{{service.name}} [{{service.type}}]
-                                                <div style="float: right;" ng-if="service.deployed">
+                                                <div style="float: right;" ng-if="service.deployed && service.type !== 'daemon'">
                                                     <span ng-if="service.versions.length > 0" style="margin-right: 30px;"><span class="icon icon-power-cord"></span>{{service.deployedVersionsCounter}} out of {{service.versions.length}} version(s) are plugged</span>
                                                     <span style="float: right; color: green;" ng-if="service.deployed"><span class="icon icon-checkmark"></span>Deployed</span>
                                                 </div>
                                             </accordion-heading>
                                             <div class="entryBoxes entryBoxesGrid" ng-if="service.versions.length > 0">
-                                                <div class="entryBox pl0" style="width: 32%" ng-repeat="version in service.versions" ng-class="{greenBox: version.deployed}">
+                                                <div class="entryBox pl0" style="width: 32%" ng-repeat="version in service.versions" ng-class="{greenBox: version.deployed, fullWidth: version.grpConf}">
                                                     <div class="header opened" ng-class="{greenBoxHeader: version.deployed}">
                                                         Version {{version.v}}
-                                                        <span style="float: right; color: green;" ng-if="version.deployed"><span class="icon icon-checkmark"></span>Deployed</span>
+	                                                    <div style="float: right;">
+		                                                    <span ng-if="version.grpConf.length > 0 && service.type === 'daemon' && service.deployed" style="margin-right: 30px;"><span class="icon icon-power-cord"></span>{{service.deployedConfigCounter}} out of {{version.grpConf.length}} group(s) are plugged</span>
+                                                            <span style="float: right; color: green;" ng-if="version.deployed"><span class="icon icon-checkmark"></span>Deployed</span>
+	                                                    </div>
                                                     </div>
-                                                    <div class="body serviceVersionBox">
+                                                    <div class="body serviceVersionBox" ng-if="service.type !== 'daemon'">
                                                         <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (version.deployed || !version.deploySettings)}"  ng-click="doDeploy(version.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
                                                         <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account)" ng-if="!version.deploySettings" ><span class="icon icon-cog"></span>Configure Deployment</a>
                                                         <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account)" ng-if="version.deploySettings" ><span class="icon icon-cog"></span>Reconfigure Deployment</a>
                                                     </div>
+	                                                <div ng-if="version.grpConf && version.grpConf.length === 0 && service.type === 'daemon'">
+		                                                <alert type="warning">No Daemon Group Configuration found please click <a href="#/daemons">here</a> to create one.</alert>
+	                                                </div>
+	                                                <div class="entryBox pl0" style="width: 32%"  ng-if="version.grpConf && service.type === 'daemon'" ng-repeat="oneGroupConf in version.grpConf" ng-class="{greenBox: version[oneGroupConf].deployed}">
+		                                                <div class="header opened" ng-class="{greenBoxHeader: version[oneGroupConf.daemonConfigGroup].deployed}">
+			                                                Group {{oneGroupConf.daemonConfigGroup}}
+			                                                <span style="float: right; color: green;" ng-if="version[oneGroupConf.daemonConfigGroup].deployed"><span class="icon icon-checkmark"></span>Deployed</span>
+		                                                </div>
+		                                                <div class="body serviceVersionBox">
+			                                                <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (version[oneGroupConf.daemonConfigGroup].deployed || !version.deploySettings[oneGroupConf.daemonConfigGroup])}"  ng-click="doDeploy(version.deploySettings[oneGroupConf.daemonConfigGroup].options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
+			                                                <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account, oneGroupConf.daemonConfigGroup)" ng-if="!version.deploySettings[oneGroupConf.daemonConfigGroup]" ><span class="icon icon-cog"></span>Configure Deployment</a>
+			                                                <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account, oneGroupConf.daemonConfigGroup)" ng-if="version.deploySettings[oneGroupConf.daemonConfigGroup]" ><span class="icon icon-cog"></span>Reconfigure Deployment</a>
+		                                                </div>
+	                                                </div>
                                                 </div>
                                             </div>
 								            <div class="entryBox pl0" style="width: 32%"  ng-class="{greenBox: service.deployed}" ng-if="service.versions.length === 0">

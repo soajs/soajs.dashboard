@@ -1,11 +1,5 @@
-<div ng-show = "groupConfigs">
-	<label>{{translation.daemonGroupConfig[LANG]}}</label>
-	<select class="form-control" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.daemonGroup">
-		<option ng-repeat="group in groupConfigs" value="{{group.daemonConfigGroup}}">
-			{{group.daemonConfigGroup}}
-		</option>
-	</select>
-	<br />
+<div ng-show="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.daemonGroup">
+	<label>{{translation.daemonGroupConfig[LANG]}}:</label>&nbsp;{{cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.daemonGroup}}
 </div>
 <div ng-show="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image">
 	<label>Image Prefix</label>
