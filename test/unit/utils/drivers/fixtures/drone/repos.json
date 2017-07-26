@@ -1,0 +1,36 @@
+[
+  {
+    "id": 45,
+    "owner": "CLOUD",
+    "name": "dashboard",
+    "full_name": "CLOUD/dashboard",
+    "link_url": "https://git.ypg.com/projects/CLOUD/repos/dashboard/browse",
+    "scm": "git",
+    "clone_url": "https://git.ypg.com/scm/cloud/dashboard.git",
+    "default_branch": "master",
+    "timeout": 60,
+    "private": true,
+    "trusted": false,
+    "allow_pr": true,
+    "allow_push": true,
+    "allow_deploys": false,
+    "allow_tags": false
+  },
+  {
+    "id": 46,
+    "owner": "CLOUD",
+    "name": "console-server",
+    "full_name": "CLOUD/console-server",
+    "link_url": "https://git.ypg.com/projects/CLOUD/repos/console-server/browse",
+    "scm": "git",
+    "clone_url": "https://git.ypg.com/scm/cloud/console-server.git",
+    "default_branch": "master",
+    "timeout": 60,
+    "private": true,
+    "trusted": false,
+    "allow_pr": true,
+    "allow_push": true,
+    "allow_deploys": false,
+    "allow_tags": false
+  }
+]

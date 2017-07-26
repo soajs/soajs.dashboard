@@ -60,7 +60,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			        else if (action === 'getRepos') {
 						if (oneAccount.owner === 'soajs') {
 							for (var i = response.length - 1; i >= 0; i--) {
-								if (['soajs.dashboard', 'soajs.gcs'].indexOf(response[i].name) !== -1) {
+								if (['soajs.dashboard'].indexOf(response[i].name) !== -1) {
 									response.splice(i, 1);
 								}
 							}
@@ -69,7 +69,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			            oneAccount.repos = response;
 						oneAccount.repos.forEach(function (oneRepo) {
 							var repoServices = [];
-							if (oneRepo.type === 'service' || oneRepo.type === 'daemon') {
+							if (oneRepo.name !== 'soajs.gcs' && (oneRepo.type === 'service' || oneRepo.type === 'daemon')) {
 								repoServices.push({ name: oneRepo.serviceName, type: oneRepo.type });
 							}
 							else if (oneRepo.type === 'multi') {
@@ -84,7 +84,23 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 
 						getServices(currentScope, function () {
 							getDaemons(currentScope, function () {
-								oneAccount.repos.forEach(function (oneRepo) {
+								
+								for(var inverse = oneAccount.repos.length -1; inverse >=0; inverse --){
+									var oneRepo = oneAccount.repos[inverse];
+									if (oneRepo.name === 'soajs.gcs') {
+										currentScope.originalServices.forEach(function (oneService) {
+											if (oneService.gcId && oneService.src && oneService.src.repo === 'soajs.gcs') {
+												oneService.type = 'service';
+												oneRepo.servicesList.push(oneService);
+											}
+										});
+										if (oneRepo.servicesList.length === 0) {
+											oneAccount.repos.splice(inverse, 1)
+										}
+									}
+								}
+								
+								oneAccount.repos.forEach(function (oneRepo, index) {
 									oneRepo.servicesList.forEach(function (oneRepoService) {
 										var type = (oneRepoService.type === 'service') ? 'services': 'daemons';
 										currentScope[type].forEach(function (oneService) {
@@ -97,6 +113,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 														}
 														if(oneService.prerequisites){
 															oneService.versions[oneVersion].prerequisites = oneService.prerequisites;
+														}
+														if(oneService.gcId){
+															oneService.versions[oneVersion].gcId = oneService.gcId;
 														}
 														oneService.versions[oneVersion].v = oneVersion;
 														oneRepoService.versions.push(oneService.versions[oneVersion]);
@@ -268,7 +287,8 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			if (error) {
 				currentScope.displayAlert('danger', error.message);
 			} else {
-				currentScope.services = response.records;
+				currentScope.services = angular.copy(response.records);
+				currentScope.originalServices = angular.copy(response.records);
 				return cb();
 			}
 		});
@@ -617,7 +637,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 					}
 					configuration.version.options.custom.gc = {
 						"gcName": currentScope.oneSrv,
-						"gcVersion": currentScope.version
+						"gcVersion": parseInt(currentScope.version)
 					}
 				}
 				configuration.version.deploy = true;

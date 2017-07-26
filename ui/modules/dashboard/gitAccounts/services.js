@@ -12,6 +12,8 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 			backdrop: true,
 			keyboard: true,
 			controller: function ($scope) {
+				var exceptionProviders = ['drone'];
+				
 				$scope.access = {
 					enableDisableCIRepo : currentScope.access.enableDisableCIRepo
 				};
@@ -137,6 +139,11 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 											if (oneClone[i].name.indexOf('envVal') !== -1) {
 												oneClone[i].value = enVar.value;
 											}
+											
+											if(exceptionProviders.indexOf(oneProvider.provider) !== -1 && !oneClone[i].value || oneClone[i].value === ''){
+												oneClone[i].required = false;
+												oneClone[i].fieldMsg = "If you don't want to modify this environment variable, Leave its value empty.";
+											}
 										}
 										formConfig.entries[2].entries = formConfig.entries[2].entries.concat(oneClone);
 										count++;
@@ -169,6 +176,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 									type: "html",
 									value: "<hr />"
 								});
+								
 								if(currentScope.access.getCIProviders) {
 									getProviderRecipes($scope, {
 										'provider': oneProvider.provider,
@@ -206,7 +214,6 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 										
 										recipesGroup.entries = recipesGroup.entries.concat(recipes);
 										formConfig.entries.push(recipesGroup);
-										
 										if(currentScope.access.getCIRepoCustomRecipe){
 											getRepoRecipeFromBranch($scope, gitAccount, oneProvider, oneRepo, providerRecipes, function (branchInput) {
 												formConfig.entries.push({
@@ -228,14 +235,31 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 															btn: 'primary',
 															action: function (formData) {
 																var data = {
-																	"port": (mydomainport || 80),
-																	"settings": {
-																		"build_pull_requests": formData.build_pull_requests,
-																		"build_pushes": formData.build_pushes,
-																		"builds_only_with_travis_yml": formData.builds_only_with_travis_yml,
-																		"maximum_number_of_builds": formData.maximum_number_of_builds
-																	}
+																	"port": (mydomainport || 80)
 																};
+																data.port = data.port.toString();
+																switch(oneProvider.provider){
+																	case 'travis':
+																		data.settings = {
+																			"build_pull_requests": formData.build_pull_requests,
+																			"build_pushes": formData.build_pushes,
+																			"builds_only_with_travis_yml": formData.builds_only_with_travis_yml,
+																			"maximum_number_of_builds": formData.maximum_number_of_builds
+																		};
+																		break;
+																	case 'drone':
+																		data.settings = {
+																			"allow_push": formData.allow_push,
+																			"allow_pr": formData.allow_pr,
+																			"allow_tags": formData.allow_tags,
+																			"allow_tag": formData.allow_tag,
+																			"allow_deploys": formData.allow_deploys,
+																			"allow_deploy": formData.allow_deploys,
+																			"gated": formData.gated
+																		};
+																		response.settings.repoCiId = response.settings.full_name;
+																		break;
+																}
 																
 																data.variables = {};
 																for (var i = 0; i < count; i++) {
@@ -261,14 +285,14 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 																			$scope.form.displayAlert('danger', error.message);
 																		}
 																		else {
-																			currentScope.displayAlert('success', 'Repository Settings Updated.');
+																			$scope.displayAlert('success', 'Repository Settings Updated.');
 																			$scope.form.formData = {};
 																			$scope.showCIConfigForm(oneProvider);
 																		}
 																	});
 																}
 																else {
-																	$scope.form.displayAlert('danger', "You Do not have access to update the Repo CI Settings.");
+																	$scope.displayAlert('danger', "You Do not have access to update the Repo CI Settings.");
 																}
 															}
 														},
@@ -583,7 +607,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', '
 			method: 'get',
 			routeName: '/dashboard/ci',
 			params: {
-				'port': (mydomainport || 80),
+				'port': (mydomainport || '80'),
 				"variables": true,
 				"owner": gitAccount.owner
 			}

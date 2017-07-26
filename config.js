@@ -2101,7 +2101,14 @@ module.exports = {
                     "validation": {
                         "type": "string"
                     }
-                }
+                },
+	            "version": {
+		            "source": ['body.version'],
+		            "required": false,
+		            "validation": {
+			            "type": "boolean"
+		            }
+	            }
             },
 
 	        "/ci/recipe": {
@@ -3499,7 +3506,7 @@ module.exports = {
                     "source": ['query.id'],
                     "required": true,
                     "validation": {
-                        "type": "number"
+                        "type": "string"
                     }
                 },
 	            'provider':{
@@ -3520,12 +3527,12 @@ module.exports = {
                     'source': ['body.port'],
                     'required': true,
                     'validation':{
-                        'type': 'number'
+                        'type': 'string'
                     }
                 },
                 "settings": {
                     "source": ['body.settings'],
-                    "required": true,
+                    "required": false,
                     "validation": {
                         "type": "object"
                     }

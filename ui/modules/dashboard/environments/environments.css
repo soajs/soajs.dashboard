@@ -328,3 +328,7 @@ ul {
     font-size: 0.8vw;
     float: right;
 }
+.accordion-toggle:focus{
+    outline: none;
+    text-decoration: none;
+}

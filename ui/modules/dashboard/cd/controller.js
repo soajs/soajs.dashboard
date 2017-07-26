@@ -7,7 +7,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, cdAppConfig.permissions);
 	$scope.$parent.rerenderMenuAfterEnvExclude(cdNav);
-	
+
 	$scope.cdData = {};
 	$scope.myEnv = $cookies.getObject('myEnv').code;
 	$scope.upgradeSpaceLink = cdAppConfig.upgradeSpaceLink;
@@ -121,11 +121,11 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			env: $scope.myEnv,
 			serviceName: service
 		};
-		
+
 		if(SOAJSRMS.indexOf("soajs." + service) !== -1){
 			$scope.displayAlert('danger', "You cannot Apply Continuous Delivery on a SOAJS Ready Made Service.");
 		}
-		
+
 		if ($scope.configuration[service].versions && Object.keys($scope.configuration[service].versions).length > 0) {
 			data.version = {
 				v: version
@@ -284,7 +284,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				$scope.ledger = response;
 				$scope.updateCount = 0;
 				$scope.ledger.forEach(function(oneLedgerEntry){
-					if(oneLedgerEntry.notify && !oneLedgerEntry.manual){
+					if(oneLedgerEntry.notify && !oneLedgerEntry.manual && !oneLedgerEntry.read){
 						$scope.updateCount++;
 					}
 				});

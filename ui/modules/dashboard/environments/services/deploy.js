@@ -471,7 +471,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                 controller: function ($scope, $modalInstance) {
                     fixBackDrop();
 	                currentScope.allowGitOverride = false;
-                    $scope.title = 'Deploy New Service';
+                    $scope.title = 'Deploy New Resource';
                     $scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
                     $scope.currentScope = currentScope;
 
