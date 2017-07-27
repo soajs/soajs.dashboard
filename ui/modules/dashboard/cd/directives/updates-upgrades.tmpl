@@ -14,32 +14,31 @@
 							<a href="" ng-click="readOne(oneEntry)" tooltip="Mark as Read" class="mr-10 readBox">
 								<span class="icon icon-drawer2"></span>
 							</a>
+							<span ng-if="oneEntry.manual">
+								<span ng-if="oneEntry.actionTaken === 'redeploy' && !oneEntry.commitError">
+									Service was manually restarted for service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.daemonGroup">/Group: {{oneEntry.daemonGroup}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> on <em>{{oneEntry.ts|fulldate}}</em> by the administrator
+								</span>
+								<span ng-if="oneEntry.actionTaken === 'deploy'">
+									Service was manually deployed for service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.daemonGroup">/Group: {{oneEntry.daemonGroup}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> on <em>{{oneEntry.ts|fulldate}}</em> by the administrator
+								</span>
+							</span>
+							<span ng-if="!oneEntry.manual">
+								<span ng-if="oneEntry.notify">
+									New Update Received for service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.daemonGroup">/Group: {{oneEntry.daemonGroup}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> on <em>{{oneEntry.ts|fulldate}}</em> based on Continuous Delivery Strategy<b ng-if="!oneEntry.serviceIsDeployed && oneEntry.serviceIsDeployed !== undefined"> [Not Deployed]</b>
+								</span>
+								<span ng-if="oneEntry.update">
+									Service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.daemonGroup">/Group: {{oneEntry.daemonGroup}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> was automatically updated on <em>{{oneEntry.ts|fulldate}}</em> based on Continuous Delivery Strategy
+								</span>
+								<span ng-if="oneEntry.deploy">
+									Service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.daemonGroup">/Group: {{oneEntry.daemonGroup}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> was automatically deployed on <em>{{oneEntry.ts|fulldate}}</em> based on Continuous Delivery Strategy
+								</span>
+							</span>
 							<span ng-if="oneEntry.commitError">
 								Duplicate Update for Service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.daemonGroup">/Group: {{oneEntry.daemonGroup}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> detected. Updated was ignored at <em>{{oneEntry.ts|fulldate}}</em><br />
 								Commit: <b>{{oneEntry.commit}}</b>
 							</span>
-							<span ng-if="!oneEntry.manual && oneEntry.update">
-								Service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.daemonGroup">/Group: {{oneEntry.daemonGroup}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> was automatically updated on <em>{{oneEntry.ts|fulldate}}</em> based on Continuous Delivery Strategy
-							</span>
-
-							<span ng-if="oneEntry.notify && !oneEntry.manual">
-								New Update Received for service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.daemonGroup">/Group: {{oneEntry.daemonGroup}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> on <em>{{oneEntry.ts|fulldate}}</em> based on Continuous Delivery Strategy<b ng-if="!oneEntry.serviceIsDeployed && oneEntry.serviceIsDeployed !== undefined"> [Not Deployed]</b>
-							</span>
-
-							<span ng-if="oneEntry.manual && !oneEntry.commitError && oneEntry.actionTaken === 'redeploy'">
-								Service was manually restarted for service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.daemonGroup">/Group: {{oneEntry.daemonGroup}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> on <em>{{oneEntry.ts|fulldate}}</em> by the administrator
-							</span>
-
-							<span ng-if="oneEntry.manual && oneEntry.actionTaken === 'deploy'">
-								Service was manually deployed for service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.daemonGroup">/Group: {{oneEntry.daemonGroup}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> on <em>{{oneEntry.ts|fulldate}}</em> by the administrator
-							</span>
-
 							<span ng-if="oneEntry.rebuild">
 								Service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.daemonGroup">/Group: {{oneEntry.daemonGroup}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> was manually redeployed on <em>{{oneEntry.ts|fulldate}}</em> by the administrator
-							</span>
-
-							<span ng-if="!oneEntry.manual && oneEntry.deploy">
-								Service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.daemonGroup">/Group: {{oneEntry.daemonGroup}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> was automatically deployed on <em>{{oneEntry.ts|fulldate}}</em> based on Continuous Delivery Strategy
 							</span>
 						</div>
 						<div ng-if="oneEntry.notify && !oneEntry.manual && !oneEntry.oldTs" class="f-right">
