@@ -229,7 +229,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 							if (oneRepo.servicesList && oneRepo.servicesList.length > 0) {
 								oneRepo.servicesList.forEach(function (oneService) {
 									oneService.deployedVersionsCounter = 0;
-									oneService.deployedConfigCounter = 0;
+									oneService.deployedConfigCounter = {};
 									response.forEach(function (oneDeployedEntry) {
 										if (oneDeployedEntry.labels && oneDeployedEntry.labels['soajs.service.name'] && oneDeployedEntry.labels['soajs.service.name'] === oneService.name) {
 											oneService.deployed = true;
@@ -240,7 +240,10 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 																oneDeployedEntry.env.forEach(function (oneEnv) {
 																	if(oneEnv.indexOf("SOAJS_DAEMON_GRP_CONF") !== -1){
 																		oneVersion.deployed = true;
-																		oneService.deployedConfigCounter++;
+																		if(!oneService.deployedConfigCounter[oneVersion.v]){
+																			oneService.deployedConfigCounter[oneVersion.v] = 0;
+																		}
+																		oneService.deployedConfigCounter[oneVersion.v]++;
 																		oneVersion[oneEnv.split("=")[1]].deployed = true;
 																		oneVersion[oneEnv.split("=")[1]].serviceId = oneDeployedEntry.id;
 																		if(!oneVersion.deploySettings[oneEnv.split("=")[1]]){
@@ -367,7 +370,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				}else{
 					$scope.services[$scope.oneSrv] = version;
 				}
-				if ($scope.services[$scope.oneSrv].deployed || (daemonGrpConf && $scope.services[$scope.oneSrv][daemonGrpConf] && $scope.services[$scope.oneSrv][daemonGrpConf].deployed)) {
+				if (($scope.services[$scope.oneSrv].deployed && $scope.serviceType !== 'daemon')|| (daemonGrpConf && $scope.services[$scope.oneSrv][daemonGrpConf] && $scope.services[$scope.oneSrv][daemonGrpConf].deployed)) {
 					$scope.serviceId = ($scope.serviceType === 'daemon' && daemonGrpConf && $scope.services[$scope.oneSrv][daemonGrpConf]) ? $scope.services[$scope.oneSrv][daemonGrpConf].serviceId : $scope.services[$scope.oneSrv].serviceId;
 					$scope.deployed = true;
 				}
