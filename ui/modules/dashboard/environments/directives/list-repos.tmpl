@@ -49,7 +49,7 @@
                                                         Version {{version.v}}
 	                                                    <div style="float: right;">
 		                                                    <span ng-if="version.grpConf.length > 0 && service.type === 'daemon' && service.deployed" style="margin-right: 30px;"><span class="icon icon-power-cord"></span>{{service.deployedConfigCounter[version.v] || 0}} out of {{version.grpConf.length}} group(s) are plugged</span>
-                                                            <span style="float: right; color: green;" ng-if="version.deployed"><span class="icon icon-checkmark"></span>Deployed</span>
+                                                            <span style="float: right; color: green;" ng-if="version.deployed"></span>
 	                                                    </div>
                                                     </div>
                                                     <div class="body serviceVersionBox" ng-if="service.type !== 'daemon'">
