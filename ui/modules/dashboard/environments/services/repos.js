@@ -197,7 +197,13 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 									if (oneService.versions && oneService.versions.length > 0) {
 										oneService.versions.forEach(function (oneVersion) {
 											if (currentScope.cdSettings[oneService.name]['v' + oneVersion.v]) {
-												oneVersion.deploySettings = currentScope.cdSettings[oneService.name]['v' + oneVersion.v];
+												if (currentScope.daemonGrpConf) {
+													if(currentScope.cdSettings[oneService.name]['v' + oneVersion.v][currentScope.daemonGrpConf]){
+														oneVersion.deploySettings[currentScope.daemonGrpConf] = currentScope.cdSettings[oneService.name]['v' + oneVersion.v][currentScope.daemonGrpConf];
+													}
+												} else {
+													oneVersion.deploySettings = currentScope.cdSettings[oneService.name]['v' + oneVersion.v];
+												}
 											}
 										});
 									}
@@ -632,7 +638,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 		currentScope.updateGitBranch(oneRepo, oneEnv, version);
 		if (version === 'Default') {
 			configuration.default = {};
-			if(currentScope.showCD){
+			if (currentScope.showCD) {
 				configuration.default = {
 					branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.gitSource.branch,
 					strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy,
@@ -640,7 +646,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				};
 			}
 			if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options) {
-				if(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.custom && currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.custom.version){
+				if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.custom && currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.custom.version) {
 					delete currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.custom.version;
 				}
 				if (modes.indexOf(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.replication.mode) === -1) {
@@ -656,9 +662,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 		else {
 			configuration.version = {
 				v: 'v' + version,
-				deploy : false
+				deploy: false
 			};
-			if(currentScope.showCD){
+			if (currentScope.showCD) {
 				configuration.version = {
 					v: 'v' + version,
 					branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.gitSource.branch,
@@ -675,7 +681,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 					configuration.version.options.deployConfig.memoryLimit *= 1048576;
 				}
 				if (currentScope.services[currentScope.oneSrv] && currentScope.services[currentScope.oneSrv].gcId) {
-					if(!configuration.version.options.custom){
+					if (!configuration.version.options.custom) {
 						configuration.version.options.custom = {};
 					}
 					configuration.version.options.custom.gc = {
@@ -714,6 +720,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 						doRebuild(currentScope, options);
 						break;
 					default :
+						if(currentScope.daemonGrpConf){
+							currentScope.controllerScope.daemonGrpConf = currentScope.daemonGrpConf;
+						}
 						currentScope.controllerScope.getCdData(function () {
 							currentScope.cancel();
 							overlayLoading.hide();
@@ -916,6 +925,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				if(!external){
 					currentScope.cancel();
 				}
+				if(currentScope.daemonGrpConf){
+					controllerScope.daemonGrpConf = currentScope.daemonGrpConf;
+				}
 				controllerScope.getCdData(function () {
 					controllerScope.getDeployedServices();
 					controllerScope.displayAlert('success', 'Service deployed successfully');
@@ -953,6 +965,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				currentScope.displayAlert('danger', error.message);
 			}
 			else {
+				if(currentScope.daemonGrpConf){
+					currentScope.controllerScope.daemonGrpConf = currentScope.daemonGrpConf;
+				}
 				currentScope.controllerScope.getCdData(function () {
 					currentScope.controllerScope.getDeployedServices();
 					currentScope.cancel();
