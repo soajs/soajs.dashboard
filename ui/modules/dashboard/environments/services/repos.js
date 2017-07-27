@@ -602,7 +602,13 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 					if (!currentScope.recipes[oneRecipe.type]) {
 						currentScope.recipes[oneRecipe.type] = [];
 					}
-					currentScope.recipes[oneRecipe.type].push(oneRecipe);
+					if (currentScope.serviceType && oneRecipe.subtype) {
+						if (oneRecipe.subtype === currentScope.serviceType) {
+							currentScope.recipes[oneRecipe.type].push(oneRecipe);
+						}
+					} else {
+						currentScope.recipes[oneRecipe.type].push(oneRecipe);
+					}
 				});
 				return cb(null);
 			}
@@ -864,6 +870,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			delete cdDataClone.strategy;
 			delete cdDataClone.options;
 			delete cdDataClone.deploy;
+			delete cdDataClone.type;
 			if (Object.keys(cdDataClone).length > 0) {
 				for (var version in cdDataClone) {
 					var v = version.replace('v', '');
