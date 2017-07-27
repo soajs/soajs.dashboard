@@ -58,7 +58,7 @@
                                                         <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account)" ng-if="version.deploySettings" ><span class="icon icon-cog"></span>Reconfigure Deployment</a>
                                                     </div>
 	                                                <div ng-if="version.grpConf && version.grpConf.length === 0 && service.type === 'daemon'">
-		                                                <alert type="warning">No Daemon Group Configuration found please click <a href="#/daemons">here</a> to create one.</alert>
+		                                                <alert type="warning" style="border-radius: 0 0 8px 8px">No Daemon Group Configuration found please click <a href="#/daemons">here</a> to create one.</alert>
 	                                                </div>
 	                                                <div class="entryBox pl0" style="width: 32%"  ng-if="version.grpConf && service.type === 'daemon'" ng-repeat="oneGroupConf in version.grpConf" ng-class="{greenBox: version[oneGroupConf].deployed}">
 		                                                <div class="header opened" ng-class="{greenBoxHeader: version[oneGroupConf.daemonConfigGroup].deployed}">
