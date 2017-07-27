@@ -109,7 +109,13 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 												if (oneService.versions) {
 													Object.keys(oneService.versions).forEach(function (oneVersion) {
 														if(type === 'daemons' && oneService.grpConf){
+															oneService.versions[oneVersion] = {};
 															oneService.versions[oneVersion].grpConf = oneService.grpConf;
+															oneService.grpConf.forEach(function(oneGroup){
+																if(!oneService.versions[oneVersion][oneGroup.daemonConfigGroup]){
+																	oneService.versions[oneVersion][oneGroup.daemonConfigGroup] = {};
+																}
+															});
 														}
 														if(oneService.prerequisites){
 															oneService.versions[oneVersion].prerequisites = oneService.prerequisites;
@@ -223,21 +229,40 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 							if (oneRepo.servicesList && oneRepo.servicesList.length > 0) {
 								oneRepo.servicesList.forEach(function (oneService) {
 									oneService.deployedVersionsCounter = 0;
+									oneService.deployedConfigCounter = 0;
 									response.forEach(function (oneDeployedEntry) {
 										if (oneDeployedEntry.labels && oneDeployedEntry.labels['soajs.service.name'] && oneDeployedEntry.labels['soajs.service.name'] === oneService.name) {
 											oneService.deployed = true;
 											if (oneService.versions && oneService.versions.length > 0) {
 												oneService.versions.forEach(function (oneVersion) {
 													if (oneDeployedEntry.labels && oneDeployedEntry.labels['soajs.service.version'] && oneDeployedEntry.labels['soajs.service.version'] === oneVersion.v) {
-														oneVersion.deployed = true;
-														oneVersion.serviceId = oneDeployedEntry.id;
-														oneService.deployedVersionsCounter++;
-														if(!oneVersion.deploySettings){
-															getDeploySettings(currentScope, oneDeployedEntry, function (deploySettings) {
-																if(Object.keys(deploySettings).length > 0){
-																	oneVersion.deploySettings = deploySettings;
-																}
-															});
+														if(oneDeployedEntry.env && oneDeployedEntry.labels['soajs.service.type'] === 'daemon'){
+																oneDeployedEntry.env.forEach(function (oneEnv) {
+																	if(oneEnv.indexOf("SOAJS_DAEMON_GRP_CONF") !== -1){
+																		oneVersion.deployed = true;
+																		oneService.deployedConfigCounter++;
+																		oneVersion[oneEnv.split("=")[1]].deployed = true;
+																		oneVersion[oneEnv.split("=")[1]].serviceId = oneDeployedEntry.id;
+																		if(!oneVersion.deploySettings[oneEnv.split("=")[1]]){
+																			getDeploySettings(currentScope, oneDeployedEntry, function (deploySettings) {
+																				if(Object.keys(deploySettings).length > 0){
+																					oneVersion.deploySettings[oneEnv.split("=")[1]] = deploySettings;
+																				}
+																			});
+																		}
+																	}
+																});
+														}else{
+															oneVersion.deployed = true;
+															oneVersion.serviceId = oneDeployedEntry.id;
+															oneService.deployedVersionsCounter++;
+															if(!oneVersion.deploySettings){
+																getDeploySettings(currentScope, oneDeployedEntry, function (deploySettings) {
+																	if(Object.keys(deploySettings).length > 0){
+																		oneVersion.deploySettings = deploySettings;
+																	}
+																});
+															}
 														}
 													}
 												});
@@ -311,7 +336,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 		});
 	}
 
-	function deployService(currentScope, oneRepo, service, version, gitAccount) {
+	function deployService(currentScope, oneRepo, service, version, gitAccount, daemonGrpConf) {
 		var envDeployer = $cookies.getObject("myEnv").deployer;
 		var envPlatform = envDeployer.selected.split('.')[1];
 		var deployService = $modal.open({
@@ -330,6 +355,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				$scope.oneSrv = (service && service.name) ? service.name : oneRepo.name;
 				$scope.serviceType = (service && service.type) ? service.type : 'custom';
 				$scope.showCD = true;
+				if(daemonGrpConf){
+					$scope.daemonGrpConf = daemonGrpConf;
+				}
 				if(SOAJSRMS.indexOf(oneRepo.name) !== -1){
 					$scope.showCD = false;
 				}
@@ -339,8 +367,8 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				}else{
 					$scope.services[$scope.oneSrv] = version;
 				}
-				if ($scope.services[$scope.oneSrv].deployed) {
-					$scope.serviceId = $scope.services[$scope.oneSrv].serviceId;
+				if ($scope.services[$scope.oneSrv].deployed || (daemonGrpConf && $scope.services[$scope.oneSrv][daemonGrpConf] && $scope.services[$scope.oneSrv][daemonGrpConf].deployed)) {
+					$scope.serviceId = ($scope.serviceType === 'daemon' && daemonGrpConf && $scope.services[$scope.oneSrv][daemonGrpConf]) ? $scope.services[$scope.oneSrv][daemonGrpConf].serviceId : $scope.services[$scope.oneSrv].serviceId;
 					$scope.deployed = true;
 				}
 				$scope.default = false;
@@ -490,6 +518,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env = {};
 					}
 					$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].custom = {};
+					if($scope.serviceType === 'daemon' && $scope.daemonGrpConf){
+						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.daemonGroup = $scope.daemonGrpConf;
+					}
 					for (var type in $scope.recipes) {
 						$scope.recipes[type].forEach(function (catalogRecipe) {
 							if (catalogRecipe._id === $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.recipe) {
@@ -571,7 +602,13 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 					if (!currentScope.recipes[oneRecipe.type]) {
 						currentScope.recipes[oneRecipe.type] = [];
 					}
-					currentScope.recipes[oneRecipe.type].push(oneRecipe);
+					if (currentScope.serviceType && oneRecipe.subtype) {
+						if (oneRecipe.subtype === currentScope.serviceType) {
+							currentScope.recipes[oneRecipe.type].push(oneRecipe);
+						}
+					} else {
+						currentScope.recipes[oneRecipe.type].push(oneRecipe);
+					}
 				});
 				return cb(null);
 			}
@@ -695,7 +732,11 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				}
 				else {
 					currentScope.cdData[currentScope.oneEnv][currentScope.oneSrv] = {};
-					currentScope.cdData[currentScope.oneEnv][currentScope.oneSrv][currentScope.version] = (currentScope.services[currentScope.oneSrv].deploySettings) ? currentScope.services[currentScope.oneSrv].deploySettings : {};
+					if(currentScope.serviceType === 'daemon'){
+						currentScope.cdData[currentScope.oneEnv][currentScope.oneSrv][currentScope.version] = (currentScope.services[currentScope.oneSrv].deploySettings && currentScope.services[currentScope.oneSrv].deploySettings[currentScope.daemonGrpConf] ) ? currentScope.services[currentScope.oneSrv].deploySettings[currentScope.daemonGrpConf] : {};
+					}else{
+						currentScope.cdData[currentScope.oneEnv][currentScope.oneSrv][currentScope.version] = (currentScope.services[currentScope.oneSrv].deploySettings) ? currentScope.services[currentScope.oneSrv].deploySettings : {};
+					}
 				}
 				currentScope.cdConfiguration = {};
 				currentScope.cdConfiguration[currentScope.oneSrv] = {
@@ -829,6 +870,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			delete cdDataClone.strategy;
 			delete cdDataClone.options;
 			delete cdDataClone.deploy;
+			delete cdDataClone.type;
 			if (Object.keys(cdDataClone).length > 0) {
 				for (var version in cdDataClone) {
 					var v = version.replace('v', '');
