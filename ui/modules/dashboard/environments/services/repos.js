@@ -199,6 +199,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 											if (currentScope.cdSettings[oneService.name]['v' + oneVersion.v]) {
 												if (currentScope.daemonGrpConf) {
 													if(currentScope.cdSettings[oneService.name]['v' + oneVersion.v][currentScope.daemonGrpConf]){
+														if(!oneVersion.deploySettings){
+															oneVersion.deploySettings = {};
+														}
 														oneVersion.deploySettings[currentScope.daemonGrpConf] = currentScope.cdSettings[oneService.name]['v' + oneVersion.v][currentScope.daemonGrpConf];
 													}
 												} else {
