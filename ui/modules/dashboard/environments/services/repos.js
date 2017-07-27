@@ -246,9 +246,12 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 																		oneService.deployedConfigCounter[oneVersion.v]++;
 																		oneVersion[oneEnv.split("=")[1]].deployed = true;
 																		oneVersion[oneEnv.split("=")[1]].serviceId = oneDeployedEntry.id;
-																		if(!oneVersion.deploySettings[oneEnv.split("=")[1]]){
+																		if(!oneVersion.deploySettings || !oneVersion.deploySettings[oneEnv.split("=")[1]]){
 																			getDeploySettings(currentScope, oneDeployedEntry, function (deploySettings) {
 																				if(Object.keys(deploySettings).length > 0){
+																					if(!oneVersion.deploySettings){
+																						oneVersion.deploySettings = {};
+																					}
 																					oneVersion.deploySettings[oneEnv.split("=")[1]] = deploySettings;
 																				}
 																			});
