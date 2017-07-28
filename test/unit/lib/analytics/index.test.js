@@ -15,7 +15,18 @@ var mongoStub = {
 		cb(null, []);
 	},
 	findEntry: function (soajs, opts, cb) {
-		cb(null, {});
+		cb(null, {
+			
+			"_type": "settings",
+			"_name": "Analytics Settings",
+			"env": {
+				"dev": true
+			},
+			"mongoImported": true,
+			"elasticsearch": {},
+			"logstash": {},
+			"filebeat": {}
+		});
 	},
 	removeEntry: function (soajs, opts, cb) {
 		cb(null, true);
@@ -100,5 +111,58 @@ describe("testing analytics.js", function () {
 		});
 
 	});
+	describe("testing getSettings 2", function () {
+		before(() => {
+		});
+		after(() => {
+		});
+		
+		it("Success getSettings", function (done) {
+			req.soajs.inputmaskData = {
+				env: 'dev'
+			};
+			analytics.getSettings(config, req, res, function (error, body) {
+				// assert.ok(body);
+				done();
+			});
+		});
+		
+	});
+	describe("testing getSettings 2", function () {
+		before(() => {
+		});
+		after(() => {
+		});
+		
+		it("Success getSettings", function (done) {
+			req.soajs.inputmaskData = {
+				env: 'dashboard'
+			};
+			analytics.getSettings(config, req, res, function (error, body) {
+				// assert.ok(body);
+				done();
+			});
+		});
+		
+	});
+	
+	describe("testing activate settings", function () {
+		before(() => {
+		});
+		after(() => {
+		});
+		
+		it("Success activate", function (done) {
+			req.soajs.inputmaskData = {
+				env: 'dev'
+			};
+			analytics.activateAnalytics(config, req, res, function (error, body) {
+				// assert.ok(body);
+				done();
+			});
+		});
+		
+	});
+	
 	
 });

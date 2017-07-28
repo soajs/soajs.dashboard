@@ -8,7 +8,6 @@ var colls = {
 var uuid = require('uuid');
 var filebeatIndex = require("./indexes/filebeat-index");
 var metricbeatIndex = require("./indexes/metricbeat-index");
-var counter = 0;
 
 var lib = {
 	
@@ -241,21 +240,21 @@ var lib = {
 		});
 	},
 	
-	"pingElastic": function (esClient, cb) {
+	"pingElastic": function (soajs, env, esClient, tracker, cb) {
 		if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
 			esClient.ping(function (error) {
 				if (error) {
+					tracker[env.code.toLowerCase()].counterPing++;
 					setTimeout(function () {
-						if (counter > 150) { // wait 5 min
+						if (tracker[env.code.toLowerCase()].counterPing >= 10) { // wait 5 min
 							soajs.log.error("Elasticsearch wasn't deployed... exiting");
-							cb(error);
+							return cb(error);
 						}
-						counter++;
-						lib.pingElastic(esClient, cb);
+						lib.pingElastic(soajs, env, esClient, tracker, cb);
 					}, 2000);
 				}
 				else {
-					lib.infoElastic(esClient, cb)
+					lib.infoElastic(soajs, env, esClient, tracker, cb)
 				}
 			});
 		}
@@ -264,11 +263,16 @@ var lib = {
 		}
 	},
 	
-	"infoElastic": function (esClient, cb) {
+	"infoElastic": function (soajs, env, esClient, tracker, cb) {
 		esClient.db.info(function (error) {
 			if (error) {
+				tracker[env.code.toLowerCase()].counterInfo++;
 				setTimeout(function () {
-					lib.infoElastic(esClient, cb);
+					if (tracker[env.code.toLowerCase()].counterInfo >= 15) { // wait 5 min
+						soajs.log.error("Elasticsearch wasn't deployed... exiting");
+						return cb(error);
+					}
+					lib.infoElastic(soajs, env, esClient, tracker, cb);
 				}, 3000);
 			}
 			else {
@@ -277,8 +281,8 @@ var lib = {
 		});
 	},
 	
-	"checkElasticSearch": function (esClient, cb) {
-		lib.pingElastic(esClient, cb);
+	"checkElasticSearch": function (soajs, env, esClient, tracker, cb) {
+		lib.pingElastic(soajs, env, esClient, tracker, cb);
 		//add version to settings record
 	},
 	
@@ -297,7 +301,7 @@ var lib = {
 	"putTemplate": function (soajs, model, esClient, cb) {
 		var combo = {
 			collection: colls.analytics,
-			conditions: { _type: 'template' }
+			conditions: {_type: 'template'}
 		};
 		model.findEntries(soajs, combo, function (error, templates) {
 			if (error) return cb(error);
@@ -330,7 +334,7 @@ var lib = {
 		//todo change this
 		var combo = {
 			collection: colls.analytics,
-			conditions: { _type: 'mapping' }
+			conditions: {_type: 'mapping'}
 		};
 		model.findEntries(soajs, combo, function (error, mappings) {
 			if (error) return cb(error);
@@ -447,7 +451,7 @@ var lib = {
 														}
 													]
 												}
-												;
+											;
 											var combo = {
 												conditions: options,
 												collection: colls.analytics
@@ -780,7 +784,7 @@ var lib = {
 		});
 	},
 	
-	"checkAvailability": function (soajs, env, deployer, utils, model, cb) {
+	"checkAvailability": function (soajs, env, deployer, utils, model, tracker, cb) {
 		soajs.log.debug("Finalizing...");
 		var BL = {
 			model: model
@@ -804,9 +808,16 @@ var lib = {
 					}
 				});
 				if (failed.length !== 0) {
-					setTimeout(function () {
-						return lib.checkAvailability(soajs, env, deployer, utils, model, cb);
-					}, 1000);
+					tracker[env.code.toLowerCase()].counterAvailability++;
+					if (tracker[env.code.toLowerCase()].counterAvailability > 150) {
+						soajs.log.error(failed.join(" , ") + "were/was not deployed... exiting");
+						return cb(new Error(failed.join(" , ") + "were/was not deployed... exiting"));
+					}
+					else {
+						setTimeout(function () {
+							return lib.checkAvailability(soajs, env, deployer, utils, model, tracker, cb);
+						}, 1000);
+					}
 				}
 				else {
 					return cb(null, true)
@@ -819,12 +830,13 @@ var lib = {
 		
 	},
 	
-	"setDefaultIndex": function (soajs, env, esClient, model, cb) {
+	"setDefaultIndex": function (soajs, env, esClient, model, tracker, cb) {
+		soajs.log.debug("Checking Kibana...");
 		var index = {
 			index: ".kibana",
 			type: 'config',
 			body: {
-				doc: { "defaultIndex": "metricbeat-*" }
+				doc: {"defaultIndex": "metricbeat-*"}
 			}
 		};
 		var condition = {
@@ -833,7 +845,7 @@ var lib = {
 		};
 		var combo = {
 			collection: colls.analytics,
-			conditions: { "_type": "settings" }
+			conditions: {"_type": "settings"}
 		};
 		if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
 			esClient.db.search(condition, function (err, res) {
@@ -869,16 +881,23 @@ var lib = {
 								};
 								combo.fields = criteria;
 								combo.options = options;
+								soajs.log.debug("Analytics Deployed successfully!");
 								model.updateEntry(soajs, combo, call);
 							}
-							
 						}, cb)
 					});
 				}
 				else {
-					setTimeout(function () {
-						lib.setDefaultIndex(soajs, env, esClient, model, cb);
-					}, 5000);
+					tracker[env.code.toLowerCase()].counterKibana++;
+					if (tracker[env.code.toLowerCase()].counterKibana > 200) {
+						soajs.log.error("Kibana wasn't deployed... exiting");
+						return cb(new Error("Kibana wasn't deployed... exiting"));
+					}
+					else {
+						setTimeout(function () {
+							lib.setDefaultIndex(soajs, env, esClient, model, tracker, cb);
+						}, 5000);
+					}
 				}
 			});
 		}
@@ -899,28 +918,38 @@ analyticsDriver.prototype.run = function () {
 	
 	_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
 	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.checkElasticSearch, _self.config.esCluster));
+	_self.operations.push(async.apply(lib.checkElasticSearch, _self.config.soajs, _self.config.envRecord, _self.config.esCluster, _self.config.tracker));
 	_self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster));
 	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.esCluster, _self.config.utils, _self.config.envRecord, _self.config.model));
 	_self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.deployMetricbeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.checkAvailability, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.setDefaultIndex, _self.config.soajs, _self.config.envRecord, _self.config.esCluster, _self.config.model));
+	_self.operations.push(async.apply(lib.checkAvailability, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model, _self.config.tracker));
+	_self.operations.push(async.apply(lib.setDefaultIndex, _self.config.soajs, _self.config.envRecord, _self.config.esCluster, _self.config.model, _self.config.tracker));
 	analyticsDriver.deploy.call(_self);
 };
 
 analyticsDriver.deploy = function () {
 	var _self = this;
+	_self.config.tracker[_self.config.envRecord.code.toLowerCase()].counterPing = 0;
+	_self.config.tracker[_self.config.envRecord.code.toLowerCase()].counterInfo = 0;
+	_self.config.tracker[_self.config.envRecord.code.toLowerCase()].counterAvailability = 0;
+	_self.config.tracker[_self.config.envRecord.code.toLowerCase()].counterKibana = 0;
 	async.series(_self.operations, function (err) {
 		if (err) {
+			//clean tracker
+			_self.config.tracker[_self.config.envRecord.code.toLowerCase()] = {
+				"info": {
+					"status": "failed",
+					"date": new Date().getTime()
+				}
+			};
 			console.log(err);
 		}
 		else {
 			//close es connection
 			_self.config.esCluster.close();
-			console.log("Analytics Deployed successfully");
 		}
 	});
 };
