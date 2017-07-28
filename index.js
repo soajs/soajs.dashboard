@@ -1564,9 +1564,11 @@ service.init(function () {
 	 * @param {Function} API middleware
 	 */
 	service.put('/gitAccounts/repo/deactivate', function (req, res) {
-		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
-			BL.deactivateRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function(cloudBL){
+			initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
+				BL.deactivateRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, cloudBL, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
