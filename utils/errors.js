@@ -124,6 +124,7 @@ var errors = {
 	"706": "Please create a session database for this environment",
 
 	"710": "A Daemon with the same name and/or port already exists",
+	"711": "Group has daemons deployed, please remove them first.",
 	"714": "A Group Configuration with the same name already exists",
 	"715": "Unable to update group configuration",
 	"716": "Unable to delete group configuration",

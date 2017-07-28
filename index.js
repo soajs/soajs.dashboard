@@ -1690,9 +1690,11 @@ service.init(function () {
 	 * @param {Function} API middleware
 	 */
 	service.delete("/daemons/groupConfig/delete", function (req, res) {
-		initBLModel(req, res, dashboardBL.daemons.module, dbModel, function (BL) {
-			BL.deleteGroupConfig(config, req, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function(cloudBL){
+			initBLModel(req, res, dashboardBL.daemons.module, dbModel, function (BL) {
+				BL.deleteGroupConfig(config, req, res, cloudBL, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
