@@ -787,4 +787,79 @@ describe("testing helper git.js", function () {
 
 	});
 
+	describe("testing checkifRepoIsDeployed", function() {
+		var config = {};
+		var BL = {}, cloudBL = {}, deployer = {};
+
+		before("init", function(done) {
+			req.soajs.inputmaskData.repo = 'testRepo';
+
+			BL = { model: mongoStub };
+
+			BL.model.findEntries = function (soajs, opts, cb) {
+				var entries = [
+					{
+						code: 'DEV'
+					}
+				];
+
+				return cb(null, entries);
+			};
+
+			deployer = {
+				listServices: function (options, cb) {
+					var services = [
+						{
+							labels: {
+								'service.repo': 'testRepo'
+							}
+						}
+					];
+
+					return cb(null, services);
+				}
+			};
+
+
+			cloudBL = {
+				listServices: function (config, soajs, deployer, cb) {
+					deployer.listServices({}, function (error, services) {
+						return cb(null, services);
+					});
+				}
+			};
+
+			done();
+		});
+
+		it("success - will get one deployed service", function(done) {
+			function mainCb() {
+				done();
+			}
+			helpers.checkifRepoIsDeployed(req, config, BL, cloudBL, deployer, mainCb, function () {
+				//main cb will be called since an error will occur
+			});
+		});
+
+		it("success - will not find any deployed services", function(done) {
+			function mainCb() {}
+			deployer.listServices = function (options, cb) {
+				var services = [
+					{
+						labels: {
+							'service.repo': 'invalidTestRepo'
+						}
+					}
+				];
+
+				return cb(null, services);
+			};
+
+			helpers.checkifRepoIsDeployed(req, config, BL, cloudBL, deployer, mainCb, function () {
+				done();
+			});
+		});
+
+	});
+
 });
