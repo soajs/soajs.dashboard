@@ -53,13 +53,13 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-				
+
 			},
 			error: function (data) {
-				
+
 			},
 			info: function (data) {
-				
+
 			}
 		},
 		inputmaskData: {}
@@ -190,23 +190,23 @@ var gitModel = {
 };
 
 describe("testing git.js", function () {
-	
+
 	describe("testing init", function () {
-		
+
 		it("No Model Requested", function (done) {
 			utils.init(null, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-		
+
 		it("Model Name not found", function (done) {
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-		
+
 		it("Init model", function (done) {
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
@@ -215,11 +215,11 @@ describe("testing git.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing login", function () {
-		
+
 		it("success", function (done) {
 			req.soajs.inputmaskData = {
 				label: '',
@@ -234,7 +234,7 @@ describe("testing git.js", function () {
 				done();
 			});
 		});
-		
+
 		it("success password", function (done) {
 			req.soajs.inputmaskData = {
 				label: '',
@@ -252,11 +252,11 @@ describe("testing git.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing logout", function () {
-		
+
 		it("success", function (done) {
 			req.soajs.inputmaskData = {
 				password: 'password',
@@ -267,7 +267,7 @@ describe("testing git.js", function () {
 				done();
 			});
 		});
-		
+
 		it("success 2", function (done) {
 			req.soajs.inputmaskData = {
 				access: 'access'
@@ -277,11 +277,11 @@ describe("testing git.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing listAccounts", function () {
-		
+
 		it("success listAccounts", function (done) {
 			req.soajs.inputmaskData = {
 				"id": '592be42296fe4eac1ccab1be',
@@ -294,11 +294,11 @@ describe("testing git.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing getRepos", function () {
-		
+
 		it("success getRepos", function (done) {
 			req.soajs.inputmaskData = {
 				"id": '592be42296fe4eac1ccab1be',
@@ -306,17 +306,17 @@ describe("testing git.js", function () {
 				"page": 1,
 				"per_page": 50
 			};
-			
+
 			lib.getRepos(config, req, gitDriver, helpers, gitModel, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing getFiles", function () {
-		
+
 		it("success getFile", function (done) {
 			req.soajs.inputmaskData = {
 				"owner": 'soajs',
@@ -326,7 +326,7 @@ describe("testing git.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success getHAFile", function (done) {
 			req.soajs.inputmaskData = {
 				"env": "dev",
@@ -370,7 +370,7 @@ describe("testing git.js", function () {
 				};
 				cb(null, envRecord);
 			};
-			
+
 			deployer.findService = function (options, cb) {
 				var service = {
 					"env": ["SOAJS_GIT_BRANCH", "SOAJS_GIT_OWNER"]
@@ -382,9 +382,9 @@ describe("testing git.js", function () {
 			})
 		});
 	});
-	
+
 	describe("testing getBranches", function () {
-		
+
 		it("success getBranches", function (done) {
 			req.soajs.inputmaskData = {
 				"id": '592be42296fe4eac1ccab1be',
@@ -398,7 +398,7 @@ describe("testing git.js", function () {
 				done();
 			});
 		});
-		
+
 		it("fail - cannot get Branches for service - wrong name", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.conditions) {
@@ -419,7 +419,7 @@ describe("testing git.js", function () {
 				done();
 			});
 		});
-		
+
 		it("success - will get Branches for service", function (done) {
 			var record1 = {
 				src: {
@@ -451,13 +451,13 @@ describe("testing git.js", function () {
 				"name": "sampleSuccessSingle",
 				"type": "service"
 			};
-			
+
 			lib.getBranches(config, req, gitDriver, helpers, gitModel, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-		
+
 		it("success - will get Branches for daemon", function (done) {
 			var record1 = {
 				src: {
@@ -484,15 +484,15 @@ describe("testing git.js", function () {
 				"name": "singleDaemon1",
 				"type": "daemon"
 			};
-			
+
 			lib.getBranches(config, req, gitDriver, helpers, gitModel, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing activateRepo", function () {
 		var accountRecord = {
 			"label": "Test personal public Account",
@@ -570,7 +570,7 @@ describe("testing git.js", function () {
 				}
 				cb(null, {});
 			};
-			
+
 			gitModel.getAccount = function (soajs, model, options, cb) {
 				return cb(null, accountRecord);
 			};
@@ -742,7 +742,7 @@ describe("testing git.js", function () {
 		});
 
 	});
-	
+
 	describe("testing deactivateRepo", function () {
 		beforeEach(() => {
 			mongoStub.findEntry = function (soajs, opts, cb) {
@@ -750,7 +750,7 @@ describe("testing git.js", function () {
 					name: ""
 				});
 			};
-			
+
 			gitModel.removeRepoFromAccount = function (soajs, model, options, cb) {
 				return cb(null, true);
 			};
@@ -758,7 +758,7 @@ describe("testing git.js", function () {
 				cb(null, true);
 			};
 		});
-		
+
 		it("success deactivate multi", function (done) {
 			gitModel.getRepo = function (soajs, model, options, cb) {
 				var accountRecord = {
@@ -792,47 +792,47 @@ describe("testing git.js", function () {
 				};
 				return cb(null, accountRecord);
 			};
-			
+
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, {
 					name: ""
 				});
 			};
-			
+
 			req.soajs.inputmaskData = {
 				"owner": '592be42296fe4eac1ccab1be',
 				"repo": "github",
 				"id": '592be42296fe4eac1ccab1be'
 			};
-			lib.deactivateRepo(config, req, gitDriver, helpers, gitModel, function (error, body) {
+			lib.deactivateRepo(config, req, gitDriver, helpers, gitModel, {}, {}, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-		
+
 		it("success deactivate custom", function (done) {
 			gitModel.getRepo = function (soajs, model, options, cb) {
-				
+
 				return cb(null, null);
 			};
-			
+
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, {
 					name: ""
 				});
 			};
-			
+
 			req.soajs.inputmaskData = {
 				"owner": '592be42296fe4eac1ccab1be',
 				"repo": "github",
 				"id": '592be42296fe4eac1ccab1be'
 			};
-			lib.deactivateRepo(config, req, gitDriver, helpers, gitModel, function (error, body) {
+			lib.deactivateRepo(config, req, gitDriver, helpers, gitModel, {}, {}, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-		
+
 		it("success deactivate service", function (done) {
 			gitModel.getRepo = function (soajs, model, options, cb) {
 				var accountRecord = {
@@ -852,42 +852,42 @@ describe("testing git.js", function () {
 				};
 				return cb(null, accountRecord);
 			};
-			
+
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, {
 					name: ""
 				});
 			};
-			
+
 			req.soajs.inputmaskData = {
 				"owner": '592be42296fe4eac1ccab1be',
 				"repo": "github",
 				"id": '592be42296fe4eac1ccab1be'
 			};
-			lib.deactivateRepo(config, req, gitDriver, helpers, gitModel, function (error, body) {
+			lib.deactivateRepo(config, req, gitDriver, helpers, gitModel, {}, {}, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-		
+
 		it("fail deactivateRepo", function (done) {
 			mongoStub.countEntries = function (soajs, opts, cb) {
 				cb(null, 1);
 			};
-			
+
 			req.soajs.inputmaskData = {
 				"owner": '592be42296fe4eac1ccab1be',
 				"repo": "github",
 				"id": '592be42296fe4eac1ccab1be'
 			};
-			lib.deactivateRepo(config, req, gitDriver, helpers, gitModel, function (error, body) {
+			lib.deactivateRepo(config, req, gitDriver, helpers, gitModel, {}, {}, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing syncRepo", function () {
 		var accountRecord = {
 			"label": "Test personal public Account",
@@ -923,7 +923,7 @@ describe("testing git.js", function () {
 			};
 
 			helpers = helper.requireModule('./lib/git/helper.js');
-			
+
 			gitModel.getAccount = function (soajs, model, options, cb) {
 				return cb(null, accountRecord);
 			};
@@ -934,7 +934,7 @@ describe("testing git.js", function () {
 				return cb(null);
 			};
 		});
-		
+
 		it("success syncRepo service", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'git_accounts') {
@@ -942,7 +942,7 @@ describe("testing git.js", function () {
 				}
 				cb(null, {});
 			};
-			
+
 			gitModel.getAccount = function (soajs, model, options, cb) {
 				return cb(null, accountRecord);
 			};
@@ -957,7 +957,7 @@ describe("testing git.js", function () {
 				done();
 			});
 		});
-		
+
 		it("success syncRepo multi", function (done) {
 			accountRecord = {
 				"label": "Test personal public Account",
@@ -1005,7 +1005,7 @@ describe("testing git.js", function () {
 				done();
 			});
 		});
-		
+
 		it("success syncRepo multi 2", function (done) {
 			helpers.removePath = function (model, soajs, path, callback) {
 				return callback(null, {
@@ -1086,12 +1086,12 @@ describe("testing git.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Fail syncRepo outOfSync", function (done) {
 			helpers.analyzeConfigSyncFile = function (req, repoConfig, path, configSHA, flag, cb) {
 				return cb('outOfSync');
 			};
-			
+
 			req.soajs.inputmaskData = {
 				"id": '123456',
 				"provider": "github",
@@ -1104,12 +1104,12 @@ describe("testing git.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Success syncRepo upToDate", function (done) {
 			helpers.analyzeConfigSyncFile = function (req, repoConfig, path, configSHA, flag, cb) {
 				return cb(null, 'upToDate');
 			};
-			
+
 			req.soajs.inputmaskData = {
 				"id": '123456',
 				"provider": "github",
@@ -1121,7 +1121,7 @@ describe("testing git.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 });
