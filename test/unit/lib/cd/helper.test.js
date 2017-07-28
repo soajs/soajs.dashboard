@@ -57,13 +57,13 @@ describe("testing helper soajs.cd.js", function () {
 		},
 		log: {
 			debug: function (data) {
-
+				if(process.env.SOAJS_DEBUG_LOGS) console.log(data);
 			},
 			error: function (data) {
-
+				if(process.env.SOAJS_DEBUG_LOGS) console.log(data);
 			},
 			info: function (data) {
-
+				if(process.env.SOAJS_DEBUG_LOGS) console.log(data);
 			}
 		},
 		inputmaskData: {},
@@ -167,11 +167,65 @@ describe("testing helper soajs.cd.js", function () {
 		var deployedServices = [], allServices = [], cdInfo = {};
 
 		before(function(done) {
-			allServices.push({
-				serviceName: 'testSrv',
-				serviceVersion: '1',
-				label: 'testSrv'
+			deployedServices.push({
+				service: {
+					id: 'rp11111exmaol22',
+					version: 18000,
+					name: 'dev-testDaemon2-testGroup2-v1',
+					labels: {
+						'service.branch': 'master',
+						'service.image.ts': '1496063663358',
+						'soajs.catalog.id': '593038623b872a839c7bccea',
+						'soajs.catalog.v': '1',
+						'soajs.content': 'true',
+						'soajs.env.code': 'dev',
+						'soajs.service.name': 'testDaemon2',
+						'soajs.service.group': '',
+						'soajs.service.mode': 'replicated',
+						'soajs.service.type': 'daemon',
+						'soajs.daemon.group': 'testGroup2',
+						'soajs.service.version': '1'
+					},
+					env: [
+						'NODE_ENV=production',
+						'SOAJS_ENV=dev',
+						'SOAJS_PROFILE=/opt/soajs/FILES/profiles/profile.js',
+						'SOAJS_SRV_AUTOREGISTERHOST=true',
+						'SOAJS_SRV_MEMORY=200',
+						'SOAJS_GIT_OWNER=soajs',
+						'SOAJS_GIT_BRANCH=master',
+						'SOAJS_GIT_COMMIT=67a61db0955803cddf94672b0192be28f47cf280',
+						'SOAJS_GIT_REPO=soajs.controller',
+						'SOAJS_DEPLOY_HA=swarm',
+						'SOAJS_HA_NAME={{.Task.Name}}',
+						'SOAJS_MONGO_NB=1',
+						'SOAJS_MONGO_IP_1=127.0.0.1',
+						'SOAJS_MONGO_PORT_1=27017',
+						'SOAJS_DEPLOY_ACC=true',
+						'SOAJS_DAEMON_GRP_CONF=testGroup2'
+					],
+					ports: [],
+					tasks: [],
+					repo: 'soajs.testDaemon2',
+					branch: 'master'
+				}
 			});
+
+			allServices.push(
+				{
+					serviceName: 'testSrv',
+					serviceVersion: '1',
+					label: 'testSrv',
+					type: 'service'
+				},
+				{
+					serviceName: 'testDaemon',
+					serviceVersion: '1',
+					label: 'testDaemon',
+					type: 'daemon',
+					group: 'testGroup'
+				}
+			);
 
 			cdInfo = {
 				DEV: {
@@ -179,6 +233,7 @@ describe("testing helper soajs.cd.js", function () {
 						branch: 'master',
 						strategy: 'notify',
 						testSrv: {
+							type: 'service',
 							branch: 'master',
 							strategy: 'update',
 							deploy: true,
@@ -194,6 +249,25 @@ describe("testing helper soajs.cd.js", function () {
 								options: {
 									gitSource: {
 										commit: 'commitsha'
+									}
+								}
+							}
+						},
+						testDaemon: {
+							type: 'daemon',
+							v1: {
+								testGroup: {
+									strategy: 'notify',
+									branch: 'master',
+									deploy: true,
+									options: {
+										gitSource: {
+											commit: 'commitsha'
+										},
+										custom: {
+											type: 'daemon',
+											daemonGroup: 'testGroup'
+										}
 									}
 								}
 							}
@@ -230,6 +304,64 @@ describe("testing helper soajs.cd.js", function () {
 			});
 		});
 
+		it("success - will build list of one service, daemon specified is already deployed", function(done) {
+			deployedServices = [
+				{
+					service: {
+						id: 'rp11111exmaol22',
+						version: 18000,
+						name: 'dev-testDaemon-testGroup-v1',
+						labels: {
+							'service.branch': 'master',
+							'service.image.ts': '1496063663358',
+							'soajs.catalog.id': '593038623b872a839c7bccea',
+							'soajs.catalog.v': '1',
+							'soajs.content': 'true',
+							'soajs.env.code': 'dev',
+							'soajs.service.name': 'testDaemon',
+							'soajs.service.group': '',
+							'soajs.service.mode': 'replicated',
+							'soajs.service.type': 'daemon',
+							'soajs.daemon.group': 'testGroup',
+							'soajs.service.version': '1'
+						},
+						env: [
+							'NODE_ENV=production',
+							'SOAJS_ENV=dev',
+							'SOAJS_PROFILE=/opt/soajs/FILES/profiles/profile.js',
+							'SOAJS_SRV_AUTOREGISTERHOST=true',
+							'SOAJS_SRV_MEMORY=200',
+							'SOAJS_GIT_OWNER=soajs',
+							'SOAJS_GIT_BRANCH=master',
+							'SOAJS_GIT_COMMIT=67a61db0955803cddf94672b0192be28f47cf280',
+							'SOAJS_GIT_REPO=soajs.controller',
+							'SOAJS_DEPLOY_HA=swarm',
+							'SOAJS_HA_NAME={{.Task.Name}}',
+							'SOAJS_MONGO_NB=1',
+							'SOAJS_MONGO_IP_1=127.0.0.1',
+							'SOAJS_MONGO_PORT_1=27017',
+							'SOAJS_DEPLOY_ACC=true',
+							'SOAJS_DAEMON_GRP_CONF=testGroup'
+						],
+						ports: [],
+						tasks: [],
+						repo: 'soajs.testDaemon',
+						branch: 'master'
+					}
+				}
+			];
+
+			req.soajs.inputmaskData = {
+				repo: 'testSrv-repo',
+				branch: 'master',
+				commit: 'commitsha'
+			};
+			helpers.processUndeployedServices(req, deployedServices, allServices, cdInfo, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+
 	});
 
 	describe("processOneService", function () {
@@ -256,7 +388,7 @@ describe("testing helper soajs.cd.js", function () {
 			});
 		});
 
-		it("success - commit error, service is not deployed", function (done) {
+		it.skip("success - commit error, service is not deployed", function (done) {
 			oneService.commitError = true;
 			delete oneService.service.labels;
 			oneService.options = {
@@ -275,6 +407,8 @@ describe("testing helper soajs.cd.js", function () {
 		});
 
 		it("Success update", function (done) {
+			//NOTE: mocking environment variables for service to include daemon group config variable
+			oneService.service.env = [ 'SOAJS_DAEMON_GRP_CONF=testGroup' ];
 			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
 				done();
 			});
@@ -421,14 +555,17 @@ describe("testing helper soajs.cd.js", function () {
 					branch: 'master',
 					strategy: 'notify',
 					controller: {
+						type: 'service',
 						branch: 'master',
 						strategy: 'update',
 						v2: {}
 					},
 					urac: {
-						branch: 'master',
-						strategy: 'update',
-						v2: {}
+						type: 'service',
+						v2: {
+							branch: 'master',
+							strategy: 'update',
+						}
 					}
 				},
 				type: 'cd'
@@ -517,6 +654,7 @@ describe("testing helper soajs.cd.js", function () {
 				}
 			];
 			helpers.checkRecordConfig(req, envs, record, function (error, body) {
+				assert.ok(body);
 				done();
 			});
 		});
@@ -593,6 +731,7 @@ describe("testing helper soajs.cd.js", function () {
 
 		it("Success 3", function (done) {
 			req.soajs.inputmaskData.branch = 'master';
+			req.soajs.inputmaskData.commit = '67a61db0955803cddf94672b0192be28f47cf280';
 			req.soajs.inputmaskData.services = [
 				{
 					serviceName: 'controller',
@@ -600,9 +739,13 @@ describe("testing helper soajs.cd.js", function () {
 				},
 				{
 					serviceName: 'urac',
-					serviceVersion: 2,
-					branch: 'master'
+					serviceVersion: 2
+				},
+				{
+					serviceName: 'testDaemon',
+					serviceVersion: 1
 				}
+
 			];
 			var record = {
 				_id: 'ffddeec7d52b61',
@@ -619,6 +762,15 @@ describe("testing helper soajs.cd.js", function () {
 						v2: {
 							branch: 'master',
 							strategy: 'update'
+						}
+					},
+					testDaemon: {
+						type: 'daemon',
+						v1: {
+							testGroup: {
+								branch: 'master',
+								strategy: 'update'
+							}
 						}
 					}
 				},
@@ -666,7 +818,8 @@ describe("testing helper soajs.cd.js", function () {
 							ports: [],
 							tasks: [],
 							repo: 'soajs.controller',
-							branch: 'master'
+							branch: 'master',
+							commit: '67a61db0955803cddf94672b0192be28f47cf280'
 						},
 						{
 							id: 'rp11111exmaol1w',
@@ -707,11 +860,109 @@ describe("testing helper soajs.cd.js", function () {
 							tasks: [],
 							repo: 'soajs.urac',
 							branch: 'master'
+						},
+						{
+							id: 'rp11111exmaol22',
+							version: 18000,
+							name: 'dev-testDaemon-testGroup-v1',
+							labels: {
+								'service.branch': 'master',
+								'service.image.ts': '1496063663358',
+								'soajs.catalog.id': '593038623b872a839c7bccea',
+								'soajs.catalog.v': '1',
+								'soajs.content': 'true',
+								'soajs.env.code': 'dev',
+								'soajs.service.name': 'testDaemon',
+								'soajs.service.group': '',
+								'soajs.service.mode': 'replicated',
+								'soajs.service.type': 'daemon',
+								'soajs.daemon.group': 'testGroup',
+								'soajs.service.version': '1'
+							},
+							env: [
+								'NODE_ENV=production',
+								'SOAJS_ENV=dev',
+								'SOAJS_PROFILE=/opt/soajs/FILES/profiles/profile.js',
+								'SOAJS_SRV_AUTOREGISTERHOST=true',
+								'SOAJS_SRV_MEMORY=200',
+								'SOAJS_GIT_OWNER=soajs',
+								'SOAJS_GIT_BRANCH=master',
+								'SOAJS_GIT_COMMIT=67a61db0955803cddf94672b0192be28f47cf280',
+								'SOAJS_GIT_REPO=soajs.controller',
+								'SOAJS_DEPLOY_HA=swarm',
+								'SOAJS_HA_NAME={{.Task.Name}}',
+								'SOAJS_MONGO_NB=1',
+								'SOAJS_MONGO_IP_1=127.0.0.1',
+								'SOAJS_MONGO_PORT_1=27017',
+								'SOAJS_DEPLOY_ACC=true',
+								'SOAJS_DAEMON_GRP_CONF=testGroup'
+							],
+							ports: [],
+							tasks: [],
+							repo: 'soajs.testDaemon',
+							branch: 'master'
 						}
 					]
 				}
 			];
 			helpers.checkRecordConfig(req, envs, record, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+
+		it("Success - repository cd information found for custom deployed service", function(done) {
+			req.soajs.inputmaskData.repo = 'testRepo';
+			req.soajs.inputmaskData.owner = 'testOwner';
+			req.soajs.inputmaskData.branch = 'master';
+			req.soajs.inputmaskData.commit = '67a61db0955803cddf94672b0192be28f47cf280';
+
+			var record = {
+				_id: 'ffddeec7d52b61',
+				DEV: {
+					pause: true,
+					testRepo: {
+						branch: 'master',
+						strategy: 'notify'
+					}
+				},
+				type: 'cd'
+			};
+
+			var envs = [
+				{
+					record: envRecord,
+					services: [
+						{
+							id: 'rp7d7bxvuo2m9dd75exmaol1w',
+							version: 18378,
+							name: 'dev-controller',
+							labels: {
+								'service.branch': 'master',
+								'service.image.ts': '1496063663358',
+								'service.repo': 'testRepo',
+								'soajs.catalog.id': '593038623b872a839c7bccea',
+								'soajs.catalog.v': '1',
+								'soajs.env.code': 'dev',
+								'soajs.service.group': '',
+								'soajs.service.label': 'dev-controller',
+								'soajs.service.mode': 'replicated',
+								'soajs.service.repo.name': 'testRepo',
+								'soajs.service.type': 'service',
+								'soajs.service.version': '1'
+							},
+							env: [],
+							ports: [],
+							tasks: [],
+							repo: 'testRepo',
+							branch: 'master'
+						}
+					]
+				}
+			];
+
+			helpers.checkRecordConfig(req, envs, record, function (error, body) {
+				assert.ok(body);
 				done();
 			});
 		});

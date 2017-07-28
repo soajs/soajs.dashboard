@@ -48,8 +48,8 @@
                                                     <div class="header opened" ng-class="{greenBoxHeader: version.deployed}">
                                                         Version {{version.v}}
 	                                                    <div style="float: right;">
-		                                                    <span ng-if="version.grpConf.length > 0 && service.type === 'daemon' && service.deployed" style="margin-right: 30px;"><span class="icon icon-power-cord"></span>{{service.deployedConfigCounter}} out of {{version.grpConf.length}} group(s) are plugged</span>
-                                                            <span style="float: right; color: green;" ng-if="version.deployed"><span class="icon icon-checkmark"></span>Deployed</span>
+		                                                    <span ng-if="version.grpConf.length > 0 && service.type === 'daemon' && service.deployed" style="margin-right: 30px;"><span class="icon icon-power-cord"></span>{{service.deployedConfigCounter[version.v] || 0}} out of {{version.grpConf.length}} group(s) are plugged</span>
+		                                                    <span style="float: right; color: green;" ng-if="version.deployed"><span ng-if="service.type !== 'daemon'"><span class="icon icon-checkmark"></span>Deployed</span></span>
 	                                                    </div>
                                                     </div>
                                                     <div class="body serviceVersionBox" ng-if="service.type !== 'daemon'">
@@ -58,7 +58,7 @@
                                                         <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account)" ng-if="version.deploySettings" ><span class="icon icon-cog"></span>Reconfigure Deployment</a>
                                                     </div>
 	                                                <div ng-if="version.grpConf && version.grpConf.length === 0 && service.type === 'daemon'">
-		                                                <alert type="warning">No Daemon Group Configuration found please click <a href="#/daemons">here</a> to create one.</alert>
+		                                                <alert type="warning" style="border-radius: 0 0 8px 8px">No Daemon Group Configuration found please click <a href="#/daemons">here</a> to create one.</alert>
 	                                                </div>
 	                                                <div class="entryBox pl0" style="width: 32%"  ng-if="version.grpConf && service.type === 'daemon'" ng-repeat="oneGroupConf in version.grpConf" ng-class="{greenBox: version[oneGroupConf].deployed}">
 		                                                <div class="header opened" ng-class="{greenBoxHeader: version[oneGroupConf.daemonConfigGroup].deployed}">

@@ -1219,12 +1219,12 @@ service.init(function () {
 	 */
 	service.post("/cd", function (req, res) {
 		initBLModel(req, res, dashboardBL.cd.module, dbModel, function (BL) {
-			BL.saveConfig(config, req, dashboardBL.cd.helper, soajs.utils, function (error, data) {
+			BL.saveConfig(config, req, dashboardBL.cd.helper, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
 	});
-	
+
 	/**
 	 * Pause CD in an environment
 	 * @param {String} API route
@@ -1447,7 +1447,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * get the content of the ci file from provider for this repo
 	 * @param {String} API route
