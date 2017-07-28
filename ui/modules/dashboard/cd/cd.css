@@ -25,8 +25,9 @@
 }
 .grid .table .row{
     margin: 0;
-    height:55px;
-    padding:0 0 0 10px;
+    height: 70px;
+    padding: 10px;
+    line-height: 22px;
 }
 .grid .table .row.first {
     border-top: solid 1px #cccccc;
@@ -49,7 +50,7 @@
 
 .grid .table .row.updateError,
 .grid .table .row.updateError:hover {
-    background-color: lightcoral;
+    background-color: #f2dede;
 }
 
 .mt-5{
