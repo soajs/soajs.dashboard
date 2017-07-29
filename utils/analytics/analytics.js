@@ -1042,16 +1042,16 @@ var lib = {
 var analyticsDriver = function (opts) {
 	var _self = this;
 	_self.config = opts;
+	_self.config.purge = false;
 	_self.operations = [];
 };
 
 analyticsDriver.prototype.run = function () {
 	var _self = this;
-	var purge = false;
 	_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
-	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model, purge));
+	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model, _self.config.purge));
 	_self.operations.push(async.apply(lib.checkElasticSearch, _self.config.soajs, _self.config.envRecord, _self.config.esDbInfo, _self.config.esCluster, _self.config.model, _self.config.tracker));
-	_self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster, purge));
+	_self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster, _self.config.purge));
 	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.esCluster, _self.config.utils, _self.config.envRecord, _self.config.model));
 	_self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
