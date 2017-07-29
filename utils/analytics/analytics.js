@@ -269,8 +269,8 @@ var lib = {
 			if (error) {
 				tracker[env.code.toLowerCase()].counterPing++;
 				setTimeout(function () {
-					soajs.log.debug("No ES Cluster found, trying again:", tracker[env.code.toLowerCase()].counterPing, "/", 10);
-					if (tracker[env.code.toLowerCase()].counterPing >= 10) { // wait 5 min
+					soajs.log.debug("No ES Cluster found, trying again:", tracker[env.code.toLowerCase()].counterPing, "/", 15);
+					if (tracker[env.code.toLowerCase()].counterPing >= 15) { // wait 5 min
 						soajs.log.error("Elasticsearch wasn't deployed... exiting");
 						
 						async.parallel([
@@ -305,7 +305,10 @@ var lib = {
 									record: env
 								}, miniCb);
 							}
-						], function(){
+						], function(err){
+							if(err){
+								soajs.log.error(err);
+							}
 							return cb(error);
 						});
 					}
@@ -361,7 +364,10 @@ var lib = {
 									record: env
 								}, miniCb);
 							}
-						], function(){
+						], function(err){
+							if(err){
+								soajs.log.error(err);
+							}
 							return cb(error);
 						});
 					}
