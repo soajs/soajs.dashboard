@@ -260,7 +260,7 @@ var lib = {
 		});
 	},
 	
-	"pingElastic": function (soajs, env, esClient, model, tracker, cb) {
+	"pingElastic": function (soajs, env, esDbInfo, esClient, model, tracker, cb) {
 		if (process.env.SOAJS_TEST_ANALYTICS === 'test') {
 			return cb(null, true);
 		}
@@ -293,24 +293,33 @@ var lib = {
 								model.updateEntry(soajs, combo, miniCb);
 							},
 							function(miniCb){
-								//ragheb: add remove db, cluster from env record
+								if(esDbInfo.db){
+									delete env.dbs.databases[esDbInfo.db];
+								}
+								if(esDbInfo.cluster){
+									delete env.dbs.clusters[esDbInfo.cluster];
+								}
+								model.saveEntry(soajs, {
+									collection: colls.environment,
+									record: env
+								}, miniCb);
 							}
 						], function(error){
 							return cb(error);
 						});
 					}
 					else{
-						lib.pingElastic(soajs, env, esClient, model, tracker, cb);
+						lib.pingElastic(soajs, env, esDbInfo, esClient, model, tracker, cb);
 					}
 				}, 2000);
 			}
 			else {
-				lib.infoElastic(soajs, env, esClient, model, tracker, cb)
+				lib.infoElastic(soajs, env, esDbInfo, esClient, model, tracker, cb)
 			}
 		});
 	},
 	
-	"infoElastic": function (soajs, env, esClient, model, tracker, cb) {
+	"infoElastic": function (soajs, env, esDbInfo, esClient, model, tracker, cb) {
 		esClient.db.info(function (error) {
 			if (error) {
 				tracker[env.code.toLowerCase()].counterInfo++;
@@ -340,14 +349,23 @@ var lib = {
 								model.updateEntry(soajs, combo, miniCb);
 							},
 							function(miniCb){
-								//ragheb: add remove db, cluster from env record
+								if(esDbInfo.db){
+									delete env.dbs.databases[esDbInfo.db];
+								}
+								if(esDbInfo.cluster){
+									delete env.dbs.clusters[esDbInfo.cluster];
+								}
+								model.saveEntry(soajs, {
+									collection: colls.environment,
+									record: env
+								}, miniCb);
 							}
 						], function(error){
 							return cb(error);
 						});
 					}
 					else{
-						lib.infoElastic(soajs, env, esClient, model, tracker, cb);
+						lib.infoElastic(soajs, env, esDbInfo, esClient, model, tracker, cb);
 					}
 				}, 3000);
 			}
@@ -357,8 +375,8 @@ var lib = {
 		});
 	},
 	
-	"checkElasticSearch": function (soajs, env, esClient, model, tracker, cb) {
-		lib.pingElastic(soajs, env, esClient, model, tracker, cb);
+	"checkElasticSearch": function (soajs, env, esDbInfo, esClient, model, tracker, cb) {
+		lib.pingElastic(soajs, env, esDbInfo, esClient, model, tracker, cb);
 		//add version to settings record
 	},
 	
@@ -999,7 +1017,7 @@ analyticsDriver.prototype.run = function () {
 	
 	_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
 	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.checkElasticSearch, _self.config.soajs, _self.config.envRecord, _self.config.esCluster, _self.config.model, _self.config.tracker));
+	_self.operations.push(async.apply(lib.checkElasticSearch, _self.config.soajs, _self.config.envRecord, _self.config.esDbInfo, _self.config.esCluster, _self.config.model, _self.config.tracker));
 	_self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster));
 	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.esCluster, _self.config.utils, _self.config.envRecord, _self.config.model));
 	_self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
