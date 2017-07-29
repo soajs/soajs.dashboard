@@ -272,23 +272,30 @@ var lib = {
 					if (tracker[env.code.toLowerCase()].counterPing >= 10) { // wait 5 min
 						soajs.log.error("Elasticsearch wasn't deployed... exiting");
 						
-						var combo = {};
-						combo.collection = colls.analytics;
-						combo.conditions = {
-							"_type": "settings"
-						};
-						combo.fields = {
-							$set:{
-								elasticsearch : {}
+						async.parallel([
+							function(miniCb){
+								var combo = {};
+								combo.collection = colls.analytics;
+								combo.conditions = {
+									"_type": "settings"
+								};
+								combo.fields = {
+									$set:{
+										elasticsearch : {}
+									}
+								};
+								
+								combo.options = {
+									upsert: false,
+									safe: true,
+									multi: false
+								};
+								model.updateEntry(soajs, combo, miniCb);
+							},
+							function(miniCb){
+								//ragheb: add remove db, cluster from env record
 							}
-						};
-						
-						combo.options = {
-							upsert: false,
-							safe: true,
-							multi: false
-						};
-						model.updateEntry(soajs, combo, function(){
+						], function(error){
 							return cb(error);
 						});
 					}
@@ -311,23 +318,31 @@ var lib = {
 					soajs.log.debug("ES cluster found but not ready, Trying again:", tracker[env.code.toLowerCase()].counterInfo, "/", 15);
 					if (tracker[env.code.toLowerCase()].counterInfo >= 15) { // wait 5 min
 						soajs.log.error("Elasticsearch wasn't deployed correctly ... exiting");
-						var combo = {};
-						combo.collection = colls.analytics;
-						combo.conditions = {
-							"_type": "settings"
-						};
-						combo.fields = {
-							$set:{
-								elasticsearch : {}
-							}
-						};
 						
-						combo.options = {
-							upsert: false,
-							safe: true,
-							multi: false
-						};
-						model.updateEntry(soajs, combo, function(){
+						async.parallel([
+							function(miniCb){
+								var combo = {};
+								combo.collection = colls.analytics;
+								combo.conditions = {
+									"_type": "settings"
+								};
+								combo.fields = {
+									$set:{
+										elasticsearch : {}
+									}
+								};
+								
+								combo.options = {
+									upsert: false,
+									safe: true,
+									multi: false
+								};
+								model.updateEntry(soajs, combo, miniCb);
+							},
+							function(miniCb){
+								//ragheb: add remove db, cluster from env record
+							}
+						], function(error){
 							return cb(error);
 						});
 					}
