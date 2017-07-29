@@ -266,10 +266,9 @@ var lib = {
 		}
 		esClient.ping(function (error) {
 			if (error) {
-				soajs.log.error(error);
 				tracker[env.code.toLowerCase()].counterPing++;
 				setTimeout(function () {
-					soajs.log.debug("Trying again:", tracker[env.code.toLowerCase()].counterPing, "/", 10);
+					soajs.log.debug("No ES Cluster found, trying again:", tracker[env.code.toLowerCase()].counterPing, "/", 10);
 					if (tracker[env.code.toLowerCase()].counterPing >= 10) { // wait 5 min
 						soajs.log.error("Elasticsearch wasn't deployed... exiting");
 						
@@ -307,12 +306,11 @@ var lib = {
 	"infoElastic": function (soajs, env, esClient, model, tracker, cb) {
 		esClient.db.info(function (error) {
 			if (error) {
-				soajs.log.error(error);
 				tracker[env.code.toLowerCase()].counterInfo++;
 				setTimeout(function () {
-					soajs.log.debug("Trying again:", tracker[env.code.toLowerCase()].counterInfo, "/", 15);
+					soajs.log.debug("ES cluster found but not ready, Trying again:", tracker[env.code.toLowerCase()].counterInfo, "/", 15);
 					if (tracker[env.code.toLowerCase()].counterInfo >= 15) { // wait 5 min
-						soajs.log.error("Elasticsearch wasn't deployed... exiting");
+						soajs.log.error("Elasticsearch wasn't deployed correctly ... exiting");
 						var combo = {};
 						combo.collection = colls.analytics;
 						combo.conditions = {
@@ -452,7 +450,7 @@ var lib = {
 	"configureKibana": function (soajs, servicesList, esClient, env, model, cb) {
 		var analyticsArray = [];
 		var serviceEnv = env.code.toLowerCase();
-		async.series({
+		async.parallel({
 				"filebeat": function (pCallback) {
 					async.each(servicesList, function (oneService, callback) {
 						var serviceType;
