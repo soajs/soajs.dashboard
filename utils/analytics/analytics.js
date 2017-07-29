@@ -3,7 +3,8 @@ var fs = require("fs");
 var async = require('async');
 var soajs = require('soajs');
 var colls = {
-	analytics: 'analytics'
+	analytics: 'analytics',
+	environment: 'environment'
 };
 var uuid = require('uuid');
 var filebeatIndex = require("./indexes/filebeat-index");
