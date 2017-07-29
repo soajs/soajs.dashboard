@@ -222,7 +222,7 @@ var lib = {
 					var options = utils.buildDeployerOptions(env, soajs, model);
 					options.params = content;
 					if (process.env.SOAJS_TEST_ANALYTICS === 'test') {
-						return call(null, true);
+						return cb(null, true);
 					}
 					
 					deployer.deployService(options, function(error, response){

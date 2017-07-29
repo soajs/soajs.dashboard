@@ -103,8 +103,8 @@ describe("importing sample data", function () {
             require("./soajs.catalog.test.js");
             require("./soajs.hostsdeploy.test.js");
 			require("./soajs.dashboard.test.ci.js");
-            require("./soajs.cd.test.js");
-            require("./soajs.dashboard.test.gitAccounts.js");
+			require("./soajs.cd.test.js");
+			require("./soajs.dashboard.test.gitAccounts.js");
 			done();
 		}, 100);
 	});
