@@ -265,7 +265,7 @@ var errors = {
 	"955": "No CI configuration found",
 	"956": "Authentication failed. The deploy token provided is not valid.",
 
-	"960": "Elasticsearch analytics cluster not found, resetting configuration.",
+	"960": "Elasticsearch analytics cluster not found, resetting configuration. Please try deploying Analytics again.",
 	
 	"967": "Continuous Integration recipe name already exists for this provider.",
 	"968": "This Account already has a Continuous Integration configured with the selected provider.",
