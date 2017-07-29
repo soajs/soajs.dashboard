@@ -267,10 +267,11 @@ var lib = {
 		}
 		esClient.ping(function (error) {
 			if (error) {
+				soajs.log.error(error);
 				tracker[env.code.toLowerCase()].counterPing++;
 				setTimeout(function () {
-					soajs.log.debug("No ES Cluster found, trying again:", tracker[env.code.toLowerCase()].counterPing, "/", 15);
-					if (tracker[env.code.toLowerCase()].counterPing >= 15) { // wait 5 min
+					soajs.log.debug("No ES Cluster found, trying again:", tracker[env.code.toLowerCase()].counterPing, "/", 10);
+					if (tracker[env.code.toLowerCase()].counterPing >= 10) { // wait 5 min
 						soajs.log.error("Elasticsearch wasn't deployed... exiting");
 						
 						async.parallel([
