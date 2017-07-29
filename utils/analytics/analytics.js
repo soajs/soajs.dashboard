@@ -391,8 +391,8 @@ var lib = {
 		lib.pingElastic(soajs, env, esDbInfo, esClient, model, tracker, cb);
 		//add version to settings record
 	},
-	"setMapping": function (soajs, env, model, esClient, purge, cb) {
-		lib.purgeElastic(soajs, esClient, purge, function (err){
+	"setMapping": function (soajs, env, model, esClient, config, cb) {
+		lib.purgeElastic(soajs, esClient, config, function (err){
 			if (err) {
 				return cb(err);
 			}
@@ -408,8 +408,9 @@ var lib = {
 		});
 		
 	},
-	"purgeElastic": function (soajs, esClient, purge, cb) {
-		if (!purge){
+	
+	"purgeElastic": function (soajs, esClient, config, cb) {
+		if (!config.purge){
 			//purge not reguired
 			return cb(null, true);
 		}
@@ -423,6 +424,7 @@ var lib = {
 			});
 		});
 	},
+	
 	"putTemplate": function (soajs, model, esClient, cb) {
 		var combo = {
 			collection: colls.analytics,
@@ -1049,9 +1051,9 @@ var analyticsDriver = function (opts) {
 analyticsDriver.prototype.run = function () {
 	var _self = this;
 	_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
-	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model, _self.config.purge));
+	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model, _self.config));
 	_self.operations.push(async.apply(lib.checkElasticSearch, _self.config.soajs, _self.config.envRecord, _self.config.esDbInfo, _self.config.esCluster, _self.config.model, _self.config.tracker));
-	_self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster, _self.config.purge));
+	_self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster, _self.config));
 	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.esCluster, _self.config.utils, _self.config.envRecord, _self.config.model));
 	_self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
