@@ -253,7 +253,7 @@ var lib = {
 		}
 		esClient.ping(function (error) {
 			if (error) {
-				soajs.log.error(error);
+				// soajs.log.error(error);
 				tracker[env.code.toLowerCase()].counterPing++;
 				soajs.log.debug("No ES Cluster found, trying again:", tracker[env.code.toLowerCase()].counterPing, "/", 10);
 				if (tracker[env.code.toLowerCase()].counterPing >= 10) { // wait 5 min
@@ -313,7 +313,7 @@ var lib = {
 	"infoElastic": function (soajs, env, esDbInfo, esClient, model, tracker, cb) {
 		esClient.db.info(function (error) {
 			if (error) {
-				soajs.log.error(error);
+				// soajs.log.error(error);
 				tracker[env.code.toLowerCase()].counterInfo++;
 				soajs.log.debug("ES cluster found but not ready, Trying again:", tracker[env.code.toLowerCase()].counterInfo, "/", 15);
 				if (tracker[env.code.toLowerCase()].counterInfo >= 15) { // wait 5 min
@@ -530,7 +530,7 @@ var lib = {
 											if (key == 0) {
 												//filebeat-service-environment-*
 												
-												analyticsArray.push(
+												analyticsArray = analyticsArray.concat(
 													[
 														{
 															index: {
@@ -612,7 +612,7 @@ var lib = {
 															_id: oneRecord.id
 														}
 													};
-													analyticsArray.push([recordIndex, oneRecord._source]);
+													analyticsArray = analyticsArray.concat([recordIndex, oneRecord._source]);
 												});
 												return call(null, true);
 											});
@@ -636,7 +636,7 @@ var lib = {
 					}, pCallback);
 				},
 				"metricbeat": function (pCallback) {
-					analyticsArray.push(
+					analyticsArray = analyticsArray.concat(
 						[
 							{
 								index: {
@@ -653,7 +653,7 @@ var lib = {
 							}
 						]
 					);
-					analyticsArray.push(
+					analyticsArray = analyticsArray.concat(
 						[
 							{
 								index: {
@@ -692,7 +692,7 @@ var lib = {
 										_id: onRecord.id
 									}
 								};
-								analyticsArray.push([recordIndex, onRecord._source]);
+								analyticsArray = analyticsArray.concat([recordIndex, onRecord._source]);
 							});
 							
 						}
@@ -705,14 +705,14 @@ var lib = {
 					return cb(err);
 				}
 				if (analyticsArray.length !== 0 && !(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-					async.eachSeries(analyticsArray, function (oneEsEntry, miniCb){
-						lib.esBulk(esClient, oneEsEntry, function(error, response){
+					// async.eachSeries(analyticsArray, function (oneEsEntry, miniCb){
+						lib.esBulk(esClient, analyticsArray, function(error, response){
 							if(error){
 								soajs.log.error(error);
 							}
-							return miniCb(error, response);
+							return cb(error, response);
 						});
-					}, cb);
+					// }, cb);
 				}
 				else {
 					return cb(null, true);
