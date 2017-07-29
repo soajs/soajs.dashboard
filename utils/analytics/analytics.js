@@ -305,7 +305,7 @@ var lib = {
 									record: env
 								}, miniCb);
 							}
-						], function(error){
+						], function(){
 							return cb(error);
 						});
 					}
@@ -361,7 +361,7 @@ var lib = {
 									record: env
 								}, miniCb);
 							}
-						], function(error){
+						], function(){
 							return cb(error);
 						});
 					}
