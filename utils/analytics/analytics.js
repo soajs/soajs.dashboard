@@ -202,7 +202,7 @@ var lib = {
 		});
 	},
 	
-	"deployElastic": function (soajs, env, deployer, utils, model, purge, cb) {
+	"deployElastic": function (soajs, env, deployer, utils, model, config, cb) {
 		var combo = {};
 		combo.collection = colls.analytics;
 		combo.conditions = {
@@ -215,7 +215,6 @@ var lib = {
 			if (settings && settings.elasticsearch && settings.elasticsearch.status === "deployed") {
 				//purge data since elasticsearch is not deployed
 				soajs.log.debug("Elasticsearch is already deployed...");
-				purge = true;
 				return cb(null, true)
 			}
 			else {
@@ -233,6 +232,7 @@ var lib = {
 							combo.record = settings;
 						}
 						else{
+							config.purge = true;
 							settings.elasticsearch.status = "deployed";
 							combo.record = settings;
 						}
@@ -241,23 +241,6 @@ var lib = {
 							return cb(error, true);
 						});
 					});
-					//
-					// async.parallel({
-					// 	"deploy": function (call) {
-					// 		if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-					// 			deployer.deployService(options, call)
-					// 		}
-					// 		else {
-					// 			return call(null, true);
-					// 		}
-					// 	},
-					// 	"update": function (call) {
-					// 		//Todo fix this
-					// 		settings.elasticsearch.status = "deployed";
-					// 		combo.record = settings;
-					// 		model.saveEntry(soajs, combo, call);
-					// 	}
-					// }, cb);
 				});
 			}
 			
@@ -391,6 +374,7 @@ var lib = {
 		lib.pingElastic(soajs, env, esDbInfo, esClient, model, tracker, cb);
 		//add version to settings record
 	},
+	
 	"setMapping": function (soajs, env, model, esClient, config, cb) {
 		lib.purgeElastic(soajs, esClient, config, function (err){
 			if (err) {
