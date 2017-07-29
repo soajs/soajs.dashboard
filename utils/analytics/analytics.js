@@ -202,7 +202,7 @@ var lib = {
 		});
 	},
 	
-	"deployElastic": function (soajs, env, deployer, utils, model, cb) {
+	"deployElastic": function (soajs, env, deployer, utils, model, purge, cb) {
 		var combo = {};
 		combo.collection = colls.analytics;
 		combo.conditions = {
@@ -213,6 +213,9 @@ var lib = {
 				return cb(error);
 			}
 			if (settings && settings.elasticsearch && settings.elasticsearch.status === "deployed") {
+				//purge data since elasticsearch is not deployed
+				soajs.log.debug("Elasticsearch is already deployed...");
+				purge = true;
 				return cb(null, true)
 			}
 			else {
@@ -388,19 +391,38 @@ var lib = {
 		lib.pingElastic(soajs, env, esDbInfo, esClient, model, tracker, cb);
 		//add version to settings record
 	},
-	
-	"setMapping": function (soajs, env, model, esClient, cb) {
-		soajs.log.debug("Adding Mapping and templates");
-		async.series({
-			"mapping": function (callback) {
-				lib.putMapping(soajs, model, esClient, callback);
-			},
-			"template": function (callback) {
-				lib.putTemplate(soajs, model, esClient, callback);
+	"setMapping": function (soajs, env, model, esClient, purge, cb) {
+		lib.purgeElastic(soajs, esClient, purge, function (err){
+			if (err) {
+				return cb(err);
 			}
-		}, cb);
+			soajs.log.debug("Adding Mapping and templates");
+			async.series({
+				"mapping": function (callback) {
+					lib.putMapping(soajs, model, esClient, callback);
+				},
+				"template": function (callback) {
+					lib.putTemplate(soajs, model, esClient, callback);
+				}
+			}, cb);
+		});
+		
 	},
-	
+	"purgeElastic": function (soajs, esClient, purge, cb) {
+		if (!purge){
+			//purge not reguired
+			return cb(null, true);
+		}
+		soajs.log.debug("Purging data...");
+		esClient.db.indices.delete({index: 'filebeat-*'}, function (filebeatError) {
+			if (filebeatError) {
+				return cb(filebeatError);
+			}
+			esClient.db.indices.delete({index: 'metricbeat-*'}, function (metricbeatError) {
+				return cb(metricbeatError, true);
+			});
+		});
+	},
 	"putTemplate": function (soajs, model, esClient, cb) {
 		var combo = {
 			collection: colls.analytics,
@@ -1025,11 +1047,11 @@ var analyticsDriver = function (opts) {
 
 analyticsDriver.prototype.run = function () {
 	var _self = this;
-	
+	var purge = false;
 	_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
-	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model, purge));
 	_self.operations.push(async.apply(lib.checkElasticSearch, _self.config.soajs, _self.config.envRecord, _self.config.esDbInfo, _self.config.esCluster, _self.config.model, _self.config.tracker));
-	_self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster));
+	_self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster, purge));
 	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.esCluster, _self.config.utils, _self.config.envRecord, _self.config.model));
 	_self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
