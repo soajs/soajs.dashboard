@@ -269,54 +269,54 @@ var lib = {
 			if (error) {
 				soajs.log.error(error);
 				tracker[env.code.toLowerCase()].counterPing++;
-				setTimeout(function () {
-					soajs.log.debug("No ES Cluster found, trying again:", tracker[env.code.toLowerCase()].counterPing, "/", 10);
-					if (tracker[env.code.toLowerCase()].counterPing >= 10) { // wait 5 min
-						soajs.log.error("Elasticsearch wasn't deployed... exiting");
-						
-						async.parallel([
-							function(miniCb){
-								var combo = {};
-								combo.collection = colls.analytics;
-								combo.conditions = {
-									"_type": "settings"
-								};
-								combo.fields = {
-									$set:{
-										elasticsearch : {}
-									}
-								};
-								
-								combo.options = {
-									upsert: false,
-									safe: true,
-									multi: false
-								};
-								model.updateEntry(soajs, combo, miniCb);
-							},
-							function(miniCb){
-								if(esDbInfo.db){
-									delete env.dbs.databases[esDbInfo.db];
+				soajs.log.debug("No ES Cluster found, trying again:", tracker[env.code.toLowerCase()].counterPing, "/", 10);
+				if (tracker[env.code.toLowerCase()].counterPing >= 10) { // wait 5 min
+					soajs.log.error("Elasticsearch wasn't deployed... exiting");
+					
+					async.parallel([
+						function(miniCb){
+							var combo = {};
+							combo.collection = colls.analytics;
+							combo.conditions = {
+								"_type": "settings"
+							};
+							combo.fields = {
+								$set:{
+									elasticsearch : {}
 								}
-								if(esDbInfo.cluster){
-									delete env.dbs.clusters[esDbInfo.cluster];
-								}
-								model.saveEntry(soajs, {
-									collection: colls.environment,
-									record: env
-								}, miniCb);
+							};
+							
+							combo.options = {
+								upsert: false,
+								safe: true,
+								multi: false
+							};
+							model.updateEntry(soajs, combo, miniCb);
+						},
+						function(miniCb){
+							if(esDbInfo.db){
+								delete env.dbs.databases[esDbInfo.db];
 							}
-						], function(err){
-							if(err){
-								soajs.log.error(err);
+							if(esDbInfo.cluster){
+								delete env.dbs.clusters[esDbInfo.cluster];
 							}
-							return cb(error);
-						});
-					}
-					else{
+							model.saveEntry(soajs, {
+								collection: colls.environment,
+								record: env
+							}, miniCb);
+						}
+					], function(err){
+						if(err){
+							soajs.log.error(err);
+						}
+						return cb(error);
+					});
+				}
+				else{
+					setTimeout(function () {
 						lib.pingElastic(soajs, env, esDbInfo, esClient, model, tracker, cb);
-					}
-				}, 2000);
+					}, 2000);
+				}
 			}
 			else {
 				lib.infoElastic(soajs, env, esDbInfo, esClient, model, tracker, cb)
@@ -327,55 +327,56 @@ var lib = {
 	"infoElastic": function (soajs, env, esDbInfo, esClient, model, tracker, cb) {
 		esClient.db.info(function (error) {
 			if (error) {
+				soajs.log.error(error);
 				tracker[env.code.toLowerCase()].counterInfo++;
-				setTimeout(function () {
-					soajs.log.debug("ES cluster found but not ready, Trying again:", tracker[env.code.toLowerCase()].counterInfo, "/", 15);
-					if (tracker[env.code.toLowerCase()].counterInfo >= 15) { // wait 5 min
-						soajs.log.error("Elasticsearch wasn't deployed correctly ... exiting");
-						
-						async.parallel([
-							function(miniCb){
-								var combo = {};
-								combo.collection = colls.analytics;
-								combo.conditions = {
-									"_type": "settings"
-								};
-								combo.fields = {
-									$set:{
-										elasticsearch : {}
-									}
-								};
-								
-								combo.options = {
-									upsert: false,
-									safe: true,
-									multi: false
-								};
-								model.updateEntry(soajs, combo, miniCb);
-							},
-							function(miniCb){
-								if(esDbInfo.db){
-									delete env.dbs.databases[esDbInfo.db];
+				soajs.log.debug("ES cluster found but not ready, Trying again:", tracker[env.code.toLowerCase()].counterInfo, "/", 15);
+				if (tracker[env.code.toLowerCase()].counterInfo >= 15) { // wait 5 min
+					soajs.log.error("Elasticsearch wasn't deployed correctly ... exiting");
+					
+					async.parallel([
+						function(miniCb){
+							var combo = {};
+							combo.collection = colls.analytics;
+							combo.conditions = {
+								"_type": "settings"
+							};
+							combo.fields = {
+								$set:{
+									elasticsearch : {}
 								}
-								if(esDbInfo.cluster){
-									delete env.dbs.clusters[esDbInfo.cluster];
-								}
-								model.saveEntry(soajs, {
-									collection: colls.environment,
-									record: env
-								}, miniCb);
+							};
+							
+							combo.options = {
+								upsert: false,
+								safe: true,
+								multi: false
+							};
+							model.updateEntry(soajs, combo, miniCb);
+						},
+						function(miniCb){
+							if(esDbInfo.db){
+								delete env.dbs.databases[esDbInfo.db];
 							}
-						], function(err){
-							if(err){
-								soajs.log.error(err);
+							if(esDbInfo.cluster){
+								delete env.dbs.clusters[esDbInfo.cluster];
 							}
-							return cb(error);
-						});
-					}
-					else{
+							model.saveEntry(soajs, {
+								collection: colls.environment,
+								record: env
+							}, miniCb);
+						}
+					], function(err){
+						if(err){
+							soajs.log.error(err);
+						}
+						return cb(error);
+					});
+				}
+				else{
+					setTimeout(function () {
 						lib.infoElastic(soajs, env, esDbInfo, esClient, model, tracker, cb);
-					}
-				}, 3000);
+					}, 3000);
+				}
 			}
 			else {
 				return cb(null, true);
@@ -445,7 +446,7 @@ var lib = {
 				body: mappings._json
 			};
 			if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-				esClient.db.indices.exists(mapping, function (error, result) {
+				esClient.db.indices.exists({index: '.kibana'}, function (error, result) {
 					if (error || !result) {
 						esClient.db.indices.create(mapping, function (err) {
 							return cb(err, true);
@@ -521,7 +522,7 @@ var lib = {
 											if (key == 0) {
 												//filebeat-service-environment-*
 												
-												analyticsArray = analyticsArray.concat(
+												analyticsArray.push(
 													[
 														{
 															index: {
@@ -603,7 +604,7 @@ var lib = {
 															_id: oneRecord.id
 														}
 													};
-													analyticsArray = analyticsArray.concat([recordIndex, oneRecord._source]);
+													analyticsArray.push([recordIndex, oneRecord._source]);
 												});
 												return call(null, true);
 											});
@@ -627,7 +628,7 @@ var lib = {
 					}, pCallback);
 				},
 				"metricbeat": function (pCallback) {
-					analyticsArray = analyticsArray.concat(
+					analyticsArray.push(
 						[
 							{
 								index: {
@@ -644,7 +645,7 @@ var lib = {
 							}
 						]
 					);
-					analyticsArray = analyticsArray.concat(
+					analyticsArray.push(
 						[
 							{
 								index: {
@@ -683,7 +684,7 @@ var lib = {
 										_id: onRecord.id
 									}
 								};
-								analyticsArray = analyticsArray.concat([recordIndex, onRecord._source]);
+								analyticsArray.push([recordIndex, onRecord._source]);
 							});
 							
 						}
@@ -696,12 +697,14 @@ var lib = {
 					return cb(err);
 				}
 				if (analyticsArray.length !== 0 && !(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-					lib.esBulk(esClient, analyticsArray, function(error, response){
-						if(error){
-							soajs.log.error(error);
-						}
-						return cb(error, response);
-					});
+					async.eachSeries(analyticsArray, function (oneEsEntry, miniCb){
+						lib.esBulk(esClient, oneEsEntry, function(error, response){
+							if(error){
+								soajs.log.error(error);
+							}
+							return miniCb(error, response);
+						});
+					}, cb);
 				}
 				else {
 					return cb(null, true);
