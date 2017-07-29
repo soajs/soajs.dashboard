@@ -218,61 +218,124 @@ var lib = {
 				lib.getAnalyticsContent("elastic", env, function (err, content) {
 					var options = utils.buildDeployerOptions(env, soajs, model);
 					options.params = content;
-					async.parallel({
-						"deploy": function (call) {
-							if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-								deployer.deployService(options, call)
-							}
-							else {
-								return call(null, true);
-							}
-						},
-						"update": function (call) {
-							//Todo fix this
+					if (process.env.SOAJS_TEST_ANALYTICS === 'test') {
+						return call(null, true);
+					}
+					
+					deployer.deployService(options, function(error, response){
+						if(error){
+							soajs.log.error(error);
+							settings.elasticsearch = {};
+							combo.record = settings;
+						}
+						else{
 							settings.elasticsearch.status = "deployed";
 							combo.record = settings;
-							model.saveEntry(soajs, combo, call);
 						}
-					}, cb);
+						model.saveEntry(soajs, combo, function(mongoError){
+							if(mongoError){ return cb(mongoError); }
+							return cb(error, true);
+						});
+					});
+					//
+					// async.parallel({
+					// 	"deploy": function (call) {
+					// 		if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+					// 			deployer.deployService(options, call)
+					// 		}
+					// 		else {
+					// 			return call(null, true);
+					// 		}
+					// 	},
+					// 	"update": function (call) {
+					// 		//Todo fix this
+					// 		settings.elasticsearch.status = "deployed";
+					// 		combo.record = settings;
+					// 		model.saveEntry(soajs, combo, call);
+					// 	}
+					// }, cb);
 				});
 			}
 			
 		});
 	},
 	
-	"pingElastic": function (soajs, env, esClient, tracker, cb) {
-		if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-			esClient.ping(function (error) {
-				if (error) {
-					tracker[env.code.toLowerCase()].counterPing++;
-					setTimeout(function () {
-						if (tracker[env.code.toLowerCase()].counterPing >= 10) { // wait 5 min
-							soajs.log.error("Elasticsearch wasn't deployed... exiting");
-							return cb(error);
-						}
-						lib.pingElastic(soajs, env, esClient, tracker, cb);
-					}, 2000);
-				}
-				else {
-					lib.infoElastic(soajs, env, esClient, tracker, cb)
-				}
-			});
-		}
-		else {
+	"pingElastic": function (soajs, env, esClient, model, tracker, cb) {
+		if (process.env.SOAJS_TEST_ANALYTICS === 'test') {
 			return cb(null, true);
 		}
+		esClient.ping(function (error) {
+			if (error) {
+				soajs.log.error(error);
+				tracker[env.code.toLowerCase()].counterPing++;
+				setTimeout(function () {
+					soajs.log.debug("Trying again:", tracker[env.code.toLowerCase()].counterPing, "/", 10);
+					if (tracker[env.code.toLowerCase()].counterPing >= 10) { // wait 5 min
+						soajs.log.error("Elasticsearch wasn't deployed... exiting");
+						
+						var combo = {};
+						combo.collection = colls.analytics;
+						combo.conditions = {
+							"_type": "settings"
+						};
+						combo.fields = {
+							$set:{
+								elasticsearch : {}
+							}
+						};
+						
+						combo.options = {
+							upsert: false,
+							safe: true,
+							multi: false
+						};
+						model.updateEntry(soajs, combo, function(){
+							return cb(error);
+						});
+					}
+					else{
+						lib.pingElastic(soajs, env, esClient, model, tracker, cb);
+					}
+				}, 2000);
+			}
+			else {
+				lib.infoElastic(soajs, env, esClient, model, tracker, cb)
+			}
+		});
 	},
 	
-	"infoElastic": function (soajs, env, esClient, tracker, cb) {
+	"infoElastic": function (soajs, env, esClient, model, tracker, cb) {
 		esClient.db.info(function (error) {
 			if (error) {
+				soajs.log.error(error);
 				tracker[env.code.toLowerCase()].counterInfo++;
 				setTimeout(function () {
+					soajs.log.debug("Trying again:", tracker[env.code.toLowerCase()].counterInfo, "/", 15);
 					if (tracker[env.code.toLowerCase()].counterInfo >= 15) { // wait 5 min
 						soajs.log.error("Elasticsearch wasn't deployed... exiting");
-						return cb(error);
+						var combo = {};
+						combo.collection = colls.analytics;
+						combo.conditions = {
+							"_type": "settings"
+						};
+						combo.fields = {
+							$set:{
+								elasticsearch : {}
+							}
+						};
+						
+						combo.options = {
+							upsert: false,
+							safe: true,
+							multi: false
+						};
+						model.updateEntry(soajs, combo, function(){
+							return cb(error);
+						});
 					}
-					lib.infoElastic(soajs, env, esClient, tracker, cb);
+					else{
+						lib.infoElastic(soajs, env, esClient, model, tracker, cb);
+					}
 				}, 3000);
 			}
 			else {
@@ -281,8 +344,8 @@ var lib = {
 		});
 	},
 	
-	"checkElasticSearch": function (soajs, env, esClient, tracker, cb) {
-		lib.pingElastic(soajs, env, esClient, tracker, cb);
+	"checkElasticSearch": function (soajs, env, esClient, model, tracker, cb) {
+		lib.pingElastic(soajs, env, esClient, model, tracker, cb);
 		//add version to settings record
 	},
 	
@@ -389,7 +452,7 @@ var lib = {
 	"configureKibana": function (soajs, servicesList, esClient, env, model, cb) {
 		var analyticsArray = [];
 		var serviceEnv = env.code.toLowerCase();
-		async.parallel({
+		async.series({
 				"filebeat": function (pCallback) {
 					async.each(servicesList, function (oneService, callback) {
 						var serviceType;
@@ -918,7 +981,7 @@ analyticsDriver.prototype.run = function () {
 	
 	_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
 	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.checkElasticSearch, _self.config.soajs, _self.config.envRecord, _self.config.esCluster, _self.config.tracker));
+	_self.operations.push(async.apply(lib.checkElasticSearch, _self.config.soajs, _self.config.envRecord, _self.config.esCluster, _self.config.model, _self.config.tracker));
 	_self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster));
 	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.esCluster, _self.config.utils, _self.config.envRecord, _self.config.model));
 	_self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
