@@ -670,7 +670,12 @@ var lib = {
 					return cb(err);
 				}
 				if (analyticsArray.length !== 0 && !(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-					lib.esBulk(esClient, analyticsArray, cb);
+					lib.esBulk(esClient, analyticsArray, function(error, response){
+						if(error){
+							soajs.log.error(error);
+						}
+						return cb(error, response);
+					});
 				}
 				else {
 					return cb(null, true);
