@@ -4,12 +4,12 @@ var membersConfig = {
 	grid: {
 		recordsPerPageArray: [5, 10, 50, 100],
 		'columns': [
-			{'label': translation.username[LANG], 'field': 'username'},
-			{'label': translation.firstName[LANG], 'field': 'firstName'},
-			{'label': translation.lastName[LANG], 'field': 'lastName'},
-			{'label': translation.email[LANG], 'field': 'email'},
-			{'label': translation.status[LANG], 'field': 'status'},
-			{'label': translation.groups[LANG], 'field': 'grpsArr'}
+			{ 'label': translation.username[LANG], 'field': 'username' },
+			{ 'label': translation.firstName[LANG], 'field': 'firstName' },
+			{ 'label': translation.lastName[LANG], 'field': 'lastName' },
+			{ 'label': translation.email[LANG], 'field': 'email' },
+			{ 'label': translation.status[LANG], 'field': 'status' },
+			{ 'label': translation.groups[LANG], 'field': 'grpsArr' }
 		],
 		'leftActions': [],
 		'topActions': [],
@@ -62,20 +62,20 @@ var membersConfig = {
 	},
 	
 	permissions: {
-		"adminAll": ['urac', '/admin/all'],
+		"adminAll": ['urac', '/admin/all', 'get'],
 		'adminUser': {
-			'list': ['urac', '/admin/listUsers','get'],
-			'changeStatusAccess': ['urac', '/admin/changeUserStatus','get'],
-			'editUser': ['urac', '/admin/editUser','post'],
-			'editUserConfig': ['urac', '/admin/editUserConfig','post'],
-			'addUser': ['urac', '/admin/addUser','post']
+			'list': ['urac', '/admin/listUsers', 'get'],
+			'changeStatusAccess': ['urac', '/admin/changeUserStatus', 'get'],
+			'editUser': ['urac', '/admin/editUser', 'post'],
+			'editUserConfig': ['urac', '/admin/editUserConfig', 'post'],
+			'addUser': ['urac', '/admin/addUser', 'post']
 		},
 		'adminGroup': {
-			'list': ['urac', '/admin/group/list','get'],
-			'add': ['urac', '/admin/group/add','post'],
-			'edit': ['urac', '/admin/group/edit','post'],
-			'delete': ['urac', '/admin/group/delete','delete'],
-			'addUsers': ['urac', '/admin/group/addUsers','post']
+			'list': ['urac', '/admin/group/list', 'get'],
+			'add': ['urac', '/admin/group/add', 'post'],
+			'edit': ['urac', '/admin/group/edit', 'post'],
+			'delete': ['urac', '/admin/group/delete', 'delete'],
+			'addUsers': ['urac', '/admin/group/addUsers', 'post']
 		}
 	}
 };
@@ -84,8 +84,8 @@ var groupsConfig = {
 	grid: {
 		recordsPerPageArray: [5, 10, 50, 100],
 		'columns': [
-			{'label': translation.code[LANG], 'field': 'code'},
-			{'label': translation.name[LANG], 'field': 'name'},
+			{ 'label': translation.code[LANG], 'field': 'code' },
+			{ 'label': translation.name[LANG], 'field': 'name' },
 			{
 				'label': translation.description[LANG]
 				, 'field': 'description'
