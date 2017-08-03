@@ -90,11 +90,6 @@ var uracModuleStgNav = [
 			'label': translation.operate[LANG],
 			'position': 4
 		},
-		'checkPermission': {
-			'service': 'urac',
-			'route': '/owner/admin/listUsers',
-			'method': 'get'
-		},
 		'tracker': true,
 		'scripts': [
 			uracModuleStg + '/config.js',
@@ -115,11 +110,6 @@ var uracModuleStgNav = [
 			'name': 'operate',
 			'label': translation.operate[LANG],
 			'position': 4
-		},
-		'checkPermission': {
-			'service': 'urac',
-			'route': '/owner/admin/editUser',
-			'method': 'post'
 		},
 		'scripts': [
 			uracModuleStg + '/config.js',
