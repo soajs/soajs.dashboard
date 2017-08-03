@@ -447,6 +447,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
         delete currentScope.replicaCount;
         delete currentScope.exposedPort;
         currentScope.memoryLimit = 500;
+		currentScope.name = '';
         currentScope.useLocalSOAJS = true;
         currentScope.message = {};
         currentScope.defaultEnvVariables = "<ul><li>SOAJS_DEPLOY_HA=true</li><li>SOAJS_SRV_AUTOREGISTERHOST=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=" + currentScope.envCode + "</li><li>SOAJS_PROFILE=" + currentScope.profile + "</li></ul></p>";
@@ -631,7 +632,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 						                    currentScope["_ci_service_" + envVariable] = catalogRecipe.recipe.buildOptions.env[envVariable].default || "";
 					                    }
 				                    }
-				                    
+
 				                    // if(catalogRecipe.recipe.deployOptions.specifyGitConfiguration){
 					                 //    currentScope.service = '';
 					                 //    currentScope.version = '';
@@ -667,6 +668,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 			                'recipe': currentScope.recipe
 		                };
 
+						if(currentScope.name) {
+							params.custom.name = currentScope.name;
+						}
+
 		                if(currentScope.serviceOwner && currentScope.serviceRepo){
 			                params.gitSource = {
 				                "owner": currentScope.serviceOwner,
@@ -697,8 +702,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 			                }
 
 		                }
-
-		                params.custom.name = currentScope.service.name;
 
 		                if (currentScope.groupConfig) {
 			                params.custom.type = 'daemon';
@@ -806,7 +809,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
         //         }
         //     });
         // }
-	    
+
         // function getDaemons(cb) {
         //     getSendDataFromServer(currentScope, ngDataApi, {
         //         method: 'post',
@@ -852,7 +855,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                          if(!Object.hasOwnProperty.call(oneRecipe.recipe.deployOptions, 'specifyGitConfiguration') || !oneRecipe.recipe.deployOptions.specifyGitConfiguration ){
 	                         currentScope.recipes[oneRecipe.type].push(oneRecipe);
                          }
-                        
+
                     });
                     return cb();
                 }
