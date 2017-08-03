@@ -63,6 +63,11 @@ var uracModuleDevNav = [
 		'url': '#/urac-management',
 		'tplPath': uracModuleDev + '/directives/listTenants.tmpl',
 		'icon': 'users',
+		'checkPermission': {
+			'service': 'urac',
+			'route': '/owner/admin/listUsers',
+			'method': 'get'
+		},
 		'pillar': {
 			'name': 'operate',
 			'label': translation.operate[LANG],
@@ -85,6 +90,11 @@ var uracModuleDevNav = [
 			'label': translation.operate[LANG],
 			'position': 4
 		},
+		'checkPermission': {
+			'service': 'urac',
+			'route': '/owner/admin/listUsers',
+			'method': 'get'
+		},
 		'tracker': true,
 		'scripts': [
 			uracModuleDev + '/config.js',
@@ -105,6 +115,11 @@ var uracModuleDevNav = [
 			'name': 'operate',
 			'label': translation.operate[LANG],
 			'position': 4
+		},
+		'checkPermission': {
+			'service': 'urac',
+			'route': '/owner/admin/editUser',
+			'method': 'post'
 		},
 		'scripts': [
 			uracModuleDev + '/config.js',

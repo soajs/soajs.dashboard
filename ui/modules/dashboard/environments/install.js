@@ -1610,7 +1610,7 @@ var environmentsNav = [
 		'url': '#/environments-hacloud',
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/environment/hacloud/nodes/list',
+			'route': '/cloud/nodes/list',
 			'method': 'get'
 		},
 		'icon': 'sphere',
