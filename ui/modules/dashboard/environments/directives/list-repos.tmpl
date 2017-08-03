@@ -53,8 +53,8 @@
 	                                                    </div>
                                                     </div>
                                                     <div class="body serviceVersionBox" ng-if="service.type !== 'daemon'">
-                                                        <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (version.deployed || !version.deploySettings)}"  ng-click="doDeploy(version.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
-                                                        <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account)" ng-if="!version.deploySettings" ><span class="icon icon-cog"></span>Configure Deployment</a>
+                                                        <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (version.deployed || !version.deploySettings || !access.hacloud.services.add)}"  ng-click="doDeploy(version.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
+                                                        <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account)" ng-class="{disabled: (!access.cd || !access.hacloud.services.add)}" ng-if="!version.deploySettings" ><span class="icon icon-cog"></span>Configure Deployment</a>
                                                         <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account)" ng-if="version.deploySettings" ><span class="icon icon-cog"></span>Reconfigure Deployment</a>
                                                     </div>
 	                                                <div ng-if="version.grpConf && version.grpConf.length === 0 && service.type === 'daemon'">
@@ -66,8 +66,8 @@
 			                                                <span style="float: right; color: green;" ng-if="version[oneGroupConf.daemonConfigGroup].deployed"><span class="icon icon-checkmark"></span>Deployed</span>
 		                                                </div>
 		                                                <div class="body serviceVersionBox">
-			                                                <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (version[oneGroupConf.daemonConfigGroup].deployed || !version.deploySettings[oneGroupConf.daemonConfigGroup])}"  ng-click="doDeploy(version.deploySettings[oneGroupConf.daemonConfigGroup].options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
-			                                                <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account, oneGroupConf.daemonConfigGroup)" ng-if="!version.deploySettings[oneGroupConf.daemonConfigGroup]" ><span class="icon icon-cog"></span>Configure Deployment</a>
+			                                                <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (version[oneGroupConf.daemonConfigGroup].deployed || !version.deploySettings[oneGroupConf.daemonConfigGroup] || !access.hacloud.services.add)}"  ng-click="doDeploy(version.deploySettings[oneGroupConf.daemonConfigGroup].options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
+			                                                <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account, oneGroupConf.daemonConfigGroup)" ng-class="{disabled: (!access.cd || !access.hacloud.services.add)}" ng-if="!version.deploySettings[oneGroupConf.daemonConfigGroup]" ><span class="icon icon-cog"></span>Configure Deployment</a>
 			                                                <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, version, account, oneGroupConf.daemonConfigGroup)" ng-if="version.deploySettings[oneGroupConf.daemonConfigGroup]" ><span class="icon icon-cog"></span>Reconfigure Deployment</a>
 		                                                </div>
 	                                                </div>
@@ -79,8 +79,8 @@
 										            <span style="float: right; color: green;" ng-if="service.deployed"><span class="icon icon-checkmark"></span>Deployed</span>
 									            </div>
 									            <div class="body serviceVersionBox">
-										            <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (service.deployed || !service.deploySettings)}"  ng-click="doDeploy(service.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
-										            <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, 'Default', account)" ng-if="!service.deploySettings" ><span class="icon icon-cog"></span>Configure Deployment</a>
+										            <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (service.deployed || !service.deploySettings || !access.hacloud.services.add)}"  ng-click="doDeploy(service.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
+										            <a href="" class="btn btn-sm btn-default responsive-width" ng-click="deployService(repo, service, 'Default', account)" ng-class="{disabled: (!access.cd || !access.hacloud.services.add)}" ng-if="!service.deploySettings" ><span class="icon icon-cog"></span>Configure Deployment</a>
 										            <a href="" class="btn btn-sm btn-default responsive-width" ng-if="service.deploySettings"  ng-click="deployService(repo, service, 'Default', account)"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
 									            </div>
 								            </div>
@@ -92,8 +92,8 @@
 			                                <span style="float: right; color: green;" ng-if="repo.deployed"><span class="icon icon-checkmark"></span>Deployed</span>
 		                                </div>
 		                                <div class="body serviceVersionBox">
-			                                <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (repo.deployed || !repo.deploySettings)}" ng-click="doDeploy(repo.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
-			                                <a href="" class="btn btn-sm btn-default responsive-width" ng-if="!repo.deploySettings" ng-click="deployService(repo, service, 'Default', account)"><span class="icon icon-cog"></span>Configure Deployment</a>
+			                                <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (repo.deployed || !repo.deploySettings || !access.hacloud.services.add)}" ng-click="doDeploy(repo.deploySettings.options)"><span class="icon icon-power-cord"></span>First Time Deploy</a>
+			                                <a href="" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (!access.cd || !access.hacloud.services.add)}" ng-if="!repo.deploySettings" ng-click="deployService(repo, service, 'Default', account)"><span class="icon icon-cog"></span>Configure Deployment</a>
 			                                <a href="" class="btn btn-sm btn-default responsive-width" ng-if="repo.deploySettings" ng-click="deployService(repo, service, 'Default', account)"><span class="icon icon-cog"></span>Reconfigure Deployment</a>
 		                                </div>
 	                                </div>
@@ -134,10 +134,11 @@
 			</div>
 		</div>
 	<div class="modal-footer">
-		<button ng-show="maxEntries > 0" class="btn btn-success" ng-click="saveRecipe()">Save</button>
-		<button ng-show="maxEntries > 0" ng-if="!deployed" class="btn btn-primary" ng-click="saveRecipe('deploy')">First Time Deploy</button>
-		<button ng-show="maxEntries > 0" ng-if="deployed" class="btn btn-info" ng-click="saveRecipe('rebuild')">Rebuild Service</button>
+		<button ng-show="maxEntries > 0 && controllerScope.access.cd" class="btn btn-success" ng-click="saveRecipe()">Save</button>
+		<button ng-show="maxEntries > 0 && controllerScope.access.hacloud.services.add" ng-if="!deployed" class="btn btn-primary" ng-click="saveRecipe('deploy')">First Time Deploy</button>
+		<button ng-show="maxEntries > 0 && controllerScope.access.hacloud.services.redeploy" ng-if="deployed" class="btn btn-info" ng-click="saveRecipe('rebuild')">Rebuild Service</button>
 		<button class="btn btn-danger" ng-click="cancel()">Close</button>
+	</div>
 	</div>
 </script>
 

@@ -783,6 +783,7 @@ var environmentsConfig = {
 		"deleteEnvironment": ['dashboard', '/environment/delete', 'delete'],
 		"editEnvironment": ['dashboard', '/environment/update', 'put'],
 		"listHosts": ['dashboard', '/hosts/list', 'get'],
+		"cd": ['dashboard','/cd', 'post'],
 		"dbs": {
 			"list": ['dashboard', '/environment/dbs/list', 'get'],
 			"add": ['dashboard', '/environment/dbs/add', 'post'],
