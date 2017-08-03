@@ -951,21 +951,6 @@ module.exports = {
                 }
             },
 
-            "/daemons/groupConfig/list": {
-                _apiInfo: {
-                    "l": "List Daemon Group Configuration",
-                    "group": "Daemons"
-                },
-                'grpConfNames': {
-                    'source': ['body.grpConfNames'],
-                    'required': false,
-                    'validation': {
-                        'type': 'array',
-                        'items': {'type': 'string'}
-                    }
-                }
-            },
-
             "/daemons/groupConfig/serviceConfig/list": {
                 _apiInfo: {
                     "l": "List Service Configuration",
@@ -1832,7 +1817,22 @@ module.exports = {
                     }
                 }
             },
-
+	
+	        "/daemons/groupConfig/list": {
+		        _apiInfo: {
+			        "l": "List Daemon Group Configuration",
+			        "group": "Daemons"
+		        },
+		        'grpConfNames': {
+			        'source': ['body.grpConfNames'],
+			        'required': false,
+			        'validation': {
+				        'type': 'array',
+				        'items': {'type': 'string'}
+			        }
+		        }
+	        },
+	        
             "/daemons/groupConfig/add": {
                 _apiInfo: {
                     "l": "Add Daemon Group Configuration",
