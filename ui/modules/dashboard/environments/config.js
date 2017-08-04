@@ -819,6 +819,7 @@ var environmentsConfig = {
 				"update": ['dashboard', '/cloud/nodes/update', 'put']
 			},
 			"services": {
+				"list": ['dashboard', '/cloud/services/list', 'get'],
 				"add": ['dashboard', '/cloud/hosts/deployService', 'post'],
 				"delete": ['dashboard', '/cloud/services/delete', 'delete'],
 				"scale": ['dashboard', '/cloud/services/scale', 'put'],
