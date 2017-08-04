@@ -12,8 +12,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		currentScope.showCtrlHosts = true;
 		currentScope.soajsServices = false;
         currentScope.controllers =[];
-		if (currentScope.access.listHosts) {
-
+		if (currentScope.access.hacloud.services.list) {
 			getUpdatesNotifications(function(){
 				getSendDataFromServer(currentScope, ngDataApi, {
 					"method": "get",
