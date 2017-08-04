@@ -224,7 +224,7 @@
 				</div>
 			</div>
 		</tab>
-		<tab heading="Services" ng-if="access.listHosts">
+		<tab heading="Services" ng-if="access.hacloud.services.list">
 			<br/>
 			<div ng-if="!hosts">
 				<alert type="warning" ng-style="{'text-align': 'center'}">This environment has not been deployed yet!
@@ -239,9 +239,9 @@
 				<br />
 			</div>
 			<div class="c-both w100 table" ng-if="envDeployed">
-				<button class="btn btn-primary f-left" ng-click="deployNewService()">Deploy Resource</button>
-				<span class="col-sm-2" ng-show="showActivateAnalytics"><button class="btn btn-success" ng-click="activateAnalytics()">Activate Analytics</button></span>
-				<span class="col-sm-2" ng-show="showAnalytics"><button class="btn btn-danger" ng-click="deactivateAnalytics()">Deactivate Analytics</button></span>
+				<button class="btn btn-primary f-left" ng-if="access.hacloud.services.add" ng-click="deployNewService()">Deploy Resource</button>
+				<span class="col-sm-2" ng-show="showActivateAnalytics" ng-if="access.analytics.activate"><button class="btn btn-success" ng-click="activateAnalytics()">Activate Analytics</button></span>
+				<span class="col-sm-2" ng-show="showAnalytics" ng-if="access.analytics.deactivate"><button class="btn btn-danger" ng-click="deactivateAnalytics()">Deactivate Analytics</button></span>
 				<div class="dropdown refreshDropDown f-right">
 					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 						<span class="icon icon-loop2"></span>&nbsp;{{selectedInterval.l}}
