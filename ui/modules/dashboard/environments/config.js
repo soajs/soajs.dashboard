@@ -824,7 +824,8 @@ var environmentsConfig = {
 				"delete": ['dashboard', '/cloud/services/delete', 'delete'],
 				"scale": ['dashboard', '/cloud/services/scale', 'put'],
 				"redeploy": ['dashboard', '/cloud/services/redeploy', 'put'],
-				"logs": ['dashboard', '/cloud/services/instances/logs', 'get']
+				"logs": ['dashboard', '/cloud/services/instances/logs', 'get'],
+				"operation": ['dashboard', '/cloud/services/maintenance', 'post']
 			}
 		},
 		"analytics":{
