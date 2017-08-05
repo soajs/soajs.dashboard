@@ -23,7 +23,6 @@ module.exports = {
 	"deployConfig": {
 		"image": "soajsorg/filebeat",
 		"workDir": "/",
-		"memoryLimit": 524288000,
 		"network": "soajsnet",
 		"replication": {
 			"mode": "global",

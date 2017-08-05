@@ -21,7 +21,6 @@ module.exports = {
 	"deployConfig": {
 		"image": "soajsorg/logstash",
 		"workDir": "/",
-		"memoryLimit": 1000000000,
 		"network": "soajsnet",
 		"ports": [
 			{

@@ -25,7 +25,6 @@ module.exports = {
 	},
 	"deployConfig": {
 		"image": "elasticsearch:alpine",
-		"memoryLimit": 2000000000,
 		"network": "soajsnet",
 		"ports": [
 			{

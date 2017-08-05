@@ -103,7 +103,7 @@ var lib = {
 				"image": loadContent.deployConfig.image,
 				"variables": loadContent.variables || [],
 				"labels": loadContent.labels,
-				"memoryLimit": loadContent.deployConfig.memoryLimit,
+				//"memoryLimit": loadContent.deployConfig.memoryLimit,
 				"replication": {
 					"mode": loadContent.deployConfig.replication.mode,
 					"replicas": loadContent.deployConfig.replication.replicas
@@ -134,9 +134,9 @@ var lib = {
 				else {
 					serviceParams.labels["soajs.service.mode"] = "daemonset";
 				}
-				if (serviceParams.memoryLimit) {
-					delete serviceParams.memoryLimit;
-				}
+				// if (serviceParams.memoryLimit) {
+				// 	delete serviceParams.memoryLimit;
+				// }
 				if (serviceParams.replication.mode === "replicated") {
 					serviceParams.replication.mode = "deployment";
 				}

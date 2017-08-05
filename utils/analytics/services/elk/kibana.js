@@ -17,7 +17,6 @@ module.exports = {
 		"version": "5.3.0",
 		"image": "soajsorg/kibana",
 		"workDir": "/",
-		"memoryLimit": 1000000000,
 		"network": "soajsnet",
 		"ports": [
 			{

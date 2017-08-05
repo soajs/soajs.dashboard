@@ -18,7 +18,6 @@ module.exports = {
 	},
 	"deployConfig": {
 		"image": "soajsorg/metricbeat",
-		"memoryLimit": 500000000,
 		"network": "soajsnet",
 		"replication": {
 			"mode": "global",
