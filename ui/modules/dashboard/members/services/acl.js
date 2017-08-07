@@ -8,6 +8,9 @@ membersAclService.service('membersAclHelper', ['aclDrawHelpers', function (aclDr
 	
 	function prepareViewAclObj(aclFill, parentAcl, services) {
 		var serviceName;
+		if (!aclFill) {
+			aclFill = {};
+		}
 		for (serviceName in parentAcl) {
 			if (aclFill.hasOwnProperty(serviceName)) {
 				aclFill[serviceName].access = true;
@@ -124,7 +127,7 @@ membersAclService.service('membersAclHelper', ['aclDrawHelpers', function (aclDr
 								var newList;
 								var apiList = myAcl[oneEnv.code.toUpperCase()][serviceName].apiList;
 								if (apiList) {
-									if (oneApplication.userPackageAcl[oneEnv.code.toLowerCase()][serviceName] && myAcl[oneEnv.code.toUpperCase()][serviceName].apiList) {
+									if (oneApplication.userPackageAcl[oneEnv.code.toLowerCase()] && oneApplication.userPackageAcl[oneEnv.code.toLowerCase()][serviceName] && myAcl[oneEnv.code.toUpperCase()][serviceName].apiList) {
 										if ((aclObj[envCode][serviceName]) && (aclObj[envCode][serviceName].apisPermission === 'restricted')) {
 											newList = [];
 											oneApplication.userPackageAcl[oneEnv.code.toLowerCase()][serviceName].forceRestricted = true;
@@ -190,10 +193,10 @@ membersAclService.service('membersAclHelper', ['aclDrawHelpers', function (aclDr
 			var aclEnvObj = aclObj[envCode.toLowerCase()];
 			var aclEnvFill = aclPriviledges.services[envCode];
 			if (!aclDrawHelpers.prepareSaveObject(aclEnvFill, aclEnvObj).valid) {
-				return {'valid': false, 'data': aclObj};
+				return { 'valid': false, 'data': aclObj };
 			}
 		}
-		return {'valid': valid, 'data': aclObj};
+		return { 'valid': valid, 'data': aclObj };
 	}
 	
 	return {
