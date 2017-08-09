@@ -266,7 +266,7 @@ var errors = {
 	"956": "Authentication failed. The deploy token provided is not valid.",
 
 	"960": "Elasticsearch analytics cluster not found, resetting configuration. Please try deploying Analytics again.",
-	
+
 	"967": "Continuous Integration recipe name already exists for this provider.",
 	"968": "This Account already has a Continuous Integration configured with the selected provider.",
     "969": "The chosen Continuous Integration Service does not exist",
@@ -292,7 +292,9 @@ var errors = {
 	"983": "soa.js file does not exist or is not a valid soajs configuration file",
 	"984": "Unable to parse yml file",
 	"985": "swagger.yml file validation failed",
-	"986": "Validation for output config.js file failed"
+	"986": "Validation for output config.js file failed",
+
+	"987": "Autoscaling is only supported in kubernetes mode"
 };
 
 

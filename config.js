@@ -1519,7 +1519,7 @@ module.exports = {
                     }
                 }
             },
-            
+
 	        "/environment/add": {
                 _apiInfo: {
                     "l": "Add Environment",
@@ -1817,7 +1817,7 @@ module.exports = {
                     }
                 }
             },
-	
+
 	        "/daemons/groupConfig/list": {
 		        _apiInfo: {
 			        "l": "List Daemon Group Configuration",
@@ -1832,7 +1832,7 @@ module.exports = {
 			        }
 		        }
 	        },
-	        
+
             "/daemons/groupConfig/add": {
                 _apiInfo: {
                     "l": "Add Daemon Group Configuration",
@@ -3389,6 +3389,103 @@ module.exports = {
                     }
                 }
             },
+
+			"/cloud/services/autoscale": {
+				"_apiInfo": {
+                    "l": "Autoscale Services",
+                    "group": "HA Cloud"
+                },
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"action": {
+					"source": ['body.action'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": [ "update", "turnOff" ]
+					}
+				},
+				"autoscaler": {
+					"source": ['body.autoscaler'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"properties": {
+							"replicas": {
+								"type": "object",
+								"properties": {
+									"min": { "type": "number", "required": true },
+									"max": { "type": "number", "required": true }
+								}
+							},
+							"metrics": { "type": "object", "required": true }
+						}
+					}
+				},
+				"services": {
+					"source": ['body.services'],
+					"required": true,
+					"validation": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"id": { "type": "string", "required": true },
+								"type": { "type": "string", "required": true, "enum": [ "deployment", "daemonset" ] }
+							}
+						}
+					}
+				}
+			},
+
+			"/cloud/services/autoscale/config": {
+				"_apiInfo": {
+                    "l": "Configure Environment Autoscaling",
+                    "group": "HA Cloud"
+                },
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"autoscale": {
+					"source": ['body.autoscale'],
+					"required": true,
+					"validation": {
+						"type": "object",
+						"required": true,
+						"properties": {
+							"replicas": {
+								"type": "object",
+								"properties": {
+									"min": { "type": "number", "required": true },
+									"max": { "type": "number", "required": true }
+								}
+							},
+							"metrics": {
+								"type": "object",
+								"required": true,
+								"properties": {
+									//NOTE: only CPU metrics are supported for now
+									"cpu": {
+										"type": "object",
+										"properties": {
+											"percent": { "type": "number", "required": true }
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
 
             "/catalog/recipes/update": {
                 "_apiInfo": {
