@@ -63,6 +63,9 @@ var dashboardBL = {
 		},
 		namespace:{
 			module: require("./lib/cloud/namespaces/index.js")
+		},
+		autoscale: {
+			module: require('./lib/cloud/autoscale/index.js')
 		}
 	}
 };
@@ -1082,6 +1085,32 @@ service.init(function () {
 	service.get("/cloud/services/instances/logs", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
 			BL.streamLogs(config, req.soajs, res, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Autoscale one or more services
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/cloud/services/autoscale", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.autoscale.module, dbModel, function(BL) {
+			BL.set(config, req.soajs, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Configure environment autoscaling
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/cloud/services/autoscale/config", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.autoscale.module, dbModel, function(BL) {
+			BL.updateEnvAutoscaleConfig(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
