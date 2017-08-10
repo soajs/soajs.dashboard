@@ -672,6 +672,27 @@ module.exports = {
                 },
             },
 
+            "/environment": {
+                _apiInfo: {
+                    "l": "Get Environment",
+                    "group": "Environment"
+                },
+                "id": {
+                    "required": false,
+                    "source": ["query.id"],
+                    "validation": {
+                        "type": "string"
+                    }
+                },
+                "code": {
+                    "required": false,
+                    "source": ["query.code"],
+                    "validation": {
+                        "type": "string"
+                    }
+                }
+            },
+
 	        "/environment/list": {
                 _apiInfo: {
                     "l": "List Environments",

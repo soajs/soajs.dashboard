@@ -157,6 +157,19 @@ service.init(function () {
 		});
 	});
 
+    /**
+     * Get a specific environment
+     * @param {String} API route
+     * @param {Function} API middleware
+     */
+    service.get("/environment", function (req, res) {
+        initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+            BL.get(config, req, res, function (error, data) {
+                return res.json(req.soajs.buildResponse(error, data));
+            });
+        });
+    });
+	
 	/**
 	 * Update environment tenant security key
 	 * @param {String} API route
