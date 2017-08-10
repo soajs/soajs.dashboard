@@ -1924,6 +1924,37 @@ module.exports = {
                         }
                     }
                 },
+				"autoScale": {
+					"source": ['body.autoScale'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"properties": {
+							"replicas": {
+								"type": "object",
+								"required": true,
+								"properties": {
+									"min": { "type": "number", "required": true },
+									"max": { "type": "number", "required": true }
+								}
+							},
+							"metrics": {
+								"type": "object",
+								"required": true,
+								"properties": {
+									//NOTE: only CPU metrics are supported
+									"cpu": {
+										"type": "object",
+										"required": true,
+										"properties": {
+											"percent": { "type": "number", "required": true }
+										}
+									}
+								}
+							}
+						}
+					}
+				},
                 "custom":{
                     "source": ["body.custom"],
                     "required":false,
