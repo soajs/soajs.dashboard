@@ -1912,6 +1912,7 @@ module.exports = {
                         "required": true,
                         "properties": {
                             "memoryLimit": { "required": false, "type": "number", "default": 209715200 },
+							"cpuLimit": { "required": false, "type": "string" },
                             "isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
                             "replication": {
                                 "required": true,
