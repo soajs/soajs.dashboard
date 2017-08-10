@@ -336,3 +336,15 @@ ul {
 .fullWidth{
    width: 100% !important;
 }
+
+.ng-scope fieldset.autoScale{
+ border: none;
+    padding : 0;
+}
+fieldset.autoScale legend {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    padding:0;
+}

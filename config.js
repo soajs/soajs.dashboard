@@ -23,6 +23,7 @@ var cdOptions = {
 		"required": true,
 		"properties": {
 			"memoryLimit": {"required": false, "type": "number", "default": 209715200},
+			"cpuLimit": {"required": false, "type": "string"},
 			"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
 			"replication": {
 				"required": true,
@@ -37,6 +38,37 @@ var cdOptions = {
 				}
 			}
 		}
+	},
+	"autoScale": {
+		"type": "object",
+		"required": false,
+		"properties": {
+			"replicas": {
+				"required": true,
+				"type": "object",
+				"properties": {
+					"min": {"required": true, "type": "integer", "min": 1},
+					"max": {"required": true, "type": "integer", "min": 1}
+				},
+				"additionalProperties": false
+			},
+			"metrics": {
+				"required": true,
+				"type": "object",
+				"properties": {
+					"cpu": {
+						"required": true,
+						"type": "object",
+						"properties": {
+							"percent": {"required": true, "type": "number"}
+						},
+						"additionalProperties": false
+					}
+				},
+				"additionalProperties": false
+			}
+		},
+		"additionalProperties": false
 	},
 	"custom": {
 		"type": "object",

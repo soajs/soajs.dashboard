@@ -1,7 +1,9 @@
 "use strict";
 var deployReposService = soajsApp.components;
 deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$cookies', function (ngDataApi, $timeout, $modal, $cookies) {
-
+	var envDeployer = $cookies.getObject("myEnv").deployer;
+	var envPlatform = envDeployer.selected.split('.')[1];
+	var isKubernetes = (envPlatform.toLowerCase() === "kubernetes");
 	function listGitAccounts(currentScope) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			'method': 'get',
@@ -232,6 +234,21 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			if (error) {
 				currentScope.displayAlert('danger', error.message);
 			} else {
+				if (isKubernetes) {
+					loop1:
+						for (var i = 0; i < response.length; i++) {
+							if (response[i].name === 'heapster' && response[i].namespace === 'kube-system') {
+								if (response[i].tasks && response[i].tasks.length > 0) {
+									for (var y = 0; y < response[i].tasks.length; i++) {
+										if (response[i].tasks[y].status && response[i].tasks[y].status.state === "running") {
+											currentScope.isAutoScalable = true;
+											break loop1;
+										}
+									}
+								}
+							}
+						}
+				}
 				currentScope.accounts.forEach(function (oneAccount) {
 					if (oneAccount.repos && oneAccount.repos.length > 0) {
 						oneAccount.repos.forEach(function (oneRepo) {
@@ -352,8 +369,6 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 	}
 
 	function deployService(currentScope, oneRepo, service, version, gitAccount, daemonGrpConf) {
-		var envDeployer = $cookies.getObject("myEnv").deployer;
-		var envPlatform = envDeployer.selected.split('.')[1];
 		var deployService = $modal.open({
 			templateUrl: 'deployService.tmpl',
 			size: 'lg',
@@ -362,6 +377,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			controller: function ($scope) {
 				fixBackDrop();
 				$scope.controllerScope = currentScope;
+				$scope.isKubernetes = isKubernetes;
 				$scope.deployNewService = true;
 				$scope.version = version.v || 'Default';
 				$scope.oneEnv = $cookies.getObject('myEnv').code.toUpperCase();
@@ -370,6 +386,8 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				$scope.oneSrv = (service && service.name) ? service.name : oneRepo.name;
 				$scope.serviceType = (service && service.type) ? service.type : 'custom';
 				$scope.showCD = true;
+				$scope.isAutoScalable = currentScope.isAutoScalable || false;
+				$scope.autoScale = false;
 				if(daemonGrpConf){
 					$scope.daemonGrpConf = daemonGrpConf;
 				}
@@ -447,9 +465,11 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 					});
 
 				};
+				$scope.activateAutoScale = function () {
+					$scope.autoScale = !$scope.autoScale;
+				};
 				
 				$scope.setDeploy = function (oneEnv, version, oneSrv) {
-					var isKubernetes = (envPlatform.toLowerCase() === "kubernetes");
 					var deployedBranch = '';
 					if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch) {
 						deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch;
@@ -482,6 +502,22 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 						if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options) {
 							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options = {'deployConfig': {'replication': {}}};
 						}
+						if ($scope.isAutoScalable && !$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.autoScale) {
+							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.autoScale = {
+								"replicas": {},
+								"metrics": {
+									"cpu": {}
+								}
+							}
+						}
+						else if ($scope.isAutoScalable
+							&& $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig
+							&& $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication
+							&& $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode
+							&& $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode === 'deployment'
+						) {
+							$scope.autoScale = true;
+						}
 						if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource){
 							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource = {};
 						}
@@ -503,8 +539,16 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 						var service = $scope.services[oneSrv];
 						$scope.groupConfigs = '';
 						if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit) {
-							if (service && service.prerequisites && service.prerequisites.memory && service.prerequisites.memory.trim().length > 0) {
-								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = parseFloat(service.prerequisites.memory);
+							if (service && service.prerequisites) {
+								if (service.prerequisites.memory && service.prerequisites.memory.trim().length > 0) {
+									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = parseFloat(service.prerequisites.memory);
+								}
+								else {
+									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = 500;
+								}
+								if (service.prerequisites.cpu && service.prerequisites.cpu.trim().length > 0 && isKubernetes) {
+									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.cpuLimit = service.prerequisites.cpu;
+								}
 							} else {
 								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = 500;
 							}
@@ -659,6 +703,12 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				if (configuration.default.options && configuration.default.options.deployConfig && configuration.default.options.deployConfig.memoryLimit) {
 					configuration.default.options.deployConfig.memoryLimit *= 1048576;
 				}
+				if((!currentScope.autoScale || !currentScope.isAutoScalable || configuration.default.options.deployConfig.replication.mode !== 'deployment') && configuration.default.options.autoScale){
+					delete  configuration.default.options.autoScale;
+				}
+				else if(configuration.default.options.deployConfig.replication.mode === 'deployment' && currentScope.isAutoScalable && configuration.default.options.autoScale && configuration.default.options.autoScale.replicas && configuration.default.options.autoScale.replicas.min){
+						configuration.default.options.deployConfig.replication.replicas = configuration.version.options.autoScale.replicas && configuration.version.options.autoScale.replicas.min;
+				}
 				configuration.default.deploy = true;
 			}
 		}
@@ -691,6 +741,12 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 						"gcName": currentScope.oneSrv,
 						"gcVersion": parseInt(currentScope.version)
 					}
+				}
+				if((!currentScope.autoScale || !currentScope.isAutoScalable || configuration.version.options.deployConfig.replication.mode !== 'deployment') && configuration.version.options.autoScale){
+					delete  configuration.version.options.autoScale;
+				}
+				else if(configuration.version.options.deployConfig.replication.mode === 'deployment' && configuration.version.options.autoScale && configuration.version.options.autoScale.replicas && configuration.version.options.autoScale.replicas.min){
+						configuration.version.options.deployConfig.replication.replicas = configuration.version.options.autoScale.replicas && configuration.version.options.autoScale.replicas.min;
 				}
 				configuration.version.deploy = true;
 			}
@@ -1047,6 +1103,12 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			if(oneDeployedEntry.labels['service.image.tag']){
 				deploySettings.options.custom.image.tag = oneDeployedEntry.labels['service.image.tag'];
 			}
+		}
+		if(oneDeployedEntry.autoscaler){
+			deploySettings.options.autoScale = oneDeployedEntry.autoscaler;
+		}
+		if(oneDeployedEntry.resources && oneDeployedEntry.resources.limits && oneDeployedEntry.resources.limits.cpu){
+			deploySettings.options.deployConfig.cpuLimit = oneDeployedEntry.resources.limits.cpu;
 		}
 		if(oneDeployedEntry.env) {
 			oneDeployedEntry.env.forEach(function (oneEnv) {
