@@ -461,6 +461,14 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                 successThreshold: 1,
                 failureThreshold: 3
             };
+            if(currentScope.isAutoScalable){
+            	currentScope.autoScaleObject = {
+		            "replicas": {},
+		            "metrics": {
+			            "cpu": {}
+		            }
+	            }
+            }
         }
 
         function openModalForm() {
@@ -475,7 +483,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     $scope.title = 'Deploy New Resource';
                     $scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
                     $scope.currentScope = currentScope;
-
+	                $scope.currentScope.autoScale = false;
 	                $scope.myRecipes = [];
 	                for(var type in currentScope.recipes){
 		                $scope.myRecipes = $scope.myRecipes.concat(currentScope.recipes[type]);
@@ -511,8 +519,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                         if (service && service.prerequisites && service.prerequisites.memory) {
                             currentScope.memoryLimit = service.prerequisites.memory;
                         }
-
-                        if (service.type === 'nginx') return;
+	                    if (currentScope.isKubernetes && service && service.prerequisites && service.prerequisites.cpu) {
+		                    currentScope.cpuLimit = service.prerequisites.cpu;
+	                    }
+	                    if (service.type === 'nginx') return;
 
                         if (service.type === 'daemon' && service.grpConf) {
                             currentScope.groupConfigs = service.grpConf;
@@ -597,6 +607,17 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                                     return;
                                 }
                             }
+	
+	                    if (currentScope.isKubernetes && currentScope.service && currentScope.service.prerequisites && currentScope.service.prerequisites.cpu) {
+		                    if (currentScope.cpuLimit < currentScope.service.prerequisites.cpu) {
+			                    currentScope.message.danger = "Please specify a cpu limit that is greater than or equal to the resource memory prerequisite ("+ currentScope.service.prerequisites.cpu +")";
+			                    $timeout(function () {
+				                    currentScope.message.danger = "";
+			                    }, 5000);
+			
+			                    return;
+		                    }
+	                    }
 
                             doDeploy(currentScope);
                         // }
@@ -717,8 +738,18 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 				                "replicas": currentScope.number
 			                }
 		                };
-
+		                if(currentScope.autoScale && currentScope.isAutoScalable){
+			                params.autoScale = currentScope.autoScaleObject;
+			                if(currentScope.autoScaleObject.replicas.min){
+			                    params.deployConfig.replication.replicas = currentScope.autoScaleObject.replicas.min;
+			                }
+		                }else if(currentScope.isAutoScalable){
+			                delete currentScope.autoScaleObject;
+		                }
 		                if (params.deployConfig.isKubernetes) {
+			                if(currentScope.cpuLimit){
+				                params.deployConfig.cpuLimit = currentScope.cpuLimit;
+			                }
 			                if (params.deployConfig.replication.mode === 'replicated') {
 				                params.deployConfig.replication.mode = "deployment";
 			                }
@@ -727,7 +758,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 				                delete params.deployConfig.replication.replicas;
 			                }
 		                }
-
 		                //inject user input catalog entry and image override
 		                if(currentScope['_ci_serviceImageName'] && currentScope['_ci_serviceImagePrefix'] && currentScope['_ci_serviceImageTag']){
 			                params.custom['image'] = {

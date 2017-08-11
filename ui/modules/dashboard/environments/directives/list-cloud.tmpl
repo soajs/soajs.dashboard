@@ -13,25 +13,17 @@
 							<label>Deployment Name</label>
 							<input type="text" class="form-control" ng-model="currentScope.name" ng-required="false"/>
 							<label class="fieldMsg">Optional: Choose a name for the new deployment. Environment code will be appended to the chosen name example: dev-myResource.</label>
-							<br /><br />
-						</div>
-						<div>
-							<label>Deployment Mode</label>
-							<select class="form-control" ng-required="true" ng-options="mode for mode in currentScope.deploymentModes" ng-model="currentScope.mode"></select>
-							<label class="fieldMsg">Global/Daemonset mode deploys one replica of the service on each
-								node.</label>
-							<label class="fieldMsg">Replicated/Deployment mode deploys the specified number of replicas
-								based on the availability of resources.</label>
-							<br /><br />
-						</div>
-						<div ng-if="currentScope.mode == 'replicated' || currentScope.mode == 'deployment'">
-							<label>Replica Count</label>
-							<input type="number" class="form-control" ng-model="currentScope.number" ng-required="true"/>
-							<br>
+							<br />
 						</div>
 						<div>
 							<label>Memory Limit Per Instance (in MBytes)</label>
 							<input type="number" class="form-control" ng-model="currentScope.memoryLimit" ng-required="true"/>
+							<br/>
+						</div>
+						<div ng-if="currentScope.isKubernetes">
+							<label>CPU Limit Per Instance</label>
+							<input type="text" class="form-control" placeholder="100m or 0.1" ng-model="currentScope.cpuLimit" ng-required="currentScope.autoScale"/>
+							<label class="fieldMsg">Specify the Maximum cpu limit (in millicpu or decimal point) that should be provided when running your resource. Click <a href="https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-cpu" target="_blank">here </a>for more information.</label>
 							<br/>
 						</div>
 						<div>
@@ -65,12 +57,54 @@
 							<br>
 						</div>
 					</fieldset>
+					<fieldset>
+						<legend>Environment Scaling</legend>
+						<div>
+							<label>Deployment Mode</label>
+							<select class="form-control" ng-required="true" ng-options="mode for mode in currentScope.deploymentModes" ng-model="currentScope.mode"></select>
+							<label class="fieldMsg">Global/Daemonset mode deploys one replica of the service on each node.</label>
+							<label class="fieldMsg">Replicated/Deployment mode deploys the specified number of replicas based on the availability of resources.</label>
+							<br />
+						</div>
+						<div ng-if="!currentScope.autoScale && (currentScope.mode == 'replicated' || currentScope.mode == 'deployment')">
+							<label>Replica Count</label>
+							<input type="number" class="form-control" ng-model="currentScope.number" ng-required="true"/>
+							<br>
+						</div>
+						<fieldset ng-if="currentScope.isAutoScalable && currentScope.mode === 'deployment'" ng-class="{'autoScale':!currentScope.autoScale}">
+							<legend>Auto Scale <input type="checkbox" ng-model="currentScope.autoScale"></legend>
+							<fieldset ng-if="currentScope.autoScale">
+								<legend>Metrics</legend>
+								<div>
+									<label>CPU</label>
+									<input type="number" class="form-control" ng-model="currentScope.autoScaleObject.metrics.cpu.percent" ng-required="true"/>
+									<label class="fieldMsg">Enter CPU percentage</label>
+									<br>
+								</div>
+							</fieldset>
+							<fieldset ng-if="currentScope.autoScale">
+								<legend>Replicas</legend>
+								<div>
+									<label>min</label>
+									<input type="number" class="form-control" ng-model="currentScope.autoScaleObject.replicas.min" ng-required="true"/>
+									<label class="fieldMsg">Enter minimum Replica Count that is greater or equal to 1</label>
+									<br>
+								</div>
+								<div>
+									<label>max</label>
+									<input type="number" class="form-control" ng-model="currentScope.autoScaleObject.replicas.max" ng-required="true"/>
+									<label class="fieldMsg">Enter maximum Replica Count that is greater or equal to 1</label>
+									<br>
+								</div>
+							</fieldset>
+						</fieldset>
+					</fieldset>
 				</div>
 			</form>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="onSubmit()">Deploy</button>
+		<button class="btn btn-primary" ng-disabled = "deploy.$invalid" ng-click="onSubmit()">Deploy</button>
 		<button class="btn btn-danger" ng-click="closeModal()">Cancel</button>
 	</div>
 </script>

@@ -11,6 +11,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		var env = currentScope.envCode.toLowerCase();
 		currentScope.showCtrlHosts = true;
 		currentScope.soajsServices = false;
+		currentScope.isAutoScalable = false;
         currentScope.controllers =[];
 		if (currentScope.access.hacloud.services.list) {
 			getUpdatesNotifications(function(){
@@ -26,6 +27,21 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					}
 					else {
 						if (response && response.length > 0) {
+							if (currentScope.envPlatform === 'kubernetes') {
+								loop1:
+									for (var i = 0; i < response.length; i++) {
+										if (response[i].name === 'heapster' && response[i].namespace === 'kube-system') {
+											if (response[i].tasks && response[i].tasks.length > 0) {
+												for (var y = 0; y < response[i].tasks.length; i++) {
+													if (response[i].tasks[y].status && response[i].tasks[y].status.state === "running") {
+														currentScope.isAutoScalable = true;
+														break loop1;
+													}
+												}
+											}
+										}
+									}
+							}
                             currentScope.rawServicesResponse = angular.copy(response);
 							currentScope.hosts = {
 								'soajs': {
