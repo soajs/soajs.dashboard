@@ -16,8 +16,8 @@ if(location && location.host){
 
 //detect port
 var mydomainport = 80;
-if (location && location.port && location.port !== 80) {
-	mydomainport = mydomainport;
+if (location && location.port && parseInt(location.port) !== 80) {
+	mydomainport = location.port;
 }
 mydomain += ":" + mydomainport;
 
