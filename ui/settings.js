@@ -1,0 +1,4 @@
+var customSettings = {
+	api: '',
+	key: ''
+};
