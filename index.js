@@ -1026,6 +1026,19 @@ service.init(function () {
 	});
 
 	/**
+	 * Deploy a plugin, such as heapster
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/cloud/plugins/deploy", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.deploy.module, dbModel, function (BL) {
+			BL.deployPlugin(config, req.soajs, service.registry, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
 	 * Redeploy a running service
 	 * @param {String} API route
 	 * @param {Function} API middleware

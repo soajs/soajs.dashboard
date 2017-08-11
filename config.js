@@ -2007,6 +2007,28 @@ module.exports = {
                 }
             },
 
+			"/cloud/plugins/deploy": {
+				"_apiInfo": {
+					"l": "Deploy A Custom Resource",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"plugin": {
+					"source": ['body.plugin'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": [ 'heapster' ]
+					}
+				}
+			},
+
             "/cloud/nodes/add": {
                 "_apiInfo": {
                     "l": "Add HA Cloud Node",
