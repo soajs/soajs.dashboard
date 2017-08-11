@@ -39,8 +39,6 @@ var apiConfiguration = {
 	key: myKey
 };
 
-console.log(apiConfiguration);
-
 var SOAJSRMS = ['soajs.controller','soajs.urac','soajs.oauth','soajs.dashboard','soajs.prx','soajs.gcs'];
 
 var uiModuleDev = 'modules/dev';
