@@ -7,7 +7,9 @@ var mydomain = "soajs.org";
 
 //detect domain
 if(location && location.host){
-	var customDomain = location.host.split(".");
+	var customDomain = location.host;
+	customDomain = customDomain.split(":")[0];
+	customDomain = customDomain.split(".");
 	customDomain = customDomain[customDomain.length-2] + "." + customDomain[customDomain.length-1];
 	mydomain = customDomain;
 }
