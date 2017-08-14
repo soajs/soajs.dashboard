@@ -3522,7 +3522,7 @@ module.exports = {
 							"type": "object",
 							"properties": {
 								"id": { "type": "string", "required": true },
-								"type": { "type": "string", "required": true, "enum": [ "deployment", "daemonset" ] }
+								"type": { "type": "string", "required": true, "enum": [ "deployment" ] }
 							}
 						}
 					}
