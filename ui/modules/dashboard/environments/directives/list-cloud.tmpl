@@ -408,17 +408,17 @@
 						</fieldset>
 					</div>
 					<div ng-if="groupName === 'soajs'">
-						<div ng-if="!list.groups">
-							<div ng-show="hosts['nginx'].list.length === 0">
-								<alert type="warning" ng-style="{'text-align': 'center'}">This environment has not been
-									deployed yet!
-								</alert>
-								<br/>
-								<button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">
-									Deploy Environment
-								</button>
-							</div>
-						</div>
+						<!--<div ng-if="!list.groups">-->
+							<!--<div ng-show="hosts['nginx'].list.length === 0">-->
+								<!--<alert type="warning" ng-style="{'text-align': 'center'}">This environment has not been-->
+									<!--deployed yet!-->
+								<!--</alert>-->
+								<!--<br/>-->
+								<!--<button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">-->
+									<!--Deploy Environment-->
+								<!--</button>-->
+							<!--</div>-->
+						<!--</div>-->
 						<fieldset class="groupFieldset" ng-repeat="(name, group) in list.groups">
 							<legend>
 								<a href="" class="icon" ng-class="{'icon-minus': group.expanded, 'icon-plus': !group.expanded}" ng-click="showHideContent(group)"></a>
