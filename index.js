@@ -1032,7 +1032,7 @@ service.init(function () {
 	 */
 	service.post("/cloud/plugins/deploy", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.deploy.module, dbModel, function (BL) {
-			BL.deployPlugin(config, req.soajs, service.registry, deployer, function (error, data) {
+			BL.deployPlugin(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
