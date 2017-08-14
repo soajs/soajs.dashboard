@@ -109,6 +109,26 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                 {l: 'Deployment', v: 'deployment', 'selected': true},
                 {l: 'Daemonset', v: 'daemonset'}
             ];
+	        formConfig.entries[0].entries.splice(3, 0,
+		        {
+			        'name': 'nginxCpuLimit',
+			        'label': 'CPU Limit Per Instance for Nginx',
+			        'type': 'number',
+			        'placeholder': '100m or 0.1',
+			        'fieldMsg': 'Set a custom CPU limit for Nginx instances',
+			        'required': true
+		        }
+	        );
+	        formConfig.entries[1].entries.splice(3, 0,
+		        {
+			        'name': 'ctrlCpuLimit',
+			        'label': 'CPU Limit Per Instance for Controller',
+			        'type': 'number',
+			        'placeholder': '100m or 0.1',
+			        'fieldMsg': 'Set a custom CPU limit for controller instances',
+			        'required': true
+		        }
+	        );
         }
 
         formConfig.entries[0].entries[0].onAction = function (id, data, form) {
@@ -235,6 +255,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     },
                 }
             };
+            if(currentScope.isKubernetes && formData.ctrlCpuLimit ){
+	            params.deployConfig.cpuLimit = formData.ctrlCpuLimit;
+            }
 
             if (formData.controllerDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
                 params.deployConfig.replication.replicas = formData.controllers;
@@ -333,6 +356,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             params.deployConfig.replication = {
                 mode: formData.nginxDeploymentMode
             };
+	        if(currentScope.isKubernetes && formData.nginxCpuLimit ){
+		        params.deployConfig.cpuLimit = formData.nginxCpuLimit;
+	        }
 
             if (formData.nginxDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
                 params.deployConfig.replication.replicas = formData.nginxCount;
