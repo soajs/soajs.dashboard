@@ -157,8 +157,12 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             getCatalogRecipes(currentScope, function (recipes) {
                 // adding available recipes to form
                 recipes.forEach(function (oneRecipe) {
+	                var index = 3;
+	                if(currentScope.isKubernetes){
+		                index = 4;
+	                }
                     if (oneRecipe.type === 'soajs' && oneRecipe.subtype === 'service') {
-                        formConfig.entries[1].entries[3].value.push({ l: oneRecipe.name, v: oneRecipe._id });
+                        formConfig.entries[1].entries[index].value.push({ l: oneRecipe.name, v: oneRecipe._id });
 	                    injectCatalogInputs(formConfig, recipes, {
 		                    mainLevel : 1,
 	                        subLevel: 3,
@@ -171,7 +175,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 	                    });
                     }
                     else if (oneRecipe.type === 'nginx') {
-                        formConfig.entries[0].entries[3].value.push({ l: oneRecipe.name, v: oneRecipe._id });
+                        formConfig.entries[0].entries[index].value.push({ l: oneRecipe.name, v: oneRecipe._id });
 	                    injectCatalogInputs(formConfig, recipes, {
 		                    mainLevel : 0,
 		                    subLevel: 3,
