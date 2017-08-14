@@ -64,7 +64,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 									"list": []
 								}
 							};
-
+							currentScope.deployedInEnv = [];
 							for (var j = 0; j < response.length; j++) {
 								response[j].expanded = true;
 
@@ -108,10 +108,14 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 										response[j].labels['soajs.service.group'] = response[j].labels['soajs.service.group'].toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
 									}
 									if(['nginx', 'db', 'elk'].indexOf(response[j].labels['soajs.service.group']) !== -1){
+										if(['nginx'].indexOf(response[j].labels['soajs.service.group']) !== -1){
+											if(currentScope.deployedInEnv.indexOf('nginx') === -1){
+												currentScope.deployedInEnv.push('nginx');
+											}
+										}
 										currentScope.hosts[response[j].labels['soajs.service.group']].list.push(response[j]);
 									}
 									else{
-										currentScope.envDeployed = true;
 										if(!currentScope.hosts.soajs.groups){
 											currentScope.hosts.soajs.groups = {};
 										}
@@ -139,6 +143,9 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 										if(response[j].labels['soajs.service.name'] === 'controller'){
 											currentScope.hosts.soajs.groups[groupName].list.unshift(response[j]);
 											currentScope.controllers.push(response[j]);
+											if(currentScope.deployedInEnv.indexOf('controller') === -1){
+												currentScope.deployedInEnv.push('controller');
+											}
 										}
 										else{
 											currentScope.hosts.soajs.groups[groupName].list.push(response[j]);
@@ -154,9 +161,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 									currentScope.hosts[myGroup].list.push(response[j]);
 								}
 							}
-
-							if (!currentScope.hosts.soajs.groups || Object.keys(currentScope.hosts.soajs.groups).length === 0) {
+							if (!currentScope.hosts.soajs.groups || Object.keys(currentScope.hosts.soajs.groups).length === 0 || currentScope.deployedInEnv.length !== 2) {
 								currentScope.envDeployed = false;
+							}else{
+								currentScope.envDeployed = true;
 							}
 
 							step2();
@@ -1154,6 +1162,69 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			});
 		}
 	}
+	
+	function autoScale(currentScope, service) {
+		$modal.open({
+			templateUrl: "autoScale.tmpl",
+			size: 'm',
+			backdrop: true,
+			keyboard: true,
+			controller: function ($scope, $modalInstance) {
+				fixBackDrop();
+				$scope.currentScope = currentScope;
+				$scope.title = service.name + ' | Auto Scale Service';
+				if(service.autoscaler){
+					currentScope.autoScaleObject = service.autoscaler;
+				}else {
+					currentScope.autoScaleObject =
+						{
+							"replicas": {},
+							"metrics":{
+								"cpu":{}
+							}
+						}
+				}
+				$scope.onSubmit = function (action) {
+					overlayLoading.show();
+					var data = {
+						action: action,
+						services: [{"id": service.id, "type": service.labels['soajs.service.mode']}]
+					};
+					if(action === 'update'){
+						data.autoscaler = currentScope.autoScaleObject;
+					}
+					getSendDataFromServer(currentScope, ngDataApi, {
+						method: 'put',
+						routeName: '/dashboard/cloud/services/autoscale',
+						params:{
+							env: currentScope.envCode
+						},
+						data: data
+					}, function (error) {
+						overlayLoading.hide();
+						$modalInstance.close();
+						if (error) {
+							currentScope.displayAlert('danger', error.message);
+						}
+						else {
+							if(action === 'update'){
+								currentScope.displayAlert('success', 'Auto Scale is Enabled successfully');
+							}else{
+								currentScope.displayAlert('success', 'Auto Scale turned off successfully');
+							}
+							$timeout(function () {
+								currentScope.listServices();
+							}, 1500);
+						}
+					});
+				};
+				
+				$scope.closeModal = function () {
+					$modalInstance.close();
+				};
+			}
+		});
+	}
 
 	return {
 		'listServices': listServices,
@@ -1162,6 +1233,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		'scaleService': scaleService,
 		'redeployService': redeployService,
 		'rebuildService': rebuildService,
+		'autoScale': autoScale,
 
 		'executeHeartbeatTest': executeHeartbeatTest,
 		'hostLogs': hostLogs,

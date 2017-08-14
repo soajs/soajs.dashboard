@@ -231,6 +231,15 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 			}
 		});
 	};
+	
+	$scope.deployHeapster = function(){
+		deploySrv.deployHeapster($scope);
+	};
+	
+	$scope.autoScale = function (service) {
+		hacloudSrv.autoScale($scope, service);
+	};
+	
 
 	injectFiles.injectCss('modules/dashboard/environments/environments.css');
 	$scope.envCode = $cookies.getObject("myEnv").code;

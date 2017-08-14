@@ -955,18 +955,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
         // }
 
         //Start here
-        if (currentScope.hosts && currentScope.controllers) {
-            getCatalogRecipes(function () {
-	            openModalForm();
-            });
-        }
-        else {
-            currentScope.services.push({
-                name: 'controller',
-                UIGroup: 'Controllers',
-                type: 'service'
-            });
-        }
+	    getCatalogRecipes(function () {
+		    openModalForm();
+	    });
     }
 
     function getCatalogRecipes(currentScope, cb) {
@@ -984,9 +975,51 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             }
         });
     }
+	
+	/**
+	 * Deploy Heapster to enable Auto Scaling.
+	 * Kubernetes only.
+	 * @param currentScope
+	 */
+	function deployHeapster(currentScope){
+    	currentScope.isKubernetes = currentScope.envDeployer.selected.split('.')[1] === "kubernetes";
+    	if(currentScope.isKubernetes && !currentScope.isAutoScalable){
+		    var config = {
+			    "method": "post",
+			    "routeName": "/dashboard/cloud/plugins/deploy",
+			    "data": {
+			    	"env": currentScope.envCode,
+				    "plugin": "heapster"
+			    }
+		    };
+		
+		    overlayLoading.show();
+		    getSendDataFromServer(currentScope, ngDataApi, config, function (error) {
+			    overlayLoading.hide();
+			    if (error) {
+				    currentScope.displayAlert('danger', error.message);
+			    }
+			    else {
+				    currentScope.displayAlert('success', 'Heapster is deployed successfully and will be available in a few minutes');
+				    $timeout(function () {
+					    currentScope.listServices();
+				    }, 2000);
+				    currentScope.isAutoScalable = true;
+			    }
+		    });
+	    }
+	    else{
+    		if(!currentScope.isKubernetes) {
+			    currentScope.displayAlert('danger', 'Heapster is only deployed in Kubernetes!!');
+		    }else{
+			    currentScope.displayAlert('danger', 'Heapster is already deployed!!');
+		    }
+	    }
+    }
 
     return {
         'deployEnvironment': deployEnvironment,
-        'deployNewService': deployNewService
+        'deployNewService': deployNewService,
+	    'deployHeapster': deployHeapster
     }
 }]);

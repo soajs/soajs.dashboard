@@ -825,7 +825,9 @@ var environmentsConfig = {
 				"scale": ['dashboard', '/cloud/services/scale', 'put'],
 				"redeploy": ['dashboard', '/cloud/services/redeploy', 'put'],
 				"logs": ['dashboard', '/cloud/services/instances/logs', 'get'],
-				"operation": ['dashboard', '/cloud/services/maintenance', 'post']
+				"operation": ['dashboard', '/cloud/services/maintenance', 'post'],
+				"deployPlugin": ['dashboard', '/cloud/plugins/deploy', 'post'],
+				"autoScale": ['dashboard', '/cloud/services/autoscale', 'put'],
 			}
 		},
 		"analytics":{

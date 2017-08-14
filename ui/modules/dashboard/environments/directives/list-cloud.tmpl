@@ -183,6 +183,48 @@
 	</div>
 </script>
 
+<script type="text/ng-template" id="autoScale.tmpl">
+	<div class="modal-header">
+		<h3 class="modal-title">{{title}}</h3>
+	</div>
+	<div class="modal-body text-align-center">
+		<alert type="danger" ng-if="message.danger">{{message.danger}}</alert>
+		<div class="form">
+			<form name="autoScale" id="autoScale" ng-submit="autoScale.$valid && onSubmit()">
+			<fieldset>
+				<legend>Metrics</legend>
+				<div>
+					<label>CPU</label>
+					<input type="number" class="form-control" ng-model="currentScope.autoScaleObject.metrics.cpu.percent" ng-required="true"/>
+					<label class="fieldMsg">Enter CPU percentage</label>
+					<br>
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend>Replicas</legend>
+				<div>
+					<label>min</label>
+					<input type="number" class="form-control" ng-model="currentScope.autoScaleObject.replicas.min" min="1" ng-required="true"/>
+					<label class="fieldMsg">Enter minimum Replica Count that is greater or equal to 1</label>
+					<br>
+				</div>
+				<div>
+					<label>max</label>
+					<input type="number" class="form-control" ng-model="currentScope.autoScaleObject.replicas.max" min="1" ng-required="true"/>
+					<label class="fieldMsg">Enter maximum Replica Count that is greater or equal to 1</label>
+					<br>
+				</div>
+			</fieldset>
+			</form>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-success" ng-disabled='autoScale.$invalid' ng-click="onSubmit('update')">Auto Scale</button>
+		<button class="btn btn-danger" ng-disabled='autoScale.$invalid' ng-click="onSubmit('turnOff')">Turn Off</button>
+		<button class="btn btn-primary" ng-click="closeModal()">Cancel</button>
+	</div>
+</script>
+
 <section ng-controller="hacloudCtrl">
 	<tabset>
 		<tab heading="Nodes" ng-if="access.hacloud.nodes.list">
@@ -260,7 +302,7 @@
 		</tab>
 		<tab heading="Services" ng-if="access.hacloud.services.list">
 			<br/>
-			<div ng-if="!hosts">
+			<div ng-if="!envDeployed || !hosts">
 				<alert type="warning" ng-style="{'text-align': 'center'}">This environment has not been deployed yet!
 				</alert>
 				<br/>
@@ -272,10 +314,13 @@
 				<select class="form-control namespaceSelect" ng-options="namespace.id as namespace.name for namespace in namespaces" ng-model="namespaceConfig.namespace"></select>
 				<br />
 			</div>
-			<div class="c-both w100 table" ng-if="envDeployed">
-				<button class="btn btn-primary f-left" ng-if="access.hacloud.services.add" ng-click="deployNewService()">Deploy Resource</button>
-				<span class="col-sm-2" ng-show="showActivateAnalytics" ng-if="access.analytics.activate"><button class="btn btn-success" ng-click="activateAnalytics()">Activate Analytics</button></span>
-				<span class="col-sm-2" ng-show="showAnalytics" ng-if="access.analytics.deactivate"><button class="btn btn-danger" ng-click="deactivateAnalytics()">Deactivate Analytics</button></span>
+			<div class="c-both w100 table">
+				<span class="f-left">
+					<button class="btn btn-primary" ng-if="access.hacloud.services.add" ng-click="deployNewService()">Deploy Resource</button>
+					<button class="btn btn-info" ng-if="envPlatform === 'kubernetes' && !isAutoScalable && access.hacloud.services.deployPlugin" ng-click="deployHeapster()">Deploy Heapster</button>
+					<button class="btn btn-success" ng-if="envDeployed && hosts && showActivateAnalytics && access.analytics.activate" ng-click="activateAnalytics()">Activate Analytics</button>
+					<button class="btn btn-danger" ng-if="envDeployed && hosts && showAnalytics && access.analytics.deactivate" ng-click="deactivateAnalytics()">Deactivate Analytics</button>
+				</span>
 				<div class="dropdown refreshDropDown f-right">
 					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 						<span class="icon icon-loop2"></span>&nbsp;{{selectedInterval.l}}
@@ -319,6 +364,7 @@
 											<ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
 												<li><a href="" ng-click="inspectService(service)"><span class="icon icon-info"></span>&nbsp;Inspect Service</a></li>
 												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(service, groupName)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
+												<li><a href="" ng-if="access.hacloud.services.autoScale && ['elk','db'].indexOf(groupName) === -1 && isAutoScalable && service.resources && service.resources.limits && service.resources.limits.cpu && service.labels['soajs.service.mode'] ==='deployment'" ng-click="autoScale(service)"><span class="icon icon-enlarge"></span>&nbsp;Auto Scale Service</a></li>
 												<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)" ng-confirm-click="Are you sure you want to restart this service?"><span class="icon icon-undo"></span>&nbsp;Restart Service</a></li>
 												<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, 'ui')" ng-confirm-click="Are you sure you want to redeploy this service?"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a></li>
 												<li><a href="" ng-if="access.hacloud.services.delete && !(envCode.toLowerCase() === 'dashboard' && groupName === 'nginx')" ng-click="deleteService(service, groupName)" ng-confirm-click="Are you sure you want to delete this service?"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
@@ -416,6 +462,7 @@
 													<li><a href="" ng-if="access.hacloud.services.operation" ng-if="['controller','oauth'].indexOf(service.labels['soajs.service.name']) !== -1" ng-click="loadServiceProvision(service)"><span class="icon icon-download3"></span>&nbsp;Load Provision</a></li>
 													<li><a href="" ng-if="access.hacloud.services.operation" ng-click="reloadServiceRegistry(service)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
 													<li><a href="" ng-if="access.hacloud.services.scale && service.labels['soajs.service.mode'] !== 'global' && service.labels['soajs.service.mode'] !== 'daemonset'" ng-click="scaleService(service, groupName)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
+													<li><a href="" ng-if="access.hacloud.services.autoScale && isAutoScalable && service.resources && service.resources.limits && service.resources.limits.cpu && service.labels['soajs.service.mode'] ==='deployment'" ng-click="autoScale(service)"><span class="icon icon-enlarge"></span>&nbsp;Auto Scale Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-undo" ng-confirm-click="Are you sure you want to restart this service?"></span>&nbsp;Restart Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, '')"><span class="icon icon-loop2" ng-confirm-click="Are you sure you want to redeploy this service?"></span>&nbsp;Redeploy Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.delete  && envCode.toLowerCase() !== 'dashboard'" ng-click="deleteService(service, groupName)" ng-confirm-click="Are you sure you want to delete this service?"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
