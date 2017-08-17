@@ -1039,6 +1039,20 @@ module.exports = {
                 }
             },
 
+			"/cloud/heapster": {
+				"_apiInfo": {
+                    "l": "Check if Heapster is Deployed",
+                    "group": "HA Cloud"
+                },
+				"env": {
+                    "source": ['query.env'],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+                }
+			},
+
             "/catalog/recipes/list": {
                 "_apiInfo": {
                     "l": "List Catalog Recipes",

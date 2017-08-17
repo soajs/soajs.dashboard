@@ -21,6 +21,10 @@ module.exports = {
                         "type": "object",
                         "required": true,
                         "properties": {
+                            "namespace": {
+                                "type": "string",
+                                "required": false
+                            },
                             "image": {
                                 "type": "object",
                                 "required": false,
@@ -49,6 +53,7 @@ module.exports = {
                                     "properties": {
                                         "name": { "type": "string", "required": true },
                                         "isPublished": { "type": "boolean", "required": false },
+                                        "port": { "type": "number", "required": false },
                                         "target": { "type": "number", "required": true },
                                         "published": { "type": "number", "required": false }
                                     }
@@ -76,6 +81,10 @@ module.exports = {
                                 }
                             },
                             "labels": {
+                                "type": "object",
+                                "required": false
+                            },
+                            "serviceAccount": {
                                 "type": "object",
                                 "required": false
                             }

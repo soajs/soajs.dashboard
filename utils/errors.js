@@ -294,7 +294,8 @@ var errors = {
 	"985": "swagger.yml file validation failed",
 	"986": "Validation for output config.js file failed",
 
-	"987": "Autoscaling is only supported in kubernetes mode"
+	"987": "Autoscaling is only supported in kubernetes mode",
+	"988": "Unable to detect Heapster componenets"
 };
 
 
