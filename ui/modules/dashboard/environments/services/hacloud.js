@@ -11,7 +11,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		var env = currentScope.envCode.toLowerCase();
 		currentScope.showCtrlHosts = true;
 		currentScope.soajsServices = false;
-		currentScope.isAutoScalable = false;
+		currentScope.isAutoScalable = true;
+		currentScope.isHeapsterDeployed = false;
         currentScope.controllers =[];
 		if (currentScope.access.hacloud.services.list) {
 			getUpdatesNotifications(function(){
@@ -34,7 +35,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 											if (response[i].tasks && response[i].tasks.length > 0) {
 												for (var y = 0; y < response[i].tasks.length; i++) {
 													if (response[i].tasks[y].status && response[i].tasks[y].status.state === "running") {
-														currentScope.isAutoScalable = true;
+														currentScope.isHeapsterDeployed = true;
 														break loop1;
 													}
 												}
@@ -42,6 +43,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 										}
 									}
 							}
+							currentScope.isAutoScalable = currentScope.isHeapsterDeployed;
                             currentScope.rawServicesResponse = angular.copy(response);
 							currentScope.hosts = {
 								'soajs': {
@@ -1172,7 +1174,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			controller: function ($scope, $modalInstance) {
 				fixBackDrop();
 				$scope.currentScope = currentScope;
-				$scope.title = service.name + ' | Auto Scale Service';
+				$scope.title =  (service.labels && service.labels['soajs.service.name']) ? service.labels['soajs.service.name']  : service.name;
+				$scope.title +=' | Auto Scale';
 				if(service.autoscaler){
 					currentScope.autoScaleObject = service.autoscaler;
 				}else {
@@ -1225,6 +1228,141 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			}
 		});
 	}
+	
+	function envAutoScale(currentScope) {
+		overlayLoading.show();
+		getSendDataFromServer(currentScope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/environment',
+			params:{
+				code: currentScope.envCode
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				currentScope.displayAlert('danger', error.message);
+			}
+			else {
+				currentScope.autoScaleObject =
+					{
+						"replicas": {},
+						"metrics":{
+							"cpu":{}
+						}
+					};
+				if(response.deployer && response.deployer.selected){
+					var keys = response.deployer.selected.split(".");
+					if(keys.length === 3 && response.deployer[keys[0]][keys[1]][keys[2]].autoscale){
+						currentScope.autoScaleObject = response.deployer[keys[0]][keys[1]][keys[2]].autoscale;
+					}
+				}
+				currentScope.defaultServicesList = [];
+				currentScope.customServicesList = [];
+				
+				currentScope.rawServicesResponse.forEach(function (oneService) {
+					if(oneService.labels && oneService.labels['soajs.service.mode'] && oneService.labels['soajs.service.mode'] === "deployment" && oneService.resources && oneService.resources.limits && oneService.resources.limits.cpu ){
+						var service = {
+							"id" : oneService.id,
+							"type": "deployment",
+							"selected": false
+						};
+						if(oneService.labels['soajs.service.name']){
+							service.name = oneService.labels['soajs.service.name'];
+						}else{
+							service.name = oneService.name;
+						}
+						if(oneService.autoscaler && Object.keys(oneService.autoscaler).length > 0){
+							service.autoscaler = angular.copy(oneService.autoscaler);
+							if(currentScope.autoScaleObject && !angular.equals(oneService.autoscaler , currentScope.autoScaleObject)){
+								service.custom = true
+							}
+						}
+						if(service.custom){
+							currentScope.customServicesList.push(service);
+						}else{
+							currentScope.defaultServicesList.push(service);
+						}
+					}
+				});
+				
+				$modal.open({
+					templateUrl: "envAutoScale.tmpl",
+					size: 'm',
+					backdrop: true,
+					keyboard: true,
+					controller: function ($scope, $modalInstance) {
+						fixBackDrop();
+						$scope.currentScope = currentScope;
+						$scope.title = 'Environment Auto Scale';
+						$scope.onSubmit = function (action) {
+							overlayLoading.show();
+							var data = {
+								action: action,
+								services: []
+							};
+							if(currentScope.customServicesList && currentScope.customServicesList.length > 0){
+								currentScope.customServicesList.forEach(function(oneCustom){
+									if(oneCustom.selected){
+										data.services.push({"id":oneCustom.id,"type":oneCustom.type});
+									}
+								});
+							}
+							if(currentScope.defaultServicesList && currentScope.defaultServicesList.length > 0){
+								currentScope.defaultServicesList.forEach(function(oneDefault){
+									if(oneDefault.selected){
+										data.services.push({"id":oneDefault.id,"type":oneDefault.type});
+									}
+								});
+							}
+							if(action === 'update'){
+								data.autoscaler = currentScope.autoScaleObject;
+							}
+							getSendDataFromServer(currentScope, ngDataApi, {
+								method: 'put',
+								routeName: '/dashboard/cloud/services/autoscale',
+								params:{
+									env: currentScope.envCode
+								},
+								data: data
+							}, function (error) {
+								if (error) {
+									currentScope.displayAlert('danger', error.message);
+								}
+								else {
+									getSendDataFromServer(currentScope, ngDataApi, {
+										method: 'put',
+										routeName: '/dashboard/cloud/services/autoscale/config',
+										params:{
+											env: currentScope.envCode
+										},
+										data: {"autoscale": currentScope.autoScaleObject}
+									}, function (error) {
+										overlayLoading.hide();
+										$modalInstance.close();
+										if (error) {
+											currentScope.displayAlert('danger', error.message);
+										}
+										else {
+											currentScope.listServices();
+											if(action === 'update'){
+												currentScope.displayAlert('success', 'Auto Scale is Enabled successfully');
+											}else{
+												currentScope.displayAlert('success', 'Auto Scale turned off successfully');
+											}
+										}
+									});
+								}
+							});
+						};
+						
+						$scope.closeModal = function () {
+							$modalInstance.close();
+						};
+					}
+				});
+			}
+		});
+	}
 
 	return {
 		'listServices': listServices,
@@ -1234,6 +1372,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		'redeployService': redeployService,
 		'rebuildService': rebuildService,
 		'autoScale': autoScale,
+		'envAutoScale': envAutoScale,
 
 		'executeHeartbeatTest': executeHeartbeatTest,
 		'hostLogs': hostLogs,

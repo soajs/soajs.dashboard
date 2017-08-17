@@ -240,7 +240,10 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 		hacloudSrv.autoScale($scope, service);
 	};
 	
-
+	$scope.envAutoScale = function () {
+		hacloudSrv.envAutoScale($scope);
+	};
+	
 	injectFiles.injectCss('modules/dashboard/environments/environments.css');
 	$scope.envCode = $cookies.getObject("myEnv").code;
 	$scope.envDeployer = $cookies.getObject("myEnv").deployer;
