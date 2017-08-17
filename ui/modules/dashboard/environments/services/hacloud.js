@@ -1294,6 +1294,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						fixBackDrop();
 						$scope.currentScope = currentScope;
 						$scope.title = 'Environment Auto Scale';
+						$scope.selectDefault = false;
+						$scope.selectCustom = false;
 						$scope.onSubmit = function (action) {
 							overlayLoading.show();
 							var data = {
@@ -1357,6 +1359,20 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						
 						$scope.closeModal = function () {
 							$modalInstance.close();
+						};
+						
+						$scope.selectAllCustom = function (){
+							$scope.selectCustom = !$scope.selectCustom;
+							currentScope.customServicesList.forEach(function(oneCustom){
+								oneCustom.selected = $scope.selectCustom;
+							});
+						};
+						
+						$scope.selectAllDefault = function (){
+							$scope.selectDefault = !$scope.selectDefault;
+							currentScope.defaultServicesList.forEach(function(oneDefault){
+								oneDefault.selected = $scope.selectDefault;
+							});
 						};
 					}
 				});

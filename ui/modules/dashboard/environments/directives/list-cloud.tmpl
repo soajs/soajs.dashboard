@@ -264,23 +264,41 @@
 						<fieldset ng-if="currentScope.defaultServicesList.length > 0">
 							<legend>Default</legend>
 							<ul style="list-style-type: none;">
+								<li>
+									<input type="checkbox" name="Select All" ng-model="selectDefault" ng-click="selectAllDefault()"/>
+									<label>Select All</label>
+								</li>
 								<li ng-repeat="service in currentScope.defaultServicesList">
-									<input type="checkbox" name="{{service.name}}" ng-model="service.selected"/>
-									<label>{{service.name}}</label>
-									<span style="color: green;" ng-if="service.autoscaler"><span class="icon icon-checkmark"></span>Auto Scaled</span>
+									<div class="col-sm-12">
+									<div class="col-sm-3">
+										<input type="checkbox" name="{{service.name}}" ng-model="service.selected"/>
+										<label>{{service.name}}</label>
+									</div>
+									<div class="col-sm-3" style="color: green;" ng-if="service.autoscaler"><span class="icon icon-checkmark"></span>Auto Scaled</div>
+									</div>
 								</li>
 							</ul>
 						</fieldset>
 						<fieldset ng-if="currentScope.customServicesList.length > 0">
 							<legend>Custom</legend>
 							<ul style="list-style-type: none;">
+								<li>
+									<input type="checkbox" name="Select All" ng-model="selectCustom" ng-click="selectAllCustom()"/>
+									<label>Select All</label>
+								</li>
 								<li ng-repeat="customService in currentScope.customServicesList">
-									<input type="checkbox" name="{{service.name}}" ng-model="customService.selected"/>
-									<label>{{customService.name}}</label>
-									<span>
-										<span style="color: green;" ng-if="customService.autoscaler"><span class="icon icon-checkmark"></span>Auto Scaled</span>
-										<span ng-if="customService.autoscaler">&nbsp;&nbsp;<b>CPU:</b>&nbsp;{{customService.autoscaler.metrics.cpu.percent}}%&nbsp;&nbsp;<b>Min:</b>&nbsp;{{customService.autoscaler.replicas.min}}&nbsp;&nbsp;<b>Max:</b>&nbsp;{{customService.autoscaler.replicas.max}}</b></span>
-									</span>
+									<div class="col-sm-12">
+									<div class="col-sm-3">
+										<input type="checkbox" name="{{customService.name}}" ng-model="customService.selected"/>
+										<label>{{customService.name}}</label>
+									</div>
+									<span ng-if="customService.autoscaler">
+											<div class="col-sm-3" style="color: green;"><span class="icon icon-checkmark"></span>Auto Scaled</div>
+											<div class="col-xs-2"><b>CPU:</b>&nbsp;{{customService.autoscaler.metrics.cpu.percent}}%</div>
+											<div class="col-xs-2"><b>Min:</b>&nbsp;{{customService.autoscaler.replicas.min}}</div>
+											<div class="col-xs-2"><b>Max:</b>&nbsp;{{customService.autoscaler.replicas.max}}</div>
+										</span>
+									</div>
 								</li>
 							</ul>
 						</fieldset>
