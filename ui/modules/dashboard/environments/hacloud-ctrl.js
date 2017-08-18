@@ -248,6 +248,10 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 		hacloudSrv.envAutoScale($scope);
 	};
 
+	$scope.numToArray = function(num) {
+		return new Array(num);
+	};
+
 	injectFiles.injectCss('modules/dashboard/environments/environments.css');
 	$scope.envCode = $cookies.getObject("myEnv").code;
 	$scope.envDeployer = $cookies.getObject("myEnv").deployer;

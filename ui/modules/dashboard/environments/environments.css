@@ -112,6 +112,7 @@ ul {
 
 .serviceLabelBox {
     margin-left: 0px !important;
+    margin-top: 3px !important;
     padding-left: 2px !important;
     padding-right: 2px;
     background-color: white;
@@ -199,8 +200,8 @@ ul {
 }
 
 .namespaceSelect {
-    width: 15% !important;
-    float: right;
+    width: 50% !important;
+    float: left;
 }
 
 
@@ -347,4 +348,25 @@ fieldset.autoScale legend {
     font-weight: bold;
     color: #333;
     padding:0;
+}
+
+.w41 {
+    width: 41% !important;
+}
+
+.autoscaleBox {
+    margin-right: 10px;
+    color: green !important;
+}
+
+.instanceUp {
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+    color: green !important;
+}
+
+.instanceDown {
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+    color: grey;
 }

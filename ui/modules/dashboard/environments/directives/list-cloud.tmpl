@@ -407,27 +407,32 @@
 					Deploy Environment
 				</button>
 			</div>
-			<div ng-if="envPlatform === 'kubernetes' && namespaces.length > 0">
-				<select class="form-control namespaceSelect" ng-options="namespace.id as namespace.name for namespace in namespaces" ng-model="namespaceConfig.namespace"></select>
-				<br /><br />
-			</div>
 			<div class="c-both w100 table">
 				<span class="f-left">
-					<button class="btn btn-primary" ng-if="access.hacloud.services.add" ng-click="deployNewService()">Deploy Resource</button>
-					<button class="btn btn-info" ng-if="envPlatform === 'kubernetes' && isAutoScalable === false && access.hacloud.services.deployPlugin" ng-click="deployHeapster()">Deploy Heapster</button>
+					<button class="btn btn-primary" ng-if="access.hacloud.services.add" ng-click="deployNewService()">Deploy Resource</button>&nbsp;&nbsp;
+					<span ng-if="envPlatform === 'kubernetes' && isAutoScalable === false && access.hacloud.services.deployPlugin">
+						<button class="btn btn-info" ng-click="deployHeapster()">Enable Autoscaling</button>&nbsp;&nbsp;
+					</span>
 					<button class="btn btn-success" ng-if="envDeployed && hosts && showActivateAnalytics && access.analytics.activate" ng-click="activateAnalytics()">Activate Analytics</button>
 					<button class="btn btn-danger" ng-if="envDeployed && hosts && showAnalytics && access.analytics.deactivate" ng-click="deactivateAnalytics()">Deactivate Analytics</button>
 				</span>
-				<div class="dropdown refreshDropDown f-right">
-					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-						<span class="icon icon-loop2"></span>&nbsp;{{selectedInterval.l}}
-						<span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu" aria-labelledby="refreshDropdown">
-						<li ng-repeat="oneInterval in refreshIntervals">
-							<a href="" ng-click="changeInterval(oneInterval)">{{oneInterval.l}}</a></li>
-					</ul>
-					<button class="btn btn-primary" ng-if="isAutoScalable && envDeployed" ng-click="envAutoScale()">ENV Auto Scale</button>
+				<div class="f-right w41">
+					<span ng-if="envPlatform === 'kubernetes' && namespaces.length > 0">
+						<select class="form-control namespaceSelect" ng-options="namespace.id as namespace.name for namespace in namespaces" ng-model="namespaceConfig.namespace"></select>&nbsp;&nbsp;
+					</span>
+					<span ng-if="isAutoScalable && envDeployed">
+						<button class="btn btn-info" ng-click="envAutoScale()">Configure Autoscaling</button>&nbsp;&nbsp;
+					</span>
+					<span class="dropdown refreshDropDown">
+						<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+							<span class="icon icon-loop2"></span>&nbsp;{{selectedInterval.l}}
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="refreshDropdown">
+							<li ng-repeat="oneInterval in refreshIntervals">
+								<a href="" ng-click="changeInterval(oneInterval)">{{oneInterval.l}}</a></li>
+						</ul>
+					</span>
 				</div>
 				<br /><br />
 			</div>
@@ -469,6 +474,12 @@
 												<li ng-if="['elk','db'].indexOf(groupName) === -1 && showAnalytics && envPlatform === 'docker'"> <a href="" ng-click="metrics('', service.name,'other','metricbeat',service.labels['soajs.service.mode'])"><span class="icon icon-stats-bars"></span>&nbsp;Get Service Metrics</a></li>
 											</ul>
 										</div>
+
+										<span class="serviceLabelBox autoscaleBox f-right" ng-if="envPlatform === 'kubernetes' && service.autoscaler && service.autoscaler.replicas.min && service.autoscaler.replicas.max">
+											<span class="icon icon-enlarge"></span>&nbsp;Autoscaled
+											<span ng-repeat="task in service.tasks"><span class="icon icon-cloud-check instanceUp"></span></span>
+											<span ng-repeat="i in numToArray(service.autoscaler.replicas.max - service.tasks.length) track by $index"><span class="icon icon-cloud instanceDown"></span></span>
+										</span>
 									</div>
 									<div class="body">
 										<div class="grid">
@@ -567,6 +578,12 @@
 													<li ng-if="showAnalytics && envPlatform === 'docker'"><a href="" ng-click="metrics('', service.name,'service','metricbeat',service.labels['soajs.service.mode'])"><span class="icon icon-stats-bars"></span>&nbsp;Get Service Metrics</a></li><li>
 												</ul>
 											</div>
+
+											<span class="serviceLabelBox autoscaleBox f-right" ng-if="envPlatform === 'kubernetes' && service.autoscaler && service.autoscaler.replicas.min && service.autoscaler.replicas.max">
+												<span class="icon icon-enlarge"></span>&nbsp;Autoscaled
+												<span ng-repeat="task in service.tasks"><span class="icon icon-cloud-check instanceUp"></span></span>
+												<span ng-repeat="i in numToArray(service.autoscaler.replicas.max - service.tasks.length) track by $index"><span class="icon icon-cloud instanceDown"></span></span>
+											</span>
 										</div>
 										<div class="body">
 											<div class="grid">
