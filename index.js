@@ -1052,6 +1052,19 @@ service.init(function () {
 	});
 
 	/**
+	 * Check if heapster is deployed
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/cloud/heapster", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.autoscale.module, dbModel, function (BL) {
+			BL.checkHeapster(config, req.soajs, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
 	 * Redeploy a running service
 	 * @param {String} API route
 	 * @param {Function} API middleware
