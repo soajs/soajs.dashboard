@@ -356,13 +356,13 @@ fieldset.autoScale legend {
 
 .autoscaleBox {
     margin-right: 10px;
-    color: green !important;
+    color: #5bc0de !important;
 }
 
 .instanceUp {
     margin-right: 0px !important;
     margin-left: 0px !important;
-    color: green !important;
+    color: #5bc0de !important;
 }
 
 .instanceDown {
