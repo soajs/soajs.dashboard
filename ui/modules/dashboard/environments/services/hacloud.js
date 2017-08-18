@@ -11,8 +11,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		var env = currentScope.envCode.toLowerCase();
 		currentScope.showCtrlHosts = true;
 		currentScope.soajsServices = false;
-		currentScope.isAutoScalable = true;
-		currentScope.isHeapsterDeployed = false;
         currentScope.controllers =[];
 		if (currentScope.access.hacloud.services.list) {
 			getUpdatesNotifications(function(){
@@ -28,22 +26,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					}
 					else {
 						if (response && response.length > 0) {
-							if (currentScope.envPlatform === 'kubernetes') {
-								loop1:
-									for (var i = 0; i < response.length; i++) {
-										if (response[i].name === 'heapster' && response[i].namespace === 'kube-system') {
-											if (response[i].tasks && response[i].tasks.length > 0) {
-												for (var y = 0; y < response[i].tasks.length; i++) {
-													if (response[i].tasks[y].status && response[i].tasks[y].status.state === "running") {
-														currentScope.isHeapsterDeployed = true;
-														break loop1;
-													}
-												}
-											}
-										}
-									}
-							}
-							currentScope.isAutoScalable = currentScope.isHeapsterDeployed;
                             currentScope.rawServicesResponse = angular.copy(response);
 							currentScope.hosts = {
 								'soajs': {
@@ -258,6 +240,29 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				}
 			});
 		}
+	}
+
+	function checkHeapster(currentScope, cb) {
+		if(currentScope.envPlatform !== 'kubernetes') {
+			if(cb) return cb();
+		}
+
+		getSendDataFromServer(currentScope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/cloud/heapster',
+			params: {
+				"env": currentScope.envCode
+			}
+		}, function (error, response) {
+			if (error) {
+				currentScope.displayAlert('danger', error.message);
+			}
+			else {
+				currentScope.isHeapsterDeployed = response.deployed;
+				currentScope.isAutoScalable = currentScope.isHeapsterDeployed;
+				if(cb) return cb();
+			}
+		});
 	}
 
 	/**
@@ -1164,7 +1169,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			});
 		}
 	}
-	
+
 	function autoScale(currentScope, service) {
 		$modal.open({
 			templateUrl: "autoScale.tmpl",
@@ -1221,14 +1226,14 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						}
 					});
 				};
-				
+
 				$scope.closeModal = function () {
 					$modalInstance.close();
 				};
 			}
 		});
 	}
-	
+
 	function envAutoScale(currentScope) {
 		overlayLoading.show();
 		getSendDataFromServer(currentScope, ngDataApi, {
@@ -1258,7 +1263,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				}
 				currentScope.defaultServicesList = [];
 				currentScope.customServicesList = [];
-				
+
 				currentScope.rawServicesResponse.forEach(function (oneService) {
 					if(oneService.labels && oneService.labels['soajs.service.mode'] && oneService.labels['soajs.service.mode'] === "deployment" && oneService.resources && oneService.resources.limits && oneService.resources.limits.cpu ){
 						var service = {
@@ -1284,7 +1289,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						}
 					}
 				});
-				
+
 				$modal.open({
 					templateUrl: "envAutoScale.tmpl",
 					size: 'm',
@@ -1356,18 +1361,18 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 								}
 							});
 						};
-						
+
 						$scope.closeModal = function () {
 							$modalInstance.close();
 						};
-						
+
 						$scope.selectAllCustom = function (){
 							$scope.selectCustom = !$scope.selectCustom;
 							currentScope.customServicesList.forEach(function(oneCustom){
 								oneCustom.selected = $scope.selectCustom;
 							});
 						};
-						
+
 						$scope.selectAllDefault = function (){
 							$scope.selectDefault = !$scope.selectDefault;
 							currentScope.defaultServicesList.forEach(function(oneDefault){
@@ -1389,6 +1394,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		'rebuildService': rebuildService,
 		'autoScale': autoScale,
 		'envAutoScale': envAutoScale,
+		'checkHeapster': checkHeapster,
 
 		'executeHeartbeatTest': executeHeartbeatTest,
 		'hostLogs': hostLogs,

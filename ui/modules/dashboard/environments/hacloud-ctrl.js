@@ -231,19 +231,23 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 			}
 		});
 	};
-	
+
+	$scope.checkHeapster = function() {
+		hacloudSrv.checkHeapster($scope);
+	};
+
 	$scope.deployHeapster = function(){
 		deploySrv.deployHeapster($scope);
 	};
-	
+
 	$scope.autoScale = function (service) {
 		hacloudSrv.autoScale($scope, service);
 	};
-	
+
 	$scope.envAutoScale = function () {
 		hacloudSrv.envAutoScale($scope);
 	};
-	
+
 	injectFiles.injectCss('modules/dashboard/environments/environments.css');
 	$scope.envCode = $cookies.getObject("myEnv").code;
 	$scope.envDeployer = $cookies.getObject("myEnv").deployer;
@@ -258,6 +262,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 		$scope.getSettings();
 		$scope.listServices(function(){
 			$scope.listNamespaces(function () {
+				$scope.checkHeapster();
 				$scope.autoRefresh();
 			});
 		});
