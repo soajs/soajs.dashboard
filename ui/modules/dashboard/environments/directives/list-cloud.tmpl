@@ -263,44 +263,51 @@
 						<label class="fieldMsg">Select Services that you want to Auto Scale or turn off</label>
 						<fieldset ng-if="currentScope.defaultServicesList.length > 0">
 							<legend>Default</legend>
-							<ul style="list-style-type: none;">
-								<li>
-									<input type="checkbox" name="Select All" ng-model="selectDefault" ng-click="selectAllDefault()"/>
-									<label>Select All</label>
-								</li>
-								<li ng-repeat="service in currentScope.defaultServicesList">
-									<div class="col-sm-12">
-									<div class="col-sm-3">
-										<input type="checkbox" name="{{service.name}}" ng-model="service.selected"/>
-										<label>{{service.name}}</label>
-									</div>
-									<div class="col-sm-3" style="color: green;" ng-if="service.autoscaler"><span class="icon icon-checkmark"></span>Auto Scaled</div>
-									</div>
-								</li>
-							</ul>
+							<label>Select:&nbsp;</label><a href="" ng-click="selectAllDefault(true)">All</a> - <a href="" ng-click="selectAllDefault(false)">None</a>
+							<div class="grid">
+								<table width="100%" border="0" cellpadding="5" cellspacing="3">
+									<tbody>
+										<tr class="first odd" ng-class="{'first': $first, 'last': $last, 'odd': $odd, 'even': $even}" ng-repeat="service in currentScope.defaultServicesList">
+											<td width="5%"><input type="checkbox" name="{{service.name}}" ng-model="service.selected"/></td>
+											<td width="40%" align="left">{{service.name}}</td>
+											<td width="35%">
+												<div ng-if="service.autoscaler">
+													<span class="mr10"><b>CPU:</b>&nbsp;{{service.autoscaler.metrics.cpu.percent}}%</span>
+													<span class="mr10"><b>Min:</b>&nbsp;{{service.autoscaler.replicas.min}}</span>
+													<span class="mr10"><b>Max:</b>&nbsp;{{service.autoscaler.replicas.max}}</span>
+												</div>
+											</td>
+											<td width="20%">
+												<span style="color: green;" ng-if="service.autoscaler"><span class="icon icon-checkmark"></span>Auto Scaled</span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
 						</fieldset>
 						<fieldset ng-if="currentScope.customServicesList.length > 0">
 							<legend>Custom</legend>
-							<ul style="list-style-type: none;">
-								<li>
-									<input type="checkbox" name="Select All" ng-model="selectCustom" ng-click="selectAllCustom()"/>
-									<label>Select All</label>
-								</li>
-								<li ng-repeat="customService in currentScope.customServicesList">
-									<div class="col-sm-12">
-									<div class="col-sm-3">
-										<input type="checkbox" name="{{customService.name}}" ng-model="customService.selected"/>
-										<label>{{customService.name}}</label>
-									</div>
-									<span ng-if="customService.autoscaler">
-											<div class="col-sm-3" style="color: green;"><span class="icon icon-checkmark"></span>Auto Scaled</div>
-											<div class="col-xs-2"><b>CPU:</b>&nbsp;{{customService.autoscaler.metrics.cpu.percent}}%</div>
-											<div class="col-xs-2"><b>Min:</b>&nbsp;{{customService.autoscaler.replicas.min}}</div>
-											<div class="col-xs-2"><b>Max:</b>&nbsp;{{customService.autoscaler.replicas.max}}</div>
-										</span>
-									</div>
-								</li>
-							</ul>
+							<label>Select:&nbsp;</label><a href="" ng-click="selectAllCustom(true)">All</a> - <a href="" ng-click="selectAllCustom(false)">None</a>
+							<div class="grid">
+								<table width="100%" border="0" cellpadding="5" cellspacing="3">
+									<tbody>
+										<tr class="first odd" ng-class="{'first': $first, 'last': $last, 'odd': $odd, 'even': $even}" ng-repeat="customService in currentScope.customServicesList">
+											<td width="5%"><input type="checkbox" name="{{service.name}}" ng-model="customService.selected"/></td>
+											<td width="40%" align="left">{{customService.name}}</td>
+											<td width="35%">
+												<div ng-if="customService.autoscaler">
+													<span class="mr10"><b>CPU:</b>&nbsp;{{customService.autoscaler.metrics.cpu.percent}}%</span>
+													<span class="mr10"><b>Min:</b>&nbsp;{{customService.autoscaler.replicas.min}}</span>
+													<span class="mr10"><b>Max:</b>&nbsp;{{customService.autoscaler.replicas.max}}</span>
+												</div>
+											</td>
+											<td width="20%">
+												<span style="color: green;" ng-if="customService.autoscaler"><span class="icon icon-checkmark"></span>Auto Scaled</span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
 						</fieldset>
 					</fieldset>
 					<alert type="info" ng-if="currentScope.defaultServicesList.length === 0 && currentScope.customServicesList.length === 0">

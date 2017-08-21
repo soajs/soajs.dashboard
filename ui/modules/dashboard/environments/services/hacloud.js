@@ -1366,15 +1366,15 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 							$modalInstance.close();
 						};
 
-						$scope.selectAllCustom = function (){
-							$scope.selectCustom = !$scope.selectCustom;
+						$scope.selectAllCustom = function (selectBoolean){
+							$scope.selectCustom = selectBoolean;
 							currentScope.customServicesList.forEach(function(oneCustom){
 								oneCustom.selected = $scope.selectCustom;
 							});
 						};
 
-						$scope.selectAllDefault = function (){
-							$scope.selectDefault = !$scope.selectDefault;
+						$scope.selectAllDefault = function (selectBoolean){
+							$scope.selectDefault = selectBoolean;
 							currentScope.defaultServicesList.forEach(function(oneDefault){
 								oneDefault.selected = $scope.selectDefault;
 							});
