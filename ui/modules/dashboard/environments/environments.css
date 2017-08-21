@@ -204,7 +204,7 @@ ul {
 }
 
 .namespaceSelect {
-    width: 50% !important;
+    width: 59% !important;
     float: left;
 }
 
@@ -354,24 +354,16 @@ fieldset.autoScale legend {
     padding:0;
 }
 
-.w41 {
-    width: 41% !important;
+.w30 {
+    width: 30% !important;
+}
+
+.w37 {
+    width: 37% !important;
 }
 
 .autoscaleBox {
     margin-right: 10px;
     padding-right: 11px;
     color: #5bc0de !important;
-}
-
-.instanceUp {
-    margin-right: 0px !important;
-    margin-left: 0px !important;
-    color: #5bc0de !important;
-}
-
-.instanceDown {
-    margin-right: 0px !important;
-    margin-left: 0px !important;
-    color: grey;
 }

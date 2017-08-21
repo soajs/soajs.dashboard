@@ -1192,6 +1192,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 							}
 						}
 				}
+				currentScope.serviceType = (service && service.labels && service.labels['soajs.service.mode']) ? service.labels['soajs.service.mode'] : null;
+
 				$scope.onSubmit = function (action) {
 					overlayLoading.show();
 					var data = {
