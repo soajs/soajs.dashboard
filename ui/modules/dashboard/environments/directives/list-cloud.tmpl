@@ -191,7 +191,7 @@
 		<alert type="danger" ng-if="message.danger">{{message.danger}}</alert>
 		<div ng-if="currentScope.serviceType !== 'deployment'">
 			<alert type="warning">
-				Autoscaling is only valid for deployments. This service is deployed as a {{currentScope.serviceType}} and does not support autoscaling.
+				This service is deployed as a {{currentScope.serviceType}} and does not support autoscaling.
 			</alert>
 		</div>
 		<div class="form" ng-show="currentScope.serviceType === 'deployment'">

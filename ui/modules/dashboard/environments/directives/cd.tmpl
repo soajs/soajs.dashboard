@@ -45,15 +45,18 @@
 				availability of resources.</label>
 			<br>
 		</div>
-		<div ng-if="!autoScale && (cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'replicated' || cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'deployment')">
-			<label>Replica Count</label>
-			<input type="number" ng-disabled="deployed" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas" ng-required="true"/>
-			<label class="fieldMsg">Enter a Replica Count that is greater or equal to 1</label>
-			<br>
-		</div>
-		<fieldset ng-if="isAutoScalable && cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode === 'deployment'" ng-class="{'autoScale':!autoScale}">
-			<legend>Auto Scale <input type="checkbox" ng-model="autoScale" ng-click="activateAutoScale()">
+
+		<alert type="info" ng-if="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode === 'daemonset'">Daemonsets do not support autoscaling.</alert>
+		<fieldset ng-if="isAutoScalable && cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode === 'deployment'">
+			<legend>Auto Scale<label class="switch"><input type="checkbox" ng-model="autoScale" ng-click="activateAutoScale()"><span class="slider round"></span></label>
 			</legend>
+			<fieldset ng-if="!autoScale && (cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'replicated' || cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'deployment')">
+				<legend>Replication</legend>
+				<label>Replica Count</label>
+				<input type="number" ng-disabled="deployed" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas" ng-required="true"/>
+				<label class="fieldMsg">Enter a Replica Count that is greater or equal to 1</label>
+				<br>
+			</fieldset>
 			<fieldset ng-if="autoScale">
 				<legend>Metrics</legend>
 				<div>
