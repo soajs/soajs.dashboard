@@ -195,7 +195,7 @@ describe("testing deploy.js", function () {
 						}
 					}
 				};
-				
+
 				var tenantRecord = {
 					"_id": '551286bce603d7e01ab1688e',
 					"oauth": {},
@@ -235,7 +235,7 @@ describe("testing deploy.js", function () {
 						}
 					]
 				};
-				
+
 				if (opts.collection === 'catalogs') {
 					return cb(null, catalogRecord);
 				}
@@ -319,9 +319,54 @@ describe("testing deploy.js", function () {
 						}
 					}
 				};
+
+				var tenantRecord = {
+					"_id": '551286bce603d7e01ab1688e',
+					"oauth": {},
+					"locked": true,
+					"code": "DBTN",
+					"name": "Dashboard Tenant",
+					"description": "This is the main dashboard tenant",
+					"applications": [
+						{
+							"product": "DSBRD",
+							"package": "DSBRD_MAIN",
+							"appId": '5512926a7a1f0e2123f638de',
+							"description": "this is the main application for the dashboard tenant",
+							"_TTL": 604800000,
+							"keys": [
+								{
+									"key": "38145c67717c73d3febd16df38abf311",
+									"extKeys": [
+										{
+											"expDate": 1503058746824,
+											"extKey": "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974",
+											"device": null,
+											"geo": null,
+											"dashboardAccess": true,
+											"env": "DASHBOARD"
+										}
+									],
+									"config": {
+										"dashboard": {
+											"urac": {
+												"tokenExpiryTTL": 172800000
+											}
+										}
+									}
+								}
+							]
+						}
+					]
+				};
+
 				if (opts.collection === 'catalogs') {
 					return cb(null, catalogRecord);
 				}
+				if(opts.collection === 'tenants'){
+					return cb(null, tenantRecord);
+				}
+
 				return cb(null, envRecord);
 			};
 
