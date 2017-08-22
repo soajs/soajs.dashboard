@@ -2801,6 +2801,13 @@ module.exports = {
                         "type": "string"
                     }
                 },
+	            "portalPrefix": {
+		            "source": ['body.portalPrefix'],
+		            "required": false,
+		            "validation": {
+			            "type": "string"
+		            }
+	            },
                 "sensitive": {
                     "source": ['body.sensitive'],
                     "required": false,
