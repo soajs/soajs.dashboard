@@ -289,14 +289,19 @@ describe("DASHBOARD UNIT Tests:", function () {
             });
 
             it('success - get environment/id', function (done) {
-                var params = {
-                    qs: {'id': '58b4026e511807397f8228f4'}// id of dashboard environment record from mongodb.data provision
-                };
-                executeMyRequest(params, 'environment/', 'get', function (body) {
-                	assert.ok(body.data);
-                    assert.deepEqual(body.data.code, "DASHBOARD");
-                    done();
-                });
+				mongo.findOne('environment', { code: 'DEV' }, function (error, envRecord) {
+					assert.ifError(error);
+					assert.ok(envRecord);
+
+					var params = {
+	                    qs: { 'id': envRecord._id.toString() }
+	                };
+	                executeMyRequest(params, 'environment/', 'get', function (body) {
+	                	assert.ok(body.data);
+	                    assert.deepEqual(body.data.code, "DEV");
+	                    done();
+	                });
+				});
             });
 
             it('fail - invalid environment id provided', function (done) {

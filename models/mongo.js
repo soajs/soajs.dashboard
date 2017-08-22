@@ -67,7 +67,7 @@ function checkForMongo(soajs) {
 		    mongo.createIndex(hostsCollectionName, {env: 1, name: 1, ip: 1, hostname: 1}, errorLogger);
 		    mongo.createIndex(hostsCollectionName, {env: 1, type: 1, running: 1}, errorLogger);
 	    }
-	    
+
 		//oauth_urac
 		mongo.createIndex(oauthUracCollectionName, {tId: 1, _id: 1}, errorLogger);
 		mongo.createIndex(oauthUracCollectionName, {tId: 1, userId: 1, _id: 1}, errorLogger);
@@ -80,7 +80,7 @@ function checkForMongo(soajs) {
 		//gc
 		mongo.createIndex(gcCollectionName, {name: 1}, errorLogger);
 		mongo.createIndex(gcCollectionName, {_id: 1, refId: 1, v: 1}, errorLogger);
-		
+
 		//analytics
 	    mongo.createIndex(analyticsCollection, {id: 1}, errorLogger);
     }
@@ -109,6 +109,13 @@ module.exports = {
 
     "validateId": function(soajs, cb){
         checkForMongo(soajs);
+        if(!soajs.inputmaskData.id) {
+            soajs.log.error('No id provided');
+            
+            if(cb) return cb('no id provided');
+            else return null;
+        }
+
         try{
             soajs.inputmaskData.id = mongo.ObjectId(soajs.inputmaskData.id);
             return ((cb) ? cb(null, soajs.inputmaskData.id) : soajs.inputmaskData.id);
@@ -177,7 +184,7 @@ module.exports = {
         checkForMongo(soajs);
         mongo.update(opts.collection, opts.conditions, opts.fields, opts.options || {}, opts.versioning || false, cb);
     },
-	
+
 	"distinctEntries": function(soajs, opts, cb){
     	checkForMongo(soajs);
     	mongo.distinct(opts.collection, opts.fields, opts.conditions, cb);
