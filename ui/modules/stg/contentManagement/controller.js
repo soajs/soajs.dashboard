@@ -219,7 +219,7 @@ contentManagementApp.controller("ContentManagementModuleStgCtrl", ['$scope', 'ng
 									$scope.form.displayAlert('danger', error.message);
 								}
 								else {
-									if (typeof(files) === 'object' && Object.keys(files).length > 0) {
+									if (files && typeof(files) === 'object' && Object.keys(files).length > 0) {
 										cmModuleStgService.UploadFile($scope, config, 'add', files, response, '/' + $scope.selectedService.name + "/upload", function (error) {
 											if (error) {
 												$scope.form.displayAlert('danger', error);
@@ -355,7 +355,7 @@ contentManagementApp.controller("ContentManagementModuleStgCtrl", ['$scope', 'ng
 									}
 									else {
 										var hasContentToUpload = false;
-										if (typeof(files) === 'object' && Object.keys(files).length > 0) {
+										if (files && typeof(files) === 'object' && Object.keys(files).length > 0) {
 											for (var type in files) {
 												if (files[type].length > 0) {
 													hasContentToUpload = true;
