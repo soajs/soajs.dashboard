@@ -449,7 +449,7 @@ contentManagementApp.controller("ContentManagementModuleDevCtrl", ['$scope', 'ng
 									$scope.files[fName].info.forEach(function (oneFile) {
 										var length = Math.ceil(oneFile.length / 1024);
 										if (length > 1000) {
-											oneFile.length = length + ' MB';
+											oneFile.length = Math.round(length/ 10.24)/100 + ' MB';
 										}
 										else if (length > 1) {
 											oneFile.length = length + ' KB';
