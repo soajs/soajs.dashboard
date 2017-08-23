@@ -63,6 +63,9 @@ var dashboardBL = {
 		},
 		namespace:{
 			module: require("./lib/cloud/namespaces/index.js")
+		},
+		autoscale: {
+			module: require('./lib/cloud/autoscale/index.js')
 		}
 	}
 };
@@ -157,6 +160,19 @@ service.init(function () {
 		});
 	});
 
+    /**
+     * Get a specific environment
+     * @param {String} API route
+     * @param {Function} API middleware
+     */
+    service.get("/environment", function (req, res) {
+        initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+            BL.get(config, req, res, function (error, data) {
+                return res.json(req.soajs.buildResponse(error, data));
+            });
+        });
+    });
+	
 	/**
 	 * Update environment tenant security key
 	 * @param {String} API route
@@ -1023,6 +1039,32 @@ service.init(function () {
 	});
 
 	/**
+	 * Deploy a plugin, such as heapster
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/cloud/plugins/deploy", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.deploy.module, dbModel, function (BL) {
+			BL.deployPlugin(config, req.soajs, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Check if heapster is deployed
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/cloud/heapster", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.autoscale.module, dbModel, function (BL) {
+			BL.checkHeapster(config, req.soajs, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
 	 * Redeploy a running service
 	 * @param {String} API route
 	 * @param {Function} API middleware
@@ -1082,6 +1124,32 @@ service.init(function () {
 	service.get("/cloud/services/instances/logs", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
 			BL.streamLogs(config, req.soajs, res, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Autoscale one or more services
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/cloud/services/autoscale", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.autoscale.module, dbModel, function(BL) {
+			BL.set(config, req.soajs, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Configure environment autoscaling
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/cloud/services/autoscale/config", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.autoscale.module, dbModel, function(BL) {
+			BL.updateEnvAutoscaleConfig(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});

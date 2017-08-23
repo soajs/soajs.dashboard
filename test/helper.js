@@ -60,6 +60,18 @@ module.exports = {
 		},
 		getContainerLogs: function (data, cb) {
 			return;
+		},
+		getAutoscaler: function(options, cb) {
+			return cb(null, {});
+		},
+		createAutoscaler: function(options, cb) {
+			return cb(null, true);
+		},
+		updateAutoscaler: function(options, cb) {
+			return cb(null, true);
+		},
+		deleteAutoscaler: function(options, cb) {
+			return cb(null, true);
 		}
 	},
 	requireModule: function (path) {
@@ -74,7 +86,7 @@ module.exports = {
 		if (params.authorization) requestOptions.headers.authorization = params.authorization;
 		if (params.qs) requestOptions.qs = params.qs;
 		if (params.form !== undefined) requestOptions.form = params.form;
-		
+
 		testConsole.log('===========================================================================');
 		testConsole.log('==== URI     :', params.uri);
 		testConsole.log('==== REQUEST :', JSON.stringify(requestOptions));

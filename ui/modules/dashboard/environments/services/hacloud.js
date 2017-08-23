@@ -48,7 +48,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 									"list": []
 								}
 							};
-
+							currentScope.deployedInEnv = [];
 							for (var j = 0; j < response.length; j++) {
 								response[j].expanded = true;
 
@@ -92,10 +92,14 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 										response[j].labels['soajs.service.group'] = response[j].labels['soajs.service.group'].toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
 									}
 									if(['nginx', 'db', 'elk'].indexOf(response[j].labels['soajs.service.group']) !== -1){
+										if(['nginx'].indexOf(response[j].labels['soajs.service.group']) !== -1){
+											if(currentScope.deployedInEnv.indexOf('nginx') === -1){
+												currentScope.deployedInEnv.push('nginx');
+											}
+										}
 										currentScope.hosts[response[j].labels['soajs.service.group']].list.push(response[j]);
 									}
 									else{
-										currentScope.envDeployed = true;
 										if(!currentScope.hosts.soajs.groups){
 											currentScope.hosts.soajs.groups = {};
 										}
@@ -123,6 +127,9 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 										if(response[j].labels['soajs.service.name'] === 'controller'){
 											currentScope.hosts.soajs.groups[groupName].list.unshift(response[j]);
 											currentScope.controllers.push(response[j]);
+											if(currentScope.deployedInEnv.indexOf('controller') === -1){
+												currentScope.deployedInEnv.push('controller');
+											}
 										}
 										else{
 											currentScope.hosts.soajs.groups[groupName].list.push(response[j]);
@@ -138,9 +145,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 									currentScope.hosts[myGroup].list.push(response[j]);
 								}
 							}
-
-							if (!currentScope.hosts.soajs.groups || Object.keys(currentScope.hosts.soajs.groups).length === 0) {
+							if (!currentScope.hosts.soajs.groups || Object.keys(currentScope.hosts.soajs.groups).length === 0 || currentScope.deployedInEnv.length !== 2) {
 								currentScope.envDeployed = false;
+							}else{
+								currentScope.envDeployed = true;
 							}
 
 							step2();
@@ -232,6 +240,29 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				}
 			});
 		}
+	}
+
+	function checkHeapster(currentScope, cb) {
+		if(currentScope.envPlatform !== 'kubernetes') {
+			if(cb) return cb();
+		}
+
+		getSendDataFromServer(currentScope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/cloud/heapster',
+			params: {
+				"env": currentScope.envCode
+			}
+		}, function (error, response) {
+			if (error) {
+				currentScope.displayAlert('danger', error.message);
+			}
+			else {
+				currentScope.isHeapsterDeployed = response.deployed;
+				currentScope.isAutoScalable = currentScope.isHeapsterDeployed;
+				if(cb) return cb();
+			}
+		});
 	}
 
 	/**
@@ -1139,6 +1170,223 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		}
 	}
 
+	function autoScale(currentScope, service) {
+		$modal.open({
+			templateUrl: "autoScale.tmpl",
+			size: 'm',
+			backdrop: true,
+			keyboard: true,
+			controller: function ($scope, $modalInstance) {
+				fixBackDrop();
+				$scope.currentScope = currentScope;
+				$scope.title =  (service.labels && service.labels['soajs.service.name']) ? service.labels['soajs.service.name']  : service.name;
+				$scope.title +=' | Auto Scale';
+				if(service.autoscaler){
+					currentScope.autoScaleObject = service.autoscaler;
+				}else {
+					currentScope.autoScaleObject =
+						{
+							"replicas": {},
+							"metrics":{
+								"cpu":{}
+							}
+						}
+				}
+				currentScope.serviceType = (service && service.labels && service.labels['soajs.service.mode']) ? service.labels['soajs.service.mode'] : null;
+
+				$scope.onSubmit = function (action) {
+					overlayLoading.show();
+					var data = {
+						action: action,
+						services: [{"id": service.id, "type": service.labels['soajs.service.mode']}]
+					};
+					if(action === 'update'){
+						data.autoscaler = currentScope.autoScaleObject;
+					}
+					getSendDataFromServer(currentScope, ngDataApi, {
+						method: 'put',
+						routeName: '/dashboard/cloud/services/autoscale',
+						params:{
+							env: currentScope.envCode
+						},
+						data: data
+					}, function (error) {
+						overlayLoading.hide();
+						$modalInstance.close();
+						if (error) {
+							currentScope.displayAlert('danger', error.message);
+						}
+						else {
+							if(action === 'update'){
+								currentScope.displayAlert('success', 'Auto Scale is Enabled successfully');
+							}else{
+								currentScope.displayAlert('success', 'Auto Scale turned off successfully');
+							}
+							$timeout(function () {
+								currentScope.listServices();
+							}, 1500);
+						}
+					});
+				};
+
+				$scope.closeModal = function () {
+					$modalInstance.close();
+				};
+			}
+		});
+	}
+
+	function envAutoScale(currentScope) {
+		overlayLoading.show();
+		getSendDataFromServer(currentScope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/environment',
+			params:{
+				code: currentScope.envCode
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				currentScope.displayAlert('danger', error.message);
+			}
+			else {
+				currentScope.autoScaleObject =
+					{
+						"replicas": {},
+						"metrics":{
+							"cpu":{}
+						}
+					};
+				if(response.deployer && response.deployer.selected){
+					var keys = response.deployer.selected.split(".");
+					if(keys.length === 3 && response.deployer[keys[0]][keys[1]][keys[2]].autoscale){
+						currentScope.autoScaleObject = response.deployer[keys[0]][keys[1]][keys[2]].autoscale;
+					}
+				}
+				currentScope.defaultServicesList = [];
+				currentScope.customServicesList = [];
+
+				currentScope.rawServicesResponse.forEach(function (oneService) {
+					if(oneService.labels && oneService.labels['soajs.service.mode'] && oneService.labels['soajs.service.mode'] === "deployment" && oneService.resources && oneService.resources.limits && oneService.resources.limits.cpu ){
+						var service = {
+							"id" : oneService.id,
+							"type": "deployment",
+							"selected": false
+						};
+						if(oneService.labels['soajs.service.name']){
+							service.name = oneService.labels['soajs.service.name'];
+						}else{
+							service.name = oneService.name;
+						}
+						if(oneService.autoscaler && Object.keys(oneService.autoscaler).length > 0){
+							service.autoscaler = angular.copy(oneService.autoscaler);
+							if(currentScope.autoScaleObject && !angular.equals(oneService.autoscaler , currentScope.autoScaleObject)){
+								service.custom = true
+							}
+						}
+						if(service.custom){
+							currentScope.customServicesList.push(service);
+						}else{
+							currentScope.defaultServicesList.push(service);
+						}
+					}
+				});
+
+				$modal.open({
+					templateUrl: "envAutoScale.tmpl",
+					size: 'm',
+					backdrop: true,
+					keyboard: true,
+					controller: function ($scope, $modalInstance) {
+						fixBackDrop();
+						$scope.currentScope = currentScope;
+						$scope.title = 'Environment Auto Scale';
+						$scope.selectDefault = false;
+						$scope.selectCustom = false;
+						$scope.onSubmit = function (action) {
+							overlayLoading.show();
+							var data = {
+								action: action,
+								services: []
+							};
+							if(currentScope.customServicesList && currentScope.customServicesList.length > 0){
+								currentScope.customServicesList.forEach(function(oneCustom){
+									if(oneCustom.selected){
+										data.services.push({"id":oneCustom.id,"type":oneCustom.type});
+									}
+								});
+							}
+							if(currentScope.defaultServicesList && currentScope.defaultServicesList.length > 0){
+								currentScope.defaultServicesList.forEach(function(oneDefault){
+									if(oneDefault.selected){
+										data.services.push({"id":oneDefault.id,"type":oneDefault.type});
+									}
+								});
+							}
+							if(action === 'update'){
+								data.autoscaler = currentScope.autoScaleObject;
+							}
+							getSendDataFromServer(currentScope, ngDataApi, {
+								method: 'put',
+								routeName: '/dashboard/cloud/services/autoscale',
+								params:{
+									env: currentScope.envCode
+								},
+								data: data
+							}, function (error) {
+								if (error) {
+									currentScope.displayAlert('danger', error.message);
+								}
+								else {
+									getSendDataFromServer(currentScope, ngDataApi, {
+										method: 'put',
+										routeName: '/dashboard/cloud/services/autoscale/config',
+										params:{
+											env: currentScope.envCode
+										},
+										data: {"autoscale": currentScope.autoScaleObject}
+									}, function (error) {
+										overlayLoading.hide();
+										$modalInstance.close();
+										if (error) {
+											currentScope.displayAlert('danger', error.message);
+										}
+										else {
+											currentScope.listServices();
+											if(action === 'update'){
+												currentScope.displayAlert('success', 'Auto Scale is Enabled successfully');
+											}else{
+												currentScope.displayAlert('success', 'Auto Scale turned off successfully');
+											}
+										}
+									});
+								}
+							});
+						};
+
+						$scope.closeModal = function () {
+							$modalInstance.close();
+						};
+
+						$scope.selectAllCustom = function (selectBoolean){
+							$scope.selectCustom = selectBoolean;
+							currentScope.customServicesList.forEach(function(oneCustom){
+								oneCustom.selected = $scope.selectCustom;
+							});
+						};
+
+						$scope.selectAllDefault = function (selectBoolean){
+							$scope.selectDefault = selectBoolean;
+							currentScope.defaultServicesList.forEach(function(oneDefault){
+								oneDefault.selected = $scope.selectDefault;
+							});
+						};
+					}
+				});
+			}
+		});
+	}
+
 	return {
 		'listServices': listServices,
 		'deleteService': deleteService,
@@ -1146,6 +1394,9 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		'scaleService': scaleService,
 		'redeployService': redeployService,
 		'rebuildService': rebuildService,
+		'autoScale': autoScale,
+		'envAutoScale': envAutoScale,
+		'checkHeapster': checkHeapster,
 
 		'executeHeartbeatTest': executeHeartbeatTest,
 		'hostLogs': hostLogs,

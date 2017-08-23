@@ -274,6 +274,73 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 
+        describe("get environment tests", function () {
+            it("success - get environment/code", function (done) {
+                var params = {
+                    qs: {
+                        "code": "dev"
+                    }
+                };
+                executeMyRequest(params, 'environment/', 'get', function (body) {
+                    assert.ok(body.data);
+                    assert.deepEqual(body.data.code, "DEV");
+                    done();
+                });
+            });
+
+            it('success - get environment/id', function (done) {
+				mongo.findOne('environment', { code: 'DEV' }, function (error, envRecord) {
+					assert.ifError(error);
+					assert.ok(envRecord);
+
+					var params = {
+	                    qs: { 'id': envRecord._id.toString() }
+	                };
+	                executeMyRequest(params, 'environment/', 'get', function (body) {
+	                	assert.ok(body.data);
+	                    assert.deepEqual(body.data.code, "DEV");
+	                    done();
+	                });
+				});
+            });
+
+            it('fail - invalid environment id provided', function (done) {
+                var params = {
+                    qs: {'id': 'qwrr'}
+                };
+                executeMyRequest(params, 'environment/', 'get', function (body) {
+                	assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {"code": 405, "message": errorCodes[405]});
+                    done();
+                });
+            });
+
+            it('fail - Unable to get the environment records', function (done) {
+                var params = {
+                    qs: {'code': 'freeww'}
+                };
+                executeMyRequest(params, 'environment/', 'get', function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {"code": 402, "message": errorCodes[402]});
+                    done();
+                });
+            });
+
+            it('fail - no id or code provided', function (done) {
+                var params = {
+                    qs: {}
+                };
+                executeMyRequest(params, 'environment/', 'get', function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {
+                        "code": 405,
+                        "message": errorCodes[405]
+                    });
+                    done();
+                });
+            });
+        });
+
 		describe("add environment tests", function () {
 			it("success - will add environment", function (done) {
 				var data2 = util.cloneObj(validEnvRecord);

@@ -109,6 +109,26 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                 {l: 'Deployment', v: 'deployment', 'selected': true},
                 {l: 'Daemonset', v: 'daemonset'}
             ];
+	        formConfig.entries[0].entries.splice(3, 0,
+		        {
+			        'name': 'nginxCpuLimit',
+			        'label': 'CPU Limit Per Instance for Nginx',
+			        'type': 'string',
+			        'placeholder': '100m or 0.1',
+			        'fieldMsg': 'Set a custom CPU limit for Nginx instances',
+			        'required': true
+		        }
+	        );
+	        formConfig.entries[1].entries.splice(3, 0,
+		        {
+			        'name': 'ctrlCpuLimit',
+			        'label': 'CPU Limit Per Instance for Controller',
+			        'type': 'string',
+			        'placeholder': '100m or 0.1',
+			        'fieldMsg': 'Set a custom CPU limit for controller instances',
+			        'required': true
+		        }
+	        );
         }
 
         formConfig.entries[0].entries[0].onAction = function (id, data, form) {
@@ -137,12 +157,16 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             getCatalogRecipes(currentScope, function (recipes) {
                 // adding available recipes to form
                 recipes.forEach(function (oneRecipe) {
+	                var index = 3;
+	                if(currentScope.isKubernetes){
+		                index = 4;
+	                }
                     if (oneRecipe.type === 'soajs' && oneRecipe.subtype === 'service') {
-                        formConfig.entries[1].entries[3].value.push({ l: oneRecipe.name, v: oneRecipe._id });
+                        formConfig.entries[1].entries[index].value.push({ l: oneRecipe.name, v: oneRecipe._id });
 	                    injectCatalogInputs(formConfig, recipes, {
 		                    mainLevel : 1,
-	                        subLevel: 3,
-	                        initialCount: 4,
+	                        subLevel: index,
+	                        initialCount: index + 1,
 	                        type: 'soajs',
 		                    deployment: {
 		                    	type: "environment",
@@ -151,11 +175,11 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 	                    });
                     }
                     else if (oneRecipe.type === 'nginx') {
-                        formConfig.entries[0].entries[3].value.push({ l: oneRecipe.name, v: oneRecipe._id });
+                        formConfig.entries[0].entries[index].value.push({ l: oneRecipe.name, v: oneRecipe._id });
 	                    injectCatalogInputs(formConfig, recipes, {
 		                    mainLevel : 0,
-		                    subLevel: 3,
-		                    initialCount: 4,
+		                    subLevel: index,
+		                    initialCount: index + 1,
 		                    type: 'nginx'
 	                    });
                     }
@@ -235,6 +259,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     },
                 }
             };
+            if(currentScope.isKubernetes && formData.ctrlCpuLimit ){
+	            params.deployConfig.cpuLimit = formData.ctrlCpuLimit;
+            }
 
             if (formData.controllerDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
                 params.deployConfig.replication.replicas = formData.controllers;
@@ -333,6 +360,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             params.deployConfig.replication = {
                 mode: formData.nginxDeploymentMode
             };
+	        if(currentScope.isKubernetes && formData.nginxCpuLimit ){
+		        params.deployConfig.cpuLimit = formData.nginxCpuLimit;
+	        }
 
             if (formData.nginxDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
                 params.deployConfig.replication.replicas = formData.nginxCount;
@@ -461,6 +491,14 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                 successThreshold: 1,
                 failureThreshold: 3
             };
+            if(currentScope.isAutoScalable){
+            	currentScope.autoScaleObject = {
+		            "replicas": {},
+		            "metrics": {
+			            "cpu": {}
+		            }
+	            }
+            }
         }
 
         function openModalForm() {
@@ -475,7 +513,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     $scope.title = 'Deploy New Resource';
                     $scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
                     $scope.currentScope = currentScope;
-
+	                $scope.currentScope.autoScale = false;
 	                $scope.myRecipes = [];
 	                for(var type in currentScope.recipes){
 		                $scope.myRecipes = $scope.myRecipes.concat(currentScope.recipes[type]);
@@ -511,8 +549,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                         if (service && service.prerequisites && service.prerequisites.memory) {
                             currentScope.memoryLimit = service.prerequisites.memory;
                         }
-
-                        if (service.type === 'nginx') return;
+	                    if (currentScope.isKubernetes && service && service.prerequisites && service.prerequisites.cpu) {
+		                    currentScope.cpuLimit = service.prerequisites.cpu;
+	                    }
+	                    if (service.type === 'nginx') return;
 
                         if (service.type === 'daemon' && service.grpConf) {
                             currentScope.groupConfigs = service.grpConf;
@@ -597,6 +637,17 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                                     return;
                                 }
                             }
+	
+	                    if (currentScope.isKubernetes && currentScope.service && currentScope.service.prerequisites && currentScope.service.prerequisites.cpu) {
+		                    if (currentScope.cpuLimit < currentScope.service.prerequisites.cpu) {
+			                    currentScope.message.danger = "Please specify a cpu limit that is greater than or equal to the resource memory prerequisite ("+ currentScope.service.prerequisites.cpu +")";
+			                    $timeout(function () {
+				                    currentScope.message.danger = "";
+			                    }, 5000);
+			
+			                    return;
+		                    }
+	                    }
 
                             doDeploy(currentScope);
                         // }
@@ -717,8 +768,18 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 				                "replicas": currentScope.number
 			                }
 		                };
-
+		                if(currentScope.autoScale && currentScope.isAutoScalable){
+			                params.autoScale = currentScope.autoScaleObject;
+			                if(currentScope.autoScaleObject.replicas.min){
+			                    params.deployConfig.replication.replicas = currentScope.autoScaleObject.replicas.min;
+			                }
+		                }else if(currentScope.isAutoScalable){
+			                delete currentScope.autoScaleObject;
+		                }
 		                if (params.deployConfig.isKubernetes) {
+			                if(currentScope.cpuLimit){
+				                params.deployConfig.cpuLimit = currentScope.cpuLimit;
+			                }
 			                if (params.deployConfig.replication.mode === 'replicated') {
 				                params.deployConfig.replication.mode = "deployment";
 			                }
@@ -727,7 +788,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 				                delete params.deployConfig.replication.replicas;
 			                }
 		                }
-
 		                //inject user input catalog entry and image override
 		                if(currentScope['_ci_serviceImageName'] && currentScope['_ci_serviceImagePrefix'] && currentScope['_ci_serviceImageTag']){
 			                params.custom['image'] = {
@@ -925,18 +985,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
         // }
 
         //Start here
-        if (currentScope.hosts && currentScope.controllers) {
-            getCatalogRecipes(function () {
-	            openModalForm();
-            });
-        }
-        else {
-            currentScope.services.push({
-                name: 'controller',
-                UIGroup: 'Controllers',
-                type: 'service'
-            });
-        }
+	    getCatalogRecipes(function () {
+		    openModalForm();
+	    });
     }
 
     function getCatalogRecipes(currentScope, cb) {
@@ -954,9 +1005,51 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             }
         });
     }
+	
+	/**
+	 * Deploy Heapster to enable Auto Scaling.
+	 * Kubernetes only.
+	 * @param currentScope
+	 */
+	function deployHeapster(currentScope){
+    	currentScope.isKubernetes = currentScope.envDeployer.selected.split('.')[1] === "kubernetes";
+    	if(currentScope.isKubernetes && !currentScope.isAutoScalable){
+		    var config = {
+			    "method": "post",
+			    "routeName": "/dashboard/cloud/plugins/deploy",
+			    "data": {
+			    	"env": currentScope.envCode,
+				    "plugin": "heapster"
+			    }
+		    };
+		
+		    overlayLoading.show();
+		    getSendDataFromServer(currentScope, ngDataApi, config, function (error) {
+			    overlayLoading.hide();
+			    if (error) {
+				    currentScope.displayAlert('danger', error.message);
+			    }
+			    else {
+				    currentScope.displayAlert('success', 'Heapster is deployed successfully and will be available in a few minutes');
+				    $timeout(function () {
+					    currentScope.listServices();
+				    }, 2000);
+				    currentScope.isAutoScalable = true;
+			    }
+		    });
+	    }
+	    else{
+    		if(!currentScope.isKubernetes) {
+			    currentScope.displayAlert('danger', 'Heapster is only deployed in Kubernetes!!');
+		    }else{
+			    currentScope.displayAlert('danger', 'Heapster is already deployed!!');
+		    }
+	    }
+    }
 
     return {
         'deployEnvironment': deployEnvironment,
-        'deployNewService': deployNewService
+        'deployNewService': deployNewService,
+	    'deployHeapster': deployHeapster
     }
 }]);

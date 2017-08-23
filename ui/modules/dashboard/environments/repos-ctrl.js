@@ -45,19 +45,24 @@ environmentsApp.controller('deployReposCtrl', ['$scope', '$cookies', 'injectFile
 	$scope.configureCD = function (repo) {
 		deployRepos.configureCD($scope, repo);
 	};
-	
+
 	$scope.deployService = function (oneRepo, service,version, gitAccount, daemonGrpConf) {
 		deployRepos.deployService($scope, oneRepo, service, version, gitAccount, daemonGrpConf);
 	};
-	
+
 	$scope.doDeploy = function (params) {
 		deployRepos.doDeploy($scope, params, true);
 	};
-	
+
+	$scope.checkHeapster = function() {
+		deployRepos.checkHeapster($scope);
+	};
+
 	injectFiles.injectCss("modules/dashboard/environments/environments.css");
 	//default operation
 	if ($scope.access.git.listAccounts) {
 		$scope.envCode = $cookies.getObject("myEnv").code;
 		$scope.listGitAccounts();
+		$scope.checkHeapster();
 	}
 }]);

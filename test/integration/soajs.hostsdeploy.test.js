@@ -79,7 +79,7 @@ function getService(options, cb) {
 	executeMyRequest(params, "cloud/services/list", "get", function (body) {
 		assert.ifError(body.errors);
 		if (!options.serviceName) return cb(body);
-		
+
 		var services = body.data, service = {};
 		for (var i = 0; i < services.length; i++) {
 			if (services[i].labels['soajs.service.name'] === options.serviceName) {
@@ -87,7 +87,7 @@ function getService(options, cb) {
 				break;
 			}
 		}
-		
+
 		return cb(service);
 	});
 }
@@ -107,13 +107,13 @@ function deleteService(options, cb) {
 describe("testing hosts deployment", function () {
 	var soajsauth, containerInfo;
 	var Authorization;
-	
+
 	before(function (done) {
 		process.env.SOAJS_ENV_WORKDIR = process.env.APP_DIR_FOR_CODE_COVERAGE;
 		console.log("***************************************************************");
 		console.log("* Setting SOAJS_ENV_WORKDIR for test mode as: ", process.env.APP_DIR_FOR_CODE_COVERAGE);
 		console.log("***************************************************************");
-		
+
 		var options1 = {
 			uri: 'http://localhost:4000/oauth/authorization',
 			headers: {
@@ -122,12 +122,12 @@ describe("testing hosts deployment", function () {
 			},
 			json: true
 		};
-		
+
 		request.get(options1, function (error, response, body) {
 			assert.ifError(error);
 			assert.ok(body);
 			Authorization = body.data;
-			
+
 			var options = {
 				uri: 'http://localhost:4000/oauth/token',
 				headers: {
@@ -146,7 +146,7 @@ describe("testing hosts deployment", function () {
 				assert.ifError(error);
 				assert.ok(body);
 				access_token = body.access_token;
-				
+
 				var validDeployerRecord = {
 					"type": "container",
 					"selected": "container.docker.local",
@@ -157,7 +157,7 @@ describe("testing hosts deployment", function () {
 						}
 					}
 				};
-				
+
 				mongo.update("environment", {}, {
 					"$set": {
 						"deployer": validDeployerRecord,
@@ -169,9 +169,9 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-		
+
 	});
-	
+
 	before('create dashboard environment record', function (done) {
 		var dashEnv = {
 			"code": "DASHBOARD",
@@ -313,7 +313,7 @@ describe("testing hosts deployment", function () {
 			done();
 		});
 	});
-	
+
 	before('Activate swarm mode for local docker engine and create overlay network', function (done) {
 		var params = {
 			method: 'POST',
@@ -328,10 +328,10 @@ describe("testing hosts deployment", function () {
 				"ForceNewCluster": true
 			}
 		};
-		
+
 		request(params, function (error, response, nodeId) {
 			assert.ifError(error);
-			
+
 			params = {
 				method: 'POST',
 				uri: 'http://unix:/var/run/docker.sock:/networks/create',
@@ -350,25 +350,25 @@ describe("testing hosts deployment", function () {
 					}
 				}
 			};
-			
+
 			request(params, function (error, response, body) {
 				assert.ifError(error);
 				done();
 			});
 		});
 	});
-	
+
 	before("Perform cleanup of any previous services deployed", function (done) {
 		console.log('Deleting previous deployments ...');
 		shell.exec('docker service rm $(docker service ls -q) && docker rm -f $(docker ps -qa)');
 		done();
 	});
-	
+
 	after(function (done) {
 		mongo.closeDb();
 		done();
 	});
-	
+
 	beforeEach(function (done) {
 		setTimeout(function () {
 			done();
@@ -376,7 +376,7 @@ describe("testing hosts deployment", function () {
 	});
 
 	describe("testing controller deployment", function () {
-		
+
 		it("success - deploy 1 controller service and delete it afterwards", function (done) {
 			var params = {
 				qs: {
@@ -421,11 +421,11 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-		
+
 		it("success - deploy 1 controller and use the main file specified in src", function (done) {
 			mongo.update("services", { name: 'controller' }, { '$set': { 'src.main': '/index.js' } }, function (error) {
 				assert.ifError(error);
-				
+
 				var params = {
 					qs: {
 						access_token: access_token
@@ -455,12 +455,12 @@ describe("testing hosts deployment", function () {
 				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
-					
+
 					done();
 				});
 			});
 		});
-		
+
 		it("success - deploy 1 nginx service with static content", function (done) {
 			var params = {
 				qs: {
@@ -491,7 +491,7 @@ describe("testing hosts deployment", function () {
 		});
 
 	});
-	
+
 	describe("testing service deployment", function () {
 		it("success - deploy 1 core service, global mode", function (done) {
 			var params = {
@@ -534,18 +534,18 @@ describe("testing hosts deployment", function () {
 					}, function (body) {
 						assert.ok(body.result);
 						assert.ok(body.data);
-						
+
 						done();
 					});
 				});
 			});
 		});
-		
+
 		it("success - deploy 1 gc service", function (done) {
 			mongo.findOne('gc', {}, function (error, gcRecord) {
 				assert.ifError(error);
 				assert.ok(gcRecord);
-				
+
 				var params = {
 					qs: {
 						access_token: access_token
@@ -586,11 +586,11 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-		
+
 		it("fail - trying to deploy to an environment that is configured to be deployed manually", function (done) {
 			mongo.update('environment', { code: 'PROD' }, { $set: { 'deployer.type': 'manual' } }, function (error) {
 				assert.ifError(error);
-				
+
 				var params = {
 					qs: {
 						access_token: access_token
@@ -624,7 +624,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 	});
-	
+
 	describe("testing daemon deployment", function () {
 		it("success - deploy 1 daemon", function (done) {
 			var params = {
@@ -669,18 +669,18 @@ describe("testing hosts deployment", function () {
 					}, function (body) {
 						assert.ok(body.result);
 						assert.ok(body.data);
-						
+
 						done();
 					});
 				});
 			});
 		});
-		
+
 		it("success - deploy 1 daemon that contians cmd info in its src", function (done) {
 			var cmdArray = ['sleep 36000'];
 			mongo.update('daemons', { name: 'helloDaemon' }, { '$set': { 'src.cmd': cmdArray } }, function (error) {
 				assert.ifError(error);
-				
+
 				var params = {
 					qs: {
 						access_token: access_token
@@ -723,14 +723,14 @@ describe("testing hosts deployment", function () {
 						}, function (body) {
 							assert.ok(body.result);
 							assert.ok(body.data);
-							
+
 							done();
 						});
 					});
 				});
 			});
 		});
-		
+
 		it("fail - missing required params", function (done) {
 			var params = {
 				qs: {
@@ -764,9 +764,9 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing redeploy service", function () {
 		var nginxDeployment, ctrlDeployment;
 		before("list services and get static content record", function (done) {
@@ -780,7 +780,7 @@ describe("testing hosts deployment", function () {
 			executeMyRequest(params, "cloud/services/list", "get", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
-				
+
 				for (var i = 0; i < body.data.length; i++) {
 					if (body.data[i].labels['soajs.service.name'] === 'controller') {
 						ctrlDeployment = body.data[i];
@@ -789,11 +789,11 @@ describe("testing hosts deployment", function () {
 						nginxDeployment = body.data[i];
 					}
 				}
-				
+
 				done();
 			});
 		});
-		
+
 		it("success - will redeploy controller service", function (done) {
 			var params = {
 				qs: {
@@ -806,14 +806,14 @@ describe("testing hosts deployment", function () {
 					action: 'redeploy'
 				}
 			};
-			
+
 			executeMyRequest(params, "cloud/services/redeploy", "put", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
 				done();
 			});
 		});
-		
+
 		it("success - will rebuild service", function (done) {
 			var params = {
 				qs: {
@@ -826,7 +826,7 @@ describe("testing hosts deployment", function () {
 					action: 'rebuild'
 				}
 			};
-			
+
 			executeMyRequest(params, "cloud/services/redeploy", "put", function (body) {
 				assert.ok(body);
 				done();
@@ -852,7 +852,7 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 	});
 
 	describe("testing analytics", function () {
@@ -884,7 +884,7 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 		it("get analytics settings - analytics deployed", function (done) {
 			var params = {
 				qs: {
@@ -934,7 +934,7 @@ describe("testing hosts deployment", function () {
 					env: 'dashboard'
 				}
 			};
-			
+
 			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
@@ -948,7 +948,7 @@ describe("testing hosts deployment", function () {
 					env: 'dev'
 				}
 			};
-			
+
 			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
@@ -969,7 +969,7 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 		it("success - will delete deployed service", function (done) {
 			getService({ env: 'dev', serviceName: 'gc-myservice' }, function (service) {
 				deleteService({
@@ -983,7 +983,7 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-		
+
 		it("fail - service not found", function (done) {
 			deleteService({ env: 'DEV', id: '123123123', mode: 'replicated' }, function (body) {
 				assert.ok(body.errors);
@@ -995,7 +995,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 	});
-	
+
 	describe("testing get service logs", function () {
 		it("success - getting service logs", function (done) {
 			var params = {
@@ -1014,7 +1014,7 @@ describe("testing hosts deployment", function () {
 						taskId = ((body.data[i].tasks[0]) ? body.data[i].tasks[0].id : '');
 					}
 				}
-				
+
 				params = {
 					"qs": {
 						access_token: access_token,
@@ -1029,7 +1029,7 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-		
+
 		after("delete nginx service", function (done) {
 			getService({ env: 'dev', serviceName: 'nginx' }, function (service) {
 				deleteService({
@@ -1039,11 +1039,84 @@ describe("testing hosts deployment", function () {
 				}, function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
-					
+
 					done();
 				});
 			});
 		});
 	});
-	
+
+	describe("testing autoscale deployed services", function() {
+		//functionality is tested in unit tests
+		//autoscaling is only for kubernetes deployments, dashboard test cases do not run kubernetes
+
+		it("set autoscaler", function(done) {
+			var params = {
+				qs: {
+					env: 'dashboard'
+				},
+				form: {
+					action: 'update',
+					autoscaler: {
+						replicas: {
+							min: 1,
+							max: 2
+						},
+						metrics: {
+							cpu: {
+								percent: 90
+							}
+						}
+					},
+					services: [
+						{ id: 'srv1', type: 'deployment' }
+					]
+				}
+			};
+
+			executeMyRequest(params, "cloud/services/autoscale", "put", function (body) {
+				done();
+			});
+		});
+
+		it("update environment autoscaling", function(done) {
+			var params = {
+				qs: {
+					env: 'dashboard'
+				},
+				form: {
+					action: 'update',
+					autoscale: {
+						replicas: {
+							min: 1,
+							max: 2
+						},
+						metrics: {
+							cpu: {
+								percent: 90
+							}
+						}
+					}
+				}
+			};
+
+			executeMyRequest(params, "cloud/services/autoscale/config", "put", function (body) {
+				done();
+			});
+		});
+
+		it("check heapster", function(done) {
+			var params = {
+				qs: {
+					env: 'dashboard'
+				}
+			};
+
+			executeMyRequest(params, "cloud/heapster", "get", function (body) {
+				done();
+			});
+		});
+
+	});
+
 });
