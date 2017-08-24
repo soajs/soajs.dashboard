@@ -266,8 +266,9 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 		$scope.getSettings();
 		$scope.listServices(function(){
 			$scope.listNamespaces(function () {
-				$scope.checkHeapster();
-				$scope.autoRefresh();
+				$scope.checkHeapster(function(){
+					$scope.autoRefresh();
+				});
 			});
 		});
 	}
