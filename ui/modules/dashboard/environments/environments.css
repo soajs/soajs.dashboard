@@ -383,7 +383,7 @@ fieldset.autoScale legend {
 .switch input {display:none;}
 
 /* The slider */
-.slider {
+.buttonSlider {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -395,7 +395,7 @@ fieldset.autoScale legend {
   transition: .4s;
 }
 
-.slider:before {
+.buttonSlider:before {
   position: absolute;
   content: "";
   height: 17px;
@@ -408,25 +408,25 @@ fieldset.autoScale legend {
   top: 1px;
 }
 
-input:checked + .slider {
+input:checked + .buttonSlider {
   background-color: #5cb85c;
 }
 
-input:focus + .slider {
+input:focus + .buttonSlider {
   box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked + .slider:before {
+input:checked + .buttonSlider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
 }
 
 /* Rounded sliders */
-.slider.round {
+.buttonSlider.round {
   border-radius: 34px;
 }
 
-.slider.round:before {
+.buttonSlider.round:before {
   border-radius: 50%;
 }

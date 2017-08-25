@@ -48,7 +48,7 @@
 
 		<alert type="info" ng-if="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode === 'daemonset'">Daemonsets do not support autoscaling.</alert>
 		<fieldset ng-if="isAutoScalable && cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode === 'deployment'">
-			<legend>Auto Scale<label class="switch"><input type="checkbox" ng-model="autoScale" ng-click="activateAutoScale()"><span class="slider round"></span></label>
+			<legend>Auto Scale<label class="switch"><input type="checkbox" ng-model="autoScale" ng-click="activateAutoScale()"><span class="buttonSlider round"></span></label>
 			</legend>
 			<fieldset ng-if="!autoScale && (cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'replicated' || cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'deployment')">
 				<legend>Replication</legend>

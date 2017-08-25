@@ -155,13 +155,13 @@ var lib = {
 					};
 					loadContent.deployConfig.volume.forEach(function (oneVolume) {
 						serviceParams.voluming.volumes.push({
-							"name": oneVolume.Source,
+							"name": oneVolume.Source.replace(/_/g, "-"),
 							"hostPath": {
 								"path": oneVolume.Target
 							}
 						});
 						serviceParams.voluming.volumeMounts.push({
-							"name": oneVolume.Source,
+							"name": oneVolume.Source.replace(/_/g, "-"),
 							"mountPath": oneVolume.Target
 						});
 					})
