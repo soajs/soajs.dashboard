@@ -33,6 +33,7 @@ if(customSettings && customSettings.key && customSettings.key !== ''){
 	myKey = customSettings.key;
 }
 
+var protocol = window.location.protocol;
 var titlePrefix = "SOAJS";
 var themeToUse = "default";
 var whitelistedDomain = ['localhost', '127.0.0.1', mydomainAPI + '.' + mydomain];
