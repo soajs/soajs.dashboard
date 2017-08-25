@@ -11,14 +11,14 @@ var filebeatIndex = require("./indexes/filebeat-index");
 var metricbeatIndex = require("./indexes/metricbeat-index");
 
 var lib = {
-	
+
 	"insertMongoData": function (soajs, config, model, cb) {
 		var comboFind = {};
 		comboFind.collection = colls.analytics;
 		comboFind.conditions = {
 			"_type": "settings"
 		};
-		
+
 		model.findEntry(soajs, comboFind, function (error, response) {
 			if (error) {
 				return cb(error);
@@ -49,7 +49,7 @@ var lib = {
 					});
 				});
 			}
-			
+
 			if (response && response.mongoImported) {
 				return cb(null, true);
 			}
@@ -83,7 +83,7 @@ var lib = {
 			}
 		})
 	},
-	
+
 	"getAnalyticsContent": function (service, env, cb) {
 		var path = __dirname + "/services/elk/";
 		fs.exists(path, function (exists) {
@@ -116,7 +116,7 @@ var lib = {
 				"network": loadContent.deployConfig.network,
 				"ports": loadContent.deployConfig.ports || []
 			};
-			
+
 			if (loadContent.command && loadContent.command.cmd) {
 				serviceParams.command = loadContent.command.cmd;
 			}
@@ -127,25 +127,17 @@ var lib = {
 			var esNameSpace = '';
 			var logNameSpace = '';
 			if (env.deployer.selected.split(".")[1] === "kubernetes") {
-				//"soajs.service.mode": "deployment"
-				if (serviceParams.labels["soajs.service.mode"] === "replicated") {
-					serviceParams.labels["soajs.service.mode"] = "deployment";
-				}
-				else {
-					serviceParams.labels["soajs.service.mode"] = "daemonset";
-				}
-				// if (serviceParams.memoryLimit) {
-				// 	delete serviceParams.memoryLimit;
-				// }
 				if (serviceParams.replication.mode === "replicated") {
 					serviceParams.replication.mode = "deployment";
+					serviceParams.labels["soajs.service.mode"] = "deployment";
 				}
 				else if (serviceParams.replication.mode === "global") {
 					serviceParams.replication.mode = "daemonset";
+					serviceParams.labels["soajs.service.mode"] = "daemonset";
 				}
 				esNameSpace = '-service.' + env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
 				logNameSpace = '-service.' + env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
-				
+
 				if (env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.perService) {
 					esNameSpace += '-soajs-analytics-elasticsearch-service';
 					logNameSpace += '-' + env.code.toLowerCase() + '-logstash-service';
@@ -196,12 +188,12 @@ var lib = {
 			}
 			serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
 			serviceParams = JSON.parse(serviceParams);
-			
+
 			return cb(null, serviceParams);
-			
+
 		});
 	},
-	
+
 	"deployElastic": function (soajs, env, deployer, utils, model, config, cb) {
 		var combo = {};
 		combo.collection = colls.analytics;
@@ -224,7 +216,7 @@ var lib = {
 					if (process.env.SOAJS_TEST_ANALYTICS === 'test') {
 						return cb(null, true);
 					}
-					
+
 					deployer.deployService(options, function(error, response){
 						if(error){
 							soajs.log.error(error);
@@ -243,10 +235,10 @@ var lib = {
 					});
 				});
 			}
-			
+
 		});
 	},
-	
+
 	"pingElastic": function (soajs, env, esDbInfo, esClient, model, tracker, cb) {
 		if (process.env.SOAJS_TEST_ANALYTICS === 'test') {
 			return cb(null, true);
@@ -258,7 +250,7 @@ var lib = {
 				soajs.log.debug("No ES Cluster found, trying again:", tracker[env.code.toLowerCase()].counterPing, "/", 10);
 				if (tracker[env.code.toLowerCase()].counterPing >= 10) { // wait 5 min
 					soajs.log.error("Elasticsearch wasn't deployed... exiting");
-					
+
 					async.parallel([
 						function(miniCb){
 							var combo = {};
@@ -271,7 +263,7 @@ var lib = {
 									elasticsearch : {}
 								}
 							};
-							
+
 							combo.options = {
 								upsert: false,
 								safe: true,
@@ -309,7 +301,7 @@ var lib = {
 			}
 		});
 	},
-	
+
 	"infoElastic": function (soajs, env, esDbInfo, esClient, model, tracker, cb) {
 		esClient.db.info(function (error) {
 			if (error) {
@@ -318,7 +310,7 @@ var lib = {
 				soajs.log.debug("ES cluster found but not ready, Trying again:", tracker[env.code.toLowerCase()].counterInfo, "/", 15);
 				if (tracker[env.code.toLowerCase()].counterInfo >= 15) { // wait 5 min
 					soajs.log.error("Elasticsearch wasn't deployed correctly ... exiting");
-					
+
 					async.parallel([
 						function(miniCb){
 							var combo = {};
@@ -331,7 +323,7 @@ var lib = {
 									elasticsearch : {}
 								}
 							};
-							
+
 							combo.options = {
 								upsert: false,
 								safe: true,
@@ -369,12 +361,12 @@ var lib = {
 			}
 		});
 	},
-	
+
 	"checkElasticSearch": function (soajs, env, esDbInfo, esClient, model, tracker, cb) {
 		lib.pingElastic(soajs, env, esDbInfo, esClient, model, tracker, cb);
 		//add version to settings record
 	},
-	
+
 	"setMapping": function (soajs, env, model, esClient, config, cb) {
 		lib.purgeElastic(soajs, esClient, config, function (err){
 			if (err) {
@@ -390,9 +382,9 @@ var lib = {
 				}
 			}, cb);
 		});
-		
+
 	},
-	
+
 	"purgeElastic": function (soajs, esClient, config, cb) {
 		if (!config.purge){
 			//purge not reguired
@@ -408,7 +400,7 @@ var lib = {
 			});
 		});
 	},
-	
+
 	"putTemplate": function (soajs, model, esClient, cb) {
 		var combo = {
 			collection: colls.analytics,
@@ -440,7 +432,7 @@ var lib = {
 			}, cb);
 		});
 	},
-	
+
 	"putMapping": function (soajs, model, esClient, cb) {
 		//todo change this
 		var combo = {
@@ -470,7 +462,7 @@ var lib = {
 			}
 		});
 	},
-	
+
 	"addVisualizations": function (soajs, deployer, esClient, utils, env, model, cb) {
 		soajs.log.debug("Adding Kibana Visualizations");
 		var BL = {
@@ -480,14 +472,14 @@ var lib = {
 		if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
 			deployer.listServices(options, function (err, servicesList) {
 				lib.configureKibana(soajs, servicesList, esClient, env, model, cb);
-				
+
 			});
 		}
 		else {
 			return cb(null, true);
 		}
 	},
-	
+
 	"esBulk": function (esClient, array, cb) {
 		esClient.bulk(array, function (error, response) {
 			if (error) {
@@ -496,7 +488,7 @@ var lib = {
 			return cb(error, response);
 		});
 	},
-	
+
 	"configureKibana": function (soajs, servicesList, esClient, env, model, cb) {
 		var analyticsArray = [];
 		var serviceEnv = env.code.toLowerCase();
@@ -521,7 +513,7 @@ var lib = {
 								else {
 									return callback(null, true);
 								}
-								
+
 								if (oneService.tasks.length > 0) {
 									async.forEachOf(oneService.tasks, function (oneTask, key, call) {
 										if (oneTask.status && oneTask.status.state && oneTask.status.state === "running") {
@@ -529,7 +521,7 @@ var lib = {
 											taskName = taskName.replace(/[\/*?"<>|,.-]/g, "_");
 											if (key == 0) {
 												//filebeat-service-environment-*
-												
+
 												analyticsArray = analyticsArray.concat(
 													[
 														{
@@ -548,9 +540,9 @@ var lib = {
 													]
 												);
 											}
-											
+
 											var options = {
-													
+
 													"$and": [
 														{
 															"_type": {
@@ -585,7 +577,7 @@ var lib = {
 															serviceIndex = serviceIndex + serviceEnv + "-" + taskName + "-" + "*";
 														}
 													}
-													
+
 													var injector;
 													if (oneRecord._injector === 'service') {
 														injector = serviceName + "-" + serviceEnv;
@@ -694,7 +686,7 @@ var lib = {
 								};
 								analyticsArray = analyticsArray.concat([recordIndex, onRecord._source]);
 							});
-							
+
 						}
 						return pCallback(null, true);
 					});
@@ -720,7 +712,7 @@ var lib = {
 			}
 		);
 	},
-	
+
 	"deployKibana": function (soajs, env, deployer, utils, model, cb) {
 		soajs.log.debug("Checking Kibana");
 		var combo = {};
@@ -760,10 +752,10 @@ var lib = {
 					}, cb);
 				});
 			}
-			
+
 		});
 	},
-	
+
 	"deployLogstash": function (soajs, env, deployer, utils, model, cb) {
 		soajs.log.debug("Checking Logstash..");
 		var combo = {};
@@ -806,10 +798,10 @@ var lib = {
 					}, cb);
 				});
 			}
-			
+
 		});
 	},
-	
+
 	"deployFilebeat": function (soajs, env, deployer, utils, model, cb) {
 		soajs.log.debug("Checking Filebeat..");
 		var combo = {};
@@ -852,10 +844,10 @@ var lib = {
 					}, cb);
 				});
 			}
-			
+
 		});
 	},
-	
+
 	"deployMetricbeat": function (soajs, env, deployer, utils, model, cb) {
 		soajs.log.debug("Checking Metricbeat..");
 		var combo = {};
@@ -898,10 +890,10 @@ var lib = {
 					}, cb);
 				});
 			}
-			
+
 		});
 	},
-	
+
 	"checkAvailability": function (soajs, env, deployer, utils, model, tracker, cb) {
 		soajs.log.debug("Finalizing...");
 		var BL = {
@@ -945,9 +937,9 @@ var lib = {
 		else {
 			return cb(null, true);
 		}
-		
+
 	},
-	
+
 	"setDefaultIndex": function (soajs, env, esClient, model, tracker, cb) {
 		soajs.log.debug("Checking Kibana...");
 		var index = {
