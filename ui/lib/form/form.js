@@ -119,7 +119,12 @@ function buildForm(context, modal, configuration, cb) {
 							}
 						}
 						else {
-							if (configuration.data[inputName] !== undefined && configuration.data[inputName] !== null) {
+							if(fieldEntry.type === 'uiselect' && configuration.data[inputName] !== undefined && configuration.data[inputName] !== null){
+								if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
+									context.form.formData[inputName] = oneValue;
+								}
+							}
+							else if (fieldEntry.type !== 'uiselect' && configuration.data[inputName] !== undefined && configuration.data[inputName] !== null) {
 								if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
 									oneValue.selected = true;
 								}
@@ -141,16 +146,18 @@ function buildForm(context, modal, configuration, cb) {
 	function updateFormData(oneEntry, reload) {
 		if (!reload) {
 			if (oneEntry.value) {
-				if (Array.isArray(oneEntry.value)) {
-					context.form.formData[oneEntry.name] = [];
-					oneEntry.value.forEach(function (oneValue) {
-						if (oneValue.selected === true) {
-							context.form.formData[oneEntry.name].push(oneValue.v);
-						}
-					});
-				}
-				else {
-					context.form.formData[oneEntry.name] = oneEntry.value;
+				if(oneEntry.type !== 'uiselect'){
+					if (Array.isArray(oneEntry.value)) {
+						context.form.formData[oneEntry.name] = [];
+						oneEntry.value.forEach(function (oneValue) {
+							if (oneValue.selected === true) {
+								context.form.formData[oneEntry.name].push(oneValue.v);
+							}
+						});
+					}
+					else {
+						context.form.formData[oneEntry.name] = oneEntry.value;
+					}
 				}
 			}
 			else if (oneEntry.type === 'number') {
@@ -275,7 +282,7 @@ function buildForm(context, modal, configuration, cb) {
 		}
 		context.form.refData = configuration.data;
 	}
-
+	
 	context.form.refresh = function (reload) {
 		for (var i = 0; i < context.form.entries.length; i++) {
 			if (context.form.entries[i].type === 'group') {
