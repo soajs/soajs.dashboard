@@ -779,6 +779,7 @@ var environmentsConfig = {
 	},
 	permissions: {
 		"listEnvironments": ['dashboard', '/environment/list', 'get'],
+		"getEnvironment": ['dashboard', '/environment', 'get'],
 		"addEnvironment": ['dashboard', '/environment/add', 'post'],
 		"deleteEnvironment": ['dashboard', '/environment/delete', 'delete'],
 		"editEnvironment": ['dashboard', '/environment/update', 'put'],

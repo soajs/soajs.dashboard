@@ -53,41 +53,49 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		context.waitMessage.message = '';
 		context.waitMessage.type = '';
 	};
-
+	
 	$scope.listEnvironments = function (environmentId) {
-		getSendDataFromServer($scope, ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/environment/list"
-		}, function (error, response) {
-			if (error) {
-				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
-			}
-			else {
-				if (environmentId) {
+		if(environmentId){
+			getSendDataFromServer($scope, ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/environment",
+				"params":{
+					"id": environmentId
+				}
+			}, function (error, response) {
+				if (error) {
+					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+				}
+				else {
 					$scope.envId = environmentId;
-					for (var x = 0; x < response.length; x++) {
-						if (response[x]._id === $scope.envId) {
-							$scope.newEntry = false;
-							$scope.formEnvironment = response[x];
-							if (!$scope.formEnvironment.services.config.session.hasOwnProperty('proxy')) {
-								$scope.formEnvironment.services.config.session.proxy = undefined;
-							}
-							
-							if (response[x].services && response[x].services.config) {
-								if (response[x].services.config.logger) {
-									$scope.formEnvironment.config_loggerObj = JSON.stringify(response[x].services.config.logger, null, 2);
-									$scope.jsonEditor.logger.data = $scope.formEnvironment.config_loggerObj;
-									$scope.jsonEditor.logger.editor.setValue($scope.jsonEditor.logger.data);
-									fixEditorHeigh($scope.jsonEditor.logger.editor)
-								}
-							}
-
-							break;
+					$scope.newEntry = false;
+					$scope.formEnvironment = response;
+					if (!$scope.formEnvironment.services.config.session.hasOwnProperty('proxy')) {
+						$scope.formEnvironment.services.config.session.proxy = undefined;
+					}
+					
+					if ($scope.formEnvironment.services && $scope.formEnvironment.services.config) {
+						if ($scope.formEnvironment.services.config.logger) {
+							$scope.formEnvironment.config_loggerObj = JSON.stringify($scope.formEnvironment.services.config.logger, null, 2);
+							$scope.jsonEditor.logger.data = $scope.formEnvironment.config_loggerObj;
+							$scope.jsonEditor.logger.editor.setValue($scope.jsonEditor.logger.data);
+							fixEditorHeigh($scope.jsonEditor.logger.editor)
 						}
 					}
+					
 					$scope.waitMessage.message = '';
 					$scope.waitMessage.type = '';
 					$scope.formEnvironment.services.config.session.unset = ($scope.formEnvironment.services.config.session.unset === 'keep') ? false : true;
+				}
+			});
+		}
+		else{
+			getSendDataFromServer($scope, ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/environment/list"
+			}, function (error, response) {
+				if (error) {
+					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 				}
 				else {
 					if ($cookies.getObject('myEnv')) {
@@ -100,8 +108,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					$scope.grid = {rows: response};
 					$scope.jsonEditor.custom.data = JSON.stringify($scope.grid.rows[0].custom, null, 2);
 				}
-			}
-		});
+			});
+		}
+	
 	};
 
 	$scope.customLoaded = function (_editor) {
