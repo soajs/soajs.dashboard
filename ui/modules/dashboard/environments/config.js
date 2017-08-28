@@ -91,6 +91,16 @@ var serviceProviders = [
 		image: 'https://cdn1.itcentralstation.com/vendors/logos/original/joyent_avatar_reasonably_small.png?1371107403'
 	},
 	{
+		'v': 'liquidweb',
+		l: 'Liquid Web',
+		image: 'https://www.liquidweb.com/favicon-32x32.png'
+	},
+	{
+		'v': 'digitalocean',
+		l: 'Digital Ocean',
+		image: 'https://cdn.zapier.com/storage/developer/f1ce9f60f6740b7862d589a7f755ad19.128x128.png'
+	},
+	{
 		v: 'other',
 		l: 'Ubuntu',
 		image: 'https://assets.ubuntu.com/v1/cb22ba5d-favicon-16x16.png'
