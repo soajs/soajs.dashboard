@@ -23,7 +23,11 @@
 				<td ng-switch-when="select" class="form-select">
 					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/select.tmpl'"></div>
 				</td>
-
+				
+				<td ng-switch-when="uiselect" class="form-select">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/uiselect.tmpl'"></div>
+				</td>
+				
 				<td ng-switch-when="checkbox" class="form-checkbox">
 					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/checkbox.tmpl'"></div>
 				</td>

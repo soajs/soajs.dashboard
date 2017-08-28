@@ -1,0 +1,26 @@
+<div ng-show="!entry.hidden">
+	<label>{{entry.label}}</label>
+	<ui-select name="{{entry.name}}" id="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-model="form.formData[entry.name]" ng-change="form.toggleSelectValues(entry.name, form.formData[entry.name]);  form.call(entry.onAction, entry.name , form.formData[entry.name], form )" ng-if="entry.disabled" disabled>
+		<ui-select-match>
+			<img ng-src="{{$select.selected.image}}" height="24" style="position:relative; top: -6px;"/>&nbsp;
+			<span ng-bind="$select.selected.label"></span>
+		</ui-select-match>
+		<ui-select-choices repeat="item in entry.value track by item.value">
+			<img ng-src="{{item.image}}" height="24"/>&nbsp;
+			<span ng-bind="item.label"></span>
+		</ui-select-choices>
+	</ui-select>
+	<div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+	
+	<ui-select name="{{entry.name}}" id="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-model="form.formData[entry.name]" ng-change="form.toggleSelectValues(entry.name, form.formData[entry.name]);  form.call(entry.onAction, entry.name , form.formData[entry.name], form )" ng-if="!entry.disabled">
+		<ui-select-match>
+			<img ng-src="{{$select.selected.image}}" height="24" style="position:relative; top: -6px;"/>&nbsp;
+			<span ng-bind="$select.selected.label"></span>
+		</ui-select-match>
+		<ui-select-choices repeat="item in entry.value track by item.value">
+			<img ng-src="{{item.image}}" height="24"/>&nbsp;
+			<span ng-bind="item.label"></span>
+		</ui-select-choices>
+	</ui-select>
+	<div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+</div>
