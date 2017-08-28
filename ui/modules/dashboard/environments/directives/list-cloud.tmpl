@@ -361,9 +361,15 @@
 					<br/>
 				</div>
 			</div>
-			<div class="entryBoxes">
+			<div class="entryBoxes nodes">
 				<div ng-repeat="node in nodes.list" class="entryBox mb20">
 					<div class="header">
+						<span ng-show="node.tag" ng-click="changeTag(node);">
+							<span class="serviceLabelBox myPointer">
+								&nbsp;<img ng-src="{{node.tag.image}}" height="16" alt="" />&nbsp;{{node.tag.l}}
+								<span class="icon icon-arrow-right"></span>
+							</span>&nbsp;
+						</span>
 						{{node.hostname}}
 						<span class="rightActions" ng-if="envCode === 'DASHBOARD' && !localDeployment">
                             <a href="" ng-if="access.hacloud.nodes.remove" ng-confirm-click="Are you sure you want to remove this node?" ng-click="removeNode(node.id)">

@@ -63,6 +63,40 @@ var modelObj = {
 		]
 	}
 };
+
+var serviceProviders = [
+	{
+		v: 'aws',
+		l: 'Amazon Web Services',
+		image: 'http://cloudzone.azurewebsites.net/wp-content/uploads/2015/12/amazon-aws-s3-storage-logo.png'
+	},
+	{
+		v: 'rackspace',
+		l: 'Rackspace',
+		image: 'https://cdn.saaspass.com/a52e2205866340ea/authenticators/rackspace_128.png'
+	},
+	{
+		v: 'google',
+		l: 'Google Cloud',
+		image: 'https://cloud.google.com/_static/images/cloud/cloud_64dp.png'
+	},
+	{
+		v: 'azure',
+		l: 'Microsoft Azure',
+		image: 'https://dtb5pzswcit1e.cloudfront.net/assets/images/product_logos/icon_azure@2x.png'
+	},
+	{
+		v: 'joyent',
+		l: 'Joyent',
+		image: 'https://cdn1.itcentralstation.com/vendors/logos/original/joyent_avatar_reasonably_small.png?1371107403'
+	},
+	{
+		v: 'other',
+		l: 'Ubuntu',
+		image: 'https://assets.ubuntu.com/v1/cb22ba5d-favicon-16x16.png'
+	}
+];
+
 var environmentsConfig = {
 	deployer: {
 		kubernetes: {
@@ -719,6 +753,19 @@ var environmentsConfig = {
 				}
 			]
 		},
+		nodeTag: {
+			'entries': [
+				{
+					'name': 'tag',
+					'label': "Service Provider",
+					'type': 'uiselect',
+					'value': serviceProviders,
+					'tooltip': "Select Which Service Provider Hosts this node",
+					'required': true,
+					"fieldMsg": "Tag your nodes based on which Service Providers they are available at."
+				}
+			]
+		},
 		nginxUI: {
 			entries: [
 				{
@@ -840,5 +887,7 @@ var environmentsConfig = {
 			"listAccounts": ["dashboard", "/gitAccounts/accounts/list", "get"],
 			"listAccountRepos": ["dashboard", "/gitAccounts/getRepos", "get"]
 		}
-	}
+	},
+	
+	providers: serviceProviders
 };

@@ -3420,6 +3420,27 @@ module.exports = {
                     }
                 }
             },
+		
+		    "/cloud/nodes/tag": {
+			    "_apiInfo": {
+				    "l": "Update HA Cloud Node Tag",
+				    "group": "HA Cloud"
+			    },
+			    "id": {
+				    "source": ['body.id'],
+				    "required": true,
+				    "validation": {
+					    "type": "string"
+				    }
+			    },
+			    "tag": {
+				    "source": ['body.tag'],
+				    "required": true,
+				    "validation": {
+					    "type": "string"
+				    }
+			    }
+		    },
 
             "/cloud/services/scale": {
                 "_apiInfo": {

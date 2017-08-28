@@ -430,3 +430,11 @@ input:checked + .buttonSlider:before {
 .buttonSlider.round:before {
   border-radius: 50%;
 }
+
+.nodes span{
+    margin: 0 !important;
+}
+
+.myPointer{
+    cursor: pointer;
+}

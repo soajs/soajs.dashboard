@@ -9,6 +9,8 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 
 	var autoRefreshTimeoutInstance;
 
+	$scope.serviceProviders = environmentsConfig.providers;
+	
     $scope.nodes = {};
 	$scope.services = {};
 
@@ -128,6 +130,10 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	    nodeSrv.addNode($scope);
     };
 
+    $scope.changeTag = function(node){
+	    nodeSrv.changeTag($scope, node);
+    };
+    
     $scope.removeNode = function (nodeId) {
 	    nodeSrv.removeNode($scope, nodeId);
     };

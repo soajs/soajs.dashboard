@@ -1011,6 +1011,19 @@ service.init(function () {
 			});
 		});
 	});
+	
+	/**
+	 * Update the tag of a cluster node
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/cloud/nodes/tag", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.nodes.module, dbModel, function (BL) {
+			BL.tagNode(config, req.soajs, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
 
 	/**
 	 * List all services per environment deployed in container mode
