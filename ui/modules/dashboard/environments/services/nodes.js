@@ -218,6 +218,8 @@ nodeSrv.service('nodeSrv', ['ngDataApi', '$timeout', '$modal', function (ngDataA
 								currentScope.displayAlert('danger', error.message);
 							}
 							else {
+								currentScope.modalInstance.close();
+								currentScope.form.formData = {};
 								currentScope.displayAlert('success', 'Node tagged successfully');
 								currentScope.listNodes();
 							}
