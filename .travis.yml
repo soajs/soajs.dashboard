@@ -1,6 +1,6 @@
 sudo: required
 
-group: deprecated-2017Q2
+group: stable
 
 language: node_js
 
