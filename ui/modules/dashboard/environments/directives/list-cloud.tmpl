@@ -370,6 +370,11 @@
 								<span class="icon icon-arrow-right"></span>
 							</span>&nbsp;
 						</span>
+						<span ng-show="!node.tag" ng-click="changeTag(node);">
+							<span class="serviceLabelBox myPointer">
+								<span class="icon icon-price-tag"></span>&nbsp;Tag Node
+							</span>&nbsp;
+						</span>
 						{{node.hostname}}
 						<span class="rightActions" ng-if="envCode === 'DASHBOARD' && !localDeployment">
                             <a href="" ng-if="access.hacloud.nodes.remove" ng-confirm-click="Are you sure you want to remove this node?" ng-click="removeNode(node.id)">
