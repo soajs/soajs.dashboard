@@ -168,8 +168,8 @@ var catalogAppConfig = {
 								'label': 'Maximum Attempts',
 								'name': 'maxAttempts',
 								'placeholder': '5',
-								'tooltip': "Define how many times docker should restart the container before eventually giving up",
-								'fieldMsg': "Define how many times docker should restart the container before eventually giving up",
+								'tooltip': "Define how many times docker should restart the container after failure",
+								'fieldMsg': "Define how many times docker should restart the container after failure",
 								'required': false
 							}
 						]
@@ -287,7 +287,7 @@ var catalogAppConfig = {
 			'entries': [
 				{
 					'type': 'html',
-					'value': '<hr />',
+					'value': '',
 				},
 				{
 					'name': 'envVarName',
@@ -425,6 +425,7 @@ var catalogAppConfig = {
 		},
 		
 		volumeInput: {
+			'name': 'volumeGroup',
 			"type": "group",
 			"label": "New Volume",
 			"entries": [
@@ -457,6 +458,7 @@ var catalogAppConfig = {
 		},
 		
 		portInput: {
+			'name': 'portGroup',
 			'type': 'group',
 			'label': 'New Port',
 			'entries': [

@@ -55,10 +55,6 @@ fieldset pre{
     /*color: rgb(49, 132, 149);*/
 }
 
-.catalogRecipeForm fieldset{
-    margin-top:15px;
-}
-
 .catalogRecipeForm h2{
     background-color:#d9edf7;
     color:#31708f;
@@ -66,4 +62,67 @@ fieldset pre{
     padding:15px;
     margin-top:10px;
     border-radius: 5px;
+}
+
+.catalogRecipeForm table tr td{
+    width: 98% !important;
+    display: block;
+    margin-right: 2%;
+}
+
+.catalogRecipeForm .tr-imagePrefix-wrapper,
+.catalogRecipeForm .tr-imageName-wrapper,
+.catalogRecipeForm .tr-imageTag-wrapper{
+    float:left;
+    width:33%;
+}
+
+.catalogRecipeForm tr[class^="form-group tr-volumeGroup"]{
+    position:relative;
+}
+
+.catalogRecipeForm tr[class^="form-group tr-rVolume"]{
+    color:#a94442;
+    float:right;
+    position: absolute;
+    right: 20px;
+    cursor:pointer;
+}
+
+.catalogRecipeForm tr[class^="form-group tr-envVarRemove"],
+.catalogRecipeForm tr[class^="form-group tr-rPort"]{
+    color:#a94442;
+    float:right;
+    position: absolute;
+    right: 60px;
+    cursor:pointer;
+}
+
+.catalogRecipeForm tr[class^="form-group tr-userInputVar"],
+.catalogRecipeForm tr[class^="form-group tr-staticVar"],
+.catalogRecipeForm tr[class^="form-group tr-computedVar"],
+.catalogRecipeForm tr[class^="form-group tr-volume"],
+.catalogRecipeForm tr[class^="form-group tr-port"]{
+    float: left;
+    width: 100%;
+}
+
+.catalogRecipeForm tr[class^="form-group tr-userInputVar"] td,
+.catalogRecipeForm tr[class^="form-group tr-staticVar"] td,
+.catalogRecipeForm tr[class^="form-group tr-computedVar"] td,
+.catalogRecipeForm tr[class^="form-group tr-port"] td{
+    width:99% !important;
+}
+
+.catalogRecipeForm tr[class^="form-group tr-envVarName"],
+.catalogRecipeForm tr[class^="form-group tr-envVarType"],
+.catalogRecipeForm tr[class^="form-group tr-volumeGroup"],
+.catalogRecipeForm .tr-workingDir-wrapper,
+.catalogRecipeForm .tr-network-wrapper,
+.catalogRecipeForm .tr-maxAttempts-wrapper,
+.catalogRecipeForm .tr-condition-wrapper,
+.catalogRecipeForm .tr-imagePullPolicy-wrapper,
+.catalogRecipeForm .tr-imageOverride-wrapper{
+    float:left;
+    width:50%;
 }

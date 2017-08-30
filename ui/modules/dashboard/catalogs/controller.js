@@ -17,7 +17,6 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
     }
     
 	function renderJSONEditor(_editor, id, value, height){
-		_editor.setReadOnly(true);
 		if(value && value !== ''){
 			_editor.setValue(JSON.stringify(value, null, 2));
 		}
@@ -25,6 +24,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 			_editor.setValue('');
 		}
 		
+		_editor.setShowPrintMargin(false);
 		_editor.scrollToLine(0, true, true);
 		_editor.clearSelection();
 		var heightUpdateFunction = function () {
@@ -151,44 +151,44 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					
 					envVars.entries[envVars.entries.length-1].name += envCounter;
 					envVars.entries[envVars.entries.length-1].onAction = function(id, value, form){
+						
 						var count = parseInt(id.replace('envVarRemove', ''));
-						if(form.entries[6].tabs[1].entries.length === 1){
-							form.entries[6].tabs[1].entries =[];
-							envCounter= 0;
-						}
-						else{
-							form.entries[6].tabs[1].entries.splice(count, 1);
+						for(let i = form.entries[6].tabs[1].entries.length -1; i >=0; i--){
+							if(form.entries[6].tabs[1].entries[i].name === 'envVarGroup' + count){
+								form.entries[6].tabs[1].entries.splice(i, 1);
+								break;
+							}
 						}
 					};
 					
 					if($scope.form && $scope.form.entries){
-						$scope.form.entries[6].tabs[1].entries.splice(envCounter,0, envVars);
+						$scope.form.entries[6].tabs[1].entries.splice($scope.form.entries[6].tabs[1].entries.length -1,0, envVars);
 					}
 					else{
-						formConfig[6].tabs[1].entries.splice(envCounter, 0, envVars);
+						formConfig[6].tabs[1].entries.splice($scope.form.entries[6].tabs[1].entries.length -1, 0, envVars);
 					}
 					envCounter++;
 				};
 				
 				$scope.addNewVolume = function(value, mountValue){
 					var tmp = angular.copy(catalogAppConfig.form.volumeInput);
+					tmp.name += volumeCounter;
 					tmp.entries[0].name += volumeCounter;
 					tmp.entries[1].name += volumeCounter;
 					tmp.entries[2].name += volumeCounter;
 					tmp.entries[2].onAction = function(id, value, form){
 						var count = parseInt(id.replace('rVolume', ''));
 						
-						if($scope.form.entries[4].tabs[5].entries.length === 1){
-							$scope.form.entries[4].tabs[5].entries =[];
-							volumeCounter= 0;
-						}
-						else{
-							$scope.form.entries[4].tabs[5].entries.splice(count, 1);
+						for(let i = form.entries[4].tabs[5].entries.length -1; i >=0; i--){
+							if(form.entries[4].tabs[5].entries[i].name === 'volumeGroup' + count){
+								form.entries[4].tabs[5].entries.splice(i, 1);
+								break;
+							}
 						}
 					};
 					
 					if($scope.form && $scope.form.entries){
-						$scope.form.entries[4].tabs[5].entries.splice(volumeCounter, 0, tmp);
+						$scope.form.entries[4].tabs[5].entries.splice($scope.form.entries[4].tabs[5].entries.length -1, 0, tmp);
 						if(value){
 							setEditorContent('volume' + volumeCounter, value, tmp.entries[0].height);
 							if(mountValue){
@@ -204,7 +204,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						}
 					}
 					else{
-						formConfig[4].tabs[5].entries.splice(volumeCounter, 0, tmp);
+						formConfig[4].tabs[5].entries.splice($scope.form.entries[4].tabs[5].entries.length -1, 0, tmp);
 						if(value){
 							setEditorContent('volume' + volumeCounter, value, tmp.entries[0].height);
 							if(mountValue){
@@ -224,22 +224,22 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				
 				$scope.addNewPort = function(value){
 					var tmp = angular.copy(catalogAppConfig.form.portInput);
+					tmp.name += portCounter;
 					tmp.entries[0].name += portCounter;
 					tmp.entries[1].name += portCounter;
 					tmp.entries[1].onAction = function(id, value, form){
 						var count = parseInt(id.replace('rPort', ''));
 						
-						if($scope.form.entries[4].tabs[6].entries.length === 1){
-							$scope.form.entries[4].tabs[6].entries = [];
-							portCounter = 0;
-						}
-						else{
-							$scope.form.entries[4].tabs[6].entries.splice(count, 1);
+						for(let i = form.entries[4].tabs[6].entries.length -1; i >=0; i--){
+							if(form.entries[4].tabs[6].entries[i].name === 'portGroup' + count){
+								form.entries[4].tabs[6].entries.splice(i, 1);
+								break;
+							}
 						}
 					};
 					
 					if($scope.form && $scope.form.entries) {
-						$scope.form.entries[4].tabs[6].entries.splice(portCounter, 0, tmp);
+						$scope.form.entries[4].tabs[6].entries.splice($scope.form.entries[4].tabs[6].entries.length -1, 0, tmp);
 						//$scope.form.entries[11].entries.push(tmp);
 						if(value){
 							setEditorContent('port' + portCounter, value, tmp.entries[0].height)
@@ -249,7 +249,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						}
 					}
 					else{
-						formConfig[4].tabs[6].entries.splice(portCounter, 0, tmp);
+						formConfig[4].tabs[6].entries.splice($scope.form.entries[4].tabs[6].entries.length -1, 0, tmp);
 						if(value){
 							setEditorContent('port' + portCounter, value, tmp.entries[0].height)
 						}
@@ -489,10 +489,12 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 		if(volumeCounter > 0){
 			for(let i=0; i < volumeCounter; i++){
 				let volume = formData['volume' + i];
-				apiData.recipe.deployOptions.voluming.volumes.push(volume);
+				if(volume && Object.keys(volume).length > 0){
+					apiData.recipe.deployOptions.voluming.volumes.push(volume);
+				}
 				
 				let volumeMount = formData['volumeMount' +i];
-				if(volumeMount){
+				if(volumeMount && Object.keys(volumeMount).length > 0){
 					apiData.recipe.deployOptions.voluming.volumeMounts.push(volumeMount);
 				}
 			}
@@ -501,12 +503,17 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 		if(portCounter > 0){
 			for(let i=0; i < portCounter; i++){
 				let port = formData['port' + i];
-				apiData.recipe.deployOptions.ports.push(port);
+				if(port && Object.keys(port).length > 0){
+					apiData.recipe.deployOptions.ports.push(port);
+				}
 			}
 		}
 		
 		if(envCounter > 0){
 			for(let i=0; i < envCounter; i++){
+				if(!formData['envVarName' + i] || !formData['envVarType' + i]){
+					continue;
+				}
 				apiData.recipe.buildOptions.env[formData['envVarName' + i]] = {
 					'type': formData['envVarType' + i]
 				};
@@ -522,6 +529,11 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						apiData.recipe.buildOptions.env[formData['envVarName' + i]].default = formData['userInputDefault' + i];
 						apiData.recipe.buildOptions.env[formData['envVarName' + i]].fieldMsg = formData['userInputFieldMsg' + i];
 						break;
+				}
+				
+				//nothing to push
+				if(Object.keys(apiData.recipe.buildOptions.env[formData['envVarName' + i]]).length === 0){
+					delete apiData.recipe.buildOptions.env[formData['envVarName' + i]];
 				}
 			}
 		}
