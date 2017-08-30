@@ -1,9 +1,23 @@
+<script type="text/ng-template" id="editRecipe.tmpl">
+	<div class="form">
+		<div class="modal-header">
+			<h3 class="modal-title">{{recipe.name}} / Version {{recipe.v}}<span class="pull-right">{{recipe.ts | date}}</span></h3>
+		</div>
+		<div class="catalogRecipeForm modal-body text-align-center">
+			<ngform></ngform>
+		</div>
+	</div>
+</script>
+
 <section ng-controller="catalogAppCtrl" class="catalogAppCtrl">
 	<tabset>
 		<tab heading="Latest Versions">
 			<br />
-			<div class="f-right w20 searchBoxContainer">
-				<input type="text" name="tag" ng-model="query" ng-keyup="filterData(query, $index)" class="form-control text-field-align-right mb5" placeholder="Search"/>
+			<div class="f-right w30 searchBoxContainer">
+				<input type="text" name="tag" ng-model="query" ng-keyup="filterData(query, $index)" class="form-control text-field-align-right mb5 f-left w70" placeholder="Search"/>
+				<button class="btn btn-success f-right" ng-click="listRecipes()">
+					Refresh&nbsp;&nbsp;<span class="icon icon-loop2"></span>
+				</button>
 			</div>
 			<div class="dropdown f-left">
 				<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -28,11 +42,8 @@
 								<a href="" ng-if="access.delete && !recipe.locked" ng-click="deleteRecipe(recipe)" ng-confirm-click="Are you sure you want to delete this recipe?">
 									<span class="icon icon-cross" tooltip="Delete Recipe"></span>
 								</a>
-								<a href="" ng-if="access.update && !recipe.locked" ng-click="updateRecipe(recipe)">
+								<a href="" ng-if="access.update" ng-click="updateRecipe(recipe)">
 									<span class="icon icon-pencil" tooltip="Update Recipe"></span>
-								</a>
-								<a href="" ng-if="access.list" ng-click="viewRecipe(recipe)">
-									<span class="icon icon-zoom-in" tooltip="View Recipe"></span>
 								</a>
 							</div>
 						</div>
@@ -47,8 +58,11 @@
 		</tab>
 		<tab heading="Previous Versions">
 			<br />
-			<div class="f-right w20 searchBoxContainer">
-				<input type="text" name="tag" ng-model="queryVersions" ng-keyup="filterDataVersions(queryVersions, $index)" class="form-control text-field-align-right mb5" placeholder="Search"/>
+			<div class="f-right w30 searchBoxContainer">
+				<input type="text" name="tag" ng-model="queryVersions" ng-keyup="filterDataVersions(queryVersions, $index)" class="form-control text-field-align-right mb5 w70 f-left" placeholder="Search"/>
+				<button class="btn btn-success f-right" ng-click="listArchives()">
+					Refresh&nbsp;&nbsp;<span class="icon icon-loop2"></span>
+				</button>
 			</div>
 			<div ng-if="access.list">
 				<div ng-if="archives && archives.length > 0" class="entryBoxes">
@@ -60,8 +74,9 @@
 								<a href="" ng-if="access.delete && !recipe.locked" ng-click="deleteRecipe(recipe, true)" ng-confirm-click="Are you sure you want to delete this recipe?">
 									<span class="icon icon-cross" tooltip="Delete Recipe"></span>
 								</a>
-								<a href="" ng-if="access.list" ng-click="viewRecipe(recipe)">
-									<span class="icon icon-zoom-in" tooltip="View Recipe"></span>
+								
+								<a href="" ng-if="access.update" ng-click="updateRecipe(recipe)">
+									<span class="icon icon-pencil" tooltip="Update Recipe"></span>
 								</a>
 							</div>
 						</div>

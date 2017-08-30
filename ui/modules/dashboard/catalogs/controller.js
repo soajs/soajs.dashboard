@@ -8,7 +8,84 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
     constructModulePermissions($scope, $scope.access, catalogAppConfig.permissions);
 
     $scope.catalogImage = './themes/' + themeToUse + '/img/catalog.png';
-
+	
+    function setEditorContent(id, value, height){
+	    $timeout(function(){
+	        var editor = ace.edit(id);
+	        renderJSONEditor(editor, id, value, height);
+	    }, 1000);
+    }
+    
+	function renderJSONEditor(_editor, id, value, height){
+		_editor.setReadOnly(true);
+		if(value && value !== ''){
+			_editor.setValue(JSON.stringify(value, null, 2));
+		}
+		else{
+			_editor.setValue('');
+		}
+		
+		_editor.scrollToLine(0, true, true);
+		_editor.clearSelection();
+		var heightUpdateFunction = function () {
+			var newHeight =
+				_editor.getSession().getScreenLength()
+				* _editor.renderer.lineHeight
+				+ _editor.renderer.scrollBar.getWidth() + 10;
+			
+			if (height) {
+				newHeight = parseInt(height);
+			}
+			
+			_editor.renderer.scrollBar.setHeight(newHeight.toString() + "px");
+			_editor.renderer.scrollBar.setInnerHeight(newHeight.toString() + "px");
+			jQuery('#' + id).height(newHeight.toString());
+			_editor.resize(true);
+		};
+		
+		$timeout(function () {
+			_editor.heightUpdate = heightUpdateFunction();
+			// Set initial size to match initial content
+			heightUpdateFunction();
+			
+			// Whenever a change happens inside the ACE editor, update
+			// the size again
+			_editor.getSession().on('change', heightUpdateFunction);
+			_editor.setOption("highlightActiveLine", false);
+		}, 1000);
+	}
+	
+	function reRenderEnvVar(id, value, form){
+		var counter = parseInt(id.replace('envVarType', ''));
+		var tmp;
+		switch(value){
+			case 'computed':
+				tmp = angular.copy(catalogAppConfig.form.computedVar);
+				break;
+			case 'static':
+				tmp = angular.copy(catalogAppConfig.form.staticVar);
+				break;
+			case 'userInput':
+				tmp = angular.copy(catalogAppConfig.form.userInputVar);
+				tmp.entries.forEach(function(oneEntry){
+					oneEntry.name += counter;
+				});
+				break;
+		}
+		
+		tmp.name += counter;
+		form.formData['envVarType' + counter] = value;
+		form.entries[6].tabs[1].entries.forEach(function(oneEnvVarGroup){
+			if(oneEnvVarGroup.type ==='group' && oneEnvVarGroup.name === 'envVarGroup' + counter){
+				if(oneEnvVarGroup.entries.length >= 5){
+					oneEnvVarGroup.entries.splice(3, 1);
+				}
+				
+				oneEnvVarGroup.entries.splice(3, 0, tmp);
+			}
+		});
+	}
+	
     $scope.listRecipes = function () {
         overlayLoading.show();
         getSendDataFromServer($scope, ngDataApi, {
@@ -44,43 +121,431 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 			}
 		});
 	};
+    
+	function proceedWithForm(currentScope, mainFormConfig, data, submitAction){
+		
+		var envCounter = 0, volumeCounter = 0, portCounter = 0;
+		
+		$modal.open({
+			templateUrl: "editRecipe.tmpl",
+			size: 'lg',
+			backdrop: true,
+			keyboard: true,
+			controller: function ($scope, $modalInstance) {
+				
+				$scope.recipe = {
+					v : data.v || 1,
+					ts: data.ts,
+					name: data.name
+				};
+				
+				var formConfig = angular.copy(mainFormConfig);
+				
+				$scope.addNewEnvVar = function (){
+					var envVars = angular.copy(catalogAppConfig.form.envVars);
+					envVars.name += envCounter;
+					
+					envVars.entries[1].name += envCounter;
+					envVars.entries[2].name += envCounter;
+					envVars.entries[2].onAction = reRenderEnvVar;
+					
+					envVars.entries[envVars.entries.length-1].name += envCounter;
+					envVars.entries[envVars.entries.length-1].onAction = function(id, value, form){
+						var count = parseInt(id.replace('envVarRemove', ''));
+						if(form.entries[6].tabs[1].entries.length === 1){
+							form.entries[6].tabs[1].entries =[];
+							envCounter= 0;
+						}
+						else{
+							form.entries[6].tabs[1].entries.splice(count, 1);
+						}
+					};
+					
+					if($scope.form && $scope.form.entries){
+						$scope.form.entries[6].tabs[1].entries.splice(envCounter,0, envVars);
+					}
+					else{
+						formConfig[6].tabs[1].entries.splice(envCounter, 0, envVars);
+					}
+					envCounter++;
+				};
+				
+				$scope.addNewVolume = function(value, mountValue){
+					var tmp = angular.copy(catalogAppConfig.form.volumeInput);
+					tmp.entries[0].name += volumeCounter;
+					tmp.entries[1].name += volumeCounter;
+					tmp.entries[2].name += volumeCounter;
+					tmp.entries[2].onAction = function(id, value, form){
+						var count = parseInt(id.replace('rVolume', ''));
+						
+						if($scope.form.entries[4].tabs[5].entries.length === 1){
+							$scope.form.entries[4].tabs[5].entries =[];
+							volumeCounter= 0;
+						}
+						else{
+							$scope.form.entries[4].tabs[5].entries.splice(count, 1);
+						}
+					};
+					
+					if($scope.form && $scope.form.entries){
+						$scope.form.entries[4].tabs[5].entries.splice(volumeCounter, 0, tmp);
+						if(value){
+							setEditorContent('volume' + volumeCounter, value, tmp.entries[0].height);
+							if(mountValue){
+								setEditorContent('volumeMount' + volumeCounter, mountValue, tmp.entries[1].height);
+							}
+							else{
+								setEditorContent('volumeMount' + volumeCounter, {}, tmp.entries[1].height);
+							}
+						}
+						else{
+							setEditorContent('volume' + volumeCounter, {}, tmp.entries[0].height);
+							setEditorContent('volumeMount' + volumeCounter, {}, tmp.entries[1].height);
+						}
+					}
+					else{
+						formConfig[4].tabs[5].entries.splice(volumeCounter, 0, tmp);
+						if(value){
+							setEditorContent('volume' + volumeCounter, value, tmp.entries[0].height);
+							if(mountValue){
+								setEditorContent('volumeMount' + volumeCounter, mountValue, tmp.entries[1].height);
+							}
+							else{
+								setEditorContent('volumeMount' + volumeCounter, {}, tmp.entries[1].height);
+							}
+						}
+						else{
+							setEditorContent('volume' + volumeCounter, {}, tmp.entries[0].height);
+							setEditorContent('volumeMount' + volumeCounter, {}, tmp.entries[1].height);
+						}
+					}
+					volumeCounter++;
+				};
+				
+				$scope.addNewPort = function(value){
+					var tmp = angular.copy(catalogAppConfig.form.portInput);
+					tmp.entries[0].name += portCounter;
+					tmp.entries[1].name += portCounter;
+					tmp.entries[1].onAction = function(id, value, form){
+						var count = parseInt(id.replace('rPort', ''));
+						
+						if($scope.form.entries[4].tabs[6].entries.length === 1){
+							$scope.form.entries[4].tabs[6].entries = [];
+							portCounter = 0;
+						}
+						else{
+							$scope.form.entries[4].tabs[6].entries.splice(count, 1);
+						}
+					};
+					
+					if($scope.form && $scope.form.entries) {
+						$scope.form.entries[4].tabs[6].entries.splice(portCounter, 0, tmp);
+						//$scope.form.entries[11].entries.push(tmp);
+						if(value){
+							setEditorContent('port' + portCounter, value, tmp.entries[0].height)
+						}
+						else {
+							setEditorContent('port' + portCounter, {}, tmp.entries[0].height)
+						}
+					}
+					else{
+						formConfig[4].tabs[6].entries.splice(portCounter, 0, tmp);
+						if(value){
+							setEditorContent('port' + portCounter, value, tmp.entries[0].height)
+						}
+						else {
+							setEditorContent('port' + portCounter, {}, tmp.entries[0].height)
+						}
+					}
+					portCounter++;
+				};
+				
+				formConfig[4].tabs[5].entries[0].onAction = function(id, value, form){
+					$scope.addNewVolume();
+				};
 
-    $scope.viewRecipe = function (recipe) {
-        var formConfig = angular.copy(catalogAppConfig.form.viewRecipe);
-        formConfig.entries[0].value = recipe;
+				formConfig[4].tabs[6].entries[0].onAction = function(id, value, form){
+					$scope.addNewPort();
+				};
 
-        var options = {
-            timeout: $timeout,
-            form: formConfig,
-            name: 'viewRecipe',
-            label: 'View Recipe',
-            actions: [
-                {
-                    type: 'reset',
-                    label: 'Close',
-                    btn: 'primary',
-                    action: function () {
-                        $scope.modalInstance.dismiss('cancel');
-                        $scope.form.formData = {};
-                    }
-                }
-            ]
-        };
-
-        buildFormWithModal($scope, $modal, options);
-    };
-
+				formConfig[6].tabs[1].entries[0].onAction = function(id, value, form){
+					$scope.addNewEnvVar();
+				};
+				
+				var formData = mapDataToForm($scope, false);
+				
+				var options = {
+					timeout: $timeout,
+					entries: formConfig,
+					name: 'editRecipe',
+					data: formData,
+					actions: [
+						{
+							type: 'reset',
+							label: 'Cancel',
+							btn: 'danger',
+							action: function () {
+								$modalInstance.dismiss('cancel');
+								$scope.form.formData = {};
+							}
+						}
+					]
+				};
+				
+				if(!data.locked){
+					options.actions.splice(0,0, {
+						type: 'submit',
+							label: 'Submit',
+						btn: 'primary',
+						action: function (fData) {
+							var formData = fromToAPI(fData, envCounter, volumeCounter, portCounter);
+							
+							overlayLoading.show();
+							getSendDataFromServer($scope, ngDataApi, {
+								method: submitAction.method,
+								routeName: submitAction.routeName,
+								params: submitAction.params,
+								data: {
+									catalog: formData
+								}
+							}, function (error, response) {
+								overlayLoading.hide();
+								if (error) {
+									$scope.form.displayAlert('danger', error.message);
+								}
+								else {
+									$scope.form.displayAlert('success', 'Recipe Saved Successfully');
+									$modalInstance.close();
+									$scope.form.formData = {};
+									currentScope.listRecipes();
+								}
+							});
+						}
+					});
+				}
+				
+				buildForm($scope, $modalInstance, options, function(){
+					$scope.form.formData = mapDataToForm($scope, true);
+					$scope.form.refresh(true);
+				});
+			}
+		});
+		
+		function mapDataToForm(modalScope, postForm){
+			var output = {
+				name: data.name,
+				description: data.description,
+				type: data.type,
+				imagePrefix: data.recipe.deployOptions.image.prefix,
+				imageName: data.recipe.deployOptions.image.name,
+				imageTag: data.recipe.deployOptions.image.tag,
+				imagePullPolicy: data.recipe.deployOptions.image.pullPolicy,
+				condition: (data.recipe.deployOptions.restartPolicy) ? data.recipe.deployOptions.restartPolicy.condition: '',
+				maxAttempts: (data.recipe.deployOptions.restartPolicy) ? data.recipe.deployOptions.restartPolicy.maxAttempts: '',
+				network: data.recipe.deployOptions.container.network,
+				workingDir: data.recipe.deployOptions.container.workingDir,
+				command: data.recipe.buildOptions.cmd.deploy.command[0],
+				arguments: data.recipe.buildOptions.cmd.deploy.args.join("\n"),
+			};
+			
+			if(data.subtype){
+				output.type += "_" + data.subtype;
+			}
+			
+			if(data.recipe.deployOptions.image && Object.hasOwnProperty.call(data.recipe.deployOptions.image, 'override')){
+				output['imageOverride'] = data.recipe.deployOptions.image.override.toString();
+			}
+			else{
+				output['imageOverride'] = 'false';
+			}
+			
+			if(data.recipe.deployOptions.specifyGitConfiguration && Object.hasOwnProperty.call(data.recipe.deployOptions, 'specifyGitConfiguration')) {
+				output['specifyGitConfiguration'] = data.recipe.deployOptions.specifyGitConfiguration.toString();
+			}
+			else{
+				output['specifyGitConfiguration'] = 'false';
+			}
+			
+			if(data.recipe.buildOptions.settings && Object.hasOwnProperty.call(data.recipe.buildOptions.settings, 'accelerateDeployment')){
+				output.accelerateDeployment = data.recipe.buildOptions.settings.accelerateDeployment.toString();
+			}
+			else{
+				output.accelerateDeployment = 'false';
+			}
+			
+			if(postForm){
+				output["readinessProbe"] =  data.recipe.deployOptions.readinessProbe;
+				setEditorContent("readinessProbe", output['readinessProbe'], mainFormConfig[4].tabs[2].entries[0].height);
+				
+				//volumes
+				if(data.recipe.deployOptions.voluming && data.recipe.deployOptions.voluming.volumes){
+					data.recipe.deployOptions.voluming.volumes.forEach(function(oneVolume){
+						output['volume' + volumeCounter] = oneVolume;
+						var mountVolume;
+						if(data.recipe.deployOptions.voluming.volumeMounts && data.recipe.deployOptions.voluming.volumeMounts[volumeCounter]){
+							output['volumeMount' + volumeCounter] = data.recipe.deployOptions.voluming.volumeMounts[volumeCounter];
+							mountVolume = data.recipe.deployOptions.voluming.volumeMounts[volumeCounter];
+						}
+						modalScope.addNewVolume(oneVolume, mountVolume);
+					});
+				}
+				
+				//ports
+				if(data.recipe.deployOptions.ports){
+					data.recipe.deployOptions.ports.forEach(function(onePort){
+						output['port' + portCounter] = onePort;
+						modalScope.addNewPort(onePort);
+					});
+				}
+				
+				//env variables
+				if(data.recipe.buildOptions.env){
+					for(var oneVar in data.recipe.buildOptions.env){
+						output['envVarName' + envCounter] = oneVar;
+						output['envVarType' + envCounter] = data.recipe.buildOptions.env[oneVar].type;
+						switch(data.recipe.buildOptions.env[oneVar].type){
+							case 'computed':
+								output['computedVar' + envCounter] = data.recipe.buildOptions.env[oneVar].value;
+								break;
+							case 'static':
+								output['staticVar' + envCounter] = data.recipe.buildOptions.env[oneVar].value;
+								break;
+							case 'userInput':
+								output['userInputLabel' + envCounter] = data.recipe.buildOptions.env[oneVar].label;
+								output['userInputDefault' + envCounter] = data.recipe.buildOptions.env[oneVar].default;
+								output['userInputFieldMsg' + envCounter] = data.recipe.buildOptions.env[oneVar].fieldMsg;
+								break;
+						}
+						modalScope.addNewEnvVar();
+						//counter got incremented in method above, refill data starting from 0 instead of 1
+						reRenderEnvVar('envVarType' + ( envCounter -1 ), data.recipe.buildOptions.env[oneVar].type, modalScope.form);
+					}
+				}
+			}
+			
+			return output;
+		}
+	}
+ 
+	function fromToAPI(formData, envCounter, volumeCounter, portCounter){
+		var apiData = {
+			name: formData.name,
+			type: formData.type,
+			description: formData.description,
+			recipe:{
+				deployOptions: {
+					"image": {
+						"prefix": formData.imagePrefix,
+						"name": formData.imageName,
+						"tag": formData.imageTag,
+						"pullPolicy": formData.imagePullPolicy,
+						"override": (formData.imageOverride === 'true')
+					},
+					"specifyGitConfiguration": (formData.specifyGitConfiguration === 'true'),
+					"readinessProbe": formData.readinessProbe,
+					"ports": [],
+					"voluming": {
+						"volumes": [],
+						"volumeMounts": []
+					},
+					"restartPolicy": {
+						"condition": formData.condition,
+						"maxAttempts": formData.maxAttempts
+					},
+					"container": {
+						"network": formData.network,
+						"workingDir": formData.workingDir
+					}
+				},
+				buildOptions: {
+					"env": {}
+				}
+			}
+		};
+		
+		if(apiData.type.indexOf("_") !== -1){
+			apiData.type = apiData.type.split("_")[0];
+			apiData.subtype = apiData.type.split("_")[1];
+		}
+		
+		if(formData.accelerateDeployment){
+			if(!apiData.recipe.buildOptions.settings){
+				apiData.recipe.buildOptions.settings = {};
+			}
+			apiData.recipe.buildOptions.settings.accelerateDeployment = (formData.accelerateDeployment === 'true');
+		}
+		
+		if(formData.command && formData.arguments){
+			if(!apiData.recipe.buildOptions.cmd){
+				apiData.recipe.buildOptions.cmd = {
+					deploy: {}
+				};
+			}
+			
+			apiData.recipe.buildOptions.cmd.deploy.command = [formData.command];
+			apiData.recipe.buildOptions.cmd.deploy.args = formData.arguments.split("\n");
+		}
+		
+		if(volumeCounter > 0){
+			for(let i=0; i < volumeCounter; i++){
+				let volume = formData['volume' + i];
+				apiData.recipe.deployOptions.voluming.volumes.push(volume);
+				
+				let volumeMount = formData['volumeMount' +i];
+				if(volumeMount){
+					apiData.recipe.deployOptions.voluming.volumeMounts.push(volumeMount);
+				}
+			}
+		}
+		
+		if(portCounter > 0){
+			for(let i=0; i < portCounter; i++){
+				let port = formData['port' + i];
+				apiData.recipe.deployOptions.ports.push(port);
+			}
+		}
+		
+		if(envCounter > 0){
+			for(let i=0; i < envCounter; i++){
+				apiData.recipe.buildOptions.env[formData['envVarName' + i]] = {
+					'type': formData['envVarType' + i]
+				};
+				switch (formData['envVarType' + i]){
+					case 'static':
+						apiData.recipe.buildOptions.env[formData['envVarName' + i]].value = formData['staticVar' + i];
+						break;
+					case 'computed':
+						apiData.recipe.buildOptions.env[formData['envVarName' + i]].value = formData['computedVar' + i];
+						break;
+					case 'userInput':
+						apiData.recipe.buildOptions.env[formData['envVarName' + i]].label = formData['userInputLabel' + i];
+						apiData.recipe.buildOptions.env[formData['envVarName' + i]].default = formData['userInputDefault' + i];
+						apiData.recipe.buildOptions.env[formData['envVarName' + i]].fieldMsg = formData['userInputFieldMsg' + i];
+						break;
+				}
+			}
+		}
+		
+		return apiData;
+	}
+	
     $scope.addRecipe = function (type) {
-        var formConfig = angular.copy(catalogAppConfig.form.addRecipe);
-
-        if (type === 'blank') {
-            formConfig.entries[0].required = false;
-            formConfig.entries[0].hidden = true;
-
-            var recipeTemplate = angular.copy(catalogAppConfig.templates.recipe);
-            formConfig.entries[1].value = recipeTemplate;
+	    var formConfig;
+	    var data;
+	
+	    var submitAction = {
+		    method: 'post',
+		    routeName: '/dashboard/catalog/recipes/add',
+		    params: {}
+	    };
+	    
+    	if (type === 'blank') {
+	        data = angular.copy(catalogAppConfig.templates.recipe);
+	        delete data._id;
+	        proceedWithForm($scope, catalogAppConfig.form.entries, data, submitAction);
         }
         else {
+    		formConfig = angular.copy(catalogAppConfig.form.add);
         	var groups = [];
             $scope.recipes.forEach(function (oneRecipe) {
             	var label = oneRecipe.name;
@@ -98,128 +563,33 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
                 var recipeTemplate = JSON.parse(data);
                 delete recipeTemplate._id;
                 delete recipeTemplate.locked;
-
-                form.entries[1].ngModel = JSON.stringify(recipeTemplate, null, 2);
+	            $scope.modalInstance.close();
+	            $timeout(function(){
+		            formConfig = angular.copy(catalogAppConfig.form.entries);
+		            proceedWithForm($scope, formConfig, recipeTemplate, submitAction);
+	            }, 100);
             };
+	
+	        var options = {
+		        timeout: $timeout,
+		        form: formConfig,
+		        name: 'addRecipe',
+		        label: 'Add New Recipe'
+	        };
+
+	        buildFormWithModal($scope, $modal, options);
         }
-
-        var options = {
-            timeout: $timeout,
-            form: formConfig,
-            name: 'addRecipe',
-            label: 'Add New Recipe',
-            actions: [
-                {
-                    type: 'submit',
-                    label: 'Submit',
-                    btn: 'primary',
-                    action: function (formData) {
-                        if (formData.recipe.locked) {
-                            //do not allow user to lock a recipe
-                            delete formData.recipe.locked;
-                        }
-	                    delete formData.recipe.v;
-	                    delete formData.recipe.ts;
-	                    delete formData.recipe.refId;
-
-                        overlayLoading.show();
-                        getSendDataFromServer($scope, ngDataApi, {
-                            method: 'post',
-                            routeName: '/dashboard/catalog/recipes/add',
-                            data: {
-                                catalog: formData.recipe
-                            }
-                        }, function (error, response) {
-                            overlayLoading.hide();
-                            if (error) {
-                                $scope.form.displayAlert('danger', error.message);
-                            }
-                            else {
-                                $scope.form.displayAlert('success', 'Recipe added successfully');
-                                $scope.modalInstance.close();
-                                $scope.form.formData = {};
-                                $scope.listRecipes();
-                            }
-                        });
-                    }
-                },
-                {
-                    type: 'reset',
-                    label: 'Cancel',
-                    btn: 'danger',
-                    action: function () {
-                        $scope.modalInstance.dismiss('cancel');
-                        $scope.form.formData = {};
-                    }
-                }
-            ]
-        };
-
-        buildFormWithModal($scope, $modal, options);
     };
 
     $scope.updateRecipe = function (recipe) {
-        var formConfig = angular.copy(catalogAppConfig.form.viewRecipe);
-        formConfig.entries[0].value = angular.copy(recipe);
-        delete formConfig.entries[0].value._id;
-
-        var options = {
-            timeout: $timeout,
-            form: formConfig,
-            name: 'viewRecipe',
-            label: 'Edit Recipe',
-            actions: [
-                {
-                    type: 'submit',
-                    label: 'Submit',
-                    btn: 'primary',
-                    action: function (formData) {
-                        if (formData.recipe.locked) {
-                            //do not allow user to lock a recipe
-                            delete formData.recipe.locked;
-                        }
-	
-	                    delete formData.recipe.v;
-	                    delete formData.recipe.ts;
-	                    delete formData.recipe.refId;
-
-                        overlayLoading.show();
-                        getSendDataFromServer($scope, ngDataApi, {
-                            method: 'put',
-                            routeName: '/dashboard/catalog/recipes/update',
-                            params: {
-                                id: recipe._id
-                            },
-                            data: {
-                                catalog: formData.recipe
-                            }
-                        }, function (error, response) {
-                            overlayLoading.hide();
-                            if (error) {
-                                $scope.form.displayAlert('danger', error.message);
-                            }
-                            else {
-                                $scope.form.displayAlert('success', 'Recipe updated successfully');
-                                $scope.modalInstance.close();
-                                $scope.form.formData = {};
-                                $scope.listRecipes();
-                            }
-                        });
-                    }
-                },
-                {
-                    type: 'reset',
-                    label: 'Cancel',
-                    btn: 'danger',
-                    action: function () {
-                        $scope.modalInstance.dismiss('cancel');
-                        $scope.form.formData = {};
-                    }
-                }
-            ]
-        };
-
-        buildFormWithModal($scope, $modal, options);
+	    
+    	var submitAction = {
+			method: 'put',
+			routeName: '/dashboard/catalog/recipes/update',
+			params: {id: recipe._id}
+	    };
+	    
+	    proceedWithForm($scope, catalogAppConfig.form.entries, recipe, submitAction);
     };
 
     $scope.deleteRecipe = function (recipe, versioning) {

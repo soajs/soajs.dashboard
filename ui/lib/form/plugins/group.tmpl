@@ -19,7 +19,12 @@
 				<td ng-switch-when="radio">
 					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/radio.tmpl'"></div>
 				</td>
-
+				
+				<td ng-switch-when="group">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/group.tmpl'"></div>
+				</td>
+				
+				
 				<td ng-switch-when="select" class="form-select">
 					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/select.tmpl'"></div>
 				</td>

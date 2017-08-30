@@ -44,3 +44,26 @@
 #page .catalogAppCtrl div.entryBoxes div.entryBox, .entryOneBox .body {
 
 }
+
+fieldset h4{
+    background-color:#dff0d8 !important;
+    /*color:white;*/
+}
+
+fieldset pre{
+    background-color:white;
+    /*color: rgb(49, 132, 149);*/
+}
+
+.catalogRecipeForm fieldset{
+    margin-top:15px;
+}
+
+.catalogRecipeForm h2{
+    background-color:#d9edf7;
+    color:#31708f;
+    border-color: #bce8f1;
+    padding:15px;
+    margin-top:10px;
+    border-radius: 5px;
+}
