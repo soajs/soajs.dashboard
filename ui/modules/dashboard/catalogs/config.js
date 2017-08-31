@@ -11,7 +11,66 @@ var catalogAppConfig = {
 					'value': [],
 					'required': true
 				}
-			]
+			],
+			new: [
+				{
+					'name': 'type',
+					'label': "Recipe Type",
+					'type': 'select',
+					'tooltip': "Choose the Type of Recipe you want to create",
+					'fieldMsg': "Pick the type of recipes you want to create depending on what you are aiming to deploy.",
+					'value' :[
+						{'v': 'service', 'l': "Service"},
+						{'v': 'daemon', 'l': "Daemon"},
+						{'v': 'cluster', 'l': "Cluster"},
+						{'v': 'server', 'l': "Server"},
+						{'v': 'cdn', 'l': "CDN"},
+						{'v': 'system', 'l': "System"},
+						{'v': 'other', 'l': "Other"}
+					],
+					'required': true
+				}
+			],
+			categories: {
+				'name': 'subtype',
+				'label': "Category",
+				'type': 'select',
+				'value' : [
+					{'v': 'soajs', 'l': "SOAJS", "group": "service"},
+					{'v': 'nodejs', 'l': "NodeJs", "group": "service"},
+					{'v': 'php', 'l': "PHP", "group": "service"},
+					{'v': 'java', 'l': "Java", "group": "service"},
+					{'v': 'asp', 'l': "ASP", "group": "service"},
+					{'v': 'other', 'l': "Other", "group": "service"},
+					
+					{'v': 'soajs', 'l': "SOAJS", "group": "daemon"},
+					{'v': 'nodejs', 'l': "NodeJs", "group": "daemon"},
+					{'v': 'php', 'l': "PHP", "group": "daemon"},
+					{'v': 'java', 'l': "Java", "group": "daemon"},
+					{'v': 'asp', 'l': "ASP", "group": "daemon"},
+					{'v': 'other', 'l': "Other", "group": "daemon"},
+					
+					{'v': 'mongo', 'l': "Mongo", "group": "cluster"},
+					{'v': 'elasticsearch', 'l': "ElasticSearch", "cluster": "cluster"},
+					{'v': 'mysql', 'l': "MySQL", "group": "cluster"},
+					{'v': 'oracle', 'l': "Oracle", "group": "cluster"},
+					{'v': 'other', 'l': "Other", "group": "cluster"},
+					
+					{'v': 'nginx', 'l': "Nginx", "group": "server"},
+					{'v': 'apache', 'l': "Apache", "group": "server"},
+					{'v': 'iis', 'l': "IIS", "group": "server"},
+					{'v': 'other', 'l': "Other", "group": "cdn"},
+					
+					{'v': 'amazons3', 'l': "Amazon S3", "group": "cdn"},
+					{'v': 'rackspace', 'l': "Rackspace", "cluster": "cdn"},
+					{'v': 'cloudflare', 'l': "Cloudflare", "group": "cdn"},
+					{'v': 'other', 'l': "Other", "group": "cdn"},
+					
+					{'v': 'kibana', 'l': "Kibana", "group": "system"},
+					{'v': 'other', 'l': "Other", "group": "system"}
+				],
+				'required': true
+			}
 		},
 		
 		entries: [
@@ -38,17 +97,19 @@ var catalogAppConfig = {
 			{
 				'name': 'type',
 				'label': 'Recipe Type',
-				'type': 'select',
-				'value': [
-					{'v': 'soajs_service', 'l': "SOAJS Service Recipe", 'selected': true},
-					{'v': 'soajs_daemon', 'l': "SOAJS DaemonRecipe"},
-					{'v': 'nginx', 'l': "Nginx Recipe"},
-					{'v': 'service', 'l': "Service Recipe"},
-					{'v': 'mongo', 'l': "Mongo Recipe"},
-				],
+				'type': 'text',
+				'value': '',
+				'disabled': true,
 				'required': true,
-				'tooltip': 'Select a type for your recipe',
-				'fieldMsg': 'Select a type for your recipe'
+				'readonly': true
+			},
+			{
+				'name': 'subtype',
+				'label': 'Category',
+				'type': 'text',
+				'value': '',
+				'disabled': true,
+				'readonly': true
 			},
 			{
 				'type': 'html',

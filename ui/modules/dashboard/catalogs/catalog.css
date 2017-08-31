@@ -126,3 +126,11 @@ fieldset pre{
     float:left;
     width:50%;
 }
+
+.form .modal-header{
+    background-color: #5BC0DE;
+    color: white;
+}
+
+.ace_text-input {position:absolute!important}
+

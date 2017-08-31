@@ -1,4 +1,3 @@
 <label class="f-left">{{entry.label}}</label>
 <div id="{{entry.name}}" ui-ace="{maxLines: Infinity, useWrapMode : true, showGutter: true, mode: 'json', firstLineNumber: 1, onLoad: entry.onLoad}" ng-model="entry.ngModel"></div>
-<br /><br />
 <div ng-if="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>

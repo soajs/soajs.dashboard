@@ -10,7 +10,7 @@ module.exports = {
             "locked": { "type": "boolean", "required": false },
             "active": { "type": "boolean", "required": false },
             "type": { "type": "string", "required": true },
-            "subtype": { "type": "string", "required": false, "enum": [ "service", "daemon" ] },
+            "subtype": { "type": "string", "required": false},
             "description": { "type": "string", "required": true },
             "recipe": {
                 "type": "object",

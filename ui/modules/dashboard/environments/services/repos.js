@@ -322,26 +322,27 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 	}
 
 	function checkHeapster(currentScope, cb) {
-		if(currentScope.envPlatform !== 'kubernetes') {
+		if(envPlatform !== 'kubernetes') {
 			if(cb) return cb();
 		}
-
-		getSendDataFromServer(currentScope, ngDataApi, {
-			method: 'get',
-			routeName: '/dashboard/cloud/heapster',
-			params: {
-				"env": currentScope.envCode
-			}
-		}, function (error, response) {
-			if (error) {
-				currentScope.displayAlert('danger', error.message);
-			}
-			else {
-				currentScope.isHeapsterDeployed = response.deployed;
-				currentScope.isAutoScalable = currentScope.isHeapsterDeployed;
-				if(cb) return cb();
-			}
-		});
+		else{
+			getSendDataFromServer(currentScope, ngDataApi, {
+				method: 'get',
+				routeName: '/dashboard/cloud/heapster',
+				params: {
+					"env": currentScope.envCode
+				}
+			}, function (error, response) {
+				if (error) {
+					currentScope.displayAlert('danger', error.message);
+				}
+				else {
+					currentScope.isHeapsterDeployed = response.deployed;
+					currentScope.isAutoScalable = currentScope.isHeapsterDeployed;
+					if(cb) return cb();
+				}
+			});
+		}
 	}
 
 	function getServices(currentScope, cb) {
@@ -392,7 +393,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 				$scope.cdEnvs = [$scope.oneEnv];
 				$scope.deployed = false;
 				$scope.oneSrv = (service && service.name) ? service.name : oneRepo.name;
-				$scope.serviceType = (service && service.type) ? service.type : 'custom';
+				$scope.serviceType = (service && service.type) ? service.type : 'other';
 				$scope.showCD = true;
 				$scope.isAutoScalable = currentScope.isAutoScalable || false;
 				$scope.autoScale = false;
@@ -669,13 +670,13 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 					if (!currentScope.recipes[oneRecipe.type]) {
 						currentScope.recipes[oneRecipe.type] = [];
 					}
-					if (currentScope.serviceType && oneRecipe.subtype) {
-						if (oneRecipe.subtype === currentScope.serviceType) {
-							currentScope.recipes[oneRecipe.type].push(oneRecipe);
-						}
-					} else {
+					// if (currentScope.serviceType && oneRecipe.subtype) {
+					// 	if (oneRecipe.subtype === currentScope.serviceType) {
+					// 		currentScope.recipes[oneRecipe.type].push(oneRecipe);
+					// 	}
+					// } else {
 						currentScope.recipes[oneRecipe.type].push(oneRecipe);
-					}
+					// }
 				});
 				return cb(null);
 			}
@@ -849,7 +850,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 
 		function populateServiceInEnvironments(serviceName, defaultCD, mCb) {
 			var oneCDEnv = currentScope.oneEnv;
-			var types = ['service', 'daemon', 'custom'];
+			var types = ['service', 'daemon', 'other'];
 			if (serviceName && currentScope.cdConfiguration[serviceName] && currentScope.cdConfiguration[serviceName].type && types.indexOf(currentScope.cdConfiguration[serviceName].type) !== -1) {
 					if (!currentScope.cdData[oneCDEnv.toUpperCase()]) {
 						currentScope.cdData[oneCDEnv.toUpperCase()] = defaultCD;

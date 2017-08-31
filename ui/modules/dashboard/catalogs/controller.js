@@ -9,20 +9,35 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 
     $scope.catalogImage = './themes/' + themeToUse + '/img/catalog.png';
 	
-    function setEditorContent(id, value, height){
+    function setEditorContent(id, value, height, currentScope){
 	    $timeout(function(){
 	        var editor = ace.edit(id);
-	        renderJSONEditor(editor, id, value, height);
+	        renderJSONEditor(editor, id, value, height, currentScope);
 	    }, 1000);
     }
     
-	function renderJSONEditor(_editor, id, value, height){
+	function renderJSONEditor(_editor, id, value, height, currentScope){
 		if(value && value !== ''){
+			currentScope.form.formData[id] = value;
 			_editor.setValue(JSON.stringify(value, null, 2));
 		}
 		else{
+			currentScope.form.formData[id] = value;
 			_editor.setValue('');
 		}
+		
+		_editor.on('change', function(){
+			var editor = ace.edit(id);
+			let v = editor.getValue();
+			if(v && v !== ''){
+				try{
+					currentScope.form.formData[id] = JSON.parse(v);
+				}
+				catch(err){
+				
+				}
+			}
+		});
 		
 		_editor.setShowPrintMargin(false);
 		_editor.scrollToLine(0, true, true);
@@ -75,7 +90,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 		
 		tmp.name += counter;
 		form.formData['envVarType' + counter] = value;
-		form.entries[6].tabs[1].entries.forEach(function(oneEnvVarGroup){
+		form.entries[7].tabs[1].entries.forEach(function(oneEnvVarGroup){
 			if(oneEnvVarGroup.type ==='group' && oneEnvVarGroup.name === 'envVarGroup' + counter){
 				if(oneEnvVarGroup.entries.length >= 5){
 					oneEnvVarGroup.entries.splice(3, 1);
@@ -98,6 +113,26 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
             }
             else {
 	            $scope.originalRecipes = $scope.recipes = response;
+	            
+	            $scope.recipeTypes = {};
+	            
+	            $scope.originalRecipes.forEach(function(oneRecipe){
+	            	
+	            	if(!$scope.recipeTypes[oneRecipe.type]){
+	            	    $scope.recipeTypes[oneRecipe.type] = {};
+		            }
+		
+		            if(!$scope.recipeTypes[oneRecipe.type][oneRecipe.subtype]){
+			            $scope.recipeTypes[oneRecipe.type][oneRecipe.subtype] = [];
+		            }
+	            });
+	
+	            $scope.recipes.forEach(function(oneRecipe){
+	            	if($scope.recipeTypes[oneRecipe.type] && $scope.recipeTypes[oneRecipe.type][oneRecipe.subtype]){
+			            $scope.recipeTypes[oneRecipe.type][oneRecipe.subtype].push(oneRecipe);
+		            }
+	            });
+	            
 	            $scope.listArchives();
             }
         });
@@ -118,6 +153,25 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 			}
 			else {
 				$scope.originalArchives = $scope.archives = response;
+				
+				$scope.recipeTypesArchives = {};
+				
+				$scope.originalArchives.forEach(function(oneRecipe){
+					
+					if(!$scope.recipeTypesArchives[oneRecipe.type]){
+						$scope.recipeTypesArchives[oneRecipe.type] = {};
+					}
+					
+					if(!$scope.recipeTypesArchives[oneRecipe.type][oneRecipe.subtype]){
+						$scope.recipeTypesArchives[oneRecipe.type][oneRecipe.subtype] = [];
+					}
+				});
+				
+				$scope.archives.forEach(function(oneRecipe){
+					if($scope.recipeTypesArchives[oneRecipe.type] && $scope.recipeTypesArchives[oneRecipe.type][oneRecipe.subtype]){
+						$scope.recipeTypesArchives[oneRecipe.type][oneRecipe.subtype].push(oneRecipe);
+					}
+				});
 			}
 		});
 	};
@@ -153,19 +207,19 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					envVars.entries[envVars.entries.length-1].onAction = function(id, value, form){
 						
 						var count = parseInt(id.replace('envVarRemove', ''));
-						for(let i = form.entries[6].tabs[1].entries.length -1; i >=0; i--){
-							if(form.entries[6].tabs[1].entries[i].name === 'envVarGroup' + count){
-								form.entries[6].tabs[1].entries.splice(i, 1);
+						for(let i = form.entries[7].tabs[1].entries.length -1; i >=0; i--){
+							if(form.entries[7].tabs[1].entries[i].name === 'envVarGroup' + count){
+								form.entries[7].tabs[1].entries.splice(i, 1);
 								break;
 							}
 						}
 					};
 					
 					if($scope.form && $scope.form.entries){
-						$scope.form.entries[6].tabs[1].entries.splice($scope.form.entries[6].tabs[1].entries.length -1,0, envVars);
+						$scope.form.entries[7].tabs[1].entries.splice($scope.form.entries[7].tabs[1].entries.length -1,0, envVars);
 					}
 					else{
-						formConfig[6].tabs[1].entries.splice($scope.form.entries[6].tabs[1].entries.length -1, 0, envVars);
+						formConfig[7].tabs[1].entries.splice($scope.form.entries[7].tabs[1].entries.length -1, 0, envVars);
 					}
 					envCounter++;
 				};
@@ -179,44 +233,44 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					tmp.entries[2].onAction = function(id, value, form){
 						var count = parseInt(id.replace('rVolume', ''));
 						
-						for(let i = form.entries[4].tabs[5].entries.length -1; i >=0; i--){
-							if(form.entries[4].tabs[5].entries[i].name === 'volumeGroup' + count){
-								form.entries[4].tabs[5].entries.splice(i, 1);
+						for(let i = form.entries[5].tabs[5].entries.length -1; i >=0; i--){
+							if(form.entries[5].tabs[5].entries[i].name === 'volumeGroup' + count){
+								form.entries[5].tabs[5].entries.splice(i, 1);
 								break;
 							}
 						}
 					};
 					
 					if($scope.form && $scope.form.entries){
-						$scope.form.entries[4].tabs[5].entries.splice($scope.form.entries[4].tabs[5].entries.length -1, 0, tmp);
+						$scope.form.entries[5].tabs[5].entries.splice($scope.form.entries[5].tabs[5].entries.length -1, 0, tmp);
 						if(value){
-							setEditorContent('volume' + volumeCounter, value, tmp.entries[0].height);
+							setEditorContent('volume' + volumeCounter, value, tmp.entries[0].height, $scope);
 							if(mountValue){
-								setEditorContent('volumeMount' + volumeCounter, mountValue, tmp.entries[1].height);
+								setEditorContent('volumeMount' + volumeCounter, mountValue, tmp.entries[1].height, $scope);
 							}
 							else{
-								setEditorContent('volumeMount' + volumeCounter, {}, tmp.entries[1].height);
+								setEditorContent('volumeMount' + volumeCounter, {}, tmp.entries[1].height, $scope);
 							}
 						}
 						else{
 							setEditorContent('volume' + volumeCounter, {}, tmp.entries[0].height);
-							setEditorContent('volumeMount' + volumeCounter, {}, tmp.entries[1].height);
+							setEditorContent('volumeMount' + volumeCounter, {}, tmp.entries[1].height, $scope);
 						}
 					}
 					else{
-						formConfig[4].tabs[5].entries.splice($scope.form.entries[4].tabs[5].entries.length -1, 0, tmp);
+						formConfig[5].tabs[5].entries.splice($scope.form.entries[5].tabs[5].entries.length -1, 0, tmp);
 						if(value){
-							setEditorContent('volume' + volumeCounter, value, tmp.entries[0].height);
+							setEditorContent('volume' + volumeCounter, value, tmp.entries[0].height, $scope);
 							if(mountValue){
-								setEditorContent('volumeMount' + volumeCounter, mountValue, tmp.entries[1].height);
+								setEditorContent('volumeMount' + volumeCounter, mountValue, tmp.entries[1].height, $scope);
 							}
 							else{
-								setEditorContent('volumeMount' + volumeCounter, {}, tmp.entries[1].height);
+								setEditorContent('volumeMount' + volumeCounter, {}, tmp.entries[1].height, $scope);
 							}
 						}
 						else{
 							setEditorContent('volume' + volumeCounter, {}, tmp.entries[0].height);
-							setEditorContent('volumeMount' + volumeCounter, {}, tmp.entries[1].height);
+							setEditorContent('volumeMount' + volumeCounter, {}, tmp.entries[1].height, $scope);
 						}
 					}
 					volumeCounter++;
@@ -230,45 +284,45 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					tmp.entries[1].onAction = function(id, value, form){
 						var count = parseInt(id.replace('rPort', ''));
 						
-						for(let i = form.entries[4].tabs[6].entries.length -1; i >=0; i--){
-							if(form.entries[4].tabs[6].entries[i].name === 'portGroup' + count){
-								form.entries[4].tabs[6].entries.splice(i, 1);
+						for(let i = form.entries[5].tabs[6].entries.length -1; i >=0; i--){
+							if(form.entries[5].tabs[6].entries[i].name === 'portGroup' + count){
+								form.entries[5].tabs[6].entries.splice(i, 1);
 								break;
 							}
 						}
 					};
 					
 					if($scope.form && $scope.form.entries) {
-						$scope.form.entries[4].tabs[6].entries.splice($scope.form.entries[4].tabs[6].entries.length -1, 0, tmp);
+						$scope.form.entries[5].tabs[6].entries.splice($scope.form.entries[5].tabs[6].entries.length -1, 0, tmp);
 						//$scope.form.entries[11].entries.push(tmp);
 						if(value){
-							setEditorContent('port' + portCounter, value, tmp.entries[0].height)
+							setEditorContent('port' + portCounter, value, tmp.entries[0].height, $scope)
 						}
 						else {
-							setEditorContent('port' + portCounter, {}, tmp.entries[0].height)
+							setEditorContent('port' + portCounter, {}, tmp.entries[0].height, $scope)
 						}
 					}
 					else{
-						formConfig[4].tabs[6].entries.splice($scope.form.entries[4].tabs[6].entries.length -1, 0, tmp);
+						formConfig[5].tabs[6].entries.splice($scope.form.entries[5].tabs[6].entries.length -1, 0, tmp);
 						if(value){
-							setEditorContent('port' + portCounter, value, tmp.entries[0].height)
+							setEditorContent('port' + portCounter, value, tmp.entries[0].height, $scope)
 						}
 						else {
-							setEditorContent('port' + portCounter, {}, tmp.entries[0].height)
+							setEditorContent('port' + portCounter, {}, tmp.entries[0].height, $scope)
 						}
 					}
 					portCounter++;
 				};
 				
-				formConfig[4].tabs[5].entries[0].onAction = function(id, value, form){
+				formConfig[5].tabs[5].entries[0].onAction = function(id, value, form){
 					$scope.addNewVolume();
 				};
 
-				formConfig[4].tabs[6].entries[0].onAction = function(id, value, form){
+				formConfig[5].tabs[6].entries[0].onAction = function(id, value, form){
 					$scope.addNewPort();
 				};
 
-				formConfig[6].tabs[1].entries[0].onAction = function(id, value, form){
+				formConfig[7].tabs[1].entries[0].onAction = function(id, value, form){
 					$scope.addNewEnvVar();
 				};
 				
@@ -336,6 +390,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				name: data.name,
 				description: data.description,
 				type: data.type,
+				subtype: data.subtype,
 				imagePrefix: data.recipe.deployOptions.image.prefix,
 				imageName: data.recipe.deployOptions.image.name,
 				imageTag: data.recipe.deployOptions.image.tag,
@@ -347,10 +402,6 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				command: data.recipe.buildOptions.cmd.deploy.command[0],
 				arguments: data.recipe.buildOptions.cmd.deploy.args.join("\n"),
 			};
-			
-			if(data.subtype){
-				output.type += "_" + data.subtype;
-			}
 			
 			if(data.recipe.deployOptions.image && Object.hasOwnProperty.call(data.recipe.deployOptions.image, 'override')){
 				output['imageOverride'] = data.recipe.deployOptions.image.override.toString();
@@ -375,7 +426,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 			
 			if(postForm){
 				output["readinessProbe"] =  data.recipe.deployOptions.readinessProbe;
-				setEditorContent("readinessProbe", output['readinessProbe'], mainFormConfig[4].tabs[2].entries[0].height);
+				setEditorContent("readinessProbe", output['readinessProbe'], mainFormConfig[5].tabs[2].entries[0].height, modalScope);
 				
 				//volumes
 				if(data.recipe.deployOptions.voluming && data.recipe.deployOptions.voluming.volumes){
@@ -385,6 +436,10 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						if(data.recipe.deployOptions.voluming.volumeMounts && data.recipe.deployOptions.voluming.volumeMounts[volumeCounter]){
 							output['volumeMount' + volumeCounter] = data.recipe.deployOptions.voluming.volumeMounts[volumeCounter];
 							mountVolume = data.recipe.deployOptions.voluming.volumeMounts[volumeCounter];
+						}
+						else{
+							output['volumeMount' + volumeCounter] = {};
+							mountVolume = {};
 						}
 						modalScope.addNewVolume(oneVolume, mountVolume);
 					});
@@ -431,6 +486,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 		var apiData = {
 			name: formData.name,
 			type: formData.type,
+			subtype: formData.subtype,
 			description: formData.description,
 			recipe:{
 				deployOptions: {
@@ -462,11 +518,6 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				}
 			}
 		};
-		
-		if(apiData.type.indexOf("_") !== -1){
-			apiData.type = apiData.type.split("_")[0];
-			apiData.subtype = apiData.type.split("_")[1];
-		}
 		
 		if(formData.accelerateDeployment){
 			if(!apiData.recipe.buildOptions.settings){
@@ -552,9 +603,79 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 	    };
 	    
     	if (type === 'blank') {
-	        data = angular.copy(catalogAppConfig.templates.recipe);
-	        delete data._id;
-	        proceedWithForm($scope, catalogAppConfig.form.entries, data, submitAction);
+    		$modal.open({
+			    templateUrl: "newRecipe.tmpl",
+			    size: 'lg',
+			    backdrop: true,
+			    keyboard: true,
+			    controller: function ($scope, $modalInstance) {
+				    
+			    	var formConfig = angular.copy(catalogAppConfig.form.add.new);
+			    	
+			    	formConfig[0].onAction = function(id, data, form){
+			    		var categories = angular.copy(catalogAppConfig.form.add.categories);
+			    		for(let i = categories.value.length -1; i >=0; i--){
+			    			if(categories.value[i].group !== data){
+			    				categories.value.splice(i, 1);
+						    }
+					    }
+					    
+					    if(form.entries.length > 1){
+					        form.entries.splice(form.entries.length -1, 1);
+					    }
+					    if(categories.value.length > 0){
+					        form.entries.push(categories);
+					    }
+				    };
+			    	
+				    var options = {
+					    timeout: $timeout,
+					    entries: formConfig,
+					    name: 'newRecipe',
+					    actions: [
+						    {
+							    'type': 'submit',
+							    'label': "Proceed",
+							    'btn': 'primary',
+							    action: function(formData){
+								    data = angular.copy(catalogAppConfig.templates.recipe);
+								    data.type = formData.type;
+								    data.subtype = formData.subtype;
+								
+								    $modalInstance.close();
+								    $scope.form.formData = {};
+								    $timeout(function(){
+								    	var formEntries = angular.copy(catalogAppConfig.form.entries);
+								    	
+								    	if(data.type === 'other'){
+										    delete formEntries[2].disabled;
+										    delete formEntries[3].disabled;
+									    }
+									    else if (data.subtype === 'other'){
+										    delete formEntries[3].disabled;
+									    }
+								    	
+								        proceedWithForm($scope, formEntries, data, submitAction);
+								    }, 100);
+							    }
+						    },
+						    {
+							    type: 'reset',
+							    label: 'Cancel',
+							    btn: 'danger',
+							    action: function () {
+								    $modalInstance.dismiss('cancel');
+								    $scope.form.formData = {};
+							    }
+						    }
+					    ]
+				    };
+				
+				    buildForm($scope, $modalInstance, options, function(){
+					   
+				    });
+			    }
+		    });
         }
         else {
     		formConfig = angular.copy(catalogAppConfig.form.add);
@@ -629,44 +750,6 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
             }
         });
     };
-	
-	$scope.filterData = function (query, tabIndex) {
-		if (query && query !== "") {
-			query = query.toLowerCase();
-			var filtered = [];
-			var recipes = $scope.recipes;
-			for (var i = 0; i < recipes.length; i++) {
-				if (recipes[i].name.toLowerCase().indexOf(query) !== -1 || recipes[i].type.toLowerCase().indexOf(query) !== -1 || recipes[i].description.toLowerCase().indexOf(query) !== -1 ||recipes[i].subtype && recipes[i].subtype.toLowerCase().indexOf(query) !== -1) {
-					filtered.push(recipes[i]);
-				}
-			}
-			$scope.recipes = filtered;
-		} else {
-			if ($scope.recipes && $scope.originalRecipes) {
-				$scope.recipes = $scope.originalRecipes;
-				
-			}
-		}
-	};
-	
-	$scope.filterDataVersions = function (query, tabIndex) {
-		if (query && query !== "") {
-			query = query.toLowerCase();
-			var filtered = [];
-			var recipes = $scope.archives;
-			for (var i = 0; i < recipes.length; i++) {
-				if (recipes[i].name.toLowerCase().indexOf(query) !== -1 || recipes[i].type.toLowerCase().indexOf(query) !== -1 || recipes[i].description.toLowerCase().indexOf(query) !== -1 ||recipes[i].subtype && recipes[i].subtype.toLowerCase().indexOf(query) !== -1) {
-					filtered.push(recipes[i]);
-				}
-			}
-			$scope.archives = filtered;
-		} else {
-			if ($scope.archives && $scope.originalArchives) {
-				$scope.archives = $scope.originalArchives;
-				
-			}
-		}
-	};
     
     injectFiles.injectCss("modules/dashboard/catalogs/catalog.css");
 

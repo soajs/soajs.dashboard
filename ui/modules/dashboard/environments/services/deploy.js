@@ -7,6 +7,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 		var subLevel = opts.subLevel;
 		var initialCount = opts.initialCount;
 		var type = opts.type;
+		var subtype;
+		if(opts.subtype){
+			subtype = opts.subtype;
+		}
 
 		formConfig.entries[mainLevel].entries[subLevel].onAction = function(id, data, form){
 
@@ -15,7 +19,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 
 			//append the custom catalog inputs
 			recipes.forEach(function(oneRecipe){
-				if(oneRecipe.type === type &&  oneRecipe._id === data){
+				if(oneRecipe.type === type &&  oneRecipe._id === data && (!subtype || (subtype && oneRecipe.subtype === subtype)) ){
 					if(oneRecipe.recipe.deployOptions.image.override){
 						//append images
 						form.entries[mainLevel].entries.push({
@@ -161,26 +165,28 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 	                if(currentScope.isKubernetes){
 		                index = 4;
 	                }
-                    if (oneRecipe.type === 'soajs' && oneRecipe.subtype === 'service') {
+                    if (oneRecipe.type === 'service' && oneRecipe.subtype === 'soajs') {
                         formConfig.entries[1].entries[index].value.push({ l: oneRecipe.name, v: oneRecipe._id });
 	                    injectCatalogInputs(formConfig, recipes, {
 		                    mainLevel : 1,
 	                        subLevel: index,
 	                        initialCount: index + 1,
-	                        type: 'soajs',
+		                    type: 'service',
+	                        subtype: 'soajs',
 		                    deployment: {
 		                    	type: "environment",
 			                    data: branchInfo
 		                    }
 	                    });
                     }
-                    else if (oneRecipe.type === 'nginx') {
+                    else if (oneRecipe.type === 'server' && oneRecipe.subtype === 'nginx') {
                         formConfig.entries[0].entries[index].value.push({ l: oneRecipe.name, v: oneRecipe._id });
 	                    injectCatalogInputs(formConfig, recipes, {
 		                    mainLevel : 0,
 		                    subLevel: index,
 		                    initialCount: index + 1,
-		                    type: 'nginx'
+		                    type: 'server',
+		                    subtype: 'nginx'
 	                    });
                     }
                 });
