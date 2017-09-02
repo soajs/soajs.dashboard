@@ -161,82 +161,93 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             getCatalogRecipes(currentScope, function (recipes) {
                 // adding available recipes to form
                 recipes.forEach(function (oneRecipe) {
-	                var index = 3;
-	                if(currentScope.isKubernetes){
-		                index = 4;
+                	if(oneRecipe.type ==='soajs'){
+		               currentScope.oldStyle = true;
 	                }
-                    if (oneRecipe.type === 'service' && oneRecipe.subtype === 'soajs') {
-                        formConfig.entries[1].entries[index].value.push({ l: oneRecipe.name, v: oneRecipe._id });
-	                    injectCatalogInputs(formConfig, recipes, {
-		                    mainLevel : 1,
-	                        subLevel: index,
-	                        initialCount: index + 1,
-		                    type: 'service',
-	                        subtype: 'soajs',
-		                    deployment: {
-		                    	type: "environment",
-			                    data: branchInfo
-		                    }
-	                    });
-                    }
-                    else if (oneRecipe.type === 'server' && oneRecipe.subtype === 'nginx') {
-                        formConfig.entries[0].entries[index].value.push({ l: oneRecipe.name, v: oneRecipe._id });
-	                    injectCatalogInputs(formConfig, recipes, {
-		                    mainLevel : 0,
-		                    subLevel: index,
-		                    initialCount: index + 1,
-		                    type: 'server',
-		                    subtype: 'nginx'
-	                    });
-                    }
+	                else{
+		                var index = 3;
+		                if(currentScope.isKubernetes){
+			                index = 4;
+		                }
+		                if (oneRecipe.type === 'service' && oneRecipe.subtype === 'soajs') {
+			                formConfig.entries[1].entries[index].value.push({ l: oneRecipe.name, v: oneRecipe._id });
+			                injectCatalogInputs(formConfig, recipes, {
+				                mainLevel : 1,
+				                subLevel: index,
+				                initialCount: index + 1,
+				                type: 'service',
+				                subtype: 'soajs',
+				                deployment: {
+					                type: "environment",
+					                data: branchInfo
+				                }
+			                });
+		                }
+		                else if (oneRecipe.type === 'server' && oneRecipe.subtype === 'nginx') {
+			                formConfig.entries[0].entries[index].value.push({ l: oneRecipe.name, v: oneRecipe._id });
+			                injectCatalogInputs(formConfig, recipes, {
+				                mainLevel : 0,
+				                subLevel: index,
+				                initialCount: index + 1,
+				                type: 'server',
+				                subtype: 'nginx'
+			                });
+		                }
+	                }
                 });
-
-                var options = {
-                    timeout: $timeout,
-                    form: formConfig,
-                    name: 'deployEnv',
-                    label: translation.deployEnvironment[LANG] + ' ' + envCode,
-                    actions: [
-                        {
-                            'type': 'submit',
-                            'label': translation.submit[LANG],
-                            'btn': 'primary',
-                            'action': function (formData) {
-                                if ((!formData.controllers || formData.controllers < 1) && (formData.controllerDeploymentMode === 'replicated' || formData.controllerDeploymentMode === 'deployment')) {
-                                    $timeout(function () {
-                                        alert(translation.youMustChooseLeastControllerDeployEnvironment[LANG]);
-                                    }, 100);
-                                }
-                                else {
-                                    var text = "<h2>" + translation.deployingNew[LANG] + envCode + " Environment</h2>";
-                                    text += "<p>" + translation.deploying[LANG] + formData.controllers + translation.newControllersEnvironment[LANG] + envCode + ".</p>";
-                                    text += "<p>" + translation.deploying[LANG] + formData.nginxCount + translation.newNginxEnvironment[LANG] + envCode + ".</p>";
-                                    text += "<p>" + translation.doNotRefreshThisPageThisWillTakeFewMinutes[LANG] + "</p>";
-                                    text += "<div id='progress_deploy_" + envCode + "' style='padding:10px;'></div>";
-                                    jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
-                                    jQuery("#overlay .content").css("width", "40%").css("left", "30%");
-                                    overlay.show();
-
-                                    formData.owner = branchInfo.owner;
-                                    formData.repo = branchInfo.repo;
-
-                                    deployEnvironment(formData);
-                                }
-
-                            }
-                        },
-                        {
-                            'type': 'reset',
-                            'label': translation.cancel[LANG],
-                            'btn': 'danger',
-                            'action': function () {
-                                currentScope.modalInstance.dismiss('cancel');
-                                currentScope.form.formData = {};
-                            }
-                        }
-                    ]
-                };
-                buildFormWithModal(currentScope, $modal, options);
+	            
+                if(currentScope.oldStyle) {
+	                openUpgradeModal(currentScope);
+                }
+                else{
+	                var options = {
+		                timeout: $timeout,
+		                form: formConfig,
+		                name: 'deployEnv',
+		                label: translation.deployEnvironment[LANG] + ' ' + envCode,
+		                actions: [
+			                {
+				                'type': 'submit',
+				                'label': translation.submit[LANG],
+				                'btn': 'primary',
+				                'action': function (formData) {
+					                if ((!formData.controllers || formData.controllers < 1) && (formData.controllerDeploymentMode === 'replicated' || formData.controllerDeploymentMode === 'deployment')) {
+						                $timeout(function () {
+							                alert(translation.youMustChooseLeastControllerDeployEnvironment[LANG]);
+						                }, 100);
+					                }
+					                else {
+						                var text = "<h2>" + translation.deployingNew[LANG] + envCode + " Environment</h2>";
+						                text += "<p>" + translation.deploying[LANG] + formData.controllers + translation.newControllersEnvironment[LANG] + envCode + ".</p>";
+						                text += "<p>" + translation.deploying[LANG] + formData.nginxCount + translation.newNginxEnvironment[LANG] + envCode + ".</p>";
+						                text += "<p>" + translation.doNotRefreshThisPageThisWillTakeFewMinutes[LANG] + "</p>";
+						                text += "<div id='progress_deploy_" + envCode + "' style='padding:10px;'></div>";
+						                jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
+						                jQuery("#overlay .content").css("width", "40%").css("left", "30%");
+						                overlay.show();
+						
+						                formData.owner = branchInfo.owner;
+						                formData.repo = branchInfo.repo;
+						
+						                deployEnvironment(formData);
+					                }
+					
+				                }
+			                },
+			                {
+				                'type': 'reset',
+				                'label': translation.cancel[LANG],
+				                'btn': 'danger',
+				                'action': function () {
+					                currentScope.modalInstance.dismiss('cancel');
+					                currentScope.form.formData = {};
+				                }
+			                }
+		                ]
+	                };
+	                buildFormWithModal(currentScope, $modal, options);
+                }
+                
             });
         });
 
@@ -850,55 +861,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                 }
             });
         }
-
-        // function getServices(cb) {
-        //     getSendDataFromServer(currentScope, ngDataApi, {
-        //         method: 'post',
-        //         routeName: '/dashboard/services/list'
-        //     }, function (error, response) {
-        //         if (error) {
-        //             currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveListServices[LANG]);
-        //         } else {
-	     //            currentScope.services =[];
-        //             response.records.forEach(function (oneService) {
-        //                 oneService.type = 'service';
-        //                 if (oneService.name === 'controller') {
-        //                     oneService.UIGroup = 'Controllers';
-        //                 } else {
-        //                     oneService.UIGroup = 'Services';
-        //                 }
-        //                 if (allowListing(env, oneService)) {
-        //                     currentScope.services.push(oneService);
-        //                 }
-        //             });
-        //             return cb();
-        //         }
-        //     });
-        // }
-
-        // function getDaemons(cb) {
-        //     getSendDataFromServer(currentScope, ngDataApi, {
-        //         method: 'post',
-        //         routeName: '/dashboard/daemons/list',
-        //         params: {
-        //             'getGroupConfigs': true
-        //         }
-        //     }, function (error, response) {
-        //         if (error) {
-        //             currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveDaemonsHostsInformation[LANG]);
-        //         } else {
-        //             response.forEach(function (oneDaemon) {
-        //                 if (allowListing(env, oneDaemon)) {
-        //                     oneDaemon.type = 'daemon';
-        //                     oneDaemon.UIGroup = 'Daemons';
-        //                     currentScope.services.push(oneDaemon);
-        //                 }
-        //             });
-        //             return cb();
-        //         }
-        //     });
-        // }
-
+	    
         function getCatalogRecipes(cb) {
             currentScope.loadingRecipes = true;
             getSendDataFromServer(currentScope, ngDataApi, {
@@ -913,86 +876,53 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     currentScope.generateNewMsg(env, 'danger', 'Unable to retrieve catalog recipes');
                 }
                 else {
-                    currentScope.recipes = {};
-                    response.forEach(function (oneRecipe) {
-                        if (!currentScope.recipes[oneRecipe.type]) {
-                            currentScope.recipes[oneRecipe.type] = [];
-                        }
-                         if(!Object.hasOwnProperty.call(oneRecipe.recipe.deployOptions, 'specifyGitConfiguration') || !oneRecipe.recipe.deployOptions.specifyGitConfiguration ){
-	                         currentScope.recipes[oneRecipe.type].push(oneRecipe);
-                         }
-
-                    });
-                    return cb();
+	                response.forEach(function(oneRecipe){
+		                if(oneRecipe.type === 'nginx'){
+			                currentScope.oldStyle = true;
+		                }
+	                });
+	                
+	                if(!currentScope.oldStyle){
+		                currentScope.recipes = {};
+		                response.forEach(function (oneRecipe) {
+			                if (!currentScope.recipes[oneRecipe.type]) {
+				                currentScope.recipes[oneRecipe.type] = [];
+			                }
+			                if(!Object.hasOwnProperty.call(oneRecipe.recipe.deployOptions, 'specifyGitConfiguration') || !oneRecipe.recipe.deployOptions.specifyGitConfiguration ){
+				                currentScope.recipes[oneRecipe.type].push(oneRecipe);
+			                }
+			
+		                });
+	                }
+	                
+	                return cb();
                 }
             });
         }
 
-        // function allowListing(env, service) {
-        //     var dashboardServices = ['controller', 'dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
-        //     var nonDashboardServices = ['controller', 'urac', 'oauth']; //locked services that non dashboard environments are allowed to have
-        //     if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(service.name) !== -1) {
-        //         return filterServiceInfo(service);
-        //     } else if (env.toLowerCase() !== 'dashboard' &&
-        //         // service.name !== 'controller' && //controller is added later manually
-        //         (
-        //             //not a locked service for dashboard and non dashboard environments
-        //             (dashboardServices.indexOf(service.name) !== -1 && nonDashboardServices.indexOf(service.name) !== -1) ||
-        //             //a locked service that is common for dashboard and non dash envs (urac, oauth)
-        //             (dashboardServices.indexOf(service.name) === -1 && nonDashboardServices.indexOf(service.name) === -1)
-        //         )
-        //     ) {
-        //         return filterServiceInfo(service);
-        //     }
-        //     return false;
-        // }
-
-        //filter out service information that already exist
-        // function filterServiceInfo(service) {
-        //     var deployedServices = currentScope.rawServicesResponse;
-        //
-        //     if (!service.group && service.name === 'controller') {
-        //         if (currentScope.hosts.soajs.groups) {
-        //             var found = false;
-        //             for (var groupName in currentScope.hosts.soajs.groups) {
-        //                 currentScope.hosts.soajs.groups[groupName].list.forEach(function (oneService) {
-        //                     if (oneService.name === env.toLowerCase() + '-controller') {
-        //                         found = true;
-        //                     }
-        //                 });
-        //             }
-        //             if (!found) {
-        //                 return true;
-        //             }
-        //             else {
-        //                 return false;
-        //             }
-        //         }
-        //         return true;
-        //     }
-        //     else {
-        //         var serviceVersions = Object.keys(service.versions);
-        //         serviceVersions.forEach(function (version) {
-        //             for (var i = 0; i < deployedServices.length; i++) {
-        //                 //if a version of that service is found to be deployed, delete it from the service information
-        //                 if (service.name === deployedServices[i].labels['soajs.service.name'] && version == deployedServices[i].labels['soajs.service.version']) {
-        //                     delete service.versions[version];
-        //                 }
-        //             }
-        //         });
-        //
-        //         //if all the versions of the service are found to be deployed, return false
-        //         //else, return true, after having removed the deployed versions
-        //         if (Object.keys(service.versions).length === 0)
-        //             return false;
-        //         else
-        //             return true;
-        //     }
-        // }
-
         //Start here
 	    getCatalogRecipes(function () {
-		    openModalForm();
+	    	if(!currentScope.oldStyle){
+		        openModalForm();
+		    }
+		    else{
+			   openUpgradeModal(currentScope);
+		    }
+	    });
+    }
+    
+    function openUpgradeModal(currentScope){
+	    $modal.open({
+		    templateUrl: "oldCatalogRecipes.tmpl",
+		    size: 'lg',
+		    backdrop: true,
+		    keyboard: true,
+		    controller: function ($scope, $modalInstance) {
+			    $scope.upgradeRecipes = function(){
+				    currentScope.$parent.go("#/catalog-recipes");
+				    $modalInstance.close();
+			    }
+		    }
 	    });
     }
 

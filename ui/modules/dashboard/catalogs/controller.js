@@ -158,8 +158,8 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 			            }
 		            });
 	            }
-	            
 	            $scope.listArchives();
+	            
             }
         });
     };
@@ -180,12 +180,13 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 			else {
 				$scope.originalArchives = $scope.archives = response;
 				
-				$scope.oldStyle = false;
-				$scope.originalArchives.forEach(function(oneRecipe){
-					if(oneRecipe.type === 'soajs'){
-						$scope.oldStyle = true;
-					}
-				});
+				if($scope.oldStyle === false){
+					$scope.originalArchives.forEach(function(oneRecipe){
+						if(oneRecipe.type === 'soajs'){
+							$scope.oldStyle = true;
+						}
+					});
+				}
 				
 				if(!$scope.oldStyle){
 					$scope.recipeTypesArchives = {};

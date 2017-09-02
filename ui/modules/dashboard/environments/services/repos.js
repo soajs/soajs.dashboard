@@ -378,274 +378,281 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 	}
 
 	function deployService(currentScope, oneRepo, service, version, gitAccount, daemonGrpConf) {
-		var deployService = $modal.open({
-			templateUrl: 'deployService.tmpl',
-			size: 'lg',
-			backdrop: true,
-			keyboard: true,
-			controller: function ($scope) {
-				fixBackDrop();
-				$scope.controllerScope = currentScope;
-				$scope.isKubernetes = isKubernetes;
-				$scope.deployNewService = true;
-				$scope.version = version.v || 'Default';
-				$scope.oneEnv = $cookies.getObject('myEnv').code.toUpperCase();
-				$scope.cdEnvs = [$scope.oneEnv];
-				$scope.deployed = false;
-				$scope.oneSrv = (service && service.name) ? service.name : oneRepo.name;
-				$scope.serviceType = (service && service.type) ? service.type : 'other';
-				$scope.showCD = true;
-				$scope.isAutoScalable = currentScope.isAutoScalable || false;
-				$scope.autoScale = false;
-				if(daemonGrpConf){
-					$scope.daemonGrpConf = daemonGrpConf;
-				}
-				if(SOAJSRMS.indexOf(oneRepo.name) !== -1){
-					$scope.showCD = false;
-				}
-				$scope.services = {};
-				if($scope.version === 'Default'){
-					$scope.services[$scope.oneSrv] = service || oneRepo;
-				}else{
-					$scope.services[$scope.oneSrv] = version;
-				}
-				if (($scope.services[$scope.oneSrv].deployed && $scope.serviceType !== 'daemon')|| (daemonGrpConf && $scope.services[$scope.oneSrv][daemonGrpConf] && $scope.services[$scope.oneSrv][daemonGrpConf].deployed)) {
-					$scope.serviceId = ($scope.serviceType === 'daemon' && daemonGrpConf && $scope.services[$scope.oneSrv][daemonGrpConf]) ? $scope.services[$scope.oneSrv][daemonGrpConf].serviceId : $scope.services[$scope.oneSrv].serviceId;
-					$scope.deployed = true;
-				}
-				$scope.default = false;
-				$scope.gitAccount = gitAccount;
-				$scope.alerts = [];
-				$scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
-				getCDRecipe($scope, oneRepo, function () {
-					$scope.setDeploy($scope.oneEnv, $scope.version, $scope.oneSrv)
-				});
-
-				$scope.cancel = function () {
-					deployService.close();
-				};
-
-				$scope.displayAlert = function (type, msg, isCode, service, orgMesg) {
-					$scope.alerts = [];
-					if (isCode) {
-						var msgT = getCodeMessage(msg, service, orgMesg);
-						if (msgT) {
-							msg = msgT;
+		getCatalogRecipes(currentScope, function(){
+			if(currentScope.oldStyle){
+				openUpgradeModal(currentScope);
+			}
+			else{
+				var deployService = $modal.open({
+					templateUrl: 'deployService.tmpl',
+					size: 'lg',
+					backdrop: true,
+					keyboard: true,
+					controller: function ($scope) {
+						fixBackDrop();
+						$scope.controllerScope = currentScope;
+						$scope.isKubernetes = isKubernetes;
+						$scope.deployNewService = true;
+						$scope.version = version.v || 'Default';
+						$scope.oneEnv = $cookies.getObject('myEnv').code.toUpperCase();
+						$scope.cdEnvs = [$scope.oneEnv];
+						$scope.deployed = false;
+						$scope.oneSrv = (service && service.name) ? service.name : oneRepo.name;
+						$scope.serviceType = (service && service.type) ? service.type : 'other';
+						$scope.showCD = true;
+						$scope.isAutoScalable = currentScope.isAutoScalable || false;
+						$scope.autoScale = false;
+						if(daemonGrpConf){
+							$scope.daemonGrpConf = daemonGrpConf;
 						}
-					}
-					$scope.alerts.push({'type': type, 'msg': msg});
-				};
-
-				$scope.closeAlert = function (index) {
-					$scope.alerts.splice(index, 1);
-				};
-
-
-				$scope.showHide = function (oneService, name) {
-					if (oneService.icon === 'minus') {
-						oneService.icon = 'plus';
-						jQuery('#cd_' + name).slideUp();
-					}
-					else {
-						oneService.icon = 'minus';
-						jQuery('#cd_' + name).slideDown()
-					}
-				};
-
-				$scope.cdShowHide = function (oneSrv, name) {
-					if ($scope.cdConfiguration[oneSrv].icon === 'minus') {
-						$scope.cdConfiguration[oneSrv].icon = 'plus';
-						jQuery('#cdc_' + name).slideUp();
-					}
-					else {
-						$scope.cdConfiguration[oneSrv].icon = 'minus';
-						jQuery('#cdc_' + name).slideDown()
-					}
-				};
-
-				$scope.updateGitBranch = function (oneSrv, oneEnv, version) {
-					$scope.branches.forEach(function (oneBranch) {
-						if (oneBranch.name === $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch){
-							if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options) {
-								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch;
-								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.commit = oneBranch.commit.sha;
-							}
+						if(SOAJSRMS.indexOf(oneRepo.name) !== -1){
+							$scope.showCD = false;
 						}
-					});
-
-				};
-				$scope.activateAutoScale = function () {
-					$scope.autoScale = !$scope.autoScale;
-				};
-
-				$scope.setDeploy = function (oneEnv, version, oneSrv) {
-					var deployedBranch = '';
-					if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch) {
-						deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch;
-					}
-					if ($scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version] && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch']) {
-						deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch'];
-					}
-					if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active) {
-						delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active;
-					}
-					else if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions || !$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version]) {
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions = {};
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] = {
-							branch: deployedBranch,
-							active: true
+						$scope.services = {};
+						if($scope.version === 'Default'){
+							$scope.services[$scope.oneSrv] = service || oneRepo;
+						}else{
+							$scope.services[$scope.oneSrv] = version;
+						}
+						if (($scope.services[$scope.oneSrv].deployed && $scope.serviceType !== 'daemon')|| (daemonGrpConf && $scope.services[$scope.oneSrv][daemonGrpConf] && $scope.services[$scope.oneSrv][daemonGrpConf].deployed)) {
+							$scope.serviceId = ($scope.serviceType === 'daemon' && daemonGrpConf && $scope.services[$scope.oneSrv][daemonGrpConf]) ? $scope.services[$scope.oneSrv][daemonGrpConf].serviceId : $scope.services[$scope.oneSrv].serviceId;
+							$scope.deployed = true;
+						}
+						$scope.default = false;
+						$scope.gitAccount = gitAccount;
+						$scope.alerts = [];
+						$scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
+						getCDRecipe($scope, oneRepo, function () {
+							$scope.setDeploy($scope.oneEnv, $scope.version, $scope.oneSrv)
+						});
+						
+						$scope.cancel = function () {
+							deployService.close();
 						};
-					}
-					else {
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active = true;
-					}
-					getCatalogRecipes($scope, function () {
-						$scope.myRecipes = [];
-						for (var type in $scope.recipes) {
-							$scope.recipes[type].forEach(function (oneRecipe) {
-								if (oneRecipe.recipe && oneRecipe.recipe.deployOptions && oneRecipe.recipe.deployOptions.specifyGitConfiguration) {
-									$scope.myRecipes.push(oneRecipe);
+						
+						$scope.displayAlert = function (type, msg, isCode, service, orgMesg) {
+							$scope.alerts = [];
+							if (isCode) {
+								var msgT = getCodeMessage(msg, service, orgMesg);
+								if (msgT) {
+									msg = msgT;
+								}
+							}
+							$scope.alerts.push({'type': type, 'msg': msg});
+						};
+						
+						$scope.closeAlert = function (index) {
+							$scope.alerts.splice(index, 1);
+						};
+						
+						
+						$scope.showHide = function (oneService, name) {
+							if (oneService.icon === 'minus') {
+								oneService.icon = 'plus';
+								jQuery('#cd_' + name).slideUp();
+							}
+							else {
+								oneService.icon = 'minus';
+								jQuery('#cd_' + name).slideDown()
+							}
+						};
+						
+						$scope.cdShowHide = function (oneSrv, name) {
+							if ($scope.cdConfiguration[oneSrv].icon === 'minus') {
+								$scope.cdConfiguration[oneSrv].icon = 'plus';
+								jQuery('#cdc_' + name).slideUp();
+							}
+							else {
+								$scope.cdConfiguration[oneSrv].icon = 'minus';
+								jQuery('#cdc_' + name).slideDown()
+							}
+						};
+						
+						$scope.updateGitBranch = function (oneSrv, oneEnv, version) {
+							$scope.branches.forEach(function (oneBranch) {
+								if (oneBranch.name === $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch){
+									if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options) {
+										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch;
+										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.commit = oneBranch.commit.sha;
+									}
 								}
 							});
-						}
-						if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options) {
-							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options = {'deployConfig': {'replication': {}}};
-						}
-						if ($scope.isAutoScalable && !$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.autoScale) {
-							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.autoScale = {
-								"replicas": {},
-								"metrics": {
-									"cpu": {}
-								}
+							
+						};
+						$scope.activateAutoScale = function () {
+							$scope.autoScale = !$scope.autoScale;
+						};
+						
+						$scope.setDeploy = function (oneEnv, version, oneSrv) {
+							var deployedBranch = '';
+							if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch) {
+								deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch;
 							}
-						}
-						else if ($scope.isAutoScalable
-							&& $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig
-							&& $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication
-							&& $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode
-							&& $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode === 'deployment'
-						) {
-							$scope.autoScale = true;
-						}
-						if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource){
-							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource = {};
-						}
-
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.owner = oneRepo.owner.login;
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.repo = oneRepo.name;
-						if (isKubernetes) {
-							$scope.deploymentModes = ['deployment', 'daemonset'];
-							if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode) {
-								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode = 'deployment';
+							if ($scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version] && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels && $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch']) {
+								deployedBranch = $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].labels['service.branch'];
 							}
-						}
-						else {
-							$scope.deploymentModes = ['replicated', 'global'];
-							if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode) {
-								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode = 'replicated';
+							if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active) {
+								delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active;
 							}
-						}
-						var service = $scope.services[oneSrv];
-						$scope.groupConfigs = '';
-						if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit) {
-							if (service && service.prerequisites) {
-								if (service.prerequisites.memory && service.prerequisites.memory.trim().length > 0) {
-									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = parseFloat(service.prerequisites.memory);
-								}
-								else {
-									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = 500;
-								}
-								if (service.prerequisites.cpu && service.prerequisites.cpu.trim().length > 0 && isKubernetes) {
-									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.cpuLimit = service.prerequisites.cpu;
-								}
-							} else {
-								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = 500;
+							else if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions || !$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version]) {
+								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions = {};
+								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] = {
+									branch: deployedBranch,
+									active: true
+								};
 							}
-						}
-						else {
-							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit /= 1048576;
-							if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit < 1) {
-								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = 500;
+							else {
+								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].active = true;
 							}
-
-						}
-						if (service && $scope.serviceType === 'daemon' && service.grpConf) {
-							$scope.groupConfigs = service.grpConf;
-						}
-
-						$scope.injectCatalogEntries(oneEnv, version, oneSrv);
-					});
-				};
-
-				$scope.injectCatalogEntries = function (oneEnv, version, oneSrv) {
-					$scope.allowGitOverride = false;
-					if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom) {
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom = {};
-					}
-					if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env) {
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env = {};
-					}
-					$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].custom = {};
-					if($scope.serviceType === 'daemon' && $scope.daemonGrpConf){
-						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.daemonGroup = $scope.daemonGrpConf;
-					}
-					for (var type in $scope.recipes) {
-						$scope.recipes[type].forEach(function (catalogRecipe) {
-							if (catalogRecipe._id === $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.recipe) {
-								if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image && catalogRecipe.recipe.deployOptions.image.override) {
-									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image = {};
+							getCatalogRecipes($scope, function () {
+								$scope.myRecipes = [];
+								for (var type in $scope.recipes) {
+									$scope.recipes[type].forEach(function (oneRecipe) {
+										if (oneRecipe.recipe && oneRecipe.recipe.deployOptions && oneRecipe.recipe.deployOptions.specifyGitConfiguration) {
+											$scope.myRecipes.push(oneRecipe);
+										}
+									});
 								}
-								if (catalogRecipe.recipe.deployOptions.image.override) {
-									if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.prefix)
-										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.prefix = catalogRecipe.recipe.deployOptions.image.prefix;
-
-									if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.name)
-										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.name = catalogRecipe.recipe.deployOptions.image.name;
-
-									if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.tag)
-										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.tag = catalogRecipe.recipe.deployOptions.image.tag;
+								if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options) {
+									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options = {'deployConfig': {'replication': {}}};
 								}
-								else if(!catalogRecipe.recipe.deployOptions.image.override){
-									delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image;
-								}
-								//append inputs whose type is userInput
-								for (var envVariable in catalogRecipe.recipe.buildOptions.env) {
-									if (catalogRecipe.recipe.buildOptions.env[envVariable].type === 'userInput') {
-										var newCatalogInput = {
-											label: catalogRecipe.recipe.buildOptions.env[envVariable].label || envVariable,
-											name: envVariable,
-											value: catalogRecipe.recipe.buildOptions.env[envVariable].default || "",
-											fieldMsg: catalogRecipe.recipe.buildOptions.env[envVariable].fieldMsg,
-											required: (catalogRecipe.recipe.buildOptions.env[envVariable].default && catalogRecipe.recipe.buildOptions.env[envVariable].default !== '') ? false : true
-										};
-										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].custom[envVariable] = newCatalogInput;
-										if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env[envVariable]) {
-											$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env[envVariable] = catalogRecipe.recipe.buildOptions.env[envVariable].default || "";
+								if ($scope.isAutoScalable && !$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.autoScale) {
+									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.autoScale = {
+										"replicas": {},
+										"metrics": {
+											"cpu": {}
 										}
 									}
 								}
-								if (Object.keys($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env).length === 0) {
-									delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env;
+								else if ($scope.isAutoScalable
+									&& $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig
+									&& $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication
+									&& $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode
+									&& $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode === 'deployment'
+								) {
+									$scope.autoScale = true;
 								}
-
-								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.env = oneEnv;
-								if (catalogRecipe.recipe.deployOptions.specifyGitConfiguration) {
-									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.name = oneSrv;
-									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.type = $scope.cdConfiguration[oneSrv].type;
-									if(version !== 'Default'){
-										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.version = version;
+								if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource){
+									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource = {};
+								}
+								
+								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.owner = oneRepo.owner.login;
+								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.repo = oneRepo.name;
+								if (isKubernetes) {
+									$scope.deploymentModes = ['deployment', 'daemonset'];
+									if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode) {
+										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode = 'deployment';
 									}
-									$scope.allowGitOverride = true;
 								}
+								else {
+									$scope.deploymentModes = ['replicated', 'global'];
+									if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode) {
+										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode = 'replicated';
+									}
+								}
+								var service = $scope.services[oneSrv];
+								$scope.groupConfigs = '';
+								if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit) {
+									if (service && service.prerequisites) {
+										if (service.prerequisites.memory && service.prerequisites.memory.trim().length > 0) {
+											$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = parseFloat(service.prerequisites.memory);
+										}
+										else {
+											$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = 500;
+										}
+										if (service.prerequisites.cpu && service.prerequisites.cpu.trim().length > 0 && isKubernetes) {
+											$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.cpuLimit = service.prerequisites.cpu;
+										}
+									} else {
+										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = 500;
+									}
+								}
+								else {
+									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit /= 1048576;
+									if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit < 1) {
+										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = 500;
+									}
+									
+								}
+								if (service && $scope.serviceType === 'daemon' && service.grpConf) {
+									$scope.groupConfigs = service.grpConf;
+								}
+								
+								$scope.injectCatalogEntries(oneEnv, version, oneSrv);
+							});
+						};
+						
+						$scope.injectCatalogEntries = function (oneEnv, version, oneSrv) {
+							$scope.allowGitOverride = false;
+							if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom) {
+								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom = {};
 							}
-						});
+							if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env) {
+								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env = {};
+							}
+							$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].custom = {};
+							if($scope.serviceType === 'daemon' && $scope.daemonGrpConf){
+								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.daemonGroup = $scope.daemonGrpConf;
+							}
+							for (var type in $scope.recipes) {
+								$scope.recipes[type].forEach(function (catalogRecipe) {
+									if (catalogRecipe._id === $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.recipe) {
+										if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image && catalogRecipe.recipe.deployOptions.image.override) {
+											$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image = {};
+										}
+										if (catalogRecipe.recipe.deployOptions.image.override) {
+											if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.prefix)
+												$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.prefix = catalogRecipe.recipe.deployOptions.image.prefix;
+											
+											if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.name)
+												$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.name = catalogRecipe.recipe.deployOptions.image.name;
+											
+											if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.tag)
+												$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.tag = catalogRecipe.recipe.deployOptions.image.tag;
+										}
+										else if(!catalogRecipe.recipe.deployOptions.image.override){
+											delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image;
+										}
+										//append inputs whose type is userInput
+										for (var envVariable in catalogRecipe.recipe.buildOptions.env) {
+											if (catalogRecipe.recipe.buildOptions.env[envVariable].type === 'userInput') {
+												var newCatalogInput = {
+													label: catalogRecipe.recipe.buildOptions.env[envVariable].label || envVariable,
+													name: envVariable,
+													value: catalogRecipe.recipe.buildOptions.env[envVariable].default || "",
+													fieldMsg: catalogRecipe.recipe.buildOptions.env[envVariable].fieldMsg,
+													required: (catalogRecipe.recipe.buildOptions.env[envVariable].default && catalogRecipe.recipe.buildOptions.env[envVariable].default !== '') ? false : true
+												};
+												$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].custom[envVariable] = newCatalogInput;
+												if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env[envVariable]) {
+													$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env[envVariable] = catalogRecipe.recipe.buildOptions.env[envVariable].default || "";
+												}
+											}
+										}
+										if (Object.keys($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env).length === 0) {
+											delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env;
+										}
+										
+										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.env = oneEnv;
+										if (catalogRecipe.recipe.deployOptions.specifyGitConfiguration) {
+											$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.name = oneSrv;
+											$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.type = $scope.cdConfiguration[oneSrv].type;
+											if(version !== 'Default'){
+												$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.version = version;
+											}
+											$scope.allowGitOverride = true;
+										}
+									}
+								});
+							}
+						};
+						
+						$scope.saveRecipe = function (type) {
+							saveRecipe($scope, type)
+						};
+						
 					}
-				};
-
-				$scope.saveRecipe = function (type) {
-					saveRecipe($scope, type)
-				};
-
+				});
 			}
 		});
 	}
@@ -667,16 +674,15 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			else {
 				currentScope.recipes = {};
 				response.forEach(function (oneRecipe) {
-					if (!currentScope.recipes[oneRecipe.type]) {
-						currentScope.recipes[oneRecipe.type] = [];
+					if(oneRecipe.type ==='soajs'){
+						currentScope.oldStyle = true;
 					}
-					// if (currentScope.serviceType && oneRecipe.subtype) {
-					// 	if (oneRecipe.subtype === currentScope.serviceType) {
-					// 		currentScope.recipes[oneRecipe.type].push(oneRecipe);
-					// 	}
-					// } else {
+					else{
+						if (!currentScope.recipes[oneRecipe.type]) {
+							currentScope.recipes[oneRecipe.type] = [];
+						}
 						currentScope.recipes[oneRecipe.type].push(oneRecipe);
-					// }
+					}
 				});
 				return cb(null);
 			}
@@ -1166,7 +1172,22 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 		}
 
 	}
-
+	
+	function openUpgradeModal(currentScope){
+		$modal.open({
+			templateUrl: "oldCatalogRecipes.tmpl",
+			size: 'lg',
+			backdrop: true,
+			keyboard: true,
+			controller: function ($scope, $modalInstance) {
+				$scope.upgradeRecipes = function(){
+					currentScope.$parent.go("#/catalog-recipes");
+					$modalInstance.close();
+				}
+			}
+		});
+	}
+	
 	return {
 		'listGitAccounts': listGitAccounts,
 		'listRepos': listRepos,
