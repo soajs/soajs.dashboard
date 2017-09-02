@@ -56,6 +56,29 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 		$scope.schemaCode = $scope.editor.getValue();
 	};
 	
+	$scope.fillDefaultEditor = function(){
+		if(!$scope.schemaCodeF || $scope.schemaCodeF === ""){
+			if($scope.form.formData.serviceName && $scope.form.formData.serviceName.trim() !== ''){
+				var serviceName = $scope.form.formData.serviceName.trim();
+				var swaggerYML = "swagger: \"2.0\"\n" +
+					"info:\n" +
+					"  version: \"1.0.0\"\n" +
+					"  title: "+ serviceName + "\n" +
+					"host: localhost\n" +
+					"basePath: /"+ serviceName + "\n" +
+					"schemes:\n" +
+					"  - http\n" +
+					"paths:\n\n" +
+					"parameters:\n\n" +
+					"definitions:\n\n";
+			}
+			$scope.schemaCodeF = swaggerYML;
+			$timeout(function(){
+				$scope.editor.setValue($scope.schemaCodeF);
+			}, 100);
+		}
+	};
+	
 	/*
 	 * This function updates the host value of the swagger simulator and check if the YAML code is valid so it will
 	 * enable the generate button.

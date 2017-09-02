@@ -83,6 +83,13 @@
 			</fieldset>
 		</fieldset>
 	</fieldset>
+	<fieldset ng-if="!isAutoScalable && !autoScale && (cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'replicated' || cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'deployment')">
+		<legend>Replication</legend>
+		<label>Replica Count</label>
+		<input type="number" ng-disabled="deployed" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas" ng-required="true"/>
+		<label class="fieldMsg">Enter a Replica Count that is greater or equal to 1</label>
+		<br>
+	</fieldset>
 	<fieldset ng-if="showCD">
 		<legend>Continuous Delivery</legend>
 		<div class="halfPage branchLabel">
