@@ -3,7 +3,7 @@
 var environmentsApp = soajsApp.components;
 environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'nodeSrv', 'hacloudSrv', 'deploySrv', 'injectFiles', function ($scope, $cookies, $timeout, nodeSrv, hacloudSrv, deploySrv, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
-
+	
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
 
@@ -13,6 +13,8 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	
     $scope.nodes = {};
 	$scope.services = {};
+	
+	$scope.oldStyle = false;
 
 	$scope.namespaceConfig = {
 		defaultValue: {
