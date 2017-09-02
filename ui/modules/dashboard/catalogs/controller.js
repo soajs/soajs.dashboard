@@ -101,6 +101,23 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 		});
 	}
 	
+	$scope.upgradeAll = function(){
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/catalog/recipes/upgrade'
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.displayAlert('success', "Catalog Recipes have been upgraded to the latest version.");
+				$scope.listRecipes();
+			}
+		});
+	};
+	
     $scope.listRecipes = function () {
         overlayLoading.show();
         getSendDataFromServer($scope, ngDataApi, {
@@ -113,25 +130,34 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
             }
             else {
 	            $scope.originalRecipes = $scope.recipes = response;
-	            
-	            $scope.recipeTypes = {};
-	            
-	            $scope.originalRecipes.forEach(function(oneRecipe){
-	            	
-	            	if(!$scope.recipeTypes[oneRecipe.type]){
-	            	    $scope.recipeTypes[oneRecipe.type] = {};
-		            }
-		
-		            if(!$scope.recipeTypes[oneRecipe.type][oneRecipe.subtype]){
-			            $scope.recipeTypes[oneRecipe.type][oneRecipe.subtype] = [];
-		            }
-	            });
 	
-	            $scope.recipes.forEach(function(oneRecipe){
-	            	if($scope.recipeTypes[oneRecipe.type] && $scope.recipeTypes[oneRecipe.type][oneRecipe.subtype]){
-			            $scope.recipeTypes[oneRecipe.type][oneRecipe.subtype].push(oneRecipe);
+	            $scope.oldStyle = false;
+	            $scope.originalRecipes.forEach(function(oneRecipe){
+	            	if(oneRecipe.type === 'soajs'){
+			            $scope.oldStyle = true;
 		            }
 	            });
+	            
+	            if(!$scope.oldStyle){
+		            $scope.recipeTypes = {};
+		
+		            $scope.originalRecipes.forEach(function(oneRecipe){
+			
+			            if(!$scope.recipeTypes[oneRecipe.type]){
+				            $scope.recipeTypes[oneRecipe.type] = {};
+			            }
+			
+			            if(!$scope.recipeTypes[oneRecipe.type][oneRecipe.subtype]){
+				            $scope.recipeTypes[oneRecipe.type][oneRecipe.subtype] = [];
+			            }
+		            });
+		
+		            $scope.recipes.forEach(function(oneRecipe){
+			            if($scope.recipeTypes[oneRecipe.type] && $scope.recipeTypes[oneRecipe.type][oneRecipe.subtype]){
+				            $scope.recipeTypes[oneRecipe.type][oneRecipe.subtype].push(oneRecipe);
+			            }
+		            });
+	            }
 	            
 	            $scope.listArchives();
             }
@@ -154,24 +180,33 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 			else {
 				$scope.originalArchives = $scope.archives = response;
 				
-				$scope.recipeTypesArchives = {};
-				
+				$scope.oldStyle = false;
 				$scope.originalArchives.forEach(function(oneRecipe){
-					
-					if(!$scope.recipeTypesArchives[oneRecipe.type]){
-						$scope.recipeTypesArchives[oneRecipe.type] = {};
-					}
-					
-					if(!$scope.recipeTypesArchives[oneRecipe.type][oneRecipe.subtype]){
-						$scope.recipeTypesArchives[oneRecipe.type][oneRecipe.subtype] = [];
+					if(oneRecipe.type === 'soajs'){
+						$scope.oldStyle = true;
 					}
 				});
 				
-				$scope.archives.forEach(function(oneRecipe){
-					if($scope.recipeTypesArchives[oneRecipe.type] && $scope.recipeTypesArchives[oneRecipe.type][oneRecipe.subtype]){
-						$scope.recipeTypesArchives[oneRecipe.type][oneRecipe.subtype].push(oneRecipe);
-					}
-				});
+				if(!$scope.oldStyle){
+					$scope.recipeTypesArchives = {};
+					
+					$scope.originalArchives.forEach(function(oneRecipe){
+						
+						if(!$scope.recipeTypesArchives[oneRecipe.type]){
+							$scope.recipeTypesArchives[oneRecipe.type] = {};
+						}
+						
+						if(!$scope.recipeTypesArchives[oneRecipe.type][oneRecipe.subtype]){
+							$scope.recipeTypesArchives[oneRecipe.type][oneRecipe.subtype] = [];
+						}
+					});
+					
+					$scope.archives.forEach(function(oneRecipe){
+						if($scope.recipeTypesArchives[oneRecipe.type] && $scope.recipeTypesArchives[oneRecipe.type][oneRecipe.subtype]){
+							$scope.recipeTypesArchives[oneRecipe.type][oneRecipe.subtype].push(oneRecipe);
+						}
+					});
+				}
 			}
 		});
 	};

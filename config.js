@@ -1147,6 +1147,13 @@ module.exports = {
                     }
                 }
             },
+	
+	        "/catalog/recipes/upgrade" :{
+		        "_apiInfo": {
+			        "l": "Upgrade Catalog Recipes to latest Version",
+			        "group": "Catalog"
+		        }
+	        },
 
             "/cd": {
                 "_apiInfo": {

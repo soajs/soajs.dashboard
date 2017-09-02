@@ -1262,6 +1262,19 @@ service.init(function () {
 			});
 		});
 	});
+	
+	/**
+	 * Upgrade Catalog Recipes to latest versions
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/catalog/recipes/upgrade", function (req, res) {
+		initBLModel(req, res, dashboardBL.catalog.module, dbModel, function (BL) {
+			BL.upgrade(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
 
 	/**
 	 * Continuous Delivery Features
