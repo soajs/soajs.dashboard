@@ -399,7 +399,7 @@ const lib = {
 									}
 									
 									if (env.resources) {
-										lib.removeESClustersFromEnvRecord(soajs, esDbInfo.cluster, model, miniCb);
+										lib.removeESClusterFromResources(soajs, esDbInfo.cluster, model, miniCb);
 									}
 									else {
 										return miniCb();
@@ -610,6 +610,10 @@ const lib = {
 		let esClient = context.esClient;
 		let env = context.envRecord;
 		let model = context.model;
+		
+		console.log(context);
+		console.log("-----------------");
+		console.log(esClient);
 		
 		var analyticsArray = [];
 		var serviceEnv = env.code.toLowerCase();
@@ -1171,7 +1175,7 @@ var analyticsDriver = function (opts) {
 	_self.operations = [];
 };
 
-analyticsDriver.prototype.run = () => {
+analyticsDriver.prototype.run = function() {
 	let _self = this;
 	_self.config.envRecord.code = _self.config.envCode;
 	let workFlowMethods = ['insertMongoData', 'deployElastic', 'checkElasticSearch', 'setMapping', 'addVisualizations', 'deployKibana', 'deployLogstash', 'deployFilebeat', 'deployMetricbeat', 'checkAvailability', 'setDefaultIndex'];
@@ -1183,7 +1187,7 @@ analyticsDriver.prototype.run = () => {
 	});
 };
 
-analyticsDriver.deploy = () => {
+analyticsDriver.deploy = function() {
 	let _self = this;
 	let envCode = _self.config.envCode.toLowerCase();
 	_self.config.tracker[envCode].counterPing = 0;
