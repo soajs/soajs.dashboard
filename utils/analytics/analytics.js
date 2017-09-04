@@ -251,7 +251,7 @@ const lib = {
 		let esDbInfo = context.esDbInfo;
 		let model = context.model;
 		let tracker = context.tracker;
-		let esClient = context.esCluster;
+		let esClient = context.esClient;
 		let settings = context.analyticsSettings;
 		
 		if (process.env.SOAJS_TEST_ANALYTICS === 'test') {
@@ -353,7 +353,7 @@ const lib = {
 		let soajs = context.soajs;
 		let env = context.envRecord;
 		let esDbInfo = context.esDbInfo;
-		let esClient = context.esCluster;
+		let esClient = context.esClient;
 		let model = context.model;
 		let tracker = context.tracker;
 		let settings = context.analyticsSettings;
@@ -468,7 +468,7 @@ const lib = {
 	 */
 	"purgeElastic": function (context, cb) {
 		let soajs = context.soajs;
-		let esClient = context.esCluster;
+		let esClient = context.esClient;
 		let config = context;
 		
 		if (!config.purge) {
@@ -493,7 +493,7 @@ const lib = {
 	 */
 	"putTemplate": function (context, cb) {
 		let soajs = context.soajs;
-		let esClient = context.esCluster;
+		let esClient = context.esClient;
 		let model = context.model;
 		
 		let combo = {
@@ -534,7 +534,7 @@ const lib = {
 	 */
 	"putMapping": function (context, cb) {
 		let soajs = context.soajs;
-		let esClient = context.esCluster;
+		let esClient = context.esClient;
 		let model = context.model;
 		
 		//todo change this
@@ -610,10 +610,6 @@ const lib = {
 		let esClient = context.esClient;
 		let env = context.envRecord;
 		let model = context.model;
-		
-		console.log(context);
-		console.log("-----------------");
-		console.log(esClient);
 		
 		var analyticsArray = [];
 		var serviceEnv = env.code.toLowerCase();
@@ -1207,7 +1203,7 @@ analyticsDriver.deploy = function() {
 		}
 		else {
 			//close es connection
-			_self.config.esCluster.close();
+			_self.config.esClient.close();
 		}
 	});
 };
