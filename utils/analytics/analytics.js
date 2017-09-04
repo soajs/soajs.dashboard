@@ -1164,7 +1164,7 @@ const lib = {
 	}
 };
 
-let analyticsDriver = (opts) => {
+var analyticsDriver = function (opts) {
 	let _self = this;
 	_self.config = opts;
 	_self.config.purge = false;
