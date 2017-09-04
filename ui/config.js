@@ -71,7 +71,8 @@ var modules = {
 	},
 	"deploy": {
 		"dashboard": {
-			environments: 'modules/dashboard/environments/install.js'
+			environments: 'modules/dashboard/environments/install.js',
+			resources: 'modules/dashboard/resources/install.js'
 		}
 	},
 	"operate": {

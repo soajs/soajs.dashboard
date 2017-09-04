@@ -1,0 +1,23 @@
+.resource-box {
+    width: 32% !important;
+    float: left !important;
+    margin-right: 1% !important;
+    padding-left: 0px !important;
+}
+
+.resource-box-body {
+    display:table;
+    width:100%;
+}
+
+.resource-box-body a {
+    margin-top: 2px;
+    margin-right: 2px;
+    margin-bottom: 2px;
+    width: 49%;
+}
+
+.responsive-width {
+    font-size: 0.8vw;
+    float: right;
+}
