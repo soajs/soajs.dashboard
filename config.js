@@ -3,6 +3,7 @@ var serviceConfig = require("./schemas/serviceConfig");
 var cbSchema = require("./schemas/cb");
 var aclSchema = require("./schemas/acl");
 var catalogSchema = require("./schemas/catalog");
+var resourceSchema = require("./schemas/resource");
 
 var cdOptions = {
 	"recipe": {
@@ -756,6 +757,21 @@ module.exports = {
                 "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
             },
 
+			"/resources/list": {
+				_apiInfo: {
+                    "l": "List Available Resources",
+                    "group": "Resources",
+					"groupMain": true
+                },
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"required": true
+					}
+				}
+			},
+
             "/environment/platforms/list": {
                 _apiInfo: {
                     "l": "List Environment Platforms",
@@ -1147,7 +1163,7 @@ module.exports = {
                     }
                 }
             },
-	
+
 	        "/catalog/recipes/upgrade" :{
 		        "_apiInfo": {
 			        "l": "Upgrade Catalog Recipes to latest Version",
@@ -1685,6 +1701,21 @@ module.exports = {
                 "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
                 "name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
             },
+
+			"/resources/add": {
+				_apiInfo: {
+                    "l": "Add New Resource",
+                    "group": "Resources"
+                },
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"resource": resourceSchema
+			},
 
             "/environment/platforms/cert/upload": {
                 _apiInfo: {
@@ -3024,6 +3055,21 @@ module.exports = {
                 "name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
             },
 
+			"/resources/update": {
+				_apiInfo: {
+                    "l": "Update Resource",
+                    "group": "Resources"
+                },
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"resource": resourceSchema
+			},
+
             "/environment/platforms/cert/choose": {
                 _apiInfo: {
                     "l": "Choose Existing Certificates",
@@ -3427,7 +3473,7 @@ module.exports = {
                     }
                 }
             },
-		
+
 		    "/cloud/nodes/tag": {
 			    "_apiInfo": {
 				    "l": "Update HA Cloud Node Tag",
@@ -3860,6 +3906,20 @@ module.exports = {
                 "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
                 "name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
             },
+
+			"/resources/delete": {
+				_apiInfo: {
+                    "l": "Delete a resource",
+                    "group": "Resources"
+                },
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
 
             "/environment/platforms/cert/delete": {
                 _apiInfo: {

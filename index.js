@@ -6,6 +6,9 @@ var dashboardBL = {
 	environment: {
 		module: require("./lib/environment/index.js")
 	},
+	resources: {
+		module: require("./lib/resources/index.js")
+	},
 	product: {
 		module: require("./lib/product/index.js")
 	},
@@ -172,7 +175,7 @@ service.init(function () {
             });
         });
     });
-	
+
 	/**
 	 * Update environment tenant security key
 	 * @param {String} API route
@@ -298,6 +301,58 @@ service.init(function () {
 	service.get("/environment/clusters/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
 			BL.listClusters(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * List resources
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/resources/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.listResources(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Add new resource
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/resources/add", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.addResource(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Delete a resource
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.delete("/resources/delete", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.deleteResource(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Update a resource
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/resources/update", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.updateResource(config, req, res, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1011,7 +1066,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update the tag of a cluster node
 	 * @param {String} API route
@@ -1262,7 +1317,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Upgrade Catalog Recipes to latest versions
 	 * @param {String} API route
