@@ -239,17 +239,22 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					envVars.entries[2].name += envCounter;
 					envVars.entries[2].onAction = reRenderEnvVar;
 					
-					envVars.entries[envVars.entries.length-1].name += envCounter;
-					envVars.entries[envVars.entries.length-1].onAction = function(id, value, form){
-						
-						var count = parseInt(id.replace('envVarRemove', ''));
-						for(let i = form.entries[7].tabs[1].entries.length -1; i >=0; i--){
-							if(form.entries[7].tabs[1].entries[i].name === 'envVarGroup' + count){
-								form.entries[7].tabs[1].entries.splice(i, 1);
-								break;
+					if(!submitAction){
+						envVars.entries.pop();
+					}
+					else{
+						envVars.entries[envVars.entries.length-1].name += envCounter;
+						envVars.entries[envVars.entries.length-1].onAction = function(id, value, form){
+							
+							var count = parseInt(id.replace('envVarRemove', ''));
+							for(let i = form.entries[7].tabs[1].entries.length -1; i >=0; i--){
+								if(form.entries[7].tabs[1].entries[i].name === 'envVarGroup' + count){
+									form.entries[7].tabs[1].entries.splice(i, 1);
+									break;
+								}
 							}
-						}
-					};
+						};
+					}
 					
 					if($scope.form && $scope.form.entries){
 						$scope.form.entries[7].tabs[1].entries.splice($scope.form.entries[7].tabs[1].entries.length -1,0, envVars);
@@ -265,17 +270,22 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					tmp.name += volumeCounter;
 					tmp.entries[0].name += volumeCounter;
 					tmp.entries[1].name += volumeCounter;
-					tmp.entries[2].name += volumeCounter;
-					tmp.entries[2].onAction = function(id, value, form){
-						var count = parseInt(id.replace('rVolume', ''));
-						
-						for(let i = form.entries[5].tabs[5].entries.length -1; i >=0; i--){
-							if(form.entries[5].tabs[5].entries[i].name === 'volumeGroup' + count){
-								form.entries[5].tabs[5].entries.splice(i, 1);
-								break;
+					if(!submitAction){
+						tmp.entries.pop()
+					}
+					else{
+						tmp.entries[2].name += volumeCounter;
+						tmp.entries[2].onAction = function(id, value, form){
+							var count = parseInt(id.replace('rVolume', ''));
+							
+							for(let i = form.entries[5].tabs[5].entries.length -1; i >=0; i--){
+								if(form.entries[5].tabs[5].entries[i].name === 'volumeGroup' + count){
+									form.entries[5].tabs[5].entries.splice(i, 1);
+									break;
+								}
 							}
-						}
-					};
+						};
+					}
 					
 					if($scope.form && $scope.form.entries){
 						$scope.form.entries[5].tabs[5].entries.splice($scope.form.entries[5].tabs[5].entries.length -1, 0, tmp);
@@ -317,16 +327,21 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					tmp.name += portCounter;
 					tmp.entries[0].name += portCounter;
 					tmp.entries[1].name += portCounter;
-					tmp.entries[1].onAction = function(id, value, form){
-						var count = parseInt(id.replace('rPort', ''));
-						
-						for(let i = form.entries[5].tabs[6].entries.length -1; i >=0; i--){
-							if(form.entries[5].tabs[6].entries[i].name === 'portGroup' + count){
-								form.entries[5].tabs[6].entries.splice(i, 1);
-								break;
+					if(!submitAction){
+						tmp.entries.pop();
+					}
+					else{
+						tmp.entries[1].onAction = function(id, value, form){
+							var count = parseInt(id.replace('rPort', ''));
+							
+							for(let i = form.entries[5].tabs[6].entries.length -1; i >=0; i--){
+								if(form.entries[5].tabs[6].entries[i].name === 'portGroup' + count){
+									form.entries[5].tabs[6].entries.splice(i, 1);
+									break;
+								}
 							}
-						}
-					};
+						};
+					}
 					
 					if($scope.form && $scope.form.entries) {
 						$scope.form.entries[5].tabs[6].entries.splice($scope.form.entries[5].tabs[6].entries.length -1, 0, tmp);
@@ -350,17 +365,24 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					portCounter++;
 				};
 				
-				formConfig[5].tabs[5].entries[0].onAction = function(id, value, form){
-					$scope.addNewVolume();
-				};
-
-				formConfig[5].tabs[6].entries[0].onAction = function(id, value, form){
-					$scope.addNewPort();
-				};
-
-				formConfig[7].tabs[1].entries[0].onAction = function(id, value, form){
-					$scope.addNewEnvVar();
-				};
+				if(submitAction){
+					formConfig[5].tabs[5].entries[0].onAction = function(id, value, form){
+						$scope.addNewVolume();
+					};
+					
+					formConfig[5].tabs[6].entries[0].onAction = function(id, value, form){
+						$scope.addNewPort();
+					};
+					
+					formConfig[7].tabs[1].entries[0].onAction = function(id, value, form){
+						$scope.addNewEnvVar();
+					};
+				}
+				else{
+					formConfig[5].tabs[5].entries.pop();
+					formConfig[5].tabs[6].entries.pop();
+					formConfig[7].tabs[1].entries.pop();
+				}
 				
 				var formData = mapDataToForm($scope, false);
 				
@@ -372,7 +394,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					actions: [
 						{
 							type: 'reset',
-							label: 'Cancel',
+							label: (submitAction) ? 'Cancel' : 'Close',
 							btn: 'danger',
 							action: function () {
 								$modalInstance.dismiss('cancel');
@@ -382,7 +404,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					]
 				};
 				
-				if(!data.locked){
+				if(submitAction && !data.locked){
 					options.actions.splice(0,0, {
 						type: 'submit',
 							label: 'Submit',
@@ -465,7 +487,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				setEditorContent("readinessProbe", output['readinessProbe'], mainFormConfig[5].tabs[2].entries[0].height, modalScope);
 				
 				//volumes
-				if(data.recipe.deployOptions.voluming && data.recipe.deployOptions.voluming.volumes){
+				if(data.recipe.deployOptions.voluming && ((data.recipe.deployOptions.voluming.volumes && data.recipe.deployOptions.voluming.volumes.length > 0) || (data.recipe.deployOptions.voluming.volumeMounts && data.recipe.deployOptions.voluming.volumeMounts.length > 0))){
 					data.recipe.deployOptions.voluming.volumes.forEach(function(oneVolume){
 						output['volume' + volumeCounter] = oneVolume;
 						var mountVolume;
@@ -480,17 +502,29 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						modalScope.addNewVolume(oneVolume, mountVolume);
 					});
 				}
+				else if(!data.recipe.deployOptions.voluming || (data.recipe.deployOptions.voluming && data.recipe.deployOptions.voluming.volumes.length === 0 && data.recipe.deployOptions.voluming.volumeMounts.length === 0)){
+					modalScope.form.entries[5].tabs[5].entries.push({
+						'type':'html',
+						'value': "<br /><div class='alert alert-warning'>No Volumes Configured for this Recipe.</div>"
+					});
+				}
 				
 				//ports
-				if(data.recipe.deployOptions.ports){
+				if(data.recipe.deployOptions.ports && data.recipe.deployOptions.ports.length > 0){
 					data.recipe.deployOptions.ports.forEach(function(onePort){
 						output['port' + portCounter] = onePort;
 						modalScope.addNewPort(onePort);
 					});
 				}
+				else if(!data.recipe.deployOptions.ports || data.recipe.deployOptions.ports.length === 0){
+					modalScope.form.entries[5].tabs[6].entries.push({
+						'type':'html',
+						'value': "<br /><div class='alert alert-warning'>No Ports Configured for this Recipe.</div>"
+					});
+				}
 				
 				//env variables
-				if(data.recipe.buildOptions.env){
+				if(data.recipe.buildOptions.env && Object.keys(data.recipe.buildOptions.env).length > 0){
 					for(var oneVar in data.recipe.buildOptions.env){
 						output['envVarName' + envCounter] = oneVar;
 						output['envVarType' + envCounter] = data.recipe.buildOptions.env[oneVar].type;
@@ -511,6 +545,12 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						//counter got incremented in method above, refill data starting from 0 instead of 1
 						reRenderEnvVar('envVarType' + ( envCounter -1 ), data.recipe.buildOptions.env[oneVar].type, modalScope.form);
 					}
+				}
+				else if(!data.recipe.buildOptions.env || Object.keys(data.recipe.buildOptions.env).length === 0){
+					modalScope.form.entries[7].tabs[1].entries.push({
+						'type':'html',
+						'value': "<br /><div class='alert alert-warning'>No Environment Variables Configured for this Recipe.</div>"
+					});
 				}
 			}
 			
@@ -637,6 +677,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 		    routeName: '/dashboard/catalog/recipes/add',
 		    params: {}
 	    };
+	    var currentScope = $scope;
 	    
     	if (type === 'blank') {
     		$modal.open({
@@ -691,7 +732,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 										    delete formEntries[3].disabled;
 									    }
 								    	
-								        proceedWithForm($scope, formEntries, data, submitAction);
+								        proceedWithForm(currentScope, formEntries, data, submitAction);
 								    }, 100);
 							    }
 						    },
@@ -735,7 +776,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 	            $scope.modalInstance.close();
 	            $timeout(function(){
 		            formConfig = angular.copy(catalogAppConfig.form.entries);
-		            proceedWithForm($scope, formConfig, recipeTemplate, submitAction);
+		            proceedWithForm(currentScope, formConfig, recipeTemplate, submitAction);
 	            }, 100);
             };
 	
@@ -759,6 +800,10 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 	    };
 	    
 	    proceedWithForm($scope, catalogAppConfig.form.entries, recipe, submitAction);
+    };
+    
+    $scope.viewRecipe = function(recipe){
+	    proceedWithForm($scope, catalogAppConfig.form.entries, recipe, null);
     };
 
     $scope.deleteRecipe = function (recipe, versioning) {

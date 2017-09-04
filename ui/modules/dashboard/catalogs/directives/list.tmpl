@@ -126,15 +126,18 @@
 							<accordion close-others="false">
 								<accordion-group ng-repeat="(subtype, recipes) in recipeSubType">
 									<accordion-heading>{{subtype}}</accordion-heading>
-									<div ng-repeat="recipe in recipes" class="entryBox recipe-box" ng-class="{blueRecipeBox: !recipe.locked, greenRecipeBox: (recipe.subtype === 'soajs' && !recipe.locked)}">
+									<div ng-repeat="recipe in recipes | orderBy:'-v'" class="entryBox recipe-box" ng-class="{blueRecipeBox: !recipe.locked, greenRecipeBox: (recipe.subtype === 'soajs' && !recipe.locked)}">
 										<div class="header" ng-class="{blueBoxHeader: !recipe.locked, greenBoxHeader: (recipe.subtype ==='soajs' && !recipe.locked)}">
 											{{recipe.name}}<span><em>( v:{{recipe.v}} )</em></span> <span ng-if="recipe.locked" class="icon icon-lock"></span>
 											<div class="rightActions" style="display:inline;">
 												<a href="" ng-if="access.delete && !recipe.locked" ng-click="deleteRecipe(recipe)" ng-confirm-click="Are you sure you want to delete this recipe?">
 													<span class="icon icon-cross" tooltip="Delete Recipe"></span>
 												</a>
-												<a href="" ng-if="access.update" ng-click="updateRecipe(recipe)">
+												<a href="" ng-if="!recipe.locked && access.update" ng-click="updateRecipe(recipe)">
 													<span class="icon icon-pencil" tooltip="Update Recipe"></span>
+												</a>
+												<a href="" ng-if="recipe.locked" ng-click="viewRecipe(recipe)">
+													<span class="icon icon-search" tooltip="View Recipe"></span>
 												</a>
 											</div>
 										</div>
@@ -167,7 +170,7 @@
 							<accordion close-others="false">
 								<accordion-group ng-repeat="(subtype, recipes) in recipeSubType">
 									<accordion-heading>{{subtype}}</accordion-heading>
-									<div ng-repeat="recipe in archives" class="entryBox recipe-box" ng-class="{blueRecipeBox: !recipe.locked, greenRecipeBox: (recipe.subtype === 'soajs' && !recipe.locked)}">
+									<div ng-repeat="recipe in recipes | orderBy:'-v'" class="entryBox recipe-box" ng-class="{blueRecipeBox: !recipe.locked, greenRecipeBox: (recipe.subtype === 'soajs' && !recipe.locked)}">
 										<div class="header" ng-class="{blueBoxHeader: !recipe.locked, greenBoxHeader: (recipe.subtype ==='soajs' && !recipe.locked)}">
 											{{recipe.name}}<span><em>( v:{{recipe.v}} )</em></span>  <span ng-if="recipe.locked" class="icon icon-lock"></span>
 											<div class="rightActions" style="display:inline;">

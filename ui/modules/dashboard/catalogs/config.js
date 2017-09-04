@@ -59,7 +59,7 @@ var catalogAppConfig = {
 					{'v': 'nginx', 'l': "Nginx", "group": "server"},
 					{'v': 'apache', 'l': "Apache", "group": "server"},
 					{'v': 'iis', 'l': "IIS", "group": "server"},
-					{'v': 'other', 'l': "Other", "group": "cdn"},
+					{'v': 'other', 'l': "Other", "group": "server"},
 					
 					{'v': 'amazons3', 'l': "Amazon S3", "group": "cdn"},
 					{'v': 'rackspace', 'l': "Rackspace", "cluster": "cdn"},
