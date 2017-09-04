@@ -167,7 +167,7 @@ module.exports = {
 
     "saveEntry": function (soajs, opts, cb) {
         checkForMongo(soajs);
-        mongo.save(opts.collection, opts.record, cb);
+        mongo.save(opts.collection, opts.record, opts.versioning || false, cb);
     },
 
     "insertEntry": function (soajs, opts, cb) {
