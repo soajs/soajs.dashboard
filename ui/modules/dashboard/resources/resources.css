@@ -21,3 +21,12 @@
     font-size: 0.8vw;
     float: right;
 }
+
+.greenBox {
+    border: solid 1px #3c763d !important;
+}
+
+.greenBoxHeader {
+    background-color: #dff0d8 !important;
+    border-bottom-color: #3c763d !important;
+}

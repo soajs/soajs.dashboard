@@ -50,6 +50,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                     form.entries[1].value.push(oneCategory);
                 }
             });
+            form.entries[1].hidden = false;
         };
 
         var currentScope = $scope;

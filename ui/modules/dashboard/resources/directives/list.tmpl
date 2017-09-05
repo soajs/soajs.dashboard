@@ -13,9 +13,11 @@
                     <accordion close-others="false">
                         <accordion-group ng-repeat="(category, content) in categories" class="entryBoxes entryBoxesGrid">
                             <accordion-heading>{{category}}</accordion-heading>
-                            <div ng-repeat="resource in content" class="entryBox resource-box">
-                                <div class="header">
+                            <div ng-repeat="resource in content" class="entryBox resource-box" ng-class="{greenBox: resource.plugged}">
+                                <div class="header" ng-class="{greenBoxHeader: resource.plugged}">
                                     {{resource.name}}
+                                    <span ng-if="resource.locked" class="icon icon-lock" tooltip="This resource is locked"></span>
+                                    <span ng-if="resource.shared && resource.created.toLowerCase() !== envCode.toLowerCase()" class="icon icon-share2" tooltip="This resource is shared from {{resource.created}} environment"></span>
                                     <div class="rightActions" style="display:inline;">
                                         <a href="" ng-if="access.delete && !resource.locked" ng-click="deleteResource(resource)" ng-confirm-click="Are you sure you want to delete this resource?">
         									<span class="icon icon-cross" tooltip="Delete Resource"></span>

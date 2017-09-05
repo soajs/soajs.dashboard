@@ -31,7 +31,8 @@ var resourcesAppConfig = {
 					'label': "Resource Category",
 					'type': 'select',
 					'value' :[],
-					'required': true
+					'required': true,
+                    'hidden': true
 				}
             ],
             data: {
