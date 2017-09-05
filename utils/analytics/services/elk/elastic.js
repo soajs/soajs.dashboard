@@ -17,7 +17,8 @@ module.exports = {
 	"variables": [],
 	"labels": {
 		"soajs.content": "true",
-		"soajs.service.type": "elk",
+		"soajs.service.type": "cluster",
+		"soajs.service.subtype": "elasticsearch",
 		"soajs.service.name": "soajs-analytics-elasticsearch",
 		"soajs.service.group": "elk",
 		"soajs.service.label": "soajs-analytics-elasticsearch",

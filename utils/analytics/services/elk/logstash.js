@@ -8,7 +8,8 @@ module.exports = {
 	"labels": {
 		"soajs.content": "true",
 		"soajs.env.code": "%env%",
-		"soajs.service.type": "elk",
+		"soajs.service.type": "system",
+		"soajs.service.subtype": "logstash",
 		"soajs.service.name": "%env%-logstash",
 		"soajs.service.group": "elk",
 		"soajs.service.label": "%env%-logstash",
