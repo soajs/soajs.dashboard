@@ -142,7 +142,10 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 		            $scope.recipeTypes = {};
 		
 		            $scope.originalRecipes.forEach(function(oneRecipe){
-			
+			            if(!oneRecipe.v){
+				            oneRecipe.v = 1;
+			            }
+			            
 			            if(!$scope.recipeTypes[oneRecipe.type]){
 				            $scope.recipeTypes[oneRecipe.type] = {};
 			            }

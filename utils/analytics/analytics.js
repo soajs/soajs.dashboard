@@ -184,8 +184,16 @@ const lib = {
 			if (service === "filebeat") {
 				serviceParams = serviceParams.replace(/%logNameSpace%/g, logNameSpace);
 			}
-			serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
-			serviceParams = JSON.parse(serviceParams);
+			
+			if(serviceParams.indexOf("%env%") !== -1){
+				serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
+				serviceParams = JSON.parse(serviceParams);
+				serviceParams.labels['soajs.env.code'] = env.code.toLowerCase();
+			}
+			else{
+				serviceParams = JSON.parse(serviceParams);
+				serviceParams.labels['soajs.env.code'] = process.env.SOAJS_ENV.toLowerCase();
+			}
 			
 			return cb(null, serviceParams);
 			
