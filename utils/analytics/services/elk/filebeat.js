@@ -12,7 +12,7 @@ module.exports = {
 		"soajs.service.name": "%env%-filebeat",
 		"soajs.service.type": "system",
 		"soajs.service.subtype": "filebeat",
-		"soajs.service.group": "elk",
+		"soajs.service.group": "soajs-analytics",
 		"soajs.service.label": "%env%-filebeat",
 		"soajs.env.code": "%env%",
 		"soajs.service.mode": "global"

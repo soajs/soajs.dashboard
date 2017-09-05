@@ -11,7 +11,7 @@ module.exports = {
 		"soajs.service.type": "system",
 		"soajs.service.subtype": "logstash",
 		"soajs.service.name": "%env%-logstash",
-		"soajs.service.group": "elk",
+		"soajs.service.group": "soajs-analytics",
 		"soajs.service.label": "%env%-logstash",
 		"soajs.service.mode": "replicated"
 	},
