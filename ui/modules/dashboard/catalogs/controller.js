@@ -217,7 +217,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
     
 	function proceedWithForm(currentScope, mainFormConfig, data, submitAction){
 		
-		var envCounter = 0, volumeCounter = 0, portCounter = 0;
+		var envCounter = 0, volumeCounter = 0, portCounter = 0, labelCounter = 0;
 		
 		$modal.open({
 			templateUrl: "editRecipe.tmpl",
@@ -368,6 +368,37 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					portCounter++;
 				};
 				
+				$scope.addNewLabel = function(value){
+					var tmp = angular.copy(catalogAppConfig.form.labelInput);
+					tmp.name += labelCounter;
+					tmp.entries[0].name += labelCounter;
+					tmp.entries[1].name += labelCounter;
+					tmp.entries[2].name += labelCounter;
+					if(!submitAction){
+						tmp.entries.pop();
+					}
+					else{
+						tmp.entries[2].onAction = function(id, value, form){
+							var count = parseInt(id.replace('rLabel', ''));
+							
+							for(let i = form.entries[5].tabs[7].entries.length -1; i >=0; i--){
+								if(form.entries[5].tabs[7].entries[i].name === 'labelGroup' + count){
+									form.entries[5].tabs[7].entries.splice(i, 1);
+									break;
+								}
+							}
+						};
+					}
+					
+					if($scope.form && $scope.form.entries) {
+						$scope.form.entries[5].tabs[7].entries.splice($scope.form.entries[5].tabs[7].entries.length -1, 0, tmp);
+					}
+					else{
+						formConfig[5].tabs[7].entries.splice($scope.form.entries[5].tabs[7].entries.length -1, 0, tmp);
+					}
+					labelCounter++;
+				};
+				
 				if(submitAction){
 					formConfig[5].tabs[5].entries[0].onAction = function(id, value, form){
 						$scope.addNewVolume();
@@ -377,6 +408,10 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						$scope.addNewPort();
 					};
 					
+					formConfig[5].tabs[7].entries[0].onAction = function(id, value, form){
+						$scope.addNewLabel();
+					};
+					
 					formConfig[7].tabs[1].entries[0].onAction = function(id, value, form){
 						$scope.addNewEnvVar();
 					};
@@ -384,6 +419,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				else{
 					formConfig[5].tabs[5].entries.pop();
 					formConfig[5].tabs[6].entries.pop();
+					formConfig[5].tabs[7].entries.pop();
 					formConfig[7].tabs[1].entries.pop();
 				}
 				
@@ -413,7 +449,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 							label: 'Submit',
 						btn: 'primary',
 						action: function (fData) {
-							var formData = fromToAPI(fData, envCounter, volumeCounter, portCounter);
+							var formData = fromToAPI(fData, envCounter, volumeCounter, portCounter, labelCounter);
 							
 							overlayLoading.show();
 							getSendDataFromServer($scope, ngDataApi, {
@@ -555,13 +591,23 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						'value': "<br /><div class='alert alert-warning'>No Environment Variables Configured for this Recipe.</div>"
 					});
 				}
+				
+				//service labels
+				if(data.recipe.deployOptions.labels && Object.keys(data.recipe.deployOptions.labels).length > 0){
+					console.log(data.recipe.deployOptions.labels);
+					for(let oneLabel in data.recipe.deployOptions.labels){
+						output['labelName' + labelCounter] = oneLabel;
+						output['labelValue' + labelCounter] = data.recipe.deployOptions.labels[oneLabel];
+						modalScope.addNewLabel(data.recipe.deployOptions.labels[oneLabel]);
+					}
+				}
 			}
 			
 			return output;
 		}
 	}
  
-	function fromToAPI(formData, envCounter, volumeCounter, portCounter){
+	function fromToAPI(formData, envCounter, volumeCounter, portCounter, labelCounter){
 		var apiData = {
 			name: formData.name,
 			type: formData.type,
@@ -664,6 +710,21 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				//nothing to push
 				if(Object.keys(apiData.recipe.buildOptions.env[formData['envVarName' + i]]).length === 0){
 					delete apiData.recipe.buildOptions.env[formData['envVarName' + i]];
+				}
+			}
+		}
+		
+		if(labelCounter > 0){
+			apiData.recipe.deployOptions.labels = {};
+			for(let i=0; i < labelCounter; i++){
+				if(!formData['labelName' + i] || !formData['labelValue' + i]){
+					continue;
+				}
+				apiData.recipe.deployOptions.labels[formData['labelName' + i]] = formData['labelValue' + i];
+				
+				//nothing to push
+				if(!apiData.recipe.deployOptions.labels[formData['labelName' + i]]){
+					delete apiData.recipe.deployOptions.labels[formData['labelName' + i]];
 				}
 			}
 		}
