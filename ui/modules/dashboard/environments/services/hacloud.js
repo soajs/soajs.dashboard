@@ -12,7 +12,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		currentScope.showCtrlHosts = true;
 		currentScope.soajsServices = false;
         currentScope.controllers =[];
-        currentScope.recipeTypes = environmentsConfig.recipeTypes;
+		currentScope.hosts = null;
+		currentScope.recipeTypes = environmentsConfig.recipeTypes;
         
 		if (currentScope.access.hacloud.services.list) {
 			getUpdatesNotifications(function(){
@@ -27,11 +28,17 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						currentScope.displayAlert('danger', translation.unableRetrieveServicesHostsInformation[LANG]);
 					}
 					else {
+						currentScope.myNginx = false;
+						currentScope.myController = false;
 						if (response && response.length > 0) {
                             currentScope.rawServicesResponse = angular.copy(response);
-							currentScope.hosts = {};
+							
 							currentScope.deployedInEnv = [];
 							for (var j = 0; j < response.length; j++) {
+								if(!currentScope.hosts){
+									currentScope.hosts = {};
+								}
+								
 								response[j].expanded = true;
 
 								for(var u=0; u < currentScope.updatesNotifications.length; u++){
@@ -85,6 +92,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 									
 									//add group value to controller service entry
 									if(response[j].labels['soajs.service.name'] === 'controller'){
+										currentScope.myController = true;
 										response[j].labels['soajs.service.group'] = "SOAJS Core Services";
 										response[j].labels['soajs.service.group'] = response[j].labels['soajs.service.group'].toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
 										serviceGroup = response[j].labels['soajs.service.group'];
@@ -129,6 +137,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 									if(['nginx'].indexOf(serviceGroup) !== -1){
 										if(currentScope.deployedInEnv.indexOf('nginx') === -1){
 											currentScope.deployedInEnv.push('nginx');
+											currentScope.myNginx = true;
 										}
 									}
 									
@@ -149,6 +158,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 							delete currentScope.hosts;
 						}
 					}
+					
+					if(cb){return cb(); }
 				});
 			});
         }
