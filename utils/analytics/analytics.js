@@ -261,7 +261,7 @@ const lib = {
 			if (error) {
 				// soajs.log.error(error);
 				tracker[env.code.toLowerCase()].counterPing++;
-				soajs.log.debug("No ES Cluster found, trying again:", tracker[env.code.toLowerCase()].counterPing, "/", 10);
+				soajs.log.debug("Waiting for ES Cluster to reply, attempt:", tracker[env.code.toLowerCase()].counterPing, "/", 10);
 				if (tracker[env.code.toLowerCase()].counterPing >= 10) { // wait 5 min
 					soajs.log.error("Elasticsearch wasn't deployed... exiting");
 					
