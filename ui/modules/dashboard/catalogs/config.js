@@ -67,6 +67,9 @@ var catalogAppConfig = {
 					{'v': 'other', 'l': "Other", "group": "cdn"},
 					
 					{'v': 'kibana', 'l': "Kibana", "group": "system"},
+					{'v': 'logstash', 'l': "Logstash", "group": "system"},
+					{'v': 'filebeat', 'l': "Filebeat", "group": "system"},
+					{'v': 'metricbeat', 'l': "Metricbeat", "group": "system"},
 					{'v': 'other', 'l': "Other", "group": "system"}
 				],
 				'required': true

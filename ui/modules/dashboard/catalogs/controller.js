@@ -299,7 +299,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 							}
 						}
 						else{
-							setEditorContent('volume' + volumeCounter, {}, tmp.entries[0].height);
+							setEditorContent('volume' + volumeCounter, {}, tmp.entries[0].height, $scope);
 							setEditorContent('volumeMount' + volumeCounter, {}, tmp.entries[1].height, $scope);
 						}
 					}
@@ -315,7 +315,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 							}
 						}
 						else{
-							setEditorContent('volume' + volumeCounter, {}, tmp.entries[0].height);
+							setEditorContent('volume' + volumeCounter, {}, tmp.entries[0].height, $scope);
 							setEditorContent('volumeMount' + volumeCounter, {}, tmp.entries[1].height, $scope);
 						}
 					}
