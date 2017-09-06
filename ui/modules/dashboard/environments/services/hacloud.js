@@ -141,7 +141,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 									}
 									
 									//check if nginx is deployed
-									if(['nginx'].indexOf(serviceGroup) !== -1){
+									if(['soajs-nginx'].indexOf(serviceGroup) !== -1){
 										if(currentScope.deployedInEnv.indexOf('nginx') === -1){
 											currentScope.deployedInEnv.push('nginx');
 											currentScope.myNginx = true;
