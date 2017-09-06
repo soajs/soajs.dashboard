@@ -74,8 +74,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 								response[j].failures = failures;
 
-								let serviceType = response[j].labels['soajs.service.type'];
-								let serviceSubType = response[j].labels['soajs.service.subtype'];
+								let serviceType = response[j].labels['soajs.service.type'] || 'other';
+								let serviceSubType = response[j].labels['soajs.service.subtype'] || 'other';
 								
 								if(!currentScope.hosts[serviceType]){
 									currentScope.hosts[serviceType] = {};
@@ -87,6 +87,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 								
 								if(!response[j].labels['soajs.service.version'] || response[j].labels['soajs.service.version'] === ''){
 									response[j].labels['soajs.service.version'] = '1';
+								}
+								
+								if(!response[j].labels['soajs.service.name'] || response[j].labels['soajs.service.name'] === ''){
+									response[j].labels['soajs.service.name'] = response[j].name;
 								}
 								
 								if(serviceSubType && serviceSubType === 'soajs'){
@@ -131,9 +135,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 									currentScope.hosts[serviceType][serviceSubType][serviceGroup].list.push(response[j]);
 								}
 								else{
-									if(!serviceSubType){
-										serviceSubType = 'other';
-									}
+									
 									//service is not SOAJS
 									let serviceGroup = 'other';
 									if(response[j].labels && response[j].labels['soajs.service.group']){

@@ -187,7 +187,7 @@
 	<div class="modal-header">
 		<h3 class="modal-title">{{title}}</h3>
 	</div>
-	<div class="modal-body text-align-center">
+	<div class="modal-body">
 		<alert type="danger" ng-if="message.danger">{{message.danger}}</alert>
 		<div ng-if="currentScope.serviceType !== 'deployment'">
 			<alert type="warning">
@@ -467,8 +467,8 @@
 					<span ng-if="envPlatform === 'kubernetes' && isAutoScalable === false && access.hacloud.services.deployPlugin">
 						<button class="btn btn-info" ng-click="deployHeapster()">Enable Autoscaling</button>&nbsp;&nbsp;
 					</span>
-					<button class="btn btn-success" ng-if="envDeployed && hosts && showActivateAnalytics && access.analytics.activate" ng-click="activateAnalytics()">Activate Analytics</button>
-					<button class="btn btn-danger" ng-if="envDeployed && hosts && showAnalytics && access.analytics.deactivate" ng-click="deactivateAnalytics()">Deactivate Analytics</button>
+					<button class="btn btn-success" ng-show="envDeployed && hosts && showActivateAnalytics && access.analytics.activate" ng-click="activateAnalytics()">Activate Analytics</button>
+					<button class="btn btn-danger" ng-show="envDeployed && hosts && showAnalytics && access.analytics.deactivate" ng-click="deactivateAnalytics()">Deactivate Analytics</button>
 				</span>
 				<!--<div class="f-right w30">-->
 					<!-- <span ng-if="isAutoScalable && envDeployed">
@@ -479,26 +479,27 @@
 			</div>
 			<div class="c-both w100 table" ng-if="envPlatform !=='kubernetes'">
 				<span class="f-left">
-					<button class="btn btn-success" ng-if="envDeployed && hosts && showActivateAnalytics && access.analytics.activate" ng-click="activateAnalytics()">Activate Analytics</button>
-					<button class="btn btn-danger" ng-if="envDeployed && hosts && showAnalytics && access.analytics.deactivate" ng-click="deactivateAnalytics()">Deactivate Analytics</button>
+					<button class="btn btn-success" ng-show="envDeployed && hosts && showActivateAnalytics && access.analytics.activate" ng-click="activateAnalytics()">Activate Analytics</button>
+					<button class="btn btn-danger" ng-show="envDeployed && hosts && showAnalytics && access.analytics.deactivate" ng-click="deactivateAnalytics()">Deactivate Analytics</button>
 				</span>
 				<br><br>
 			</div>
+			<span ng-if="envPlatform === 'kubernetes' && namespaces.length > 0" class="f-right w20" style="height: 35px;">
+				<span class="w100">
+					<select class="form-control" ng-options="namespace.id as namespace.name for namespace in namespaces" ng-model="namespaceConfig.namespace"></select>&nbsp;&nbsp;
+				</span>
+			</span>
 			<tabset ng-if="hosts">
 				<tab ng-repeat="(type, subtypes) in hosts" heading="{{recipeTypes[type].l}}">
 					<br />
 					<accordion close-others="false">
 						<accordion-group is-open="$first" ng-repeat="(oneSubType, groups) in subtypes">
 							<accordion-heading>{{recipeTypes[type].categories[oneSubType].l}}</accordion-heading>
-							<div ng-if="envPlatform === 'kubernetes' && namespaces.length > 0" class="c-both table w100">
-								<span class="w30 f-right">
-									<select class="form-control namespaceSelect" ng-options="namespace.id as namespace.name for namespace in namespaces" ng-model="namespaceConfig.namespace"></select>&nbsp;&nbsp;
-								</span>
-							</div>
-							<fieldset class="groupFieldset" ng-repeat="(groupName, oneGroup) in groups">
+							<!--<fieldset ng-if="envPlatform !=='kubernetes'" class="groupFieldset" ng-repeat="(groupName, oneGroup) in groups" ng-show="oneGroup.list.length > 0">-->
+							<fieldset class="groupFieldset" ng-repeat="(groupName, oneGroup) in groups" ng-show="(oneGroup.list | filter:namespaceConfig.namespace:true).length > 0">
 								<legend>
 									<a href="" class="icon" ng-class="{'icon-minus': oneGroup.expanded, 'icon-plus': !oneGroup.expanded}" ng-click="showHideContent(oneGroup)"></a>
-									{{groupName}}
+									{{groupName}} ( {{ (oneGroup.list | filter:namespaceConfig.namespace:true).length }} )
 								</legend>
 								<div class="entryBoxes" ng-show="oneGroup.list">
 									<div class="entryBox mb20" ng-repeat="service in oneGroup.list | filter:namespaceConfig.namespace:true">
@@ -536,7 +537,7 @@
 													<li><a href="" ng-if="access.hacloud.services.autoScale && isAutoScalable && service.resources && service.resources.limits && service.resources.limits.cpu" ng-click="autoScale(service)"><span class="icon icon-enlarge"></span>&nbsp;Auto Scale Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)" ng-confirm-click="Are you sure you want to restart this service?"><span class="icon icon-undo"></span>&nbsp;Restart Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.redeploy && service.labels['soajs.service.group'] !== 'soajs-analytics'" ng-click="rebuildService(service, '')" ng-confirm-click="Are you sure you want to redeploy this service?"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a></li>
-													<li><a href="" ng-if="access.hacloud.services.delete  && (envCode.toLowerCase() !== 'dashboard' && service.labels['soajs.service.group'] !== 'soajs-analytics')" ng-click="deleteService(service, groupName)" ng-confirm-click="Are you sure you want to delete this service?"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+													<li><a href="" ng-if="access.hacloud.services.delete  && ( (service.labels['soajs.service.name'] === 'soajs-analytics-elasticsearch') || (envCode.toLowerCase() === 'dashboard' && service.namespace && service.namespace !== 'soajs') || (envCode.toLowerCase() !== 'dashboard' && service.labels['soajs.service.group'] !== 'soajs-analytics'))" ng-click="deleteService(service, groupName)" ng-confirm-click="Are you sure you want to delete this service?"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
 													<li ng-if="showAnalytics && envPlatform === 'docker'"><a href="" ng-click="metrics('', service.name,'service','metricbeat',service.labels['soajs.service.mode'])"><span class="icon icon-stats-bars"></span>&nbsp;Get Service Metrics</a></li><li>
 												</ul>
 											</div>

@@ -996,7 +996,9 @@ var environmentsConfig = {
 		},
 		other:{
 			'l': "Other",
-			'categories': {}
+			'categories': {
+				other: {'l': "Other"}
+			}
 		}
 	}
 };
