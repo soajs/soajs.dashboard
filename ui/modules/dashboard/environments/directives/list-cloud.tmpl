@@ -498,10 +498,10 @@
 							<!--<fieldset ng-if="envPlatform !=='kubernetes'" class="groupFieldset" ng-repeat="(groupName, oneGroup) in groups" ng-show="oneGroup.list.length > 0">-->
 							<fieldset class="groupFieldset" ng-repeat="(groupName, oneGroup) in groups" ng-show="(oneGroup.list | filter:namespaceConfig.namespace:true).length > 0">
 								<legend>
-									<a href="" class="icon" ng-class="{'icon-minus': oneGroup.expanded, 'icon-plus': !oneGroup.expanded}" ng-click="showHideContent(oneGroup)"></a>
+									<a href="" class="icon" ng-class="{'icon-minus': oneGroup.expanded, 'icon-plus': !oneGroup.expanded}" ng-click="showHideGroupContent2(oneGroup)"></a>
 									{{groupName}} ( {{ (oneGroup.list | filter:namespaceConfig.namespace:true).length }} )
 								</legend>
-								<div class="entryBoxes" ng-show="oneGroup.list">
+								<div class="entryBoxes" ng-show="oneGroup.list && oneGroup.expanded">
 									<div class="entryBox mb20" ng-repeat="service in oneGroup.list | filter:namespaceConfig.namespace:true">
 										<div class="header table">
 											<span class="serviceLabelBox">

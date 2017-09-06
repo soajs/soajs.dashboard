@@ -119,6 +119,10 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	$scope.showHideGroupContent = function (groupName) {
 		$scope.groups[groupName].showContent = !$scope.groups[groupName].showContent;
 	};
+	
+	$scope.showHideGroupContent2= function (group) {
+		group.expanded = !group.expanded;
+	};
 
 	$scope.checkCerts = function(env) {
 		nodeSrv.checkCerts($scope, env);
