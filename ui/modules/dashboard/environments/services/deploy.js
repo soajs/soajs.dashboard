@@ -140,8 +140,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
         
 	    formConfig.entries[0].description.type = "info";
 	    formConfig.entries[0].description.content = `<h4>SOAJS Nginx</h4><hr/>`;
-		formConfig.entries[0].description.content += `<p>Allows you to add static content and empower with the ability to access this environment with domain(s):</p>`;
-		formConfig.entries[0].description.content += `<ul><li>&bullet;&nbsp;&nbsp;&nbsp;${mySite}</li><li>&bullet;&nbsp;&nbsp;&nbsp;${myApi}</li></ul>`;
+		formConfig.entries[0].description.content += `<p>Allows you to add static content and empower with the ability to access this environment via domain(s):</p>`;
+		formConfig.entries[0].description.content += `<ul><li>&bullet;&nbsp;&nbsp;&nbsp;${mySite}&nbsp;( Static Content )</li><li>&bullet;&nbsp;&nbsp;&nbsp;${myApi}&nbsp;( API )</li></ul>`;
 	    formConfig.entries[0].description.content += `<p><a href="https://soajsorg.atlassian.net/wiki/spaces/SOAJ/pages/62493834/Catalog+Recipes#CatalogRecipes-nginxRecipe" target="_blank">Click Here</a> to learn how to build a Catalog Recipe for an <b>Nginx Service</b>.</p>`;
         formConfig.entries[0].entries[0].onAction = function (id, data, form) {
             if (data === 'global' || data === 'daemonset') {
