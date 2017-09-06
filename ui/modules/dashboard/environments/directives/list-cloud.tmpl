@@ -366,97 +366,18 @@
 		</span>
 	</div>
 	<tabset>
-		<tab heading="Nodes" ng-if="access.hacloud.nodes.list">
-			<br/>
-			<div ng-if="localDeployment">
-				<alert type="info">
-					Node management is not supported in local deployment mode
-				</alert>
-				<br/>
-			</div>
-			<div ng-if="!localDeployment">
-				<div ng-if="envCode === 'DASHBOARD'">
-					<button class="btn btn-primary" ng-if="access.hacloud.nodes.add && envPlatform !== 'kubernetes'" ng-click="addNode()">
-						Add New Node
-					</button>
-					<br/><br/>
-				</div>
-				<div ng-if="envCode !== 'DASHBOARD'">
-					<alert type="info">
-						Node management is only allowed in the DASHBOARD environment
-					</alert>
-					<br/>
-				</div>
-			</div>
-			<div class="entryBoxes nodes">
-				<div ng-repeat="node in nodes.list" class="entryBox mb20">
-					<div class="header">
-						<span ng-show="node.tag" ng-click="changeTag(node);">
-							<span class="serviceLabelBox myPointer">
-								&nbsp;<img ng-src="{{node.tag.image}}" height="16" alt="" />&nbsp;{{node.tag.l}}
-								<span class="icon icon-arrow-right"></span>
-							</span>&nbsp;
-						</span>
-						<span ng-show="!node.tag" ng-click="changeTag(node);">
-							<span class="serviceLabelBox myPointer">
-								<span class="icon icon-price-tag"></span>&nbsp;Tag Node
-							</span>&nbsp;
-						</span>
-						{{node.hostname}}
-						<span class="rightActions" ng-if="envCode === 'DASHBOARD' && !localDeployment">
-                            <a href="" ng-if="access.hacloud.nodes.remove" ng-confirm-click="Are you sure you want to remove this node?" ng-click="removeNode(node.id)">
-                                <span class="icon icon-cross" tooltip="Remove Node"></span>
-                            </a>
-							<div ng-if="envPlatform === 'docker'">
-								<a ng-if="node.role === 'manager' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'role', 'worker')">
-	                                <span class="icon icon-arrow-down2" tooltip="Demote To Worker"></span>
-	                            </a>
-	                            <a ng-if="node.role === 'worker' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'role', 'manager')">
-	                                <span class="icon icon-arrow-up2" tooltip="Promote To Manager"></span>
-	                            </a>
-							</div>
-                            <a ng-if="node.availability === 'drain' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'availability', 'active')">
-                                <span class="icon icon-switch" tooltip="Activate"></span>
-                            </a>
-                            <a ng-if="node.availability === 'active' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'availability', 'drain')">
-                                <span class="icon icon-power-cord" tooltip="Drain"></span>
-                            </a>
-                        </span>
-					</div>
-					<div class="body">
-						<div class="grid">
-							<table cellspacing="0" cellpadding="0" border="1" width="100%" class="customTable">
-								<thead>
-									<tr class="header">
-										<td>IP Address</td>
-										<td>Role</td>
-										<td>Availability</td>
-										<td>Memory Resources</td>
-										<td>CPU Count</td>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>{{node.ip}}</td>
-										<td>{{node.spec.role}}</td>
-										<td>{{node.spec.availability}}</td>
-										<td>{{node.resources.memory | bytesToGbytes}} GB</td>
-										<td>{{node.resources.cpus}}</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-		</tab>
 		<tab heading="Services" ng-if="access.hacloud.services.list">
 			<br/>
 			<div ng-if="!myController && !myNginx">
-				<alert type="warning" ng-style="{'text-align': 'center'}">
-					<button ng-if="access.hacloud.services.add" class="btn btn-warning" ng-click="deployNewEnv()">
-						Click to Deploy This Environment
-					</button>
+				<alert type="warning">
+					<div class="w100 c-both table" style="margin-bottom:0;">
+						<p class="f-left" style="padding-top:8px;">
+							Click to deploy SOAJS Nginx and Controller in this Environment
+						</p>
+						<button ng-if="access.hacloud.services.add" class="btn btn-warning f-right" ng-click="deployNewEnv()">
+							Deploy
+						</button>
+					</div>
 				</alert>
 				<br/>
 				<hr>
@@ -479,6 +400,7 @@
 			</div>
 			<div class="c-both w100 table" ng-if="envPlatform !=='kubernetes'">
 				<span class="f-left">
+					<!--<button class="btn btn-primary" ng-if="access.hacloud.services.add" ng-click="deployNewService()">Deploy Resource</button>&nbsp;&nbsp;-->
 					<button class="btn btn-success" ng-show="envDeployed && hosts && showActivateAnalytics && access.analytics.activate" ng-click="activateAnalytics()">Activate Analytics</button>
 					<button class="btn btn-danger" ng-show="envDeployed && hosts && showAnalytics && access.analytics.deactivate" ng-click="deactivateAnalytics()">Deactivate Analytics</button>
 				</span>
@@ -595,6 +517,90 @@
 					</accordion>
 				</tab>
 			</tabset>
+		</tab>
+		<tab heading="Nodes" ng-if="access.hacloud.nodes.list">
+			<br/>
+			<div ng-if="localDeployment">
+				<alert type="info">
+					Node management is not supported in local deployment mode
+				</alert>
+				<br/>
+			</div>
+			<div ng-if="!localDeployment">
+				<div ng-if="envCode === 'DASHBOARD'">
+					<button class="btn btn-primary" ng-if="access.hacloud.nodes.add && envPlatform !== 'kubernetes'" ng-click="addNode()">
+						Add New Node
+					</button>
+					<br/><br/>
+				</div>
+				<div ng-if="envCode !== 'DASHBOARD'">
+					<alert type="info">
+						Node management is only allowed in the DASHBOARD environment
+					</alert>
+					<br/>
+				</div>
+			</div>
+			<div class="entryBoxes nodes">
+				<div ng-repeat="node in nodes.list" class="entryBox mb20">
+					<div class="header">
+						<span ng-show="node.tag" ng-click="changeTag(node);">
+							<span class="serviceLabelBox myPointer">
+								&nbsp;<img ng-src="{{node.tag.image}}" height="16" alt="" />&nbsp;{{node.tag.l}}
+								<span class="icon icon-arrow-right"></span>
+							</span>&nbsp;
+						</span>
+						<span ng-show="!node.tag" ng-click="changeTag(node);">
+							<span class="serviceLabelBox myPointer">
+								<span class="icon icon-price-tag"></span>&nbsp;Tag Node
+							</span>&nbsp;
+						</span>
+						{{node.hostname}}
+						<span class="rightActions" ng-if="envCode === 'DASHBOARD' && !localDeployment">
+                            <a href="" ng-if="access.hacloud.nodes.remove" ng-confirm-click="Are you sure you want to remove this node?" ng-click="removeNode(node.id)">
+                                <span class="icon icon-cross" tooltip="Remove Node"></span>
+                            </a>
+							<div ng-if="envPlatform === 'docker'">
+								<a ng-if="node.role === 'manager' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'role', 'worker')">
+	                                <span class="icon icon-arrow-down2" tooltip="Demote To Worker"></span>
+	                            </a>
+	                            <a ng-if="node.role === 'worker' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'role', 'manager')">
+	                                <span class="icon icon-arrow-up2" tooltip="Promote To Manager"></span>
+	                            </a>
+							</div>
+                            <a ng-if="node.availability === 'drain' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'availability', 'active')">
+                                <span class="icon icon-switch" tooltip="Activate"></span>
+                            </a>
+                            <a ng-if="node.availability === 'active' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'availability', 'drain')">
+                                <span class="icon icon-power-cord" tooltip="Drain"></span>
+                            </a>
+                        </span>
+					</div>
+					<div class="body">
+						<div class="grid">
+							<table cellspacing="0" cellpadding="0" border="1" width="100%" class="customTable">
+								<thead>
+									<tr class="header">
+										<td>IP Address</td>
+										<td>Role</td>
+										<td>Availability</td>
+										<td>Memory Resources</td>
+										<td>CPU Count</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>{{node.ip}}</td>
+										<td>{{node.spec.role}}</td>
+										<td>{{node.spec.availability}}</td>
+										<td>{{node.resources.memory | bytesToGbytes}} GB</td>
+										<td>{{node.resources.cpus}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
 		</tab>
 	</tabset>
 </section>

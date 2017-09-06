@@ -14,7 +14,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
         currentScope.controllers =[];
 		currentScope.hosts = null;
 		currentScope.recipeTypes = environmentsConfig.recipeTypes;
-        
+  
 		if (currentScope.access.hacloud.services.list) {
 			getUpdatesNotifications(function(){
 				getSendDataFromServer(currentScope, ngDataApi, {

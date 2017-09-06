@@ -1,7 +1,7 @@
 "use strict";
 
 var environmentsApp = soajsApp.components;
-environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'nodeSrv', 'hacloudSrv', 'deploySrv', 'injectFiles', function ($scope, $cookies, $timeout, nodeSrv, hacloudSrv, deploySrv, injectFiles) {
+environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'nodeSrv', 'hacloudSrv', 'deploySrv', 'injectFiles', 'ngDataApi', function ($scope, $cookies, $timeout, nodeSrv, hacloudSrv, deploySrv, injectFiles, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 	
 	$scope.access = {};
@@ -126,6 +126,24 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 
 	$scope.checkCerts = function(env) {
 		nodeSrv.checkCerts($scope, env);
+	};
+	
+	$scope.getEnvironment = function(){
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/environment",
+			"params":{
+				"code": $scope.envCode
+			}
+		}, function (error, response) {
+			if (error) {
+				currentScope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+			}
+			else {
+				$scope.myEnvironment = response;
+				console.log($scope.myEnvironment);
+			}
+		});
 	};
 
 	$scope.listNodes = function () {
@@ -270,6 +288,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	$scope.envPlatform = $scope.envDeployer.selected.split('.')[1];
 
 	if ($scope.access.hacloud.nodes.list) {
+		$scope.getEnvironment();
 		$scope.listNodes();
 		$scope.certsExist = true;
 		$scope.checkCerts($scope.envCode);

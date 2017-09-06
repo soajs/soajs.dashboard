@@ -597,6 +597,10 @@ var environmentsConfig = {
 					'name': 'nginx',
 					'label': 'Nginx Configuration',
 					'type': 'group',
+					'description':{
+						'type': 'info',
+						'content': ""
+					},
 					'entries': [
 						{
 							'name': 'nginxDeploymentMode',
@@ -640,6 +644,10 @@ var environmentsConfig = {
 					'name': 'controllers',
 					'label': 'Controller Configuration',
 					'type': 'group',
+					'description':{
+						'type': 'none',
+						'content': ""
+					},
 					'entries': [
 						{
 							'name': 'controllerDeploymentMode',
