@@ -510,12 +510,12 @@
 												Version: {{service.labels['soajs.service.version']}}
 											</span>
 											
-											<span class="red" ng-show="service.imageUpdate || service.catalogUpdate">
-												<span class="icon icon-notification"></span>&nbsp;New Updates Available
+											<span ng-show="service.imageUpdate || service.catalogUpdate">
+												<a class="red" href="#/updates-upgrades"><span class="icon icon-notification"></span>&nbsp;New Updates Available</a>
 											</span>
 											
-											<span class="red" ng-show="service.codeUpdate">
-												<span class="icon icon-notification"></span>&nbsp;New Updates Available, Check the Ledger
+											<span ng-show="service.codeUpdate">
+												<a class="red" href="#/updates-upgrades"><span class="icon icon-notification"></span>&nbsp;New Updates Available, Check the Ledger</a>
 											</span>
 											
 											<span ng-show="service.failures > 0" class="btn btn-sm btn-danger f-right" ng-click="showHideFailures(service);">Failures: {{service.failures}}</span>
