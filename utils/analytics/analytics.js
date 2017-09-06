@@ -635,7 +635,7 @@ const lib = {
 								if (oneService.labels["soajs.service.group"] === "soajs-core-services") {
 									serviceType = (oneService.labels["soajs.service.repo.name"] === 'controller') ? 'controller' : 'service';
 								}
-								else if (oneService.labels["soajs.service.group"] === "nginx") {
+								else if (oneService.labels["soajs.service.group"] === "soajs-nginx") {
 									serviceType = 'nginx';
 									serviceName = 'nginx';
 								}
