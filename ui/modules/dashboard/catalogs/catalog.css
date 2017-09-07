@@ -77,8 +77,18 @@ fieldset pre{
     width:33%;
 }
 
+.catalogRecipeForm tr[class^="form-group tr-labelGroup"],
 .catalogRecipeForm tr[class^="form-group tr-volumeGroup"]{
     position:relative;
+}
+
+.catalogRecipeForm tr[class^="form-group tr-rLabel"]{
+    color:#a94442;
+    float:right;
+    position: absolute;
+    right: 30px;
+    top: 30px;
+    cursor:pointer;
 }
 
 .catalogRecipeForm tr[class^="form-group tr-rVolume"]{
@@ -98,6 +108,7 @@ fieldset pre{
     cursor:pointer;
 }
 
+.catalogRecipeForm tr[class^="form-group tr-label"],
 .catalogRecipeForm tr[class^="form-group tr-userInputVar"],
 .catalogRecipeForm tr[class^="form-group tr-staticVar"],
 .catalogRecipeForm tr[class^="form-group tr-computedVar"],
@@ -114,6 +125,8 @@ fieldset pre{
     width:99% !important;
 }
 
+.catalogRecipeForm tr[class^="form-group tr-labelName"],
+.catalogRecipeForm tr[class^="form-group tr-labelValue"],
 .catalogRecipeForm tr[class^="form-group tr-envVarName"],
 .catalogRecipeForm tr[class^="form-group tr-envVarType"],
 .catalogRecipeForm tr[class^="form-group tr-volumeGroup"],

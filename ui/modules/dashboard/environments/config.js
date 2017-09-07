@@ -117,7 +117,7 @@ var environmentsConfig = {
 			required: ['ca', 'cert', 'key']
 		}
 	},
-
+	
 	form: {
 		template: {
 			'name': '',
@@ -470,7 +470,7 @@ var environmentsConfig = {
 								'placeholder': 'true',
 								'required': false
 							}
-
+						
 						]
 					},
 					{
@@ -597,6 +597,10 @@ var environmentsConfig = {
 					'name': 'nginx',
 					'label': 'Nginx Configuration',
 					'type': 'group',
+					'description':{
+						'type': 'info',
+						'content': ""
+					},
 					'entries': [
 						{
 							'name': 'nginxDeploymentMode',
@@ -640,6 +644,10 @@ var environmentsConfig = {
 					'name': 'controllers',
 					'label': 'Controller Configuration',
 					'type': 'group',
+					'description':{
+						'type': 'none',
+						'content': ""
+					},
 					'entries': [
 						{
 							'name': 'controllerDeploymentMode',
@@ -792,30 +800,30 @@ var environmentsConfig = {
 					'required': false,
 					'value': []
 				},
-                {
-                    'name': 'supportSSL',
-                    'label': 'Do you want to enable SSL for Nginx?',
-                    'type': 'radio',
-                    'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
-                    'required': false
-                },
-                {
-                    'name': 'certType',
-                    'label': 'Do you want the system to generate self signed certificates?',
-                    'type': 'radio',
-                    'value': [{'v': true, 'l': 'Yes', 'selected': true}, {'v': false, 'l': 'No'}],
-                    'required': false,
-                    'hidden': true
-                },
-                {
-                    'name': 'kubeSecret',
-                    'label': 'Kubernetes secret',
-                    'type': 'text',
-                    'value': null,
-                    'fieldMsg': 'Provide the kubernetes secret that contains the certificates',
-                    'required': false,
-                    'hidden': true
-                },
+				{
+					'name': 'supportSSL',
+					'label': 'Do you want to enable SSL for Nginx?',
+					'type': 'radio',
+					'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
+					'required': false
+				},
+				{
+					'name': 'certType',
+					'label': 'Do you want the system to generate self signed certificates?',
+					'type': 'radio',
+					'value': [{'v': true, 'l': 'Yes', 'selected': true}, {'v': false, 'l': 'No'}],
+					'required': false,
+					'hidden': true
+				},
+				{
+					'name': 'kubeSecret',
+					'label': 'Kubernetes secret',
+					'type': 'text',
+					'value': null,
+					'fieldMsg': 'Provide the kubernetes secret that contains the certificates',
+					'required': false,
+					'hidden': true
+				},
 			]
 		}
 	},
@@ -830,7 +838,7 @@ var environmentsConfig = {
 			msg: 'Key from SSL Provider'
 		}
 	},
-
+	
 	jsoneditorConfig: {
 		'height': '200px'
 	},
@@ -841,7 +849,7 @@ var environmentsConfig = {
 		"deleteEnvironment": ['dashboard', '/environment/delete', 'delete'],
 		"editEnvironment": ['dashboard', '/environment/update', 'put'],
 		"listHosts": ['dashboard', '/hosts/list', 'get'],
-		"cd": ['dashboard','/cd', 'post'],
+		"cd": ['dashboard', '/cd', 'post'],
 		"dbs": {
 			"list": ['dashboard', '/environment/dbs/list', 'get'],
 			"add": ['dashboard', '/environment/dbs/add', 'post'],
@@ -888,7 +896,7 @@ var environmentsConfig = {
 				"autoScale": ['dashboard', '/cloud/services/autoscale', 'put'],
 			}
 		},
-		"analytics":{
+		"analytics": {
 			"getSettings": ["dashboard", "/analytics/getSettings", "get"],
 			"activate": ["dashboard", "/analytics/activateAnalytics", "get"],
 			"deactivate": ["dashboard", "/analytics/deactivateAnalytics", "get"]
@@ -899,5 +907,106 @@ var environmentsConfig = {
 		}
 	},
 	
-	providers: serviceProviders
+	providers: serviceProviders,
+	
+	recipeTypes: {
+		service: {
+			'l': "Service",
+			'categories': {
+				soajs:{
+					l:'SOAJS'
+				},
+				nodejs:{
+					l:'NodeJs'
+				},
+				php:{
+					l:'PHP'
+				},
+				java:{
+					l:'Java'
+				},
+				asp:{
+					l:'ASP'
+				},
+				other:{
+					l:'Other'
+				}
+			}
+		},
+		daemon: {
+			'l': "Daemon",
+			'categories': {
+				soajs:{
+					l:'SOAJS'
+				},
+				nodejs:{
+					l:'NodeJs'
+				},
+				php:{
+					l:'PHP'
+				},
+				java:{
+					l:'Java'
+				},
+				asp:{
+					l:'ASP'
+				},
+				other:{
+					l:'Other'
+				}
+			}
+		},
+		cluster: {
+			'l': "Cluster",
+			'categories': {
+				mongo: {'l': "Mongo"},
+				elasticsearch: {'l': "ElasticSearch"},
+				mysql: {'l': "MySQL"},
+				oracle: {'l': "Oracle"},
+				other: {'l': "Other"}
+			}
+		},
+		server: {
+			'l': "Server",
+			'categories': {
+				nginx: {
+					'l': "Nginx"
+				},
+				apache: {
+					'l': "Apache"
+				},
+				iis: {
+					'l': "iis"
+				},
+				other: {
+					'l': "Other"
+				}
+			}
+		},
+		cdn: {
+			'l': "CDN",
+			'categories': {
+				amazons3: {"l": "Amazon S3"},
+				rackspace: {"l": "Rackspace"},
+				cloudflare: {"l": "Cloudflare"},
+				other: {"l": "Other"}
+			}
+		},
+		system: {
+			'l': "System",
+			'categories': {
+				kibana: {'l': "Kibana"},
+				metricbeat: {'l': "Metricbeat"},
+				logstash: {'l': "Logstash"},
+				filebeat: {'l': "Filebeat"},
+				other: {"l": "Other"}
+			}
+		},
+		other:{
+			'l': "Other",
+			'categories': {
+				other: {'l': "Other"}
+			}
+		}
+	}
 };

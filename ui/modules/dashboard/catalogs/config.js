@@ -67,6 +67,9 @@ var catalogAppConfig = {
 					{'v': 'other', 'l': "Other", "group": "cdn"},
 					
 					{'v': 'kibana', 'l': "Kibana", "group": "system"},
+					{'v': 'logstash', 'l': "Logstash", "group": "system"},
+					{'v': 'filebeat', 'l': "Filebeat", "group": "system"},
+					{'v': 'metricbeat', 'l': "Metricbeat", "group": "system"},
 					{'v': 'other', 'l': "Other", "group": "system"}
 				],
 				'required': true
@@ -119,7 +122,7 @@ var catalogAppConfig = {
 				'type': 'tabset',
 				'tabs': [
 					{
-						'label': 'Image Options',
+						'label': 'Image',
 						'entries': [
 							{
 								'type': 'text',
@@ -236,7 +239,7 @@ var catalogAppConfig = {
 						]
 					},
 					{
-						'label': 'Container Options',
+						'label': 'Container',
 						'entries': [
 							{
 								'type': 'text',
@@ -261,7 +264,7 @@ var catalogAppConfig = {
 						]
 					},
 					{
-						'label': 'Volume Options',
+						'label': 'Voluming',
 						'entries': [
 							{
 								'type': 'html',
@@ -280,6 +283,16 @@ var catalogAppConfig = {
 							}
 						]
 					},
+					{
+						'label': 'Optional Labels',
+						'entries': [
+							{
+								'type': 'html',
+								'value': "<input type='button' class='btn btn-sm btn-success f-right' value='Add New Labels'/>",
+								'name': 'addLabel'
+							}
+						]
+					}
 				]
 			},
 			{
@@ -536,6 +549,39 @@ var catalogAppConfig = {
 				{
 					'type': 'html',
 					'name': 'rPort',
+					'value': '<span class="icon icon-cross"></span>'
+				}
+			]
+		},
+		
+		labelInput: {
+			'name': 'labelGroup',
+			'type': 'group',
+			'label': 'New Label',
+			'entries': [
+				{
+					'name': 'labelName',
+					'label': 'Label Name',
+					'type': 'text',
+					'value': '',
+					'required': true,
+					'tooltip': 'Enter the name of the label',
+					'fieldMsg': 'Enter the name of the label',
+					'placeholder': "My Label"
+				},
+				{
+					'name': 'labelValue',
+					'label': 'Label Value',
+					'type': 'text',
+					'value': '',
+					'required': true,
+					'tooltip': 'Enter the value of the label',
+					'fieldMsg': 'Enter the value of the label',
+					'placeholder': "My Label Value"
+				},
+				{
+					'type': 'html',
+					'name': 'rLabel',
 					'value': '<span class="icon icon-cross"></span>'
 				}
 			]

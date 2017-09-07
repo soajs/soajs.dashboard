@@ -438,3 +438,20 @@ input:checked + .buttonSlider:before {
 .myPointer{
     cursor: pointer;
 }
+
+#deployEnv #controllers h4,
+#deployEnv #nginx h4{
+    margin: 0;
+}
+
+#deployEnv #controllers hr,
+#deployEnv #nginx hr{
+    margin: 5px 0;
+}
+
+#deployEnv #controllers a,
+#deployEnv #nginx a{
+    text-decoration:underline;
+    font-weight:bold;
+    color:#31708f;
+}

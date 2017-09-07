@@ -12,6 +12,9 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		currentScope.showCtrlHosts = true;
 		currentScope.soajsServices = false;
         currentScope.controllers =[];
+		currentScope.hosts = null;
+		currentScope.recipeTypes = environmentsConfig.recipeTypes;
+  
 		if (currentScope.access.hacloud.services.list) {
 			getUpdatesNotifications(function(){
 				getSendDataFromServer(currentScope, ngDataApi, {
@@ -25,31 +28,17 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						currentScope.displayAlert('danger', translation.unableRetrieveServicesHostsInformation[LANG]);
 					}
 					else {
+						currentScope.myNginx = false;
+						currentScope.myController = false;
 						if (response && response.length > 0) {
                             currentScope.rawServicesResponse = angular.copy(response);
-							currentScope.hosts = {
-								'soajs': {
-									"label": "SOAJS"
-								},
-								'nginx': {
-									"label": "Nginx",
-									"list": []
-								},
-								'elk': {
-									"label": "ELK",
-									"list": []
-								},
-								'db': {
-									"label": "Clusters",
-									"list": []
-								},
-								'miscellaneous': {
-									"label": "Miscellaneous",
-									"list": []
-								}
-							};
+							
 							currentScope.deployedInEnv = [];
 							for (var j = 0; j < response.length; j++) {
+								if(!currentScope.hosts){
+									currentScope.hosts = {};
+								}
+								
 								response[j].expanded = true;
 
 								for(var u=0; u < currentScope.updatesNotifications.length; u++){
@@ -85,114 +74,104 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 								response[j].failures = failures;
 
-								if(response[j].labels && response[j].labels['soajs.content'] === 'true'){
+								let serviceType = response[j].labels['soajs.service.type'] || 'other';
+								let serviceSubType = response[j].labels['soajs.service.subtype'] || 'other';
+								
+								if(!currentScope.hosts[serviceType]){
+									currentScope.hosts[serviceType] = {};
+								}
+								
+								if(!currentScope.hosts[serviceType][serviceSubType]){
+									currentScope.hosts[serviceType][serviceSubType] = {};
+								}
+								
+								if(!response[j].labels['soajs.service.version'] || response[j].labels['soajs.service.version'] === ''){
+									response[j].labels['soajs.service.version'] = '1';
+								}
+								
+								if(!response[j].labels['soajs.service.name'] || response[j].labels['soajs.service.name'] === ''){
+									response[j].labels['soajs.service.name'] = response[j].name;
+								}
+								
+								if(serviceSubType && serviceSubType === 'soajs'){
 									currentScope.soajsServices = true;
-									if(response[j].labels['soajs.service.name'] === 'controller' && !response[j].labels['soajs.service.group']){
+									
+									let serviceGroup = response[j].labels['soajs.service.group'];
+									
+									//add group value to controller service entry
+									if(response[j].labels['soajs.service.name'] === 'controller'){
+										currentScope.myController = true;
 										response[j].labels['soajs.service.group'] = "SOAJS Core Services";
 										response[j].labels['soajs.service.group'] = response[j].labels['soajs.service.group'].toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
-									}
-									if(['nginx', 'db', 'elk'].indexOf(response[j].labels['soajs.service.group']) !== -1){
-										if(['nginx'].indexOf(response[j].labels['soajs.service.group']) !== -1){
-											if(currentScope.deployedInEnv.indexOf('nginx') === -1){
-												currentScope.deployedInEnv.push('nginx');
-											}
-										}
-										currentScope.hosts[response[j].labels['soajs.service.group']].list.push(response[j]);
-									}
-									else{
-										if(!currentScope.hosts.soajs.groups){
-											currentScope.hosts.soajs.groups = {};
-										}
-
-										//check if daemon and get group config name from env variables
-										if (response[j].labels && response[j].labels['soajs.service.type'] === 'daemon' && response[j].labels['soajs.daemon.group']) {
-											response[j].daemonGroup = '';
-											for (var k = 0; k < response[j].env.length; k++) {
-												if (response[j].env[k].split("=")[0] === 'SOAJS_DAEMON_GRP_CONF') {
-													response[j].daemonGroup = response[j].env[k].split("=")[1];
-												}
-											}
-										}
-
-										response[j]['color'] = 'green';
-										response[j]['healthy'] = true;
-										var groupName = response[j].labels['soajs.service.group'];
-										if (!currentScope.hosts.soajs.groups[groupName]) {
-											currentScope.hosts.soajs.groups[groupName] = {
-												expanded: true,
-												list: []
-											};
-										}
-
-										if(response[j].labels['soajs.service.name'] === 'controller'){
-											currentScope.hosts.soajs.groups[groupName].list.unshift(response[j]);
-											currentScope.controllers.push(response[j]);
-											if(currentScope.deployedInEnv.indexOf('controller') === -1){
-												currentScope.deployedInEnv.push('controller');
-											}
-										}
-										else{
-											currentScope.hosts.soajs.groups[groupName].list.push(response[j]);
+										serviceGroup = response[j].labels['soajs.service.group'];
+										
+										currentScope.controllers.push(response[j]);
+										if(currentScope.deployedInEnv.indexOf('controller') === -1){
+											currentScope.deployedInEnv.push('controller');
 										}
 									}
+									
+									//check if daemon and get group config name from env variables
+									if (serviceType === 'daemon' && response[j].labels['soajs.daemon.group']) {
+										response[j].daemonGroup = '';
+										for (let k = 0; k < response[j].env.length; k++) {
+											if (response[j].env[k].split("=")[0] === 'SOAJS_DAEMON_GRP_CONF') {
+												response[j].daemonGroup = response[j].env[k].split("=")[1];
+												break;
+											}
+										}
+									}
+
+									response[j]['color'] = 'green';
+									response[j]['healthy'] = true;
+									
+									if (!currentScope.hosts[serviceType][serviceSubType][serviceGroup]) {
+										currentScope.hosts[serviceType][serviceSubType][serviceGroup] = {
+											expanded: true,
+											list: []
+										};
+									}
+
+									currentScope.hosts[serviceType][serviceSubType][serviceGroup].list.push(response[j]);
 								}
 								else{
+									
 									//service is not SOAJS
-									var myGroup = 'miscellaneous';
+									let serviceGroup = 'other';
 									if(response[j].labels && response[j].labels['soajs.service.group']){
-										myGroup = response[j].labels['soajs.service.group'];
+										serviceGroup = response[j].labels['soajs.service.group'];
 									}
-									currentScope.hosts[myGroup].list.push(response[j]);
+									
+									//check if nginx is deployed
+									if(['soajs-nginx'].indexOf(serviceGroup) !== -1){
+										if(currentScope.deployedInEnv.indexOf('nginx') === -1){
+											currentScope.deployedInEnv.push('nginx');
+											currentScope.myNginx = true;
+										}
+									}
+									
+									if(!currentScope.hosts[serviceType][serviceSubType][serviceGroup]){
+										currentScope.hosts[serviceType][serviceSubType][serviceGroup] = {
+											expanded: true,
+											list: []
+										};
+									}
+									
+									currentScope.hosts[serviceType][serviceSubType][serviceGroup].list.push(response[j]);
 								}
 							}
-							if (!currentScope.hosts.soajs.groups || Object.keys(currentScope.hosts.soajs.groups).length === 0 || currentScope.deployedInEnv.length !== 2) {
-								currentScope.envDeployed = false;
-							}else{
-								currentScope.envDeployed = true;
-							}
-
-							step2();
+							
+							currentScope.envDeployed = (currentScope.deployedInEnv.length === 2);
 						}
 						else{
 							delete currentScope.hosts;
 						}
 					}
+					
+					if(cb){return cb(); }
 				});
 			});
         }
-
-		function step2() {
-			currentScope.controllers.forEach(function (oneController) {
-				var i = 1;
-				var failure = 0;
-
-				oneController.tasks.forEach(function (oneCtrlTask) {
-					oneCtrlTask.code = "CTRL-" + i;
-					var healthy = (oneCtrlTask.status.state === 'running');
-					oneCtrlTask.healthy = healthy;
-					if (!healthy) {
-						failure++;
-					}
-
-					var tooltip = "<b>Name:</b> " + oneCtrlTask.name + "<br>";
-					tooltip += "<b>State:</b> " + oneCtrlTask.status.state + "<br>";
-					tooltip += "<b>Started:</b> " + oneCtrlTask.status.ts;
-
-					oneCtrlTask.tooltip = $sce.trustAsHtml(tooltip);
-					i++;
-				});
-
-				if (failure === 0) {
-					oneController.color = 'green';
-				}
-				else if (failure === oneController.tasks.length) {
-					oneController.color = 'red';
-				}
-			});
-			if(cb && typeof cb === 'function'){
-				return cb();
-			}
-		}
 
 		function getUpdatesNotifications(cb){
 			//check for code updates
