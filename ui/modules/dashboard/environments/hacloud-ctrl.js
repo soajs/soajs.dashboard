@@ -141,7 +141,6 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 			}
 			else {
 				$scope.myEnvironment = response;
-				console.log($scope.myEnvironment);
 			}
 		});
 	};
