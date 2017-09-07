@@ -2,7 +2,7 @@
 
 var environmentsApp = soajsApp.components;
 
-environmentsApp.controller('databaseCtrl', ['$scope','$cookies', 'envDB', function ($scope, $cookies, envDB) {
+environmentsApp.controller('databaseCtrl', ['$scope','$cookies', 'envDB', 'injectFiles', function ($scope, $cookies, envDB, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -33,4 +33,5 @@ environmentsApp.controller('databaseCtrl', ['$scope','$cookies', 'envDB', functi
 		$scope.envCode = $cookies.getObject("myEnv").code;
 		$scope.listDatabases($scope.envCode);
 	}
+	injectFiles.injectCss('modules/dashboard/environments/environments.css');
 }]);

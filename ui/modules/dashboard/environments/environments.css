@@ -455,3 +455,7 @@ input:checked + .buttonSlider:before {
     font-weight:bold;
     color:#31708f;
 }
+
+.dbBox .head h4{
+    margin-right: 40px;
+}
