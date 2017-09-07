@@ -205,6 +205,16 @@ var environmentsConfig = {
 			'actions': {},
 			'entries': [
 				{
+					'name': 'prefix',
+					'label': "Custom Prefix",
+					'type': 'text',
+					'placeholder': 'soajs_',
+					'value': '',
+					'tooltip': "Enter a custom prefix for this Database or leave empty to use the global prefix value.",
+					'fieldMsg': "Enter a custom prefix for this Database or leave empty to use the global prefix value.",
+					'required': false
+				},
+				{
 					'name': 'name',
 					'label': translation.databaseName[LANG],
 					'type': 'text',
@@ -216,9 +226,9 @@ var environmentsConfig = {
 				{
 					'name': 'cluster',
 					'label': translation.clusterName[LANG],
-					'type': 'text',
+					'type': 'select',
 					'placeholder': translation.cluster1[LANG],
-					'value': '',
+					'value': [{'v': '', 'l': ''}],
 					'tooltip': translation.enterTheClusterName[LANG],
 					'required': true
 				},
@@ -246,6 +256,16 @@ var environmentsConfig = {
 			'actions': {},
 			'entries': [
 				{
+					'name': 'prefix',
+					'label': "Custom Prefix",
+					'type': 'text',
+					'placeholder': 'soajs_',
+					'value': '',
+					'tooltip': "Enter a custom prefix for this Database or leave empty to use the global prefix value.",
+					'fieldMsg': "Enter a custom prefix for this Database or leave empty to use the global prefix value.",
+					'required': false
+				},
+				{
 					'name': 'name',
 					'label': translation.databaseName[LANG],
 					'type': 'text',
@@ -257,9 +277,9 @@ var environmentsConfig = {
 				{
 					'name': 'cluster',
 					'label': translation.clusterName[LANG],
-					'type': 'text',
+					'type': 'select',
 					'placeholder': translation.cluster1[LANG],
-					'value': '',
+					'value': [{'v': '', 'l': ''}],
 					'tooltip': translation.enterTheClusterName[LANG],
 					'required': true
 				},

@@ -1663,6 +1663,11 @@ module.exports = {
                     "l": "Add Environment Database",
                     "group": "Environment Databases"
                 },
+	            "prefix": {
+		            "source": ['body.prefix'],
+		            "required": false,
+		            "validation": {"type": "string", "required": false}
+	            },
                 "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
                 "name": {"source": ['body.name'], "required": true, "validation": {"type": "string", "required": true}},
                 "cluster": {
@@ -3003,6 +3008,11 @@ module.exports = {
                     "l": "Update Environment Database",
                     "group": "Environment Databases"
                 },
+	            "prefix": {
+		            "source": ['body.prefix'],
+		            "required": false,
+		            "validation": {"type": "string", "required": false}
+	            },
                 "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
                 "name": {"source": ['body.name'], "required": true, "validation": {"type": "string", "required": true}},
                 "cluster": {
