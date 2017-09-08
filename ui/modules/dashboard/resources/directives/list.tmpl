@@ -3,6 +3,15 @@
         <button class="btn btn-primary f-left" ng-if="access.add" ng-click="addResource()">Add New Resource</button>
         <button class="btn btn-primary f-right" ng-if="access.list" ng-click="listResources()"><span class="icon icon-loop2"></span>Refresh</button>
         <br /><br />
+	    <div ng-show="oldStyle">
+		    <alert type="danger">
+			    <h3 style="margin-top:5px;">Warning</h3>
+			    <hr>
+			    Some of the Resources have not been upgraded yet in this environment, they still use a configuration from previous SOAJS version(s).<br />
+			    This prevents you from updating their configuration and also impacts the databases section. Please upgrade these resources to the latest version <a href="" ng-click="upgradeAll()">[ Upgrade ]</a>
+		    </alert>
+		    <br />
+	    </div>
         <div ng-if="!resources || !resources.list || resources.list.length === 0">
 
         </div>

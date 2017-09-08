@@ -7,23 +7,28 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
     constructModulePermissions($scope, $scope.access, resourcesAppConfig.permissions);
 
     $scope.listResources = function() {
-        overlayLoading.show();
-        getSendDataFromServer($scope, ngDataApi, {
-            method: 'get',
-            routeName: '/dashboard/resources/list',
-            params: {
-                env: $scope.envCode
-            }
-        }, function(error, response) {
-            overlayLoading.hide();
-            if(error) {
-                $scope.displayAlert('danger', error.message);
-            }
-            else {
-                $scope.resources = { list: response };
-                groupByType();
-            }
-        });
+	    $scope.oldStyle = false;
+	    getEnvironment(function(){
+		    
+	    	overlayLoading.show();
+		    getSendDataFromServer($scope, ngDataApi, {
+			    method: 'get',
+			    routeName: '/dashboard/resources/list',
+			    params: {
+				    env: $scope.envCode
+			    }
+		    }, function(error, response) {
+			    overlayLoading.hide();
+			    if(error) {
+				    $scope.displayAlert('danger', error.message);
+			    }
+			    else {
+				    $scope.resources = { list: response };
+				    groupByType();
+			    }
+		    });
+		    
+	    });
 
         function groupByType() {
             $scope.resources.types = {};
@@ -38,6 +43,26 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                 $scope.resources.types[oneResource.type][oneResource.category].push(oneResource);
             });
         }
+	
+	    function getEnvironment(cb){
+		    getSendDataFromServer($scope, ngDataApi, {
+			    "method": "get",
+			    "routeName": "/dashboard/environment",
+			    "params":{
+				    "code": $scope.envCode
+			    }
+		    }, function (error, response) {
+			    if (error) {
+				    $scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+			    }
+			    else {
+				    if(response.dbs.clusters && Object.keys(response.dbs.clusters).length > 0){
+				        $scope.oldStyle = true;
+				    }
+				    return cb();
+			    }
+		    });
+	    }
     };
 
     $scope.addResource = function() {
@@ -225,6 +250,26 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
         });
     };
 
+    $scope.upgradeResources = function(){
+	    overlayLoading.show();
+	    getSendDataFromServer($scope, ngDataApi, {
+		    method: 'get',
+		    routeName: '/dashboard/resources/upgrade',
+		    params: {
+		    	env: $scope.envCode
+		    }
+	    }, function (error, response) {
+		    overlayLoading.hide();
+		    if (error) {
+			    $scope.displayAlert('danger', error.message);
+		    }
+		    else {
+			    $scope.displayAlert('success', "Resources have been upgraded to the latest version.");
+			    $scope.listResources();
+		    }
+	    });
+    };
+    
     //start here
     if($scope.access.list) {
         injectFiles.injectCss("modules/dashboard/resources/resources.css");

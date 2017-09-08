@@ -979,33 +979,40 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 	}
 
 	function doDeploy(currentScope, params, external , controllerScope) {
-		overlayLoading.show();
-		if(external || !controllerScope) {
-			controllerScope = currentScope
-		}
-		if (params.custom && params.custom.version) {
-			params.custom.version = parseInt(params.custom.version);
-		}
-		var config = {
-			"method": "post",
-			"routeName": "/dashboard/cloud/services/soajs/deploy",
-			"data": params
-		};
-		getSendDataFromServer(currentScope, ngDataApi, config, function (error) {
-			if (error) {
-				currentScope.displayAlert('danger', error.message);
-				overlayLoading.hide();
-			} else {
-				if(!external){
-					currentScope.cancel();
+		getCatalogRecipes(currentScope, function() {
+			if (currentScope.oldStyle) {
+				openUpgradeModal(currentScope);
+			}
+			else {
+				overlayLoading.show();
+				if(external || !controllerScope) {
+					controllerScope = currentScope
 				}
-				if(currentScope.daemonGrpConf){
-					controllerScope.daemonGrpConf = currentScope.daemonGrpConf;
+				if (params.custom && params.custom.version) {
+					params.custom.version = parseInt(params.custom.version);
 				}
-				controllerScope.getCdData(function () {
-					controllerScope.getDeployedServices();
-					controllerScope.displayAlert('success', 'Service deployed successfully');
-					overlayLoading.hide();
+				var config = {
+					"method": "post",
+					"routeName": "/dashboard/cloud/services/soajs/deploy",
+					"data": params
+				};
+				getSendDataFromServer(currentScope, ngDataApi, config, function (error) {
+					if (error) {
+						currentScope.displayAlert('danger', error.message);
+						overlayLoading.hide();
+					} else {
+						if(!external){
+							currentScope.cancel();
+						}
+						if(currentScope.daemonGrpConf){
+							controllerScope.daemonGrpConf = currentScope.daemonGrpConf;
+						}
+						controllerScope.getCdData(function () {
+							controllerScope.getDeployedServices();
+							controllerScope.displayAlert('success', 'Service deployed successfully');
+							overlayLoading.hide();
+						});
+					}
 				});
 			}
 		});

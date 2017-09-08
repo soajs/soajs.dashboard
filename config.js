@@ -771,6 +771,21 @@ module.exports = {
 					}
 				}
 			},
+	        
+	        "/resources/upgrade": {
+		        _apiInfo: {
+			        "l": "Upgrade Resources to latest version",
+			        "group": "Resources",
+			        "groupMain": true
+		        },
+		        "env": {
+			        "source": ['query.env'],
+			        "required": true,
+			        "validation": {
+				        "required": true
+			        }
+		        }
+	        },
 
             "/environment/platforms/list": {
                 _apiInfo: {

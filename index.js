@@ -318,6 +318,19 @@ service.init(function () {
 			});
 		});
 	});
+	
+	/**
+	 * Upgrade Resources
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/resources/upgrade", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.upgradeResources(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
 
 	/**
 	 * Add new resource
