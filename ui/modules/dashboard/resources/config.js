@@ -2,19 +2,19 @@
 
 var resourcesAppConfig = {
     form: {
-        resource: {
-            entries: [
-                {
-					'name': 'resource',
-					'label': 'Resource',
-					'type': 'jsoneditor',
-                    'readonly': true,
-					'height': '450px',
-                    'fixedHeight': true,
-					'value': {}
-				}
-            ]
-        },
+        // resource: {
+        //     entries: [
+        //         {
+			// 		'name': 'resource',
+			// 		'label': 'Resource',
+			// 		'type': 'jsoneditor',
+        //             'readonly': true,
+			// 		'height': '450px',
+        //             'fixedHeight': true,
+			// 		'value': {}
+			// 	}
+        //     ]
+        // },
 
         addResource: {
             entries: [

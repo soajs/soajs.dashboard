@@ -131,6 +131,8 @@ function buildForm(context, modal, configuration, cb) {
 							}
 						}
 					});
+					//todo: fi shi bel select ma ba3rif shou naykto
+					//console.log(fieldEntry);
 				}
 				else {
 					if (configuration.data[inputName]) {
@@ -551,6 +553,13 @@ function buildForm(context, modal, configuration, cb) {
 		}, 1000);
 	}
 }
+
+soajsApp.directive('ngformInputs', function () {
+	return {
+		restrict: 'E',
+		templateUrl: 'lib/form/inputs.tmpl'
+	};
+});
 
 soajsApp.directive('ngform', function () {
 	return {

@@ -1,7 +1,7 @@
 'use strict';
 
 var resourcesApp = soajsApp.components;
-resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', '$cookies', 'injectFiles', function ($scope, $timeout, $modal, ngDataApi, $cookies, injectFiles) {
+resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$modal', 'ngDataApi', '$cookies', 'injectFiles', function ($scope, $http, $timeout, $modal, ngDataApi, $cookies, injectFiles) {
     $scope.$parent.isUserLoggedIn();
     $scope.access = {};
     constructModulePermissions($scope, $scope.access, resourcesAppConfig.permissions);
@@ -156,6 +156,12 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
             controller: function ($scope, $modalInstance) {
                 fixBackDrop();
 
+                loadDriverSchema($scope, resource, settings, function(error) {
+	                if (error) {
+		                $scope.notsupported = true;
+	                }
+                });
+
                 $scope.formData = {};
                 $scope.envs = [];
                 $scope.message = {};
@@ -186,84 +192,84 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                 }
 
                 if(currentScope.envPlatform === 'kubernetes') {
-                    $scope.options.deploymentModes = [
-                        {
-                            label: 'deployment - deploy the specified number of replicas based on the availability of resources',
-                            value: 'deployment'
-                        },
-                        {
-                            label: 'daemonset - automatically deploy one replica of the service on each node in the cluster',
-                            value: 'daemonset'
-                        }
-                    ];
+	                $scope.options.deploymentModes = [
+		                {
+			                label: 'deployment - deploy the specified number of replicas based on the availability of resources',
+			                value: 'deployment'
+		                },
+		                {
+			                label: 'daemonset - automatically deploy one replica of the service on each node in the cluster',
+			                value: 'daemonset'
+		                }
+	                ];
                 }
                 else if(currentScope.envPlatform === 'docker') {
-                    $scope.options.deploymentModes = [
-                        {
-                            label: 'replicated - deploy the specified number of replicas based on the availability of resources',
-                            value: 'replicated'
-                        },
-                        {
-                            label: 'global - automatically deploy one replica of the service on each node in the cluster',
-                            value: 'global'
-                        }
-                    ];
+	                $scope.options.deploymentModes = [
+		                {
+			                label: 'replicated - deploy the specified number of replicas based on the availability of resources',
+			                value: 'replicated'
+		                },
+		                {
+			                label: 'global - automatically deploy one replica of the service on each node in the cluster',
+			                value: 'global'
+		                }
+	                ];
                 }
 
                 $scope.displayAlert = function(type, message) {
-                    $scope.message[type] = message;
-                    setTimeout(function() {
-                        $scope.message = {};
-                    }, 5000);
+	                $scope.message[type] = message;
+	                setTimeout(function() {
+		                $scope.message = {};
+	                }, 5000);
                 };
 
                 $scope.getEnvs = function() {
-                    if($scope.envs && $scope.envs.list && $scope.envs.list.length > 0) {
-                        return;
-                    }
+	                if($scope.envs && $scope.envs.list && $scope.envs.list.length > 0) {
+		                return;
+	                }
 
-                    overlayLoading.show();
-                    getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'get',
-                        routeName: '/dashboard/environment/list'
-                    }, function (error, envs) {
-                        overlayLoading.hide();
-                        if(error) {
-                            $scope.displayAlert('danger', error.message);
-                        }
-                        else {
-                            $scope.envs.list = [];
-                            envs.forEach(function(oneEnv) {
-                                //in case of update resource, check resource record to know what env it belongs to
-                                if(resource && resource.created) {
-                                    if(resource.created.toUpperCase() === oneEnv.code.toUpperCase()) return;
-                                }
-                                //in case of add resource, check current environment
-                                else if(currentScope.envCode.toUpperCase() === oneEnv.code.toUpperCase()) {
-                                    return;
-                                }
+	                overlayLoading.show();
+	                getSendDataFromServer(currentScope, ngDataApi, {
+		                method: 'get',
+		                routeName: '/dashboard/environment/list'
+	                }, function (error, envs) {
+		                overlayLoading.hide();
+		                if(error) {
+			                $scope.displayAlert('danger', error.message);
+		                }
+		                else {
+			                $scope.envs.list = [];
+			                envs.forEach(function(oneEnv) {
+				                //in case of update resource, check resource record to know what env it belongs to
+				                if(resource && resource.created) {
+					                if(resource.created.toUpperCase() === oneEnv.code.toUpperCase()) return;
+				                }
+				                //in case of add resource, check current environment
+				                else if(currentScope.envCode.toUpperCase() === oneEnv.code.toUpperCase()) {
+					                return;
+				                }
 
-                                var envEntry = {
-                                    code: oneEnv.code,
-                                    description: oneEnv.description,
-                                    selected: (resource && resource.sharedEnv && resource.sharedEnv[oneEnv.code.toUpperCase()])
-                                };
+				                var envEntry = {
+					                code: oneEnv.code,
+					                description: oneEnv.description,
+					                selected: (resource && resource.sharedEnv && resource.sharedEnv[oneEnv.code.toUpperCase()])
+				                };
 
-                                if(resource && resource.shared && action === 'update') {
-                                    if(resource.sharedEnv) {
-                                        envEntry.selected = (resource.sharedEnv[oneEnv.code.toUpperCase()]);
-                                    }
-                                    else {
-                                        //shared with all envs
-                                        envEntry.selected = true;
-                                        $scope.envs.sharedWithAll = true;
-                                    }
-                                }
+				                if(resource && resource.shared && action === 'update') {
+					                if(resource.sharedEnv) {
+						                envEntry.selected = (resource.sharedEnv[oneEnv.code.toUpperCase()]);
+					                }
+					                else {
+						                //shared with all envs
+						                envEntry.selected = true;
+						                $scope.envs.sharedWithAll = true;
+					                }
+				                }
 
-                                $scope.envs.list.push(envEntry);
-                            });
-                        }
-                    });
+				                $scope.envs.list.push(envEntry);
+			                });
+		                }
+	                });
                 };
 
                 $scope.fillForm = function() {
@@ -289,37 +295,37 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                 };
 
                 $scope.getCatalogRecipes = function(cb) {
-                    $scope.options.loadingRecipes = true;
-                    getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'get',
-                        routeName: '/dashboard/catalog/recipes/list'
-                    }, function (error, recipes) {
-                        $scope.options.loadingRecipes = false;
-                        if(error) {
-                            $scope.displayAlert('danger', error.message);
-                        }
-                        else {
-                            if(recipes && Array.isArray(recipes)) {
-                                recipes.forEach(function(oneRecipe) {
-                                    if(oneRecipe.type === $scope.formData.type && oneRecipe.subtype === $scope.formData.category) {
-                                        $scope.recipes.push(oneRecipe);
-                                    }
-                                });
-                            }
+	                $scope.options.loadingRecipes = true;
+	                getSendDataFromServer(currentScope, ngDataApi, {
+		                method: 'get',
+		                routeName: '/dashboard/catalog/recipes/list'
+	                }, function (error, recipes) {
+		                $scope.options.loadingRecipes = false;
+		                if(error) {
+			                $scope.displayAlert('danger', error.message);
+		                }
+		                else {
+			                if(recipes && Array.isArray(recipes)) {
+				                recipes.forEach(function(oneRecipe) {
+					                if(oneRecipe.type === $scope.formData.type && oneRecipe.subtype === $scope.formData.category) {
+						                $scope.recipes.push(oneRecipe);
+					                }
+				                });
+			                }
 
-                            if (cb) return cb();
-                        }
-                    });
+			                if (cb) return cb();
+		                }
+	                });
                 };
 
                 $scope.toggleShareWithAllEnvs = function() {
-                    if($scope.envs.sharedWithAll) {
-                        $scope.envs.list.forEach(function(oneEnv) {
-                            oneEnv.selected = true;
-                        });
-                    }
+	                if($scope.envs.sharedWithAll) {
+		                $scope.envs.list.forEach(function(oneEnv) {
+			                oneEnv.selected = true;
+		                });
+	                }
 
-                    return;
+	                return;
                 };
 
                 $scope.save = function(cb) {
@@ -553,8 +559,11 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                 };
 
                 $scope.cancel = function() {
-                    $scope.formData = {};
-                    $modalInstance.close();
+	                $modalInstance.close();
+	                if($scope.form && $scope.form.formData){
+	                    $scope.form.formData = {};
+		                delete $scope.resourceDriverCounter;
+	                }
                 };
 
                 $scope.fillForm();
@@ -562,6 +571,174 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
             }
         });
     };
+
+    function loadDriverSchema(currentScope, resource, settings, cb){
+    	let type = (resource && Object.keys(resource).length > 0) ? resource.type : settings.type;
+    	let category = (resource && Object.keys(resource).length > 0) ? resource.category: settings.category;
+
+	    let schemaFile = "modules/dashboard/resources/drivers/" + type + "/" + category + "/driver.json";
+	    let logoPath = "modules/dashboard/resources/drivers/" + type + "/" + category + "/logo.png";
+
+	    let dynamicEntries = [];
+
+	    $http.get(schemaFile).success(function(entries) {
+		    dynamicEntries.push({
+			    "type":"html",
+			    "value": "<h2><img src='" + logoPath + "' alt='' style='max-height:64px'/>&nbsp;" + category +"</h2><hr />"
+		    });
+
+	    	for(let i in entries){
+	    		let clone = angular.copy(entries[i]);
+
+			    if(clone.multi){
+				    if(clone.limit && clone.limit !== 0){
+					    //fixed multi limit
+					    replicateInput(clone, clone.limit);
+				    }
+				    else{
+					    //add another la yenfezir
+					    replicateInput(clone, null);
+				    }
+			    }
+			    else{
+				    dynamicEntries.push(clone);
+			    }
+		    }
+
+	    	let formConfig = {
+			    timeout: $timeout,
+			    data: resource,
+	    		"entries": dynamicEntries
+		    };
+		    buildForm(currentScope, null, formConfig, function(){
+	    	    console.log('form inputs have been loaded....');
+		    	return cb(null, true);
+		    });
+	    }).error(function(error){
+	    	return cb(error);
+	    });
+
+	    function replicateInput(original, limit){
+		    if(original.entries){
+			    if(!currentScope.resourceDriverCounter){
+				    currentScope.resourceDriverCounter = {};
+			    }
+
+			    if(!currentScope.resourceDriverCounter[original.name]){
+				    currentScope.resourceDriverCounter[original.name] = 0;
+			    }
+
+			    if(!limit){
+				    let input = angular.copy(original);
+				    input.name = input.name + currentScope.resourceDriverCounter[original.name];
+
+				    allMyEntries(input.entries, currentScope.resourceDriverCounter[original.name]);
+
+				    //hook the remove entry input
+				    input.entries.push({
+					    "type": "html",
+					    "name": "remove" + input.name,
+					    "value": "<span class='icon icon-cross red'></span>",
+					    "onAction": function(id, value, form){
+						    let currentEntryCount = parseInt(id.replace("remove" + original.name, ''));
+						    for( let i = form.entries.length -1; i>=0; i--){
+							    if(form.entries[i].name === original.name + currentEntryCount){
+								    form.entries.splice(i, 1);
+							    }
+						    }
+					    }
+				    });
+
+				    currentScope.resourceDriverCounter[original.name]++;
+				    dynamicEntries.push(input);
+
+				    //hook add another
+				    dynamicEntries.push({
+					    "type": "html",
+					    "name": "another" + input.name,
+					    "value": "<input type='button' value='Add Another' class='btn btn-primary'/>",
+					    "onAction": function(id, value, form){
+						    let another = angular.copy(original);
+						    another.name = another.name + currentScope.resourceDriverCounter[original.name];
+						    allMyEntries(another.entries, currentScope.resourceDriverCounter[original.name]);
+
+						    //hook the remove entry input
+						    another.entries.push({
+							    "type": "html",
+							    "name": "remove" + another.name,
+							    "value": "<span class='icon icon-cross red'></span>",
+							    "onAction": function(id, value, form){
+								    let currentEntryCount = parseInt(id.replace("remove" + original.name, ''));
+								    for( let i = form.entries.length -1; i>=0; i--){
+									    if(form.entries[i].name === original.name + currentEntryCount){
+										    form.entries.splice(i, 1);
+									    }
+								    }
+							    }
+						    });
+
+						    let max = 0;
+						    let match = false;
+						    for( let i=0; i < form.entries.length -1; i++){
+						    	let regexp = new RegExp("^" + original.name);
+							    if(form.entries[i].name && regexp.test(form.entries[i].name)){
+							    	match = true;
+							    	let tcount = parseInt(form.entries[i].name.replace(original.name, ''));
+							    	if(tcount > max){
+							    		max= tcount;
+								    }
+							    }
+						    }
+
+					        if(match) {
+						        for (let i = 0; i < form.entries.length - 1; i++) {
+							        if (form.entries[i].name && form.entries[i].name === original.name + max) {
+								        let pos = i + 1;
+								        form.entries.splice(pos, 0, another);
+								        currentScope.resourceDriverCounter[original.name]++;
+								        break;
+							        }
+						        }
+					        }
+							else{
+					            //all inputs removed
+							    //push before add another button
+							    currentScope.resourceDriverCounter[original.name] =0;
+						        for (let i = 0; i < form.entries.length - 1; i++) {
+							        if (form.entries[i].name && form.entries[i].name === "another" + original.name + max) {
+								        let pos = i;
+								        form.entries.splice(pos, 0, another);
+								        currentScope.resourceDriverCounter[original.name]++;
+								        break;
+							        }
+						        }
+						    }
+					    }
+				    });
+			    }
+			    else{
+			    	for(let i =0; i< limit; i++){
+					    let input = angular.copy(original);
+					    input.name = input.name + i;
+					    allMyEntries(input.entries, i);
+					    dynamicEntries.push(input);
+				    }
+				    currentScope.resourceDriverCounter[original.name] = limit;
+			    }
+		    }
+	    }
+
+	    function allMyEntries(entries, countValue){
+	    	entries.forEach(function(oneEntry){
+	    		if(oneEntry.name){
+	    			oneEntry.name = oneEntry.name + countValue;
+			    }
+			    if(oneEntry.entries){
+				    allMyEntries(oneEntry.entries, countValue);
+			    }
+		    });
+	    }
+    }
 
     $scope.deleteResource = function(resource) {
         deleteInstance(function() {

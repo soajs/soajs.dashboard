@@ -1,0 +1,65 @@
+{
+  "servers": {
+    "type": "group",
+    "name": "server",
+    "label": "Server",
+    "collapsed": false,
+    "entries": [
+      {
+        "type": "text",
+        "required": true,
+        "value": "",
+        "name": "hostname",
+        "label": "Hostname",
+        "placeholder": "127.0.0.1"
+      },
+      {
+        "type": "text",
+        "required": true,
+        "value": "",
+        "name": "port",
+        "label": "Port",
+        "placeholder": "4000"
+      }
+    ],
+    "multi": true,
+    "limit": 0
+  },
+  "credentials": {
+    "type": "group",
+    "collapsed": true,
+    "label": "Credentials",
+    "entries": [
+      {
+        "name": "username",
+        "label": "Username",
+        "type": "text",
+        "placeholder": "Username ...",
+        "required": false
+      },
+      {
+        "name": "password",
+        "label": "Password",
+        "type": "text",
+        "placeholder": "Password ...",
+        "required": false
+      }
+    ]
+  },
+  "urlParam": {
+    "name": "urlParam",
+    "label": "Properties",
+    "type": "jsoneditor",
+    "height": "200px",
+    "value": {},
+    "required": true
+  },
+  "streaming": {
+    "name": "streaming",
+    "label": "Streaming Options",
+    "type": "jsoneditor",
+    "height": "200px",
+    "value": {},
+    "required": true
+  }
+}
