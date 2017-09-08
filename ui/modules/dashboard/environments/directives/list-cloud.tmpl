@@ -1,114 +1,3 @@
-<!--<script type="text/ng-template" id="deployNewService.tmpl">
-	<div class="modal-header">
-		<h3 class="modal-title">{{title}}</h3>
-	</div>
-	<div class="modal-body">
-		<div class="form">
-			<alert type="danger" ng-if="currentScope.message.danger">{{currentScope.message.danger}}</alert>
-			<form name="deploy" id="deploy" ng-submit="deploy.$valid && onSubmit()">
-				<div class="form-group">
-					<fieldset>
-						<legend>Deployment Options</legend>
-						<div>
-							<label>Deployment Name</label>
-							<input type="text" class="form-control" ng-model="currentScope.name" ng-required="false"/>
-							<label class="fieldMsg">Optional: Choose a name for the new deployment. Environment code will be appended to the chosen name example: dev-myResource.</label>
-							<br />
-						</div>
-						<div>
-							<label>Memory Limit Per Instance (in MBytes)</label>
-							<input type="number" class="form-control" ng-model="currentScope.memoryLimit" ng-required="true"/>
-							<br/>
-						</div>
-						<div ng-if="currentScope.isKubernetes">
-							<label>CPU Limit Per Instance</label>
-							<input type="text" class="form-control" placeholder="100m or 0.1" ng-model="currentScope.cpuLimit" ng-required="currentScope.autoScale"/>
-							<label class="fieldMsg">Specify the Maximum cpu limit (in millicpu or decimal point) that should be provided when running your resource. Click <a href="https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-cpu" target="_blank">here </a>for more information.</label>
-							<br/>
-						</div>
-						<div>
-							<label>Catalog
-								Recipe</label><img class="loadingImage" ng-src={{imagePath}} ng-if="currentScope.loadingRecipes">
-							<select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name group by recipe.type for recipe in myRecipes" ng-model="currentScope.recipe" ng-change="injectCatalogEntries()"></select>
-							<br>
-						</div>
-						<div ng-include="'modules/dashboard/environments/directives/list-cloud-catalogInputs.tmpl'"></div>
-					</fieldset>
-					<fieldset ng-if="currentScope.allowGitOverride">
-						<legend>Service Options</legend>
-						<div>
-							<label>{{translation.serviceName[LANG]}}</label>
-							<select class="form-control" ng-required="true" ng-options="service as service.name group by service.UIGroup for service in currentScope.services" ng-model="currentScope.service" ng-change="selectService(currentScope.service)"></select>
-							<br>
-						</div>
-						<div>
-							<label>{{translation.serviceVersion[LANG]}}</label>
-							<select class="form-control" ng-required="true" ng-options="version as version for version in currentScope.versions" ng-model="currentScope.version"></select>
-							<br>
-						</div>
-						<div ng-if="currentScope.groupConfigs">
-							<label>{{translation.daemonGroupConfig[LANG]}}</label>
-							<select class="form-control" ng-required="true" ng-options="group as group.daemonConfigGroup for group in currentScope.groupConfigs" ng-model="currentScope.groupConfig"></select>
-							<br>
-						</div>
-						<div ng-if="(currentScope.loadingBranches || currentScope.branches) && currentScope.service.type !== 'nginx'">
-							<label>{{translation.branch[LANG]}}</label><img class="loadingImage" ng-src={{imagePath}} ng-if="currentScope.loadingBranches">
-							<select class="form-control" ng-required="true" ng-options="branch as branch.name for branch in currentScope.branches" ng-model="currentScope.branch" ng-change="selectBranch(currentScope.branch)"></select>
-							<br>
-						</div>
-					</fieldset>
-					<fieldset>
-						<legend>Environment Scaling</legend>
-						<div>
-							<label>Deployment Mode</label>
-							<select class="form-control" ng-required="true" ng-options="mode for mode in currentScope.deploymentModes" ng-model="currentScope.mode"></select>
-							<label class="fieldMsg">Global/Daemonset mode deploys one replica of the service on each node.</label>
-							<label class="fieldMsg">Replicated/Deployment mode deploys the specified number of replicas based on the availability of resources.</label>
-							<br />
-						</div>
-						<div ng-if="!currentScope.autoScale && (currentScope.mode == 'replicated' || currentScope.mode == 'deployment')">
-							<label>Replica Count</label>
-							<input type="number" class="form-control" ng-model="currentScope.number" ng-required="true"/>
-							<br>
-						</div>
-						<fieldset ng-if="currentScope.isAutoScalable && currentScope.mode === 'deployment'" ng-class="{'autoScale':!currentScope.autoScale}">
-							<legend>Auto Scale <input type="checkbox" ng-model="currentScope.autoScale"></legend>
-							<fieldset ng-if="currentScope.autoScale">
-								<legend>Metrics</legend>
-								<div>
-									<label>CPU</label>
-									<input type="number" class="form-control" ng-model="currentScope.autoScaleObject.metrics.cpu.percent" ng-required="true"/>
-									<label class="fieldMsg">Enter CPU percentage</label>
-									<br>
-								</div>
-							</fieldset>
-							<fieldset ng-if="currentScope.autoScale">
-								<legend>Replicas</legend>
-								<div>
-									<label>min</label>
-									<input type="number" class="form-control" ng-model="currentScope.autoScaleObject.replicas.min" ng-required="true"/>
-									<label class="fieldMsg">Enter minimum Replica Count that is greater or equal to 1</label>
-									<br>
-								</div>
-								<div>
-									<label>max</label>
-									<input type="number" class="form-control" ng-model="currentScope.autoScaleObject.replicas.max" ng-required="true"/>
-									<label class="fieldMsg">Enter maximum Replica Count that is greater or equal to 1</label>
-									<br>
-								</div>
-							</fieldset>
-						</fieldset>
-					</fieldset>
-				</div>
-			</form>
-		</div>
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-primary" ng-disabled = "deploy.$invalid" ng-click="onSubmit()">Deploy</button>
-		<button class="btn btn-danger" ng-click="closeModal()">Cancel</button>
-	</div>
-</script>-->
-
 <script type="text/ng-template" id="scaleService.tmpl">
 	<div class="modal-header">
 		<h3 class="modal-title">{{title}}</h3>
@@ -384,7 +273,6 @@
 			</div>
 			<div class="c-both w100 table" ng-if="envPlatform === 'kubernetes'">
 				<span class="f-left">
-					<!--<button class="btn btn-primary" ng-if="access.hacloud.services.add" ng-click="deployNewService()">Deploy Resource</button>&nbsp;&nbsp;-->
 					<span ng-if="envPlatform === 'kubernetes' && isAutoScalable === false && access.hacloud.services.deployPlugin">
 						<button class="btn btn-info" ng-click="deployHeapster()">Enable Autoscaling</button>&nbsp;&nbsp;
 					</span>
@@ -400,7 +288,6 @@
 			</div>
 			<div class="c-both w100 table" ng-if="envPlatform !=='kubernetes'">
 				<span class="f-left">
-					<!--<button class="btn btn-primary" ng-if="access.hacloud.services.add" ng-click="deployNewService()">Deploy Resource</button>&nbsp;&nbsp;-->
 					<button class="btn btn-success" ng-show="envDeployed && hosts && showActivateAnalytics && access.analytics.activate" ng-click="activateAnalytics()">Activate Analytics</button>
 					<button class="btn btn-danger" ng-show="envDeployed && hosts && showAnalytics && access.analytics.deactivate" ng-click="deactivateAnalytics()">Deactivate Analytics</button>
 				</span>
@@ -417,7 +304,6 @@
 					<accordion close-others="false">
 						<accordion-group is-open="$first" ng-repeat="(oneSubType, groups) in subtypes">
 							<accordion-heading>{{recipeTypes[type].categories[oneSubType].l}}</accordion-heading>
-							<!--<fieldset ng-if="envPlatform !=='kubernetes'" class="groupFieldset" ng-repeat="(groupName, oneGroup) in groups" ng-show="oneGroup.list.length > 0">-->
 							<fieldset class="groupFieldset" ng-repeat="(groupName, oneGroup) in groups" ng-show="(oneGroup.list | filter:namespaceConfig.namespace:true).length > 0">
 								<legend>
 									<a href="" class="icon" ng-class="{'icon-minus': oneGroup.expanded, 'icon-plus': !oneGroup.expanded}" ng-click="showHideGroupContent2(oneGroup)"></a>
