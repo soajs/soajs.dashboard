@@ -71,7 +71,9 @@ var resourcesAppConfig = {
         list: ['dashboard', '/resources/list', 'get'],
 		add: ['dashboard', '/resources/add', 'post'],
 		update: ['dashboard', '/resources/update', 'put'],
-		delete: ['dashboard', '/resources/delete', 'delete']
+		delete: ['dashboard', '/resources/delete', 'delete'],
+
+        deploy: ['dashboard', '/cloud/services/deploy', 'post']
     }
 
 };
