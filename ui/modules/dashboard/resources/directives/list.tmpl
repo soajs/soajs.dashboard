@@ -53,7 +53,10 @@
 		<h3 class="modal-title">{{title}}</h3>
 	</div>
     <div class="modal-body">
-        <div class="form">
+	    <div ng-if="notsupported">
+		    <alert type="danger">The selected Driver is not supported, please choose another.</alert>
+	    </div>
+        <div ng-if="!notsupported" class="form">
             <alert type="danger" ng-if="message.danger">{{message.danger}}</alert>
             <form name="addEditResource" id="addEditResource" ng-submit="addEditResource.$valid && onSubmit()">
                 <div class="form-group">
@@ -78,8 +81,6 @@
     							<label class="fieldMsg">Category of the new resource</label>
     							<br />
                             </div>
-                        </tab>
-                        <tab heading="Settings">
                             <br />
                             <div>
                                 <label>Plug Resource</label>
@@ -121,7 +122,8 @@
                         </tab>
                         <tab heading="Configuration">
                             <br />
-                            <div ui-ace="{{options.aceEditorConfig}}" style="height: 500px;" ng-model="formData.config"></div>
+                            <!--<div ui-ace="{{options.aceEditorConfig}}" style="height: 500px;" ng-model="formData.config"></div>-->
+	                        <ngform-inputs></ngform-inputs>
                         </tab>
                         <tab heading="Deployment">
                             <br />
@@ -145,9 +147,9 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-success" ng-disabled="addEditResource.$invalid" ng-click="save()">Save</button>
-		<button class="btn btn-primary" ng-if="!formData.isDeployed && formData.canBeDeployed && (!formData.instance || !formData.instance.id)" ng-disabled="addEditResource.$invalid" ng-click="saveAndDeploy()">Save & Deploy</button>
-        <button class="btn btn-primary" ng-if="formData.isDeployed && formData.canBeDeployed && formData.instance && formData.instance.id" ng-disabled="addEditResource.$invalid" ng-click="saveAndRebuild()">Save & Rebuild</button>
+        <button class="btn btn-success" ng-if="!notsupported" ng-disabled="addEditResource.$invalid" ng-click="save()">Save</button>
+		<button class="btn btn-primary" ng-if="!notsupported && !formData.isDeployed && formData.canBeDeployed && (!formData.instance || !formData.instance.id)" ng-disabled="addEditResource.$invalid" ng-click="saveAndDeploy()">Save & Deploy</button>
+        <button class="btn btn-primary" ng-if="!notsupported && formData.isDeployed && formData.canBeDeployed && formData.instance && formData.instance.id" ng-disabled="addEditResource.$invalid" ng-click="saveAndRebuild()">Save & Rebuild</button>
 		<button class="btn btn-danger" ng-click="cancel()">Cancel</button>
 	</div>
 </script>
