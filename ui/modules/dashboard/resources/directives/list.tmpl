@@ -17,17 +17,18 @@
                                 <div class="header" ng-class="{greenBoxHeader: resource.plugged}">
                                     {{resource.name}}
                                     <span ng-if="resource.locked" class="icon icon-lock" tooltip="This resource is locked"></span>
-                                    <span ng-if="resource.shared && resource.created.toLowerCase() !== envCode.toLowerCase()" class="icon icon-share2" tooltip="This resource is shared from {{resource.created}} environment"></span>
+                                    <span ng-if="resource.shared && resource.created.toLowerCase() !== envCode.toLowerCase()" class="icon icon-share2" tooltip="This resource is shared from the {{resource.created}} environment"></span>
                                     <div class="rightActions" style="display:inline;">
                                         <a href="" ng-if="access.delete && !resource.locked" ng-click="deleteResource(resource)" ng-confirm-click="Are you sure you want to delete this resource?">
         									<span class="icon icon-cross" tooltip="Delete Resource"></span>
         								</a>
                                     </div>
                                 </div>
-                                <div class="body resource-box-body">
-                                    <a href="" ng-if="access.update && !resource.plugged" class="btn btn-sm btn-default responsive-width" ng-click="togglePlugResource(resource, true)"><span class="icon icon-power-cord"></span>Plug Resource</a>
-                                    <a href="" ng-if="access.update && resource.plugged" class="btn btn-sm btn-default responsive-width" ng-click="togglePlugResource(resource, false)"><span class="icon icon-power-cord"></span>Unplug Resource</a>
-                                    <a href="" ng-if="access.update" class="btn btn-sm btn-default responsive-width" ng-click="manageResource(resource, 'update')"><span class="icon icon-cog"></span>Configure Resource</a>
+                                <div class="body resource-box-body" ng-class="{'resource-box-body-three-btn-view': (resource.canBeDeployed && !resource.isDeployed)}">
+                                    <a href="" ng-if="access.update && !resource.plugged" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: (resource.canBeDeployed && !resource.isDeployed)}" ng-click="togglePlugResource(resource, true)"><span class="icon icon-power-cord"></span>Plug</a>
+                                    <a href="" ng-if="access.update && resource.plugged" class="btn btn-sm btn-default responsive-width" ng-click="togglePlugResource(resource, false)"><span class="icon icon-power-cord"></span>Unplug</a>
+                                    <a href="" ng-if="access.deploy && resource.canBeDeployed && !resource.isDeployed" class="btn btn-sm btn-default responsive-width" ng-click="manageResource(resource, 'update')"><span class="icon icon-cloud"></span>Deploy</a>
+                                    <a href="" ng-if="access.update" class="btn btn-sm btn-default responsive-width" ng-click="manageResource(resource, 'update')"><span class="icon icon-cog"></span>Configure</a>
                                 </div>
                             </div>
                         </accordion-group>
@@ -37,3 +38,107 @@
         </div>
     </div>
 </section>
+
+<script type="text/ng-template" id="addEditResource.tmpl">
+    <div class="modal-header custom-modal-header">
+		<h3 class="modal-title">{{title}}</h3>
+	</div>
+    <div class="modal-body">
+        <div class="form">
+            <alert type="danger" ng-if="message.danger">{{message.danger}}</alert>
+            <form name="addEditResource" id="addEditResource" ng-submit="addEditResource.$valid && onSubmit()">
+                <div class="form-group">
+                    <tabset>
+                        <tab heading="General">
+                            <br />
+                            <div>
+    							<label>Resource Name</label>
+    							<input type="text" class="form-control" ng-model="formData.name" ng-required="true" ng-disabled="options.formAction === 'update'"/>
+    							<label class="fieldMsg">Choose the name of the new resource</label>
+    							<br />
+    						</div>
+                            <div>
+                                <label>Resource Type</label>
+    							<input type="text" class="form-control" ng-model="formData.type" ng-disabled="true"/>
+    							<label class="fieldMsg">Type of the new resource</label>
+    							<br />
+                            </div>
+                            <div>
+                                <label>Resource Category</label>
+    							<input type="text" class="form-control" ng-model="formData.category" ng-disabled="true"/>
+    							<label class="fieldMsg">Category of the new resource</label>
+    							<br />
+                            </div>
+                        </tab>
+                        <tab heading="Settings">
+                            <br />
+                            <div>
+                                <label>Plug Resource</label>
+                                <label class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.plugged"><span class="buttonSlider round"></span></label>
+                                <label class="fieldMsg">Plugging a resource makes it accessible via the registry</label>
+    							<br /><br />
+    						</div>
+                            <div>
+                                <label>Lock Resource</label>
+                                <label class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.locked"><span class="buttonSlider round"></span></label>
+                                <label class="fieldMsg">Locking a resource protects it from being deleted</label>
+    							<br /><br />
+                            </div>
+                            <div>
+                                <label>Share Resource With Other Environments</label>
+                                <label class="toggleSwitch f-right"><input type="checkbox" ng-click="getEnvs()" ng-model="formData.shared"><span class="buttonSlider round"></span></label>
+                                <label class="fieldMsg">Sharing a resource makes it accessible via other environments</label>
+    							<br /><br />
+                            </div>
+                            <div ng-if="formData.shared">
+                                <div>
+                                    <label>
+                                        <input type="checkbox" ng-model="envs.sharedWithAll" ng-click="toggleShareWithAllEnvs()"/>
+                                        Share with all environments
+                                    </label>
+                                </div>
+                                <div class="grid">
+    								<table width="100%" border="0" cellpadding="5" cellspacing="3">
+    									<tbody>
+    										<tr class="first odd" ng-class="{'first': $first, 'last': $last, 'odd': $odd, 'even': $even}" ng-repeat="env in envs.list">
+    											<td width="5%"><input type="checkbox" name="{{env.code}}" ng-model="env.selected" ng-disabled="envs.sharedWithAll" /></td>
+    											<td width="20%" align="left">{{env.code}}</td>
+    											<td width="75%">{{env.description}}</td>
+    										</tr>
+    									</tbody>
+    								</table>
+    							</div>
+                            </div>
+                        </tab>
+                        <tab heading="Configuration">
+                            <br />
+                            <div ui-ace="{{options.aceEditorConfig}}" style="height: 500px;" ng-model="formData.config"></div>
+                        </tab>
+                        <tab heading="Deployment">
+                            <br />
+                            <alert type="warning" ng-if="options.formAction === 'update' && formData.created !== options.envCode" style="text-align: center;">
+                                Configuring the deployment options of a resource is only allowed in the environment where it was created.<br />
+                                In the case of this resource, please refer to the {{formData.created}} environment.
+                            </alert>
+                            <div ng-if="options.formAction !== 'update' || (options.formAction === 'update' && formData.created === options.envCode)">
+                                <div>
+                                    <label>Deploy this resource as part of this cloud</label>
+                                    <label class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.canBeDeployed"><span class="buttonSlider round"></span></label>
+                                    <label class="fieldMsg">Plugging a resource makes it accessible via the registry</label>
+        							<br /><br />
+        						</div>
+                                <div ng-if="formData.canBeDeployed" ng-include="'modules/dashboard/resources/directives/deployResource.tmpl'"></div>
+                            </div>
+                        </tab>
+                    </tabset>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" ng-disabled="addEditResource.$invalid" ng-click="save()">Save</button>
+		<button class="btn btn-primary" ng-if="!formData.isDeployed && formData.canBeDeployed && (!formData.instance || !formData.instance.id)" ng-disabled="addEditResource.$invalid" ng-click="saveAndDeploy()">Save & Deploy</button>
+        <button class="btn btn-primary" ng-if="formData.isDeployed && formData.canBeDeployed && formData.instance && formData.instance.id" ng-disabled="addEditResource.$invalid" ng-click="saveAndRebuild()">Save & Rebuild</button>
+		<button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+	</div>
+</script>

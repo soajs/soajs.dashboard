@@ -359,6 +359,32 @@ service.init(function () {
 	});
 
 	/**
+	 * Get resources deploy configuration
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/resources/config", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.getConfig(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Set resources deploy configuration
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/resources/config/update", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.setConfig(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
 	 * List enviornment platforms
 	 * @param {String} API route
 	 * @param {Function} API middleware
