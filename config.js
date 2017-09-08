@@ -657,11 +657,32 @@ module.exports = {
 					"source": ['query.env'],
 					"required": true,
 					"validation": {
-						"required": true
+						"type": "string"
 					}
 				}
 			},
-	        
+
+            "/resources/get": {
+				_apiInfo: {
+                    "l": "Get One Resource",
+                    "group": "Resources"
+                },
+				"id": {
+					"source": ['query.id'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+                "name": {
+					"source": ['query.name'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
 	        "/resources/upgrade": {
 		        _apiInfo: {
 			        "l": "Upgrade Resources to latest version",
@@ -2003,6 +2024,10 @@ module.exports = {
                                 "required": true,
                                 "type": "string"
                             },
+                            "resourceId": {
+                                "required": false,
+                                "type": "string"
+                            },
                             "name": {
                                 "required": false,
                                 "type": "string"
@@ -3013,9 +3038,10 @@ module.exports = {
                 },
 				"config": {
 					"source": ['body.config'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "object",
+                        "default": {},
 						"properties": {
 							"deploy": { "type": "boolean", "required": true },
 							"options": {

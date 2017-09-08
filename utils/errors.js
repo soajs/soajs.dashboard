@@ -78,10 +78,11 @@ var errors = {
 
 	"500": "This record is locked. You cannot delete it",
 	"501": "This record is locked. You cannot modify or delete it",
-	"502": "Invalid cluster name provided",
+	// "502": "Invalid cluster name provided",
+	"502": "Invalid resource name/id provided",
 	"503": "Error adding new environment database",
 	// "504": "Environment cluster already exists",
-	"504": "A resource with the same name already exists",
+	"504": "A resource with the same name, type, and category already exists",
 	"505": "Error adding environment cluster",
 	// "506": "Error updating environment cluster",
 	"506": "You are not allowed to modify this resource",

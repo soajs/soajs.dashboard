@@ -24,6 +24,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
 			    }
 			    else {
                     $scope.resources = { list: response };
+                    $scope.resources.original = angular.copy($scope.resources.list); //keep a copy of the original resources records
 
                     if($scope.deployConfig && $scope.deployedServices) {
                         markDeployed();
@@ -45,6 +46,10 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                 }
                 if(!$scope.resources.types[oneResource.type][oneResource.category]) {
                     $scope.resources.types[oneResource.type][oneResource.category] = [];
+                }
+
+                if(oneResource.created === $scope.envCode.toUpperCase()) {
+                    oneResource.allowEdit = true;
                 }
 
                 $scope.resources.types[oneResource.type][oneResource.category].push(oneResource);
@@ -86,7 +91,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                 }
 
                 for(var i = 0; i < $scope.deployedServices.length; i++) {
-                    if($scope.deployedServices[i].labels && $scope.deployedServices[i].labels['resource.id'] === oneResource._id.toString()) {
+                    if($scope.deployedServices[i].labels && $scope.deployedServices[i].labels['soajs.resource.id'] === oneResource._id.toString()) {
                         oneResource.isDeployed = true;
                         oneResource.instance = $scope.deployedServices[i];
                         break;
@@ -150,11 +155,6 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
             keyboard: true,
             controller: function ($scope, $modalInstance) {
                 fixBackDrop();
-                console.log(resource);
-                $scope.title = 'Add New Resource';
-                if(action === 'update') {
-                    $scope.title = 'Update ' + resource.name;
-                }
 
                 $scope.formData = {};
                 $scope.envs = [];
@@ -173,8 +173,17 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                         mode: 'json',
                         firstLineNumber: 1,
                         height: '500px'
-                    }
+                    },
+                    allowEdit: ((action === 'add') || (action === 'update' && resource.created.toUpperCase() === currentScope.envCode.toUpperCase()))
                 };
+
+                $scope.title = 'Add New Resource';
+                if(action === 'update' && $scope.options.allowEdit) {
+                    $scope.title = 'Update ' + resource.name;
+                }
+                else {
+                    $scope.title = 'View ' + resource.name;
+                }
 
                 if(currentScope.envPlatform === 'kubernetes') {
                     $scope.options.deploymentModes = [
@@ -272,6 +281,10 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                         if($scope.formData && $scope.formData.deployOptions && $scope.formData.deployOptions.autoScale && $scope.formData.deployOptions.autoScale.replicas && $scope.formData.deployOptions.autoScale.metrics) {
                             $scope.options.enableAutoScale = true;
                         }
+
+                        if($scope.formData && $scope.formData.deployOptions && $scope.formData.deployOptions.deployConfig && $scope.formData.deployOptions.deployConfig.memoryLimit) {
+                            $scope.formData.deployOptions.deployConfig.memoryLimit /= 1048576; //convert memory limit from bytes to megabytes
+                        }
                     }
                 };
 
@@ -310,13 +323,26 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                 };
 
                 $scope.save = function(cb) {
+                    if(!$scope.options.allowEdit) {
+                        $scope.displayAlert('warning', 'Configuring this resource is only allowed in the ' + $scope.formData.created + ' environment');
+                        return;
+                    }
+
+                    if($scope.formData.deployOptions && $scope.formData.deployOptions.custom) {
+                        $scope.formData.deployOptions.custom.type = 'resource';
+                    }
+
                     saveResource(function() {
-                        saveResourceDeployConfig(cb);
+                        saveResourceDeployConfig(function() {
+                            if(cb) return cb();
+
+                            $scope.formData = {};
+                            $modalInstance.close();
+                            currentScope.listResources();
+                        });
                     });
 
                     function saveResource(cb) {
-                        console.log(1);
-
                         var saveOptions = {
                             name: $scope.formData.name,
                             type: $scope.formData.type,
@@ -326,7 +352,14 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                             shared: $scope.formData.shared || false,
                             config: JSON.parse($scope.formData.config)
                         };
-                        console.log(saveOptions);
+                        if($scope.formData.shared && !$scope.envs.sharedWithAll) {
+                            saveOptions.sharedEnv = {};
+                            $scope.envs.list.forEach(function(oneEnv) {
+                                if(oneEnv.selected) {
+                                    saveOptions.sharedEnv[oneEnv.code.toUpperCase()] = true;
+                                }
+                            });
+                        }
 
                         var options = {};
                         if($scope.options.formAction === 'add') {
@@ -351,11 +384,15 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                                 }
                             };
                         }
-                        getSendDataFromServer(currentScope, ngDataApi, options, function(error) {
+
+                        overlayLoading.show();
+                        getSendDataFromServer(currentScope, ngDataApi, options, function(error, result) {
+                            overlayLoading.hide();
                             if(error) {
                                 currentScope.displayAlert('danger', error.message);
                             }
                             else {
+                                $scope.newResource = result;
                                 currentScope.displayAlert('success', 'Resource updated successfully');
                                 return cb();
                             }
@@ -368,8 +405,9 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                             else return;
                         }
 
-                        console.log(2);
                         var deployConfig = angular.copy($scope.formData.deployOptions);
+                        if(!deployConfig.custom) { deployConfig.custom = {}; }
+                        deployConfig.custom.type = 'resource';
 
                         var options = {
                             method: 'put',
@@ -384,8 +422,9 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                             }
                         };
 
-                        console.log(deployConfig);
+                        overlayLoading.show();
                         getSendDataFromServer(currentScope, ngDataApi, options, function(error) {
+                            overlayLoading.hide();
                             if(error) {
                                 currentScope.displayAlert('danger', error.message);
                             }
@@ -397,10 +436,24 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                     }
                 };
 
-                $scope.saveAndDeploy = function() {
-                    $scope.save(function() {
+                $scope.saveAndDeploy = function(deployOnly) {
+                    if(!$scope.options.allowEdit) {
+                        $scope.displayAlert('warning', 'Deploying this resource is only allowed in the ' + $scope.formData.created + ' environment');
+                        return;
+                    }
+
+                    if(deployOnly) {
                         deployResource();
-                    });
+                    }
+                    else {
+                        $scope.save(function() {
+                            deployResource(function() {
+                                $scope.formData = {};
+                                $modalInstance.close();
+                                currentScope.listResources();
+                            });
+                        });
+                    }
 
                     function deployResource(cb) {
                         if(!$scope.formData.canBeDeployed || !$scope.formData.deployOptions || Object.keys($scope.formData.deployOptions).length === 0) {
@@ -408,25 +461,34 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                             else return;
                         }
 
-                        console.log(3);
                         var deployOptions = angular.copy($scope.formData.deployOptions);
-                        if(deployOptions && deployOptions.custom) {
-                            deployOptions.custom.type = 'resource';
+                        if(!deployOptions.custom) {
+                            deployOptions.custom = {};
+                        }
+
+                        if(deployOptions.deployConfig && deployOptions.deployConfig.memoryLimit) {
+                            deployOptions.deployConfig.memoryLimit *= 1048576; //convert memory limit back to bytes
                         }
 
                         if($scope.options.formAction === 'add') {
+                            if($scope.newResource && Object.keys($scope.newResource).length > 0) {
+                                deployOptions.custom.resourceId = $scope.newResource._id;
+                            }
+
                             deployOptions.env = $scope.options.envCode;
                         }
                         else {
+                            deployOptions.custom.resourceId = $scope.formData._id;
                             deployOptions.env = $scope.formData.created;
                         }
 
-                        console.log(deployOptions);
+                        overlayLoading.show();
                         getSendDataFromServer(currentScope, ngDataApi, {
                             method: 'post',
                             routeName: '/dashboard/cloud/services/soajs/deploy',
                             data: deployOptions
                         }, function(error) {
+                            overlayLoading.hide();
                             if(error) {
                                 currentScope.displayAlert('danger', error.message);
                             }
@@ -439,8 +501,17 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                 };
 
                 $scope.saveAndRebuild = function() {
+                    if(!$scope.options.allowEdit) {
+                        $scope.displayAlert('warning', 'Rebuilding this resource is only allowed in the ' + $scope.formData.created + ' environment');
+                        return;
+                    }
+
                     $scope.save(function() {
-                        rebuildService();
+                        rebuildService(function() {
+                            $scope.formData = {};
+                            $modalInstance.close();
+                            currentScope.listResources();
+                        });
                     });
 
                     function rebuildService(cb) {
@@ -449,16 +520,15 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                             else return;
                         }
 
-                        console.log(3);
                         if(!$scope.formData.deployOptions.custom) {
                             $scope.formData.deployOptions.custom = {};
                         }
 
                         var rebuildOptions = angular.copy($scope.formData.deployOptions.custom);
-                        rebuildOptions.memory = $scope.formData.deployOptions.deployConfig.memoryLimit;
+                        rebuildOptions.memory = $scope.formData.deployOptions.deployConfig.memoryLimit *= 1048576; //convert memory limit back to bytes
                         rebuildOptions.cpuLimit = $scope.formData.deployOptions.deployConfig.cpuLimit;
 
-                        console.log(rebuildOptions);
+                        overlayLoading.show();
                         getSendDataFromServer(currentScope, ngDataApi, {
                             method: 'put',
                             routeName: '/dashboard/cloud/services/redeploy',
@@ -470,11 +540,12 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
                                 custom: rebuildOptions
                             }
                         }, function(error) {
+                            overlayLoading.hide();
                             if(error) {
                                 currentScope.displayAlert('danger', error.message);
                             }
                             else {
-                                currentScope.displayAlert('success', 'Resource deployed successfully. Check the High Availability - Cloud section to see it running');
+                                currentScope.displayAlert('success', 'Resource rebuilt successfully');
                                 if(cb) return cb();
                             }
                         });
@@ -493,43 +564,105 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
     };
 
     $scope.deleteResource = function(resource) {
-        //if resource.instance, delete it
-        overlayLoading.show();
-        getSendDataFromServer($scope, ngDataApi, {
-            method: 'delete',
-            routeName: '/dashboard/resources/delete',
-            params: { id: resource._id }
-        }, function(error) {
-            overlayLoading.hide();
-            if(error) {
-                $scope.displayAlert('danger', error.message);
-            }
-            else {
-                $scope.displayAlert('success', 'Resource deleted successfully');
-                $scope.listResources();
-            }
+        deleteInstance(function() {
+            deleteDeployConfig(function() {
+                overlayLoading.show();
+                getSendDataFromServer($scope, ngDataApi, {
+                    method: 'delete',
+                    routeName: '/dashboard/resources/delete',
+                    params: { id: resource._id }
+                }, function(error) {
+                    overlayLoading.hide();
+                    if(error) {
+                        $scope.displayAlert('danger', error.message);
+                    }
+                    else {
+                        $scope.displayAlert('success', 'Resource deleted successfully');
+                        $scope.listResources();
+                    }
+                });
+            });
         });
 
-        function deleteResource() {
+        function deleteInstance(cb) {
+            if(resource.isDeployed && resource.instance && resource.instance.id) {
+                overlayLoading.show();
+                getSendDataFromServer($scope, ngDataApi, {
+                    method: 'delete',
+                    routeName: '/dashboard/cloud/services/delete',
+                    params: {
+                        env: $scope.envCode,
+                        serviceId: resource.instance.id,
+                        mode: resource.instance.labels['soajs.service.mode']
+                    }
+                }, function(error) {
+                    overlayLoading.hide();
+                    if(error) {
+                        $scope.displayAlert('danger', error.message);
+                    }
+                    else {
+                        $scope.displayAlert('success', 'Resource instance deleted successfully');
+                        return cb();
+                    }
+                });
+            }
+            else {
+                return cb();
+            }
+        }
 
+        function deleteDeployConfig(cb) {
+            if(resource.canBeDeployed && resource.deployOptions) {
+                overlayLoading.show();
+                getSendDataFromServer($scope, ngDataApi, {
+                    method: 'put',
+                    routeName: '/dashboard/resources/config/update',
+                    data: {
+                        env: resource.created,
+                        resourceName: resource.name,
+                        config: {
+                            deploy: false
+                        }
+                    }
+                }, function(error) {
+                    overlayLoading.hide();
+                    if(error) {
+                        $scope.displayAlert('danger', error.message);
+                    }
+                    else {
+                        $scope.displayAlert('success', 'Resource instance deleted successfully');
+                        return cb();
+                    }
+                });
+            }
+            else {
+                return cb();
+            }
         }
     };
 
     $scope.togglePlugResource = function(resource, plug) {
-        var resourceId = resource._id;
+        var resourceRecord = {};
+        //get the original resource record
+        for(var i = 0; i < $scope.resources.original.length; i++) {
+            if($scope.resources.original[i]._id === resource._id) {
+                resourceRecord = angular.copy($scope.resources.original[i]);
+                break;
+            }
+        }
 
-        delete resource._id;
-        delete resource.created;
-        delete resource.author;
-
-        resource.plugged = plug;
+        var resourceId = resourceRecord._id;
+        delete resourceRecord._id;
+        delete resourceRecord.created;
+        delete resourceRecord.author;
+        resourceRecord.plugged = plug;
 
         overlayLoading.show();
         getSendDataFromServer($scope, ngDataApi, {
             method: 'put',
             routeName: '/dashboard/resources/update',
             params: { id: resourceId },
-            data: { resource: resource }
+            data: { resource: resourceRecord }
         }, function (error) {
             overlayLoading.hide();
             if(error) {
@@ -538,6 +671,32 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
             else {
                 $scope.displayAlert('success', 'Resource updated successfully');
                 $scope.listResources();
+            }
+        });
+    };
+
+    $scope.deployResource = function(resource) {
+        if(!resource.canBeDeployed || !resource.deployOptions || Object.keys(resource.deployOptions).length === 0) {
+            $scope.displayAlert('danger', 'This resource is missing deployment configuration');
+        }
+
+        var deployOptions = angular.copy(resource.deployOptions);
+        if(!deployOptions.custom) { deployOptions.custom = {}; }
+        deployOptions.custom.resourceId = resource._id;
+        deployOptions.env = resource.created;
+
+        overlayLoading.show();
+        getSendDataFromServer($scope, ngDataApi, {
+            method: 'post',
+            routeName: '/dashboard/cloud/services/soajs/deploy',
+            data: deployOptions
+        }, function(error) {
+            overlayLoading.hide();
+            if(error) {
+                $scope.displayAlert('danger', error.message);
+            }
+            else {
+                $scope.displayAlert('success', 'Resource deployed successfully. Check the High Availability - Cloud section to see it running');
             }
         });
     };
