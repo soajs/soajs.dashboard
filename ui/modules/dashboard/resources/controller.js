@@ -472,16 +472,15 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                             deployOptions.custom = {};
                         }
 
-                        if(deployOptions.deployConfig && deployOptions.deployConfig.memoryLimit) {
-                            deployOptions.deployConfig.memoryLimit *= 1048576; //convert memory limit back to bytes
-                        }
-
                         if($scope.options.formAction === 'add') {
                             if($scope.newResource && Object.keys($scope.newResource).length > 0) {
                                 deployOptions.custom.resourceId = $scope.newResource._id;
                             }
 
                             deployOptions.env = $scope.options.envCode;
+                            if(deployOptions.deployConfig && deployOptions.deployConfig.memoryLimit) {
+                                deployOptions.deployConfig.memoryLimit *= 1048576; //convert memory limit to bytes
+                            }
                         }
                         else {
                             deployOptions.custom.resourceId = $scope.formData._id;
