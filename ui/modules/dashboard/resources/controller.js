@@ -250,7 +250,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$timeout', '$modal', 'ng
         });
     };
 
-    $scope.upgradeResources = function(){
+    $scope.upgradeAll = function(){
 	    overlayLoading.show();
 	    getSendDataFromServer($scope, ngDataApi, {
 		    method: 'get',
