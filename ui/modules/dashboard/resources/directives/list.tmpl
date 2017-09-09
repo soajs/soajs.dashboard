@@ -57,7 +57,11 @@
 
 <script type="text/ng-template" id="addEditResource.tmpl">
     <div class="modal-header custom-modal-header">
-		<h3 class="modal-title">{{title}}</h3>
+		<h3 class="modal-title">{{title}}
+			<span ng-if="driverLogo" class="f-right">
+				<img ng-src='{{driverLogo}}' alt='' style='max-height:46px'/>
+			</span>
+		</h3>
 	</div>
     <div class="modal-body">
 	    <div ng-if="notsupported">
@@ -129,8 +133,10 @@
                         </tab>
                         <tab heading="Configuration">
                             <br />
+	                        <div id="driverConfiguration">
+	                            <ngform-inputs></ngform-inputs>
+	                        </div>
                             <!--<div ui-ace="{{options.aceEditorConfig}}" style="height: 500px;" ng-model="formData.config"></div>-->
-	                        <ngform-inputs></ngform-inputs>
                         </tab>
                         <tab heading="Deployment">
                             <br />

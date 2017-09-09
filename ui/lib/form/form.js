@@ -105,42 +105,53 @@ function buildForm(context, modal, configuration, cb) {
 		}
 	};
 
-	function rebuildData(fieldEntry) {
+	function rebuildData(fieldEntry, parentGroup) {
 		var keys = Object.keys(configuration.data);
 		for (var x = 0; x < keys.length; x++) {
 			var inputName = keys[x];
 			if (fieldEntry.name === inputName) {
-				if (Array.isArray(fieldEntry.value)) {
-					fieldEntry.value.forEach(function (oneValue) {
-						//oneValue.selected = false;
-						if (Array.isArray(configuration.data[inputName])) {
-							if (configuration.data[inputName].indexOf(oneValue.v) !== -1) {
+				internalDataMap(fieldEntry, inputName);
+			}
+			else if (!Array.isArray(configuration.data[inputName]) && typeof(configuration.data[inputName]) === 'object' ){
+				for(let i in configuration.data[inputName]){
+					if(i === fieldEntry.name){
+						fieldEntry.value = configuration.data[inputName][i];
+						context.form.formData[inputName + '.' + i] = configuration.data[inputName][i];
+					}
+				}
+			}
+		}
+		
+		function internalDataMap(fieldEntry, inputName){
+			if (Array.isArray(fieldEntry.value)) {
+				fieldEntry.value.forEach(function (oneValue) {
+					//oneValue.selected = false;
+					if (Array.isArray(configuration.data[inputName])) {
+						if (configuration.data[inputName].indexOf(oneValue.v) !== -1) {
+							oneValue.selected = true;
+						}
+					}
+					else {
+						if(fieldEntry.type === 'uiselect' && configuration.data[inputName] !== undefined && configuration.data[inputName] !== null){
+							if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
+								context.form.formData[inputName] = oneValue;
+							}
+						}
+						else if (fieldEntry.type !== 'uiselect' && configuration.data[inputName] !== undefined && configuration.data[inputName] !== null) {
+							if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
 								oneValue.selected = true;
 							}
 						}
-						else {
-							if(fieldEntry.type === 'uiselect' && configuration.data[inputName] !== undefined && configuration.data[inputName] !== null){
-								if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
-									context.form.formData[inputName] = oneValue;
-								}
-							}
-							else if (fieldEntry.type !== 'uiselect' && configuration.data[inputName] !== undefined && configuration.data[inputName] !== null) {
-								if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
-									oneValue.selected = true;
-								}
-							}
-						}
-					});
-					//todo: fi shi bel select ma ba3rif shou naykto
-					//console.log(fieldEntry);
-				}
-				else {
-					if (configuration.data[inputName]) {
-						fieldEntry.value = configuration.data[inputName];
-						context.form.formData[inputName] = configuration.data[inputName];
 					}
+				});
+				//todo: fi shi bel select ma ba3rif shou naykto
+				//console.log(fieldEntry);
+			}
+			else {
+				if (configuration.data[inputName]) {
+					fieldEntry.value = configuration.data[inputName];
+					context.form.formData[inputName] = configuration.data[inputName];
 				}
-				break;
 			}
 		}
 	}
@@ -242,6 +253,9 @@ function buildForm(context, modal, configuration, cb) {
 					if (oneEntry.fixedHeight) {
 						newHeight = parseInt(oneEntry.height);
 					}
+					else if(parseInt(oneEntry.height) && parseInt(oneEntry.height) > newHeight){
+						newHeight = parseInt(oneEntry.height);
+					}
 					
 					_editor.renderer.scrollBar.setHeight(newHeight.toString() + "px");
 					_editor.renderer.scrollBar.setInnerHeight(newHeight.toString() + "px");
@@ -268,13 +282,13 @@ function buildForm(context, modal, configuration, cb) {
 		for (var i = 0; i < context.form.entries.length; i++) {
 			if (context.form.entries[i].type === 'group') {
 				context.form.entries[i].entries.forEach(function (oneSubEntry) {
-					rebuildData(oneSubEntry);
+					rebuildData(oneSubEntry, context.form.entries[i]);
 				});
 			}
 			else if (context.form.entries[i].type === 'tabset') {
 				context.form.entries[i].tabs.forEach(function (oneTab) {
 					oneTab.entries.forEach(function (oneSubEntry) {
-						rebuildData(oneSubEntry);
+						rebuildData(oneSubEntry, context.form.entries[i]);
 					});
 				});
 			}

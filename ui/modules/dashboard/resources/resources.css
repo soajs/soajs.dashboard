@@ -125,3 +125,5 @@ fieldset.autoScale legend {
     color: #333;
     padding:0;
 }
+
+.ace_text-input {position:absolute!important}

@@ -14,7 +14,7 @@
         "placeholder": "127.0.0.1"
       },
       {
-        "type": "number",
+        "type": "text",
         "required": true,
         "value": "",
         "name": "port",
@@ -51,7 +51,7 @@
   },
   "URLParam": {
     "name": "URLParam",
-    "label": "Connection Parameters",
+    "label": "Connection Properties",
     "type": "jsoneditor",
     "height": 200,
     "value": {},
@@ -60,14 +60,6 @@
   "extraParam": {
     "name": "extraParam",
     "label": "Driver Properties",
-    "type": "jsoneditor",
-    "height": 200,
-    "value": {},
-    "required": true
-  },
-  "streaming": {
-    "name": "streaming",
-    "label": "Streaming Options",
     "type": "jsoneditor",
     "height": 200,
     "value": {},
