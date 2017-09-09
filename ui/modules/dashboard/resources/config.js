@@ -2,21 +2,7 @@
 
 var resourcesAppConfig = {
     form: {
-        // resource: {
-        //     entries: [
-        //         {
-			// 		'name': 'resource',
-			// 		'label': 'Resource',
-			// 		'type': 'jsoneditor',
-        //             'readonly': true,
-			// 		'height': '450px',
-        //             'fixedHeight': true,
-			// 		'value': {}
-			// 	}
-        //     ]
-        // },
-
-        addResource: {
+	    addResource: {
             entries: [
                 {
 					'name': 'type',
@@ -44,8 +30,12 @@ var resourcesAppConfig = {
                     {'v': 'other', 'l': "Other"}
                 ],
                 categories: [
-                    {'v': 'mongo', 'l': "Mongo", "group": "cluster"},
-					{'v': 'elasticsearch', 'l': "ElasticSearch", "cluster": "cluster"},
+                    {'v': 'mongo', 'l': "Local/External Mongo", "group": "cluster"},
+					{'v': 'elasticsearch', 'l': "Local/External ElasticSearch", "group": "cluster"},
+	
+	                {'v': 'objectrocket_mongo', 'l': "Object Rocket - Mongo SAAS", "group": "cluster"},
+	                {'v': 'objectrocket_elasticsearch', 'l': "Object Rocket - ElasticSearch SAAS", "group": "cluster"},
+	                
 					{'v': 'mysql', 'l': "MySQL", "group": "cluster"},
 					{'v': 'oracle', 'l': "Oracle", "group": "cluster"},
 					{'v': 'other', 'l': "Other", "group": "cluster"},

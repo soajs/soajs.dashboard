@@ -147,7 +147,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
     };
 
     $scope.manageResource = function(resource, action, settings) {
-        var currentScope = $scope;
+	    var currentScope = $scope;
         $modal.open({
             templateUrl: "addEditResource.tmpl",
             size: 'lg',
@@ -155,18 +155,28 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
             keyboard: true,
             controller: function ($scope, $modalInstance) {
                 fixBackDrop();
-				let allowEdit = ((action === 'add') || (action === 'update' && resource.created.toUpperCase() === currentScope.envCode.toUpperCase()));
-	            resourceConfiguration.loadDriverSchema($scope, resource, settings, allowEdit, function(error) {
-	                if (error) {
-		                $scope.notsupported = true;
-	                }
-                });
-
+	            
                 $scope.formData = {};
                 $scope.envs = [];
                 $scope.message = {};
                 $scope.recipes = [];
-
+	            
+                let category = (resource && Object.keys(resource).length > 0) ? resource.category: settings.category;
+	            resourcesAppConfig.form.addResource.data.categories.forEach((oneCategory)=>{
+		            if(oneCategory.v === category){
+			            $scope.categoryLabel = oneCategory.l;
+		            }
+	            });
+	            
+	            console.log($scope.categoryLabel);
+	
+	            let allowEdit = ((action === 'add') || (action === 'update' && resource.created.toUpperCase() === currentScope.envCode.toUpperCase()));
+	            resourceConfiguration.loadDriverSchema($scope, resource, settings, allowEdit, function(error) {
+		            if (error) {
+			            $scope.notsupported = true;
+		            }
+	            });
+	            
                 $scope.options = {
                     deploymentModes: [],
                     envCode: currentScope.envCode,
@@ -187,7 +197,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                 if(action === 'update' && $scope.options.allowEdit) {
                     $scope.title = 'Update ' + resource.name;
                 }
-                else {
+                else if(!allowEdit){
                     $scope.title = 'View ' + resource.name;
                 }
 
