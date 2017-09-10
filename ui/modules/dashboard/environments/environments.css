@@ -459,3 +459,8 @@ input:checked + .buttonSlider:before {
 .dbBox .head h4{
     margin-right: 40px;
 }
+
+.yellowListing li.blueLi{
+    border: solid 1px #faebcc;
+    background-color: #fcf8e3;
+}
