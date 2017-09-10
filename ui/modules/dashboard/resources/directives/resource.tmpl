@@ -25,17 +25,19 @@
 				<br />
 				<div>
 					<label>Plug Resource</label>
-					<label class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.plugged"><span class="buttonSlider round"></span></label>
+					<label ng-show="allowEdit" class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.plugged"><span class="buttonSlider round"></span></label>
+					<label ng-show="!allowEdit" class="toggleSwitch f-right"><input disabled type="checkbox" ng-model="formData.plugged"><span class="buttonSlider round"></span></label>
 					<label class="fieldMsg">Plugging a resource makes it accessible via the registry</label>
 					<br /><br />
 				</div>
 				<div>
 					<label>Lock Resource</label>
-					<label class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.locked"><span class="buttonSlider round"></span></label>
+					<label ng-show="allowEdit" class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.locked"><span class="buttonSlider round"></span></label>
+					<label ng-show="!allowEdit" class="toggleSwitch f-right"><input disabled type="checkbox" ng-model="formData.locked"><span class="buttonSlider round"></span></label>
 					<label class="fieldMsg">Locking a resource protects it from being deleted</label>
 					<br /><br />
 				</div>
-				<div>
+				<div ng-show="allowEdit">
 					<label>Share Resource With Other Environments</label>
 					<label class="toggleSwitch f-right"><input type="checkbox" ng-click="getEnvs()" ng-model="formData.shared"><span class="buttonSlider round"></span></label>
 					<label class="fieldMsg">Sharing a resource makes it accessible via other environments</label>
@@ -43,16 +45,19 @@
 				</div>
 				<div ng-if="formData.shared">
 					<div>
-						<label>
+						<label ng-show="allowEdit">
 							<input type="checkbox" ng-model="envs.sharedWithAll" ng-click="toggleShareWithAllEnvs()"/>
 							Share with all environments
+						</label>
+						<label ng-show="!allowEdit">
+							Shared with environment(s)
 						</label>
 					</div>
 					<div class="grid">
 						<table width="100%" border="0" cellpadding="5" cellspacing="3">
 							<tbody>
 								<tr class="first odd" ng-class="{'first': $first, 'last': $last, 'odd': $odd, 'even': $even}" ng-repeat="env in envs.list">
-									<td width="5%"><input type="checkbox" name="{{env.code}}" ng-model="env.selected" ng-disabled="envs.sharedWithAll" /></td>
+									<td width="5%" ng-show="allowEdit"><input type="checkbox" name="{{env.code}}" ng-model="env.selected" ng-disabled="envs.sharedWithAll" /></td>
 									<td width="20%" align="left">{{env.code}}</td>
 									<td width="75%">{{env.description}}</td>
 								</tr>

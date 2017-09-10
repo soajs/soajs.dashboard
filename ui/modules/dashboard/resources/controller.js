@@ -170,6 +170,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
 	            
 	
 	            let allowEdit = ((action === 'add') || (action === 'update' && resource.created.toUpperCase() === currentScope.envCode.toUpperCase()));
+	            $scope.allowEdit = allowEdit;
 	            resourceConfiguration.loadDriverSchema($scope, resource, settings, allowEdit, function(error) {
 		            if (error) {
 			            $scope.notsupported = true;
