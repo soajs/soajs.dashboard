@@ -36,9 +36,33 @@
 		</accordion-group>
 		<accordion-group is-open="false" >
 			<accordion-heading>Session</accordion-heading>
-			<div ng-if="!dbs.session && access.dbs.add" >
+			<div ng-if="(!dbs.session && !dbs.config.session) && access.dbs.add" >
 				<a ng-click="addDatabase(envCode,true)" class="btn btn-sm btn-primary">{{translation.addSessionDatabase[LANG]}}</a><br/><br/>
 			</div>
+			<ul class="blueListing" ng-if="dbs.config.session">
+				<li class="blueLi">
+					<div class="c-both w-100">
+						<h4 class="f-left">{{dbs.config.session['name']}}</h4>
+						<span class="rightActions">
+	                <a ng-if="access.dbs.delete" href="" ng-confirm-click="{{translation.areYouSureYouWantRemoveSelectedDatabase[LANG]}}" ng-click="removeDatabase(envCode, 'session');">
+	                    <span class="icon icon-cross" tooltip="{{translation.removeDatabase[LANG]}}"></span>
+	                </a>&nbsp;
+
+	                <a ng-if="access.dbs.update" href="" ng-click="editDatabase(envCode, 'session', dbs.config.session)">
+	                    <span class="icon icon-pencil2" tooltip="{{translation.editDatabase[LANG]}}"></span>
+	                </a>
+	            </span>
+					</div>
+					<div class="c-both w-100">
+						<span ng-show="dbs.config.session['prefix']"><b>Prefix:</b>&nbsp;{{dbs.config.session['prefix']}}<br/></span>
+						<b>Cluster:</b>&nbsp;{{dbs.config.session['cluster']}}<br/>
+						<b>Collection:</b>&nbsp;{{dbs.config.session['collection']}}<br/>
+						<b>Expires After:</b>&nbsp;{{dbs.config.session['expireAfter']|TTL}} ({{translation.hours[LANG]}})<br/>
+						<b>stringify:</b>&nbsp;{{dbs.config.session['stringify']}}<br/>
+						<b>Store:</b>&nbsp;<span ng-bind-html="dbs.config.session['store']|object"></span>
+					</div>
+				</li>
+			</ul>
 			<ul class="blueListing" ng-if="dbs.session">
 				<li class="blueLi">
 					<div class="c-both w-100">
@@ -54,6 +78,7 @@
 	            </span>
 					</div>
 					<div class="c-both w-100">
+						<span ng-show="dbs.session['prefix']"><b>Prefix:</b>&nbsp;{{dbs.session['prefix']}}<br/></span>
 						<b>Cluster:</b>&nbsp;{{dbs.session['cluster']}}<br/>
 						<b>Collection:</b>&nbsp;{{dbs.session['collection']}}<br/>
 						<b>Expires After:</b>&nbsp;{{dbs.session['expireAfter']|TTL}} ({{translation.hours[LANG]}})<br/>
@@ -84,7 +109,10 @@
 						<b>Cluster:</b>&nbsp;{{dbInfo['cluster']}}<br/>
 						<b>Tenant Specific:</b>&nbsp;{{dbInfo['tenantSpecific']}}
 						<span ng-if="dbInfo['prefix']">
-							<b>Custom Prefix:</b>&nbsp;{{dbInfo['prefix']}}
+							<br/><b>Custom Prefix:</b>&nbsp;{{dbInfo['prefix']}}
+						</span>
+						<span ng-if="!dbInfo['prefix']">
+							<br/><b>Global Prefix:</b>&nbsp;{{dbs.config.prefix}}
 						</span>
 					</div>
 				</div>

@@ -639,14 +639,6 @@ module.exports = {
                 "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
             },
 
-            "/environment/clusters/list": {
-                _apiInfo: {
-                    "l": "List Environment Database Clusters",
-                    "group": "Environment Clusters"
-                },
-                "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
-            },
-
 			"/resources/list": {
 				_apiInfo: {
                     "l": "List Available Resources",
@@ -1628,16 +1620,6 @@ module.exports = {
                         }
                     }
                 }
-            },
-
-            "/environment/clusters/add": {
-                _apiInfo: {
-                    "l": "Add Environment Database Cluster",
-                    "group": "Environment Clusters"
-                },
-                "commonFields": ['cluster'],
-                "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
-                "name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
             },
 
 			"/resources/add": {
@@ -2992,16 +2974,6 @@ module.exports = {
                 }
             },
 
-            "/environment/clusters/update": {
-                _apiInfo: {
-                    "l": "Update Environment Database Cluster",
-                    "group": "Environment Clusters"
-                },
-                "commonFields": ['cluster'],
-                "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
-                "name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
-            },
-
 			"/resources/update": {
 				_apiInfo: {
                     "l": "Update Resource",
@@ -3876,15 +3848,6 @@ module.exports = {
                 _apiInfo: {
                     "l": "Delete Environment Database",
                     "group": "Environment Databases"
-                },
-                "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
-                "name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
-            },
-
-            "/environment/clusters/delete": {
-                _apiInfo: {
-                    "l": "Delete Environment Database Cluster",
-                    "group": "Environment Clusters"
                 },
                 "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
                 "name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}

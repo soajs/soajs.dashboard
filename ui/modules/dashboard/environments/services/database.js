@@ -79,6 +79,9 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function (ngData
 										'name': formData.name,
 										'cluster': formData.cluster
 									};
+									if(formData.prefix){
+										postData['prefix'] = formData.prefix;
+									}
 									if (session) {
 										postData['name'] = 'session';
 										postData['sessionInfo'] = {
@@ -135,6 +138,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function (ngData
 			var t = angular.copy(data);
 			delete t.cluster;
 			formData = {
+				"prefix": data.prefix,
 				"cluster": data.cluster,
 				"name": data.name,
 				"collection": data.collection,
@@ -185,6 +189,9 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function (ngData
 										'name': formData.name,
 										'cluster': formData.cluster
 									};
+									if(formData.prefix){
+										postData['prefix'] = formData.prefix;
+									}
 									if (name === 'session') {
 										postData['name'] = 'session';
 										postData['sessionInfo'] = {

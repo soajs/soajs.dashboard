@@ -255,58 +255,6 @@ service.init(function () {
 	});
 
 	/**
-	 * Add environment cluster
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.post("/environment/clusters/add", function (req, res) {
-		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			BL.addCluster(config, req, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
-			});
-		});
-	});
-
-	/**
-	 * Delete environment cluster
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.delete("/environment/clusters/delete", function (req, res) {
-		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			BL.deleteCluster(config, req, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
-			});
-		});
-	});
-
-	/**
-	 * Update environment cluster
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.put("/environment/clusters/update", function (req, res) {
-		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			BL.updateCluster(config, req, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
-			});
-		});
-	});
-
-	/**
-	 * List environment clusters
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.get("/environment/clusters/list", function (req, res) {
-		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			BL.listClusters(config, req, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
-			});
-		});
-	});
-
-	/**
 	 * List resources
 	 * @param {String} API route
 	 * @param {Function} API middleware
@@ -1068,7 +1016,7 @@ service.init(function () {
 	 */
 
 	/**
-	 * Get all available cluster nodes
+	 * Get all available nodes
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
@@ -1081,7 +1029,7 @@ service.init(function () {
 	});
 
 	/**
-	 * Add a new cluster node
+	 * Add a new node
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
@@ -1094,7 +1042,7 @@ service.init(function () {
 	});
 
 	/**
-	 * Remove an existing cluster node
+	 * Remove an existing node
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
@@ -1107,7 +1055,7 @@ service.init(function () {
 	});
 
 	/**
-	 * Update the role or availability of an existing cluster node
+	 * Update the role or availability of an existing node
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
@@ -1120,7 +1068,7 @@ service.init(function () {
 	});
 
 	/**
-	 * Update the tag of a cluster node
+	 * Update the tag of a node
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
