@@ -596,6 +596,24 @@ var environmentsConfig = {
 	providers: serviceProviders,
 	
 	recipeTypes: {
+		soajs:{
+			l:"SOAJS",
+			'categories': {
+				other: {'l': "Other"}
+			}
+		},
+		database:{
+			l:"Database",
+			'categories': {
+				other: {'l': "Other"}
+			}
+		},
+		nginx:{
+			l:"Nginx",
+			'categories': {
+				other: {'l': "Other"}
+			}
+		},
 		service: {
 			'l': "Service",
 			'categories': {

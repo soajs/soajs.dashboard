@@ -30,6 +30,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					else {
 						currentScope.myNginx = false;
 						currentScope.myController = false;
+						currentScope.oldStyle = false;
 						if (response && response.length > 0) {
                             currentScope.rawServicesResponse = angular.copy(response);
 							
@@ -76,6 +77,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 								let serviceType = response[j].labels['soajs.service.type'] || 'other';
 								let serviceSubType = response[j].labels['soajs.service.subtype'] || 'other';
+								
+								if(serviceType === 'nginx' || serviceType === 'database'){
+									currentScope.oldStyle = true;
+								}
 								
 								if(!currentScope.hosts[serviceType]){
 									currentScope.hosts[serviceType] = {};
@@ -162,6 +167,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 							}
 							
 							currentScope.envDeployed = (currentScope.deployedInEnv.length === 2);
+							
+							if(currentScope.oldStyle){
+								currentScope.myController = currentScope.myNginx = true;
+							}
 						}
 						else{
 							delete currentScope.hosts;

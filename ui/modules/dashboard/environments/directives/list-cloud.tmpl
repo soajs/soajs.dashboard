@@ -258,6 +258,14 @@
 	<tabset>
 		<tab heading="Services" ng-if="access.hacloud.services.list">
 			<br/>
+			<div ng-if="oldStyle">
+				<alert type="warning">
+					<h3 style="margin-top: 0">Warning</h3>
+					<hr>
+					Detected an old style service deployment in High Availability section. Please visit <a href="#/catalog-recipes">Catalog Recipes</a> section and follow the upgrade wizard.<br />
+					If you already updated your <b>catalog recipes</b> and still see this warning then execute operation <b>Redeploy Service</b> on every deployed service.
+				</alert>
+			</div>
 			<div ng-if="!myController && !myNginx">
 				<alert type="warning">
 					<div class="w100 c-both table" style="margin-bottom:0;">
