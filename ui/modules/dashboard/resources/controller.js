@@ -516,6 +516,10 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                         else {
                             deployOptions.custom.resourceId = $scope.formData._id;
                             deployOptions.env = $scope.formData.created;
+	
+	                        if(deployOptions.deployConfig && deployOptions.deployConfig.memoryLimit) {
+		                        deployOptions.deployConfig.memoryLimit *= 1048576; //convert memory limit to bytes
+	                        }
                         }
 
                         overlayLoading.show();
