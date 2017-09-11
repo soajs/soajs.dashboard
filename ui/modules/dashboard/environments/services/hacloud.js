@@ -489,40 +489,132 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						formConfig.entries.push(newInput);
 					}
 				}
-
-				if(formConfig.entries.length === 0){
-					doRebuild(null);
+				
+				if(catalogRecipe.recipe.deployOptions.specifyGitConfiguration){
+					var newInput = {
+						'name': 'branch',
+						'label': 'Branch',
+						'type': 'select',
+						'value': [],
+						'fieldMsg': 'Select a branch to deploy from',
+						'required': true
+					};
+					
+					getServiceBranches({
+						repo_owner: service.labels['service.owner'],
+						repo_name: service.labels['service.repo']
+					}, function(response){
+					
+						response.branches.forEach(function (oneBranch) {
+							delete oneBranch.commit.url;
+							newInput.value.push({'v': oneBranch, 'l': oneBranch.name});
+						});
+						formConfig.entries.push(newInput);
+						
+						if(formConfig.entries.length === 0){
+							doRebuild(null);
+						}
+						else{
+							var options = {
+								timeout: $timeout,
+								form: formConfig,
+								name: 'rebuildService',
+								label: 'Rebuild Service',
+								actions: [
+									{
+										'type': 'submit',
+										'label': translation.submit[LANG],
+										'btn': 'primary',
+										'action': function (formData) {
+											doRebuild(formData);
+										}
+									},
+									{
+										'type': 'reset',
+										'label': translation.cancel[LANG],
+										'btn': 'danger',
+										'action': function () {
+											currentScope.modalInstance.dismiss('cancel');
+											currentScope.form.formData = {};
+										}
+									}
+								]
+							};
+							buildFormWithModal(currentScope, $modal, options);
+						}
+					});
 				}
 				else{
-					var options = {
-						timeout: $timeout,
-						form: formConfig,
-						name: 'rebuildService',
-						label: 'Rebuild Service',
-						actions: [
-							{
-								'type': 'submit',
-								'label': translation.submit[LANG],
-								'btn': 'primary',
-								'action': function (formData) {
-									doRebuild(formData);
+					if(formConfig.entries.length === 0){
+						doRebuild(null);
+					}
+					else{
+						var options = {
+							timeout: $timeout,
+							form: formConfig,
+							name: 'rebuildService',
+							label: 'Rebuild Service',
+							actions: [
+								{
+									'type': 'submit',
+									'label': translation.submit[LANG],
+									'btn': 'primary',
+									'action': function (formData) {
+										doRebuild(formData);
+									}
+								},
+								{
+									'type': 'reset',
+									'label': translation.cancel[LANG],
+									'btn': 'danger',
+									'action': function () {
+										currentScope.modalInstance.dismiss('cancel');
+										currentScope.form.formData = {};
+									}
 								}
-							},
-							{
-								'type': 'reset',
-								'label': translation.cancel[LANG],
-								'btn': 'danger',
-								'action': function () {
-									currentScope.modalInstance.dismiss('cancel');
-									currentScope.form.formData = {};
-								}
-							}
-						]
-					};
-					buildFormWithModal(currentScope, $modal, options);
+							]
+						};
+						buildFormWithModal(currentScope, $modal, options);
+					}
 				}
 			}
 		});
+	
+	    function getServiceBranches(opts, cb) {
+		    getSendDataFromServer(currentScope, ngDataApi, {
+			    method: 'get',
+			    routeName: '/dashboard/gitAccounts/accounts/list'
+		    }, function (error, response) {
+			    if (error) {
+				    currentScope.displayAlert('danger', error.message);
+			    } else {
+			    	let nextOpts = {};
+			    	response.forEach((oneGitAccount) =>{
+			    		if(oneGitAccount.owner === opts.repo_owner){
+						    nextOpts._id = oneGitAccount._id;
+						    nextOpts.provider = oneGitAccount.provider;
+					    }
+				    });
+			    	
+				    getSendDataFromServer(currentScope, ngDataApi, {
+					    method: 'get',
+					    routeName: '/dashboard/gitAccounts/getBranches',
+					    params: {
+						    'id': nextOpts._id,
+						    'provider': nextOpts.provider,
+						    'name': opts.repo_owner + "/" + opts.repo_name,
+						    'type': 'repo'
+					    }
+				    }, function (error, response) {
+					    if (error) {
+						    currentScope.displayAlert('danger', error.message);
+					    } else {
+						    return cb(response);
+					    }
+				    });
+			    }
+		    });
+	    }
 
 		function doRebuild(formData){
 			var params = {
@@ -542,6 +634,15 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					}
 				};
 
+				if(formData.branch){
+					if(!params.custom){
+						params.custom = {};
+					}
+					
+					var t = JSON.parse(angular.copy(formData.branch));
+					params.custom.branch = t.name;
+				}
+				
 				for( var input in formData){
 					if(input.indexOf('_ci_') !== -1){
 						if(!params.custom.env){
