@@ -19,36 +19,36 @@
         <br/>
     </div>
     <div>
-        <label>Catalog Recipe</label><img class="loadingImage" ng-src={{imagePath}} ng-if="options.loadingRecipes">
-            <select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name group by recipe.type for recipe in recipes" ng-model="formData.deployOptions.recipe" ng-change="injectCatalogEntries()"></select>
+        <label>Catalog Recipe</label>
+            <select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name group by recipe.type for recipe in recipes" ng-model="formData.deployOptions.recipe" ng-change="displayRecipeInputs()"></select>
             <label class="fieldMsg">Choose a catalog recipe to use when deploying this resource</label>
             <br>
         </div>
-        <!-- <div ng-show="currentScope._ci_serviceImagePrefix">
+        <div ng-if="recipeUserInput.image.prefix" ng-init="formData.deployOptions.custom.image.prefix = recipeUserInput.image.prefix">
         	<label>Image Prefix</label>
-        	<input type="text" class="form-control" ng-model="currentScope._ci_serviceImagePrefix"/>
-        	<div class="fieldMsg hint">Override the image prefix if you want</div>
+        	<input type="text" class="form-control" ng-model="formData.deployOptions.custom.image.prefix"/>
+        	<div class="fieldMsg">Override the image prefix if you want</div>
         	<br />
         </div>
-        <div ng-show="currentScope._ci_serviceImageName">
+        <div ng-if="recipeUserInput.image.name" ng-init="formData.deployOptions.custom.image.name = recipeUserInput.image.name">
         	<label>Image Name</label>
-        	<input type="text" class="form-control" ng-model="currentScope._ci_serviceImageName"/>
-        	<div class="fieldMsg hint">Override the image name if you want</div>
+        	<input type="text" class="form-control" ng-model="formData.deployOptions.custom.image.name"/>
+        	<div class="fieldMsg">Override the image name if you want</div>
         	<br />
         </div>
-        <div ng-show="currentScope._ci_serviceImageTag">
+        <div ng-if="recipeUserInput.image.tag" ng-init="formData.deployOptions.custom.image.tag = recipeUserInput.image.tag">
         	<label>Image Tag</label>
-        	<input type="text" class="form-control" ng-model="currentScope._ci_serviceImageTag"/>
-        	<div class="fieldMsg hint">Override the image tag if you want</div>
+        	<input type="text" class="form-control" ng-model="formData.deployOptions.custom.image.tag"/>
+        	<div class="fieldMsg">Override the image tag if you want</div>
         	<br />
         </div>
 
-        <div ng-repeat="(userInputName,userInput) in currentScope.custom">
-        	<label>{{userInput.label || userInput.name}}</label>
-        	<input type="text" class="form-control" ng-model="currentScope[userInputName]" value="{{userInput.value}}" ng-required="userInput.required"/>
-        	<div class="fieldMsg hint">{{userInput.fieldMsg}}</div>
+        <div ng-repeat="(env, envData) in recipeUserInput.envs" ng-init="formData.deployOptions.custom.env[env] = envData.default">
+        	<label>{{envData.label || envData.name}}</label>
+        	<input type="text" class="form-control" ng-model="formData.deployOptions.custom.env[env]" ng-required="envData.required"/>
+        	<div class="fieldMsg">{{envData.fieldMsg}}</div>
         	<br />
-        </div> -->
+        </div>
 </fieldset>
 <fieldset class="custom-fieldset">
     <legend>Environment Scaling</legend>

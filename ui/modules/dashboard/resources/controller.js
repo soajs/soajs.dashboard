@@ -160,6 +160,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                 $scope.envs = [];
                 $scope.message = {};
                 $scope.recipes = [];
+                $scope.recipeUserInput = { image: {}, envs: {} };
 
                 let category = (resource && Object.keys(resource).length > 0) ? resource.category: settings.category;
 	            resourcesAppConfig.form.addResource.data.categories.forEach((oneCategory)=>{
@@ -305,12 +306,12 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                 };
 
                 $scope.getCatalogRecipes = function(cb) {
-	                $scope.options.loadingRecipes = true;
+	                overlayLoading.show();
 	                getSendDataFromServer(currentScope, ngDataApi, {
 		                method: 'get',
 		                routeName: '/dashboard/catalog/recipes/list'
 	                }, function (error, recipes) {
-		                $scope.options.loadingRecipes = false;
+                        overlayLoading.hide();
 		                if(error) {
 			                $scope.displayAlert('danger', error.message);
 		                }
@@ -321,11 +322,49 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
 						                $scope.recipes.push(oneRecipe);
 					                }
 				                });
+
+                                $scope.displayRecipeInputs();
 			                }
 
 			                if (cb) return cb();
 		                }
 	                });
+                };
+
+                $scope.displayRecipeInputs = function() {
+                    if($scope.formData.deployOptions && $scope.formData.deployOptions.recipe) {
+                        for(var i = 0; i < $scope.recipes.length; i++) {
+                            if($scope.recipes[i].recipe && $scope.recipes[i]._id === $scope.formData.deployOptions.recipe) {
+                                if($scope.recipes[i].recipe.buildOptions && $scope.recipes[i].recipe.buildOptions.env && Object.keys($scope.recipes[i].recipe.buildOptions.env).length > 0) {
+                                    for (var env in $scope.recipes[i].recipe.buildOptions.env) {
+                                        if($scope.recipes[i].recipe.buildOptions.env[env].type === 'userInput') {
+                                            $scope.recipeUserInput.envs[env] = $scope.recipes[i].recipe.buildOptions.env[env];
+
+                                            if($scope.formData.deployOptions.custom && $scope.formData.deployOptions.custom.env && $scope.formData.deployOptions.custom.env[env]) {
+                                                $scope.recipeUserInput.envs[env].default = $scope.formData.deployOptions.custom.env[env]; //if user input already set, set it's value as default
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if($scope.recipes[i].recipe.deployOptions && $scope.recipes[i].recipe.deployOptions.image && $scope.recipes[i].recipe.deployOptions.image.override) {
+                                    $scope.recipeUserInput.image = {
+                                        prefix: $scope.recipes[i].recipe.deployOptions.image.prefix,
+                                        name: $scope.recipes[i].recipe.deployOptions.image.name,
+                                        tag: $scope.recipes[i].recipe.deployOptions.image.tag
+                                    };
+
+                                    if($scope.formData.deployOptions.custom && $scope.formData.deployOptions.custom.image && Object.keys($scope.formData.deployOptions.custom.image).length > 0) {
+                                        $scope.recipeUserInput.image = {
+                                            prefix: $scope.formData.deployOptions.custom.image.prefix,
+                                            name: $scope.formData.deployOptions.custom.image.name,
+                                            tag: $scope.formData.deployOptions.custom.image.tag
+                                        };
+                                    }
+                                }
+                            }
+                        }
+                    }
                 };
 
                 $scope.updateDeploymentName = function() {
@@ -516,7 +555,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                         else {
                             deployOptions.custom.resourceId = $scope.formData._id;
                             deployOptions.env = $scope.formData.created;
-	
+
 	                        if(deployOptions.deployConfig && deployOptions.deployConfig.memoryLimit) {
 		                        deployOptions.deployConfig.memoryLimit *= 1048576; //convert memory limit to bytes
 	                        }
