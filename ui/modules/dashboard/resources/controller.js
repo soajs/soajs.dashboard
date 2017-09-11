@@ -368,7 +368,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
 
 				                $scope.formData = {};
 				                $modalInstance.close();
-				                currentScope.listResources();
+				                currentScope.load();
 			                });
 		                });
 	                });
@@ -436,9 +436,13 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                             else return;
                         }
 
-                        var deployConfig = angular.copy($scope.formData.deployOptions);
-                        if(!deployConfig.custom) { deployConfig.custom = {}; }
-                        deployConfig.custom.type = 'resource';
+                        var deployOptions = angular.copy($scope.formData.deployOptions);
+                        if(!deployOptions.custom) { deployOptions.custom = {}; }
+                        deployOptions.custom.type = 'resource';
+
+                        if(deployOptions.deployConfig && deployOptions.deployConfig.memoryLimit) {
+                            deployOptions.deployConfig.memoryLimit *= 1048576; //convert memory limit to bytes
+                        }
 
                         var options = {
                             method: 'put',
@@ -448,7 +452,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                                 resourceName: $scope.formData.name,
                                 config: {
                                     deploy: $scope.formData.canBeDeployed || false,
-                                    options: deployConfig
+                                    options: deployOptions
                                 }
                             }
                         };
@@ -474,14 +478,16 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                     }
 
                     if(deployOnly) {
-                        deployResource();
+                        deployResource(function() {
+                            currentScope.load();
+                        });
                     }
                     else {
                         $scope.save(function() {
                             deployResource(function() {
                                 $scope.formData = {};
                                 $modalInstance.close();
-                                currentScope.listResources();
+                                currentScope.load();
                             });
                         });
                     }
@@ -540,7 +546,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                         rebuildService(function() {
                             $scope.formData = {};
                             $modalInstance.close();
-                            currentScope.listResources();
+                            currentScope.load();
                         });
                     });
 
@@ -611,7 +617,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                     }
                     else {
                         $scope.displayAlert('success', 'Resource deleted successfully');
-                        $scope.listResources();
+                        $scope.load();
                     }
                 });
             });
@@ -730,6 +736,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
             }
             else {
                 $scope.displayAlert('success', 'Resource deployed successfully. Check the High Availability - Cloud section to see it running');
+                $scope.load();
             }
         });
     };
@@ -749,7 +756,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
 		    }
 		    else {
 			    $scope.displayAlert('success', "Resources have been upgraded to the latest version.");
-			    $scope.listResources();
+			    $scope.load();
 		    }
 	    });
     };
@@ -790,17 +797,25 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
         });
     };
 
+    $scope.load = function(cb) {
+        $scope.listDeployedServices(function() {
+            $scope.getDeployConfig(function() {
+                $scope.listResources(function() {
+                    if(cb) return cb;
+
+                    return;
+                });
+            });
+        });
+    };
+
     //start here
     if($scope.access.list) {
         injectFiles.injectCss("modules/dashboard/resources/resources.css");
         $scope.envCode = $cookies.getObject("myEnv").code;
         $scope.envDeployer = $cookies.getObject("myEnv").deployer;
     	$scope.envPlatform = $scope.envDeployer.selected.split('.')[1];
-        $scope.listDeployedServices(function() {
-            $scope.getDeployConfig(function() {
-                $scope.listResources();
-            });
-        });
+        $scope.load();
     }
 }]);
 
