@@ -27,14 +27,14 @@
 					<label>Plug Resource</label>
 					<label ng-show="allowEdit" class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.plugged"><span class="buttonSlider round"></span></label>
 					<label ng-show="!allowEdit" class="toggleSwitch f-right"><input disabled type="checkbox" ng-model="formData.plugged"><span class="buttonSlider round"></span></label>
-					<label class="fieldMsg">Plugging a resource makes it accessible via the registry</label>
+					<label class="fieldMsg">Turn this on if you want this resource to be available in the registry for your services & daemons</label>
 					<br /><br />
 				</div>
 				<div>
 					<label>Lock Resource</label>
 					<label ng-show="allowEdit" class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.locked"><span class="buttonSlider round"></span></label>
 					<label ng-show="!allowEdit" class="toggleSwitch f-right"><input disabled type="checkbox" ng-model="formData.locked"><span class="buttonSlider round"></span></label>
-					<label class="fieldMsg">Locking a resource protects it from being deleted</label>
+					<label class="fieldMsg">Turn this on if you want to protect this resource and make it readonly for others</label>
 					<br /><br />
 				</div>
 				<div ng-show="allowEdit">
