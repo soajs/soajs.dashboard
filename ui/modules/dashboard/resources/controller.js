@@ -155,20 +155,20 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
             keyboard: true,
             controller: function ($scope, $modalInstance) {
                 fixBackDrop();
-	            
+
                 $scope.formData = {};
                 $scope.envs = [];
                 $scope.message = {};
                 $scope.recipes = [];
-	            
+
                 let category = (resource && Object.keys(resource).length > 0) ? resource.category: settings.category;
 	            resourcesAppConfig.form.addResource.data.categories.forEach((oneCategory)=>{
 		            if(oneCategory.v === category){
 			            $scope.categoryLabel = oneCategory.l;
 		            }
 	            });
-	            
-	
+
+
 	            let allowEdit = ((action === 'add') || (action === 'update' && resource.created.toUpperCase() === currentScope.envCode.toUpperCase()));
 	            $scope.allowEdit = allowEdit;
 	            resourceConfiguration.loadDriverSchema($scope, resource, settings, allowEdit, function(error) {
@@ -176,7 +176,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
 			            $scope.notsupported = true;
 		            }
 	            });
-	            
+
                 $scope.options = {
                     deploymentModes: [],
                     envCode: currentScope.envCode,
@@ -328,6 +328,19 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
 	                });
                 };
 
+                $scope.updateDeploymentName = function() {
+                    if($scope.options.formAction === 'add' && $scope.formData.canBeDeployed) {
+                        if(!$scope.formData.deployOptions) {
+                            $scope.formData.deployOptions = {};
+                        }
+                        if(!$scope.formData.deployOptions.custom) {
+                            $scope.formData.deployOptions.custom = {}
+                        }
+
+                        $scope.formData.deployOptions.custom.name = $scope.formData.name;
+                    }
+                };
+
                 $scope.toggleShareWithAllEnvs = function() {
 	                if($scope.envs.sharedWithAll) {
 		                $scope.envs.list.forEach(function(oneEnv) {
@@ -347,12 +360,12 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                     if($scope.formData.deployOptions && $scope.formData.deployOptions.custom) {
                         $scope.formData.deployOptions.custom.type = 'resource';
                     }
-	
+
 	                resourceConfiguration.mapConfigurationFormDataToConfig($scope, function(){
 		                saveResource(function() {
 			                saveResourceDeployConfig(function() {
 				                if(cb) return cb();
-				
+
 				                $scope.formData = {};
 				                $modalInstance.close();
 				                currentScope.listResources();
@@ -576,7 +589,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
 		                delete $scope.resourceDriverCounter;
 	                }
                 };
-                
+
                 $scope.fillForm();
                 $scope.getCatalogRecipes();
             }

@@ -6,7 +6,7 @@
 				<br />
 				<div>
 					<label>Resource Name</label>
-					<input type="text" class="form-control" ng-model="formData.name" ng-required="true" ng-disabled="options.formAction === 'update'"/>
+					<input type="text" class="form-control" ng-model="formData.name" ng-required="true" ng-change="updateDeploymentName()" ng-disabled="options.formAction === 'update'"/>
 					<label class="fieldMsg">Choose the name of the new resource</label>
 					<br />
 				</div>
@@ -84,7 +84,7 @@
 				<div ng-if="options.formAction !== 'update' || (options.formAction === 'update' && formData.created === options.envCode)">
 					<div>
 						<label>Deploy this resource as part of this cloud</label>
-						<label class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.canBeDeployed"><span class="buttonSlider round"></span></label>
+						<label class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.canBeDeployed" ng-change="updateDeploymentName()"><span class="buttonSlider round"></span></label>
 						<label class="fieldMsg">Plugging a resource makes it accessible via the registry</label>
 						<br /><br />
 					</div>
