@@ -542,9 +542,9 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					});
 				}
 				else if(!data.recipe.deployOptions.voluming || (data.recipe.deployOptions.voluming && data.recipe.deployOptions.voluming.volumes.length === 0 && data.recipe.deployOptions.voluming.volumeMounts.length === 0)){
-					modalScope.form.entries[5].tabs[5].entries.push({
+					modalScope.form.entries[5].tabs[5].entries.splice(modalScope.form.entries[5].tabs[5].entries.length -1, 0, {
 						'type':'html',
-						'value': "<br /><div class='alert alert-warning'>No Volumes Configured for this Recipe.</div>"
+						'value': "<br /><div class='alert alert-warning'>No Volumes Configured for this Recipe.</div><br />"
 					});
 				}
 				
@@ -556,9 +556,9 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					});
 				}
 				else if(!data.recipe.deployOptions.ports || data.recipe.deployOptions.ports.length === 0){
-					modalScope.form.entries[5].tabs[6].entries.push({
+					modalScope.form.entries[5].tabs[6].entries.splice(modalScope.form.entries[5].tabs[6].entries.length-1, 0, {
 						'type':'html',
-						'value': "<br /><div class='alert alert-warning'>No Ports Configured for this Recipe.</div>"
+						'value': "<br /><div class='alert alert-warning'>No Ports Configured for this Recipe.</div><br />"
 					});
 				}
 				
@@ -586,20 +586,25 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					}
 				}
 				else if(!data.recipe.buildOptions.env || Object.keys(data.recipe.buildOptions.env).length === 0){
-					modalScope.form.entries[7].tabs[1].entries.push({
+					modalScope.form.entries[7].tabs[1].entries.splice(modalScope.form.entries[7].tabs[1].entries.length -1, 0, {
 						'type':'html',
-						'value': "<br /><div class='alert alert-warning'>No Environment Variables Configured for this Recipe.</div>"
+						'value': "<br /><div class='alert alert-warning'>No Environment Variables Configured for this Recipe.</div><br />"
 					});
 				}
 				
 				//service labels
 				if(data.recipe.deployOptions.labels && Object.keys(data.recipe.deployOptions.labels).length > 0){
-					console.log(data.recipe.deployOptions.labels);
 					for(let oneLabel in data.recipe.deployOptions.labels){
 						output['labelName' + labelCounter] = oneLabel;
 						output['labelValue' + labelCounter] = data.recipe.deployOptions.labels[oneLabel];
 						modalScope.addNewLabel(data.recipe.deployOptions.labels[oneLabel]);
 					}
+				}
+				else{
+					modalScope.form.entries[5].tabs[7].entries.splice(modalScope.form.entries[5].tabs[7].entries.length -1, 0, {
+						'type':'html',
+						'value': "<br /><div class='alert alert-warning'>No Labels found for this Recipe.</div><br />"
+					});
 				}
 			}
 			
