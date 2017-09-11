@@ -12,9 +12,6 @@
 		    </alert>
 		    <br />
 	    </div>
-        <div ng-if="!resources || !resources.list || resources.list.length === 0">
-
-        </div>
         <div ng-if="resources && resources.list && resources.list.length > 0">
             <tabset>
                 <tab ng-repeat="(type, categories) in resources.types" heading="{{type|capitalizeFirst}}">
@@ -28,20 +25,20 @@
                                     <span ng-if="resource.locked" class="icon icon-lock" tooltip="This resource is locked"></span>
                                     <span ng-if="resource.shared && resource.created.toLowerCase() !== envCode.toLowerCase()" class="icon icon-share2" tooltip="This resource is shared from the {{resource.created}} environment"></span>
                                     <div class="rightActions" style="display:inline;">
-                                        <a href="" ng-if="access.delete && !resource.locked && resource.allowEdit" ng-click="deleteResource(resource)" ng-confirm-click="Are you sure you want to delete this resource?">
+                                        <a href="" ng-if="access.delete && resource.permission && resource.allowEdit" ng-click="deleteResource(resource)" ng-confirm-click="Are you sure you want to delete this resource?">
         									<span class="icon icon-cross" tooltip="Delete Resource"></span>
         								</a>
                                     </div>
                                 </div>
                                 <div class="body resource-box-body" ng-class="{'resource-box-body-three-btn-view': (resource.canBeDeployed || resource.isDeployed)}">
-                                    <a href="" ng-if="access.update && !resource.plugged" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: !resource.allowEdit || (resource.canBeDeployed && !resource.isDeployed)}" ng-click="togglePlugResource(resource, true)"><span class="icon icon-power-cord"></span>Plug</a>
-                                    <a href="" ng-if="access.update && resource.plugged" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: !resource.allowEdit}" ng-click="togglePlugResource(resource, false)"><span class="icon icon-power-cord"></span>Unplug</a>
-                                    <a href="" ng-if="access.deploy && resource.canBeDeployed" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: !resource.allowEdit || (resource.isDeployed && resource.instance && resource.instance.id)}" ng-click="deployResource(resource)"><span class="icon icon-cloud"></span>Deploy</a>
+                                    <a href="" ng-if="access.update && !resource.plugged" ng-disabled="!resource.permission" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: !resource.allowEdit || (resource.canBeDeployed && !resource.isDeployed)}" ng-click="togglePlugResource(resource, true)"><span class="icon icon-power-cord"></span>Plug</a>
+                                    <a href="" ng-if="access.update && resource.plugged" ng-disabled="!resource.permission" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: !resource.allowEdit}" ng-click="togglePlugResource(resource, false)"><span class="icon icon-power-cord"></span>Unplug</a>
+                                    <a href="" ng-if="access.deploy && resource.canBeDeployed" ng-disabled="!resource.permission" class="btn btn-sm btn-default responsive-width" ng-class="{disabled: !resource.allowEdit || (resource.isDeployed && resource.instance && resource.instance.id)}" ng-click="deployResource(resource)"><span class="icon icon-cloud"></span>Deploy</a>
                                     <a href="" ng-if="access.update" class="btn btn-sm btn-default responsive-width" ng-click="manageResource(resource, 'update')">
-                                        <span ng-if="resource.allowEdit">
+                                        <span ng-if="resource.allowEdit && resource.permission">
                                             <span class="icon icon-cog"></span>Configure
                                         </span>
-                                        <span ng-if="!resource.allowEdit">
+                                        <span ng-if="!resource.allowEdit || !resource.permission">
                                             <span class="icon icon-search"></span>View
                                         </span>
                                     </a>

@@ -169,7 +169,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
 	            });
 
 
-	            let allowEdit = ((action === 'add') || (action === 'update' && resource.created.toUpperCase() === currentScope.envCode.toUpperCase()));
+	            let allowEdit = ((action === 'add') || (action === 'update' && resource.permission && resource.created.toUpperCase() === currentScope.envCode.toUpperCase()));
 	            $scope.allowEdit = allowEdit;
 	            resourceConfiguration.loadDriverSchema($scope, resource, settings, allowEdit, function(error) {
 		            if (error) {
@@ -329,7 +329,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                 };
 
                 $scope.updateDeploymentName = function() {
-                    if($scope.options.formAction === 'add' && $scope.formData.canBeDeployed) {
+                    if($scope.formData.canBeDeployed) {
                         if(!$scope.formData.deployOptions) {
                             $scope.formData.deployOptions = {};
                         }
@@ -420,11 +420,11 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                         getSendDataFromServer(currentScope, ngDataApi, options, function(error, result) {
                             overlayLoading.hide();
                             if(error) {
-                                currentScope.displayAlert('danger', error.message);
+                                $scope.displayAlert('danger', error.message);
                             }
                             else {
                                 $scope.newResource = result;
-                                currentScope.displayAlert('success', 'Resource updated successfully');
+                                $scope.displayAlert('success', 'Resource updated successfully');
                                 return cb();
                             }
                         });
@@ -461,10 +461,10 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                         getSendDataFromServer(currentScope, ngDataApi, options, function(error) {
                             overlayLoading.hide();
                             if(error) {
-                                currentScope.displayAlert('danger', error.message);
+                                $scope.displayAlert('danger', error.message);
                             }
                             else {
-                                currentScope.displayAlert('success', 'Resource deployment configuration updated successfully');
+                                $scope.displayAlert('success', 'Resource deployment configuration updated successfully');
                                 if (cb) return cb();
                             }
                         });
@@ -526,10 +526,10 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                         }, function(error) {
                             overlayLoading.hide();
                             if(error) {
-                                currentScope.displayAlert('danger', error.message);
+                                $scope.displayAlert('danger', error.message);
                             }
                             else {
-                                currentScope.displayAlert('success', 'Resource deployed successfully. Check the High Availability - Cloud section to see it running');
+                                $scope.displayAlert('success', 'Resource deployed successfully. Check the High Availability - Cloud section to see it running');
                                 if(cb) return cb();
                             }
                         });
@@ -578,10 +578,10 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                         }, function(error) {
                             overlayLoading.hide();
                             if(error) {
-                                currentScope.displayAlert('danger', error.message);
+                                $scope.displayAlert('danger', error.message);
                             }
                             else {
-                                currentScope.displayAlert('success', 'Resource rebuilt successfully');
+                                $scope.displayAlert('success', 'Resource rebuilt successfully');
                                 if(cb) return cb();
                             }
                         });
@@ -694,6 +694,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
         delete resourceRecord._id;
         delete resourceRecord.created;
         delete resourceRecord.author;
+        delete resourceRecord.permission;
         resourceRecord.plugged = plug;
 
         overlayLoading.show();
