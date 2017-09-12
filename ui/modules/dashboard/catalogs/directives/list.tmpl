@@ -29,7 +29,7 @@
 				<h3 style="margin-top:5px;">Warning</h3>
 				<hr>
 				Some catalog recipes have not been upgraded yet, they still use a schema compatible with previous SOAJS version(s).<br />
-				This prevents you from configuring or deploying any repository and/or resource. Please upgrade these recipes to the latest version <a href="" ng-click="upgradeAll()">[ Upgrade ]</a>
+				This prevents you from configuring or deploying any repository and/or resource. Please upgrade these recipes to the latest version <a href="" ng-if="access.upgrade" ng-click="upgradeAll()">[ Upgrade ]</a>
 			</alert>
 			<br />
 			<div class="f-right w30 searchBoxContainer">
@@ -178,7 +178,7 @@
 												<a href="" ng-if="access.delete && !recipe.locked" ng-click="deleteRecipe(recipe, true)" ng-confirm-click="Are you sure you want to delete this recipe?">
 													<span class="icon icon-cross" tooltip="Delete Recipe"></span>
 												</a>
-												
+
 												<a href="" ng-click="viewRecipe(recipe)">
 													<span class="icon icon-search" tooltip="View Recipe"></span>
 												</a>

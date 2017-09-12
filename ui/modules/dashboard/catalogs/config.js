@@ -42,30 +42,30 @@ var catalogAppConfig = {
 					{'v': 'java', 'l': "Java", "group": "service"},
 					{'v': 'asp', 'l': "ASP", "group": "service"},
 					{'v': 'other', 'l': "Other", "group": "service"},
-					
+
 					{'v': 'soajs', 'l': "SOAJS", "group": "daemon"},
 					{'v': 'nodejs', 'l': "NodeJs", "group": "daemon"},
 					{'v': 'php', 'l': "PHP", "group": "daemon"},
 					{'v': 'java', 'l': "Java", "group": "daemon"},
 					{'v': 'asp', 'l': "ASP", "group": "daemon"},
 					{'v': 'other', 'l': "Other", "group": "daemon"},
-					
+
 					{'v': 'mongo', 'l': "Mongo", "group": "cluster"},
 					{'v': 'elasticsearch', 'l': "ElasticSearch", "cluster": "cluster"},
 					{'v': 'mysql', 'l': "MySQL", "group": "cluster"},
 					{'v': 'oracle', 'l': "Oracle", "group": "cluster"},
 					{'v': 'other', 'l': "Other", "group": "cluster"},
-					
+
 					{'v': 'nginx', 'l': "Nginx", "group": "server"},
 					{'v': 'apache', 'l': "Apache", "group": "server"},
 					{'v': 'iis', 'l': "IIS", "group": "server"},
 					{'v': 'other', 'l': "Other", "group": "server"},
-					
+
 					{'v': 'amazons3', 'l': "Amazon S3", "group": "cdn"},
 					{'v': 'rackspace', 'l': "Rackspace", "cluster": "cdn"},
 					{'v': 'cloudflare', 'l': "Cloudflare", "group": "cdn"},
 					{'v': 'other', 'l': "Other", "group": "cdn"},
-					
+
 					{'v': 'kibana', 'l': "Kibana", "group": "system"},
 					{'v': 'logstash', 'l': "Logstash", "group": "system"},
 					{'v': 'filebeat', 'l': "Filebeat", "group": "system"},
@@ -75,7 +75,7 @@ var catalogAppConfig = {
 				'required': true
 			}
 		},
-		
+
 		entries: [
 			{
 				'name': 'name',
@@ -352,7 +352,7 @@ var catalogAppConfig = {
 				]
 			}
 		],
-		
+
 		envVars: {
 			'name': 'envVarGroup',
 			'type': 'group',
@@ -393,7 +393,7 @@ var catalogAppConfig = {
 				}
 			]
 		},
-		
+
 		computedVar: {
 			'name': 'computedVar',
 			'label': 'Computed Variable',
@@ -401,23 +401,23 @@ var catalogAppConfig = {
 			'groups': ['NodeJs', 'SOAJS Service', 'SOAJS Daemon', 'SOAJS Service/Daemon', 'SOAJS Deployer', 'SOAJS GCS', 'GIT Information', 'SOAJS Mongo', 'SOAJS Nginx'],
 			'value':[
 				{'v': '$SOAJS_SRV_MEMORY', 'l': "$SOAJS_SRV_MEMORY", "group": "NodeJs"},
-				
+
 				{'v': '$SOAJS_SRV_PORT', 'l': "$SOAJS_SRV_PORT", "group": "SOAJS Service"},
 				{'v': '$SOAJS_SRV_PORT_MAINTENANCE', 'l': "$SOAJS_SRV_PORT_MAINTENANCE", "group": "SOAJS Service"},
-				
+
 				{'v': '$SOAJS_DAEMON_GRP_CONF', 'l': "$SOAJS_DAEMON_GRP_CONF", "group": "SOAJS Daemon"},
-				
+
 				{'v': '$SOAJS_ENV', 'l': "$SOAJS_ENV", "group": "SOAJS Service/Daemon"},
 				{'v': '$SOAJS_PROFILE', 'l': "$SOAJS_PROFILE", "group": "SOAJS Service/Daemon"},
-				
+
 				{'v': '$SOAJS_SRV_MAIN', 'l': "$SOAJS_SRV_MAIN", "group": "SOAJS Service/Daemon"},
-				
+
 				{'v': '$SOAJS_DEPLOY_HA', 'l': "$SOAJS_DEPLOY_HA", "group": "SOAJS Deployer"},
 				{'v': '$SOAJS_HA_NAME', 'l': "$SOAJS_HA_NAME", "group": "SOAJS Deployer"},
-				
+
 				{'v': '$SOAJS_GC_NAME', 'l': "$SOAJS_GC_NAME", "group": "SOAJS GCS"},
 				{'v': '$SOAJS_GC_VERSION', 'l': "$SOAJS_GC_VERSION", "group": "SOAJS GCS"},
-				
+
 				{'v': '$SOAJS_GIT_OWNER', 'l': "$SOAJS_GIT_OWNER", "group": "GIT Information"},
 				{'v': '$SOAJS_GIT_BRANCH', 'l': "$SOAJS_GIT_BRANCH", "group": "GIT Information"},
 				{'v': '$SOAJS_GIT_COMMIT', 'l': "$SOAJS_GIT_COMMIT", "group": "GIT Information"},
@@ -426,7 +426,7 @@ var catalogAppConfig = {
 				{'v': '$SOAJS_GIT_PROVIDER', 'l': "$SOAJS_GIT_PROVIDER", "group": "GIT Information"},
 				{'v': '$SOAJS_GIT_DOMAIN', 'l': "$SOAJS_GIT_DOMAIN", "group": "GIT Information"},
 				{'v': '$SOAJS_GIT_PATH', 'l': "$SOAJS_GIT_PATH", "group": "GIT Information"},
-				
+
 				{'v': '$SOAJS_MONGO_NB', 'l': "$SOAJS_MONGO_NB", "group": "SOAJS Mongo"},
 				{'v': '$SOAJS_MONGO_PREFIX', 'l': "$SOAJS_MONGO_PREFIX", "group": "SOAJS Mongo"},
 				{'v': '$SOAJS_MONGO_RSNAME', 'l': "$SOAJS_MONGO_RSNAME", "group": "SOAJS Mongo"},
@@ -434,7 +434,7 @@ var catalogAppConfig = {
 				{'v': '$SOAJS_MONGO_SSL', 'l': "$SOAJS_MONGO_SSL", "group": "SOAJS Mongo"},
 				{'v': '$SOAJS_MONGO_IP_N', 'l': "$SOAJS_MONGO_IP_N", "group": "SOAJS Mongo"},
 				{'v': '$SOAJS_MONGO_PORT_N', 'l': "$SOAJS_MONGO_PORT_N", "group": "SOAJS Mongo"},
-				
+
 				{'v': '$SOAJS_EXTKEY', 'l': "$SOAJS_EXTKEY", "group": "SOAJS Nginx"},
 				{'v': '$SOAJS_NX_DOMAIN', 'l': "$SOAJS_NX_DOMAIN", "group": "SOAJS Nginx"},
 				{'v': '$SOAJS_NX_API_DOMAIN', 'l': "$SOAJS_NX_API_DOMAIN", "group": "SOAJS Nginx"},
@@ -447,7 +447,7 @@ var catalogAppConfig = {
 			'tooltip': 'Select which entry this variable should be mapped to.',
 			'fieldMsg': 'Select which entry this variable should be mapped to.'
 		},
-		
+
 		staticVar: {
 			'name': 'staticVar',
 			'label': 'Static Variable Value',
@@ -458,7 +458,7 @@ var catalogAppConfig = {
 			'fieldMsg': 'Enter the value of your environment variable',
 			"placeholder": "My Var Value"
 		},
-		
+
 		userInputVar: {
 			'type': 'group',
 			'name': 'userInputVar',
@@ -497,7 +497,7 @@ var catalogAppConfig = {
 				}
 			]
 		},
-		
+
 		volumeInput: {
 			'name': 'volumeGroup',
 			"type": "group",
@@ -530,7 +530,7 @@ var catalogAppConfig = {
 				}
 			]
 		},
-		
+
 		portInput: {
 			'name': 'portGroup',
 			'type': 'group',
@@ -553,7 +553,7 @@ var catalogAppConfig = {
 				}
 			]
 		},
-		
+
 		labelInput: {
 			'name': 'labelGroup',
 			'type': 'group',
@@ -646,7 +646,8 @@ var catalogAppConfig = {
 		list: ['dashboard', '/catalog/recipes/list', 'get'],
 		add: ['dashboard', '/catalog/recipes/add', 'post'],
 		update: ['dashboard', '/catalog/recipes/update', 'put'],
-		delete: ['dashboard', '/catalog/recipes/delete', 'delete']
+		delete: ['dashboard', '/catalog/recipes/delete', 'delete'],
+		upgrade: ['dashboard', '/catalog/recipes/upgrade', 'get']
 	}
-	
+
 };
