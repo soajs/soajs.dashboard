@@ -509,49 +509,54 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						'required': true
 					};
 					
-					getServiceBranches({
-						repo_owner: service.labels['service.owner'],
-						repo_name: service.labels['service.repo']
-					}, function(response){
-					
-						response.branches.forEach(function (oneBranch) {
-							delete oneBranch.commit.url;
-							newInput.value.push({'v': oneBranch, 'l': oneBranch.name});
+					if(service.labels['service.owner']){
+						getServiceBranches({
+							repo_owner: service.labels['service.owner'],
+							repo_name: service.labels['service.repo']
+						}, function(response){
+							
+							response.branches.forEach(function (oneBranch) {
+								delete oneBranch.commit.url;
+								newInput.value.push({'v': oneBranch, 'l': oneBranch.name});
+							});
+							formConfig.entries.push(newInput);
+							
+							if(formConfig.entries.length === 0){
+								doRebuild(null);
+							}
+							else{
+								var options = {
+									timeout: $timeout,
+									form: formConfig,
+									name: 'rebuildService',
+									label: 'Rebuild Service',
+									actions: [
+										{
+											'type': 'submit',
+											'label': translation.submit[LANG],
+											'btn': 'primary',
+											'action': function (formData) {
+												doRebuild(formData);
+											}
+										},
+										{
+											'type': 'reset',
+											'label': translation.cancel[LANG],
+											'btn': 'danger',
+											'action': function () {
+												currentScope.modalInstance.dismiss('cancel');
+												currentScope.form.formData = {};
+											}
+										}
+									]
+								};
+								buildFormWithModal(currentScope, $modal, options);
+							}
 						});
-						formConfig.entries.push(newInput);
-						
-						if(formConfig.entries.length === 0){
-							doRebuild(null);
-						}
-						else{
-							var options = {
-								timeout: $timeout,
-								form: formConfig,
-								name: 'rebuildService',
-								label: 'Rebuild Service',
-								actions: [
-									{
-										'type': 'submit',
-										'label': translation.submit[LANG],
-										'btn': 'primary',
-										'action': function (formData) {
-											doRebuild(formData);
-										}
-									},
-									{
-										'type': 'reset',
-										'label': translation.cancel[LANG],
-										'btn': 'danger',
-										'action': function () {
-											currentScope.modalInstance.dismiss('cancel');
-											currentScope.form.formData = {};
-										}
-									}
-								]
-							};
-							buildFormWithModal(currentScope, $modal, options);
-						}
-					});
+					}
+					else{
+						doRebuild(null);
+					}
 				}
 				else{
 					if(formConfig.entries.length === 0){
