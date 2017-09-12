@@ -7,13 +7,14 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 		let category = (resource && Object.keys(resource).length > 0) ? resource.category: settings.category;
 		
 		let schemaFile = "modules/dashboard/resources/drivers/" + type + "/" + category + "/driver.json";
-		let cssFile = "modules/dashboard/resources/drivers/" + type + "/" + category + "/driver.css";
-		let logoPath = "modules/dashboard/resources/drivers/" + type + "/" + category + "/logo.png";
-		currentScope.driverLogo = logoPath;
-		
 		let dynamicEntries = [];
 		
 		$http.get(schemaFile).success(function(entries) {
+			
+			let cssFile = "modules/dashboard/resources/drivers/" + type + "/" + category + "/driver.css";
+			let logoPath = "modules/dashboard/resources/drivers/" + type + "/" + category + "/logo.png";
+			currentScope.driverLogo = logoPath;
+			
 			currentScope.driverConfigurationSchema = entries;
 			for(let i in entries){
 				let clone = angular.copy(entries[i]);
@@ -46,8 +47,8 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 				// console.log(currentScope.form.formData);
 				return cb(null, true);
 			});
-		}).error(function(error){
-			return cb(error);
+		}).catch(function(error){
+			return cb(null, true);
 		});
 		
 		function replicateInput(original, limit){
@@ -190,40 +191,42 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 	
 	function mapConfigurationFormDataToConfig(currentScope, cb){
 		let config = {};
-		let data = angular.copy(currentScope.form.formData);
 		
 		//pull all array inputs
-		for(let inputName in currentScope.driverConfigurationSchema){
-			if(currentScope.resourceDriverCounter && currentScope.resourceDriverCounter[inputName]){
-				config[currentScope.driverConfigurationSchema[inputName].name] = [];
-				for(let i =0; i < currentScope.resourceDriverCounter[inputName]; i++){
-					
-					let arrData = {};
-					//get array item schema
-					currentScope.driverConfigurationSchema[inputName].entries.forEach((oneEntry)=>{
-						doOneLevelInput(oneEntry.name + i, oneEntry.name, oneEntry, data, arrData, currentScope.form.entries);
-						delete data[oneEntry.name + i];
-						delete data["remove" + inputName + i];
-					});
-					
-					//push array item data
-					config[currentScope.driverConfigurationSchema[inputName].name].push(arrData);
+		if(currentScope.driverConfigurationSchema){
+			let data = angular.copy(currentScope.form.formData);
+			for(let inputName in currentScope.driverConfigurationSchema){
+				if(currentScope.resourceDriverCounter && currentScope.resourceDriverCounter[inputName]){
+					config[currentScope.driverConfigurationSchema[inputName].name] = [];
+					for(let i =0; i < currentScope.resourceDriverCounter[inputName]; i++){
+						
+						let arrData = {};
+						//get array item schema
+						currentScope.driverConfigurationSchema[inputName].entries.forEach((oneEntry)=>{
+							doOneLevelInput(oneEntry.name + i, oneEntry.name, oneEntry, data, arrData, currentScope.form.entries);
+							delete data[oneEntry.name + i];
+							delete data["remove" + inputName + i];
+						});
+						
+						//push array item data
+						config[currentScope.driverConfigurationSchema[inputName].name].push(arrData);
+					}
+					delete data['another' + inputName];
 				}
-				delete data['another' + inputName];
-			}
-			
-			// pull remaining inputs
-			else if(data[currentScope.driverConfigurationSchema[inputName].name]){
-				doOneLevelInput(currentScope.driverConfigurationSchema[inputName].name, currentScope.driverConfigurationSchema[inputName].name, currentScope.driverConfigurationSchema[inputName], data, config, currentScope.form.entries);
-				delete data[currentScope.driverConfigurationSchema[inputName].name];
-			}
-			
-			//pull complexe and complicated inputs
-			else if(currentScope.driverConfigurationSchema[inputName].type === 'group'){
-				if(!config[inputName]){
-					config[inputName] = {};
+				
+				// pull remaining inputs
+				else if(data[currentScope.driverConfigurationSchema[inputName].name]){
+					doOneLevelInput(currentScope.driverConfigurationSchema[inputName].name, currentScope.driverConfigurationSchema[inputName].name, currentScope.driverConfigurationSchema[inputName], data, config, currentScope.form.entries);
+					delete data[currentScope.driverConfigurationSchema[inputName].name];
 				}
-				doOneLevelInput(inputName, inputName, currentScope.driverConfigurationSchema[inputName], data, config[inputName], currentScope.form.entries);
+				
+				//pull complexe and complicated inputs
+				else if(currentScope.driverConfigurationSchema[inputName].type === 'group'){
+					if(!config[inputName]){
+						config[inputName] = {};
+					}
+					doOneLevelInput(inputName, inputName, currentScope.driverConfigurationSchema[inputName], data, config[inputName], currentScope.form.entries);
+				}
 			}
 		}
 		
