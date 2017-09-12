@@ -46,8 +46,7 @@ var resourcesAppConfig = {
 					{'v': 'other', 'l': "Other", "group": "server"},
 
 					{'v': 'amazons3', 'l': "Amazon S3", "group": "cdn"},
-					{'v': 'rackspace', 'l': "Rackspace", "cluster": "cdn"},
-					{'v': 'cloudflare', 'l': "Cloudflare", "group": "cdn"},
+					{'v': 'rackspace', 'l': "Rackspace", "group": "cdn"},
 					{'v': 'other', 'l': "Other", "group": "cdn"},
 
 					{'v': 'kibana', 'l': "Kibana", "group": "system"},
