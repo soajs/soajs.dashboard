@@ -45,7 +45,7 @@
 
 }
 
-fieldset h4{
+fieldset h4:not(alert h4){
     background-color:#dff0d8 !important;
     /*color:white;*/
 }
@@ -146,4 +146,3 @@ fieldset pre{
 }
 
 .ace_text-input {position:absolute!important}
-
