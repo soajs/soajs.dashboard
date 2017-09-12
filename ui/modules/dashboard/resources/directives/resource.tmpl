@@ -25,31 +25,37 @@
 				<br />
 				<div>
 					<label>Plug Resource</label>
-					<label ng-show="allowEdit" class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.plugged"><span class="buttonSlider round"></span></label>
-					<label ng-show="!allowEdit" class="toggleSwitch f-right"><input disabled type="checkbox" ng-model="formData.plugged"><span class="buttonSlider round"></span></label>
+					<label ng-show="allowEdit && !sensitive" class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.plugged"><span class="buttonSlider round"></span></label>
+					<label ng-show="!allowEdit || sensitive" class="toggleSwitch f-right"><input disabled type="checkbox" ng-model="formData.plugged"><span class="buttonSlider round"></span></label>
 					<label class="fieldMsg">Turn this on if you want this resource to be available in the registry for your services & daemons</label>
 					<br /><br />
 				</div>
 				<div>
 					<label>Lock Resource</label>
-					<label ng-show="allowEdit" class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.locked"><span class="buttonSlider round"></span></label>
-					<label ng-show="!allowEdit" class="toggleSwitch f-right"><input disabled type="checkbox" ng-model="formData.locked"><span class="buttonSlider round"></span></label>
+					<label ng-show="allowEdit && !sensitive" class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.locked"><span class="buttonSlider round"></span></label>
+					<label ng-show="!allowEdit || sensitive" class="toggleSwitch f-right"><input disabled type="checkbox" ng-model="formData.locked"><span class="buttonSlider round"></span></label>
 					<label class="fieldMsg">Turn this on if you want to protect this resource and make it readonly for others</label>
 					<br /><br />
 				</div>
-				<div ng-show="allowEdit">
+				<div ng-show="allowEdit && !sensitive">
 					<label>Share Resource With Other Environments</label>
 					<label class="toggleSwitch f-right"><input type="checkbox" ng-click="getEnvs()" ng-model="formData.shared"><span class="buttonSlider round"></span></label>
 					<label class="fieldMsg">Sharing a resource makes it accessible via other environments</label>
 					<br /><br />
 				</div>
+				<div ng-show="!allowEdit || sensitive">
+					<label>Share Resource With Other Environments</label>
+					<label class="toggleSwitch f-right"><input disabled type="checkbox" ng-click="getEnvs()" ng-model="formData.shared"><span class="buttonSlider round"></span></label>
+					<label class="fieldMsg">Sharing a resource makes it accessible via other environments</label>
+					<br /><br />
+				</div>
 				<div ng-if="formData.shared">
 					<div>
-						<label ng-show="allowEdit">
+						<label ng-show="allowEdit && !sensitive">
 							<input type="checkbox" ng-model="envs.sharedWithAll" ng-click="toggleShareWithAllEnvs()"/>
 							Share with all environments
 						</label>
-						<label ng-show="!allowEdit">
+						<label ng-show="!allowEdit || sensitive">
 							Shared with environment(s)
 						</label>
 					</div>
@@ -75,7 +81,7 @@
 					<ngform-inputs></ngform-inputs>
 				</div>
 			</tab>
-			<tab ng-if="access.deploy || access.rebuild" heading="Deployment Options" ng-show="recipes.length > 0">
+			<tab ng-if="access.deploy || access.rebuild" heading="Deployment Options" ng-show="!sensitive && recipes.length > 0">
 				<br />
 				<alert type="warning" ng-if="options.formAction === 'update' && formData.created !== options.envCode" style="text-align: center;">
 					Configuring the deployment options of a resource is only allowed in the environment where it was created.<br />

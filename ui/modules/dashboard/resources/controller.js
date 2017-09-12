@@ -50,7 +50,11 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                 if(oneResource.created === $scope.envCode.toUpperCase()) {
                     oneResource.allowEdit = true;
                 }
-
+	
+	            if(oneResource.name ==='dash_cluster'){
+		            oneResource.sensitive = true;
+	            }
+	            
                 $scope.resources.types[oneResource.type][oneResource.category].push(oneResource);
             });
         }
@@ -175,6 +179,11 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
 
 	            let allowEdit = ((action === 'add') || (action === 'update' && resource.permission && resource.created.toUpperCase() === currentScope.envCode.toUpperCase()));
 	            $scope.allowEdit = allowEdit;
+	            
+	            if(resource.name ==='dash_cluster'){
+	            	$scope.sensitive = true;
+	            }
+	            
 	            resourceConfiguration.loadDriverSchema($scope, resource, settings, allowEdit, function(error) {
 		            if (error) {
 			            $scope.notsupported = true;
