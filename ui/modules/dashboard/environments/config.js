@@ -52,7 +52,7 @@ var environmentsConfig = {
 			required: ['ca', 'cert', 'key']
 		}
 	},
-	
+
 	form: {
 		template: {
 			'name': '',
@@ -530,7 +530,7 @@ var environmentsConfig = {
 			msg: 'Key from SSL Provider'
 		}
 	},
-	
+
 	jsoneditorConfig: {
 		'height': '200px'
 	},
@@ -592,9 +592,9 @@ var environmentsConfig = {
 			"listAccountRepos": ["dashboard", "/gitAccounts/getRepos", "get"]
 		}
 	},
-	
+
 	providers: serviceProviders,
-	
+
 	recipeTypes: {
 		soajs:{
 			l:"SOAJS",
@@ -680,7 +680,7 @@ var environmentsConfig = {
 					'l': "Apache"
 				},
 				iis: {
-					'l': "iis"
+					'l': "IIS"
 				},
 				other: {
 					'l': "Other"
@@ -692,7 +692,7 @@ var environmentsConfig = {
 			'categories': {
 				amazons3: {"l": "Amazon S3"},
 				rackspace: {"l": "Rackspace"},
-				cloudflare: {"l": "Cloudflare"},
+				// cloudflare: {"l": "Cloudflare"},
 				other: {"l": "Other"}
 			}
 		},
