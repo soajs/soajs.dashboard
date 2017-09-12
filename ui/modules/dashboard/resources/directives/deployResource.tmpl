@@ -24,23 +24,25 @@
             <label class="fieldMsg">Choose a catalog recipe to use when deploying this resource</label>
             <br>
         </div>
-        <div ng-if="recipeUserInput.image.prefix" ng-init="formData.deployOptions.custom.image.prefix = recipeUserInput.image.prefix">
-        	<label>Image Prefix</label>
-        	<input type="text" class="form-control" ng-model="formData.deployOptions.custom.image.prefix"/>
-        	<div class="fieldMsg">Override the image prefix if you want</div>
-        	<br />
-        </div>
-        <div ng-if="recipeUserInput.image.name" ng-init="formData.deployOptions.custom.image.name = recipeUserInput.image.name">
-        	<label>Image Name</label>
-        	<input type="text" class="form-control" ng-model="formData.deployOptions.custom.image.name"/>
-        	<div class="fieldMsg">Override the image name if you want</div>
-        	<br />
-        </div>
-        <div ng-if="recipeUserInput.image.tag" ng-init="formData.deployOptions.custom.image.tag = recipeUserInput.image.tag">
-        	<label>Image Tag</label>
-        	<input type="text" class="form-control" ng-model="formData.deployOptions.custom.image.tag"/>
-        	<div class="fieldMsg">Override the image tag if you want</div>
-        	<br />
+        <div ng-if="recipeUserInput.image.override">
+            <div ng-init="formData.deployOptions.custom.image.prefix = recipeUserInput.image.prefix">
+            	<label>Image Prefix</label>
+            	<input type="text" class="form-control" ng-model="formData.deployOptions.custom.image.prefix"/>
+            	<div class="fieldMsg">Override the image prefix if you want</div>
+            	<br />
+            </div>
+            <div ng-init="formData.deployOptions.custom.image.name = recipeUserInput.image.name">
+            	<label>Image Name</label>
+            	<input type="text" class="form-control" ng-model="formData.deployOptions.custom.image.name"/>
+            	<div class="fieldMsg">Override the image name if you want</div>
+            	<br />
+            </div>
+            <div ng-init="formData.deployOptions.custom.image.tag = recipeUserInput.image.tag">
+            	<label>Image Tag</label>
+            	<input type="text" class="form-control" ng-model="formData.deployOptions.custom.image.tag"/>
+            	<div class="fieldMsg">Override the image tag if you want</div>
+            	<br />
+            </div>
         </div>
 
         <div ng-repeat="(env, envData) in recipeUserInput.envs" ng-init="formData.deployOptions.custom.env[env] = envData.default">

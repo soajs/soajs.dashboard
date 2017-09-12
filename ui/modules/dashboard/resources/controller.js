@@ -349,16 +349,18 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
 
                                 if($scope.recipes[i].recipe.deployOptions && $scope.recipes[i].recipe.deployOptions.image && $scope.recipes[i].recipe.deployOptions.image.override) {
                                     $scope.recipeUserInput.image = {
-                                        prefix: $scope.recipes[i].recipe.deployOptions.image.prefix,
-                                        name: $scope.recipes[i].recipe.deployOptions.image.name,
-                                        tag: $scope.recipes[i].recipe.deployOptions.image.tag
+                                        override: true,
+                                        prefix: $scope.recipes[i].recipe.deployOptions.image.prefix || '',
+                                        name: $scope.recipes[i].recipe.deployOptions.image.name || '',
+                                        tag: $scope.recipes[i].recipe.deployOptions.image.tag || ''
                                     };
 
                                     if($scope.formData.deployOptions.custom && $scope.formData.deployOptions.custom.image && Object.keys($scope.formData.deployOptions.custom.image).length > 0) {
                                         $scope.recipeUserInput.image = {
-                                            prefix: $scope.formData.deployOptions.custom.image.prefix,
-                                            name: $scope.formData.deployOptions.custom.image.name,
-                                            tag: $scope.formData.deployOptions.custom.image.tag
+                                            override: true,
+                                            prefix: $scope.formData.deployOptions.custom.image.prefix || '',
+                                            name: $scope.formData.deployOptions.custom.image.name || '',
+                                            tag: $scope.formData.deployOptions.custom.image.tag || ''
                                         };
                                     }
                                 }
