@@ -306,7 +306,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                         if($scope.formData && $scope.formData.deployOptions && $scope.formData.deployOptions.deployConfig && $scope.formData.deployOptions.deployConfig.memoryLimit) {
                             $scope.formData.deployOptions.deployConfig.memoryLimit /= 1048576; //convert memory limit from bytes to megabytes
                         }
-
+	                    
                         $scope.buildComputedHostname();
                     }
                 };
@@ -390,25 +390,27 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                 };
 
                 $scope.buildComputedHostname = function() {
-                    if($scope.envPlatform === 'docker') {
-                        $scope.options.computedHostname = $scope.formData.deployOptions.custom.name;
-                    }
-                    else if($scope.envPlatform === 'kubernetes') {
-                        $scope.options.computedHostname = $scope.formData.deployOptions.custom.name + '-service';
-
-                        var selected = $scope.envDeployer.selected.split('.');
-                        if($scope.envDeployer && $scope.envDeployer[selected[0]] && $scope.envDeployer[selected[0]][selected[1]] && $scope.envDeployer[selected[0]][selected[1]][selected[2]]) {
-                            var platformConfig = $scope.envDeployer[selected[0]][selected[1]][selected[2]];
-
-                            if(platformConfig && platformConfig.namespace && platformConfig.namespace.default) {
-                                $scope.options.computedHostname += '.' + platformConfig.namespace.default;
-
-                                if(platformConfig.namespace.perService) {
-                                    $scope.options.computedHostname += '-' + $scope.formData.deployOptions.custom.name;
-                                }
-                            }
-                        }
-                    }
+                	if($scope.formData && $scope.formData.deployOptions && $scope.formData.deployOptions.custom){
+		                if($scope.envPlatform === 'docker') {
+			                $scope.options.computedHostname = $scope.formData.deployOptions.custom.name;
+		                }
+		                else if($scope.envPlatform === 'kubernetes') {
+			                $scope.options.computedHostname = $scope.formData.deployOptions.custom.name + '-service';
+			
+			                var selected = $scope.envDeployer.selected.split('.');
+			                if($scope.envDeployer && $scope.envDeployer[selected[0]] && $scope.envDeployer[selected[0]][selected[1]] && $scope.envDeployer[selected[0]][selected[1]][selected[2]]) {
+				                var platformConfig = $scope.envDeployer[selected[0]][selected[1]][selected[2]];
+				
+				                if(platformConfig && platformConfig.namespace && platformConfig.namespace.default) {
+					                $scope.options.computedHostname += '.' + platformConfig.namespace.default;
+					
+					                if(platformConfig.namespace.perService) {
+						                $scope.options.computedHostname += '-' + $scope.formData.deployOptions.custom.name;
+					                }
+				                }
+			                }
+		                }
+	                }
                 };
 
                 $scope.toggleShareWithAllEnvs = function() {
