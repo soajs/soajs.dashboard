@@ -52,7 +52,7 @@
 			                <a ng-if="access.dbs.delete" href="" ng-confirm-click="{{translation.areYouSureYouWantRemoveSelectedDatabase[LANG]}}" ng-click="removeDatabase(envCode, 'session');">
 			                    <span class="icon icon-cross" tooltip="{{translation.removeDatabase[LANG]}}"></span>
 			                </a>&nbsp;
-		
+
 			                <a ng-if="access.dbs.update" href="" ng-click="editDatabase(envCode, 'session', dbs.config.session)">
 			                    <span class="icon icon-pencil2" tooltip="{{translation.editDatabase[LANG]}}"></span>
 			                </a>
@@ -95,7 +95,7 @@
 		</accordion-group>
 		<accordion-group is-open="true">
 			<accordion-heading>Databases</accordion-heading>
-			
+
 			<a ng-if="access.dbs.add" href="" ng-click="addDatabase(envCode,false)" class="btn btn-sm btn-primary">{{translation.addNewDatabase[LANG]}}</a><br/><br/>
 			<div class="entryBoxes entryBoxesGrid">
 				<div ng-repeat="(dbName, dbInfo) in dbs.databases track by dbName" class="dbBox">
@@ -117,7 +117,9 @@
 							<br/><b>Custom Prefix:</b>&nbsp;{{dbInfo['prefix']}}
 						</span>
 						<span ng-if="!dbInfo['prefix']">
-							<br/><b>Global Prefix:</b>&nbsp;{{dbs.config.prefix}}
+							<span ng-if="dbs.config && dbs.config.prefix">
+								<br/><b>Global Prefix:</b>&nbsp;{{dbs.config.prefix}}
+							</span>
 						</span>
 					</div>
 				</div>
