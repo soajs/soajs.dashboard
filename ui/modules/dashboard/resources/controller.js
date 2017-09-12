@@ -9,7 +9,6 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
     $scope.listResources = function(cb) {
 	    $scope.oldStyle = false;
 	    getEnvironment(function(){
-
 	    	overlayLoading.show();
 		    getSendDataFromServer($scope, ngDataApi, {
 			    method: 'get',
@@ -161,6 +160,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                 $scope.message = {};
                 $scope.recipes = [];
                 $scope.recipeUserInput = { image: {}, envs: {} };
+                $scope.access = currentScope.access;
 
                 let category = (resource && Object.keys(resource).length > 0) ? resource.category: settings.category;
 	            resourcesAppConfig.form.addResource.data.categories.forEach((oneCategory)=>{

@@ -32,10 +32,10 @@ var resourcesAppConfig = {
                 categories: [
                     {'v': 'mongo', 'l': "Local/External Mongo", "group": "cluster"},
 					{'v': 'elasticsearch', 'l': "Local/External ElasticSearch", "group": "cluster"},
-	
+
 	                {'v': 'objectrocket_mongo', 'l': "Object Rocket - Mongo SAAS", "group": "cluster"},
 	                {'v': 'objectrocket_elasticsearch', 'l': "Object Rocket - ElasticSearch SAAS", "group": "cluster"},
-	                
+
 					{'v': 'mysql', 'l': "MySQL", "group": "cluster"},
 					{'v': 'oracle', 'l': "Oracle", "group": "cluster"},
 					{'v': 'other', 'l': "Other", "group": "cluster"},
@@ -62,8 +62,20 @@ var resourcesAppConfig = {
 		add: ['dashboard', '/resources/add', 'post'],
 		update: ['dashboard', '/resources/update', 'put'],
 		delete: ['dashboard', '/resources/delete', 'delete'],
+        upgrade: ['dashboard', '/resources/upgrade', 'get'],
 
-        deploy: ['dashboard', '/cloud/services/deploy', 'post']
+        getConfig: ['dashboard', '/resources/config', 'get'],
+        setConfig: ['dashboard', '/resources/config/update', 'put'],
+
+        deploy: ['dashboard', '/cloud/services/soajs/deploy', 'post'],
+        rebuild: ['dashboard', '/cloud/services/redeploy', 'put'],
+        deleteService: ['dashboard', '/cloud/services/delete', 'delete'],
+        listServices: ['dashboard', '/cloud/services/list', 'get'],
+
+        listEnvs: ['dashboard', '/environment/list', 'get'],
+        getEnv: ['dashboard', '/environment', 'get'],
+
+        listRecipes: ['dashboard', '/catalog/recipes/list', 'get']
     }
 
 };
