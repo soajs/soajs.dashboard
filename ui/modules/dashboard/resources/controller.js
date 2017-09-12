@@ -160,7 +160,10 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                 $scope.message = {};
                 $scope.recipes = [];
                 $scope.recipeUserInput = { image: {}, envs: {} };
+
                 $scope.access = currentScope.access;
+                $scope.envPlatform = currentScope.envPlatform;
+                $scope.envDeployer = currentScope.envDeployer;
 
                 let category = (resource && Object.keys(resource).length > 0) ? resource.category: settings.category;
 	            resourcesAppConfig.form.addResource.data.categories.forEach((oneCategory)=>{
@@ -191,7 +194,8 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                         firstLineNumber: 1,
                         height: '500px'
                     },
-                    allowEdit: allowEdit
+                    allowEdit: allowEdit,
+                    computedHostname: ''
                 };
 
                 $scope.title = 'Add New Resource';
@@ -302,6 +306,8 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                         if($scope.formData && $scope.formData.deployOptions && $scope.formData.deployOptions.deployConfig && $scope.formData.deployOptions.deployConfig.memoryLimit) {
                             $scope.formData.deployOptions.deployConfig.memoryLimit /= 1048576; //convert memory limit from bytes to megabytes
                         }
+
+                        $scope.buildComputedHostname();
                     }
                 };
 
@@ -379,6 +385,29 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                         }
 
                         $scope.formData.deployOptions.custom.name = $scope.formData.name;
+                        $scope.buildComputedHostname();
+                    }
+                };
+
+                $scope.buildComputedHostname = function() {
+                    if($scope.envPlatform === 'docker') {
+                        $scope.options.computedHostname = $scope.formData.deployOptions.custom.name;
+                    }
+                    else if($scope.envPlatform === 'kubernetes') {
+                        $scope.options.computedHostname = $scope.formData.deployOptions.custom.name + '-service';
+
+                        var selected = $scope.envDeployer.selected.split('.');
+                        if($scope.envDeployer && $scope.envDeployer[selected[0]] && $scope.envDeployer[selected[0]][selected[1]] && $scope.envDeployer[selected[0]][selected[1]][selected[2]]) {
+                            var platformConfig = $scope.envDeployer[selected[0]][selected[1]][selected[2]];
+
+                            if(platformConfig && platformConfig.namespace && platformConfig.namespace.default) {
+                                $scope.options.computedHostname += '.' + platformConfig.namespace.default;
+
+                                if(platformConfig.namespace.perService) {
+                                    $scope.options.computedHostname += '-' + $scope.formData.deployOptions.custom.name;
+                                }
+                            }
+                        }
                     }
                 };
 
