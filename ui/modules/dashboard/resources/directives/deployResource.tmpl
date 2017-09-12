@@ -1,3 +1,10 @@
+<alert type="info" class="tip-alert w100 table" ng-if="formData.deployOptions.custom.name">
+    <h3 class="f-left"><span class="icon icon-info"></span>&nbsp;Tip</h3>
+    <p class="f-left">
+        Make sure that the hostname under <b>Driver Configuration</b> matches: <b>"{{options.computedHostname}}"</b>
+    </p>
+</alert>
+<br />
 <fieldset class="custom-fieldset">
     <legend>Deployment Options</legend>
     <div>
