@@ -35,6 +35,17 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                             currentScope.rawServicesResponse = angular.copy(response);
 							
 							currentScope.deployedInEnv = [];
+							
+							//migrate dashboard-soajsdata if available and using old tags
+							for(let j=0; j< response.length; j++){
+								let oneService = response[j];
+								if(oneService.name === 'dashboard-soajsdata' && oneService.labels['soajs.service.type'] === 'database'){
+									oneService.labels['soajs.service.type'] = 'cluster';
+									oneService.labels['soajs.service.subtype'] = 'mongo';
+									break;
+								}
+							}
+							
 							for (var j = 0; j < response.length; j++) {
 								if(!currentScope.hosts){
 									currentScope.hosts = {};
