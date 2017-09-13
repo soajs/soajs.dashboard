@@ -139,3 +139,9 @@ fieldset.autoScale legend {
     margin-bottom: 0;
     margin-top: 3px;
 }
+
+.red{
+    border-color: #ebccd1;
+    color: #a94442;
+    cursor:pointer;
+}
