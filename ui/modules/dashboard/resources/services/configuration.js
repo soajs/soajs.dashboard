@@ -104,10 +104,10 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 										for( let i = form.entries.length -1; i>=0; i--){
 											if(form.entries[i].name === original.name + currentEntryCount){
 												form.entries.splice(i, 1);
-												if(original.name === "servers"){
-													delete form.formData["host" + currentEntryCount];
-													delete form.formData["port" + currentEntryCount];
-												}
+												currentScope.driverConfigurationSchema[original.name].entries.forEach((oneEntry) => {
+													delete form.formData[oneEntry.name + currentEntryCount];
+													delete form.formData[oneEntry.name + currentEntryCount];
+												});
 												currentScope.resourceDriverCounter[original.name]--;
 											}
 										}
@@ -168,10 +168,10 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 						for( let i = form.entries.length -1; i>=0; i--){
 							if(form.entries[i].name === original.name + currentEntryCount){
 								form.entries.splice(i, 1);
-								if(original.name === "servers"){
-									delete form.formData["host" + currentEntryCount];
-									delete form.formData["port" + currentEntryCount];
-								}
+								currentScope.driverConfigurationSchema[original.name].entries.forEach((oneEntry) => {
+									delete form.formData[oneEntry.name + currentEntryCount];
+									delete form.formData[oneEntry.name + currentEntryCount];
+								});
 								currentScope.resourceDriverCounter[original.name]--;
 							}
 						}

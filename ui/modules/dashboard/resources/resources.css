@@ -1,8 +1,8 @@
 .resource-box {
-    width: 32% !important;
+    width: 31% !important;
     float: left !important;
     margin-right: 1% !important;
-    padding-left: 0px !important;
+    padding-left: 0 !important;
 }
 
 .resource-box-body {
