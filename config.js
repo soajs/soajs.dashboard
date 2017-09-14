@@ -2986,6 +2986,13 @@ module.exports = {
 						"type": "string"
 					}
 				},
+                "env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
 				"resource": resourceSchema
 			},
 
@@ -3010,7 +3017,7 @@ module.exports = {
                 },
 				"config": {
 					"source": ['body.config'],
-					"required": false,
+					"required": true,
 					"validation": {
 						"type": "object",
                         "default": {},
@@ -3018,6 +3025,7 @@ module.exports = {
 							"deploy": { "type": "boolean", "required": true },
 							"options": {
 								"type":"object",
+                                "required": false,
 								"properties": resourceDeployConfigSchema
 							}
 						}
@@ -3860,6 +3868,13 @@ module.exports = {
                 },
 				"id": {
 					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+                "env": {
+					"source": ['query.env'],
 					"required": true,
 					"validation": {
 						"type": "string"

@@ -312,50 +312,6 @@ describe("testing hosts deployment", function () {
 		});
 	});
 
-	before('Activate swarm mode for local docker engine and create overlay network', function (done) {
-		var params = {
-			method: 'POST',
-			uri: 'http://unix:/var/run/docker.sock:/swarm/init',
-			json: true,
-			headers: {
-				Host: '127.0.0.1'
-			},
-			body: {
-				"ListenAddr": "0.0.0.0:2377",
-				"AdvertiseAddr": "127.0.0.1:2377",
-				"ForceNewCluster": true
-			}
-		};
-
-		request(params, function (error, response, nodeId) {
-			assert.ifError(error);
-
-			params = {
-				method: 'POST',
-				uri: 'http://unix:/var/run/docker.sock:/networks/create',
-				json: true,
-				headers: {
-					Host: '127.0.0.1'
-				},
-				body: {
-					"Name": 'soajsnet',
-					"Driver": 'overlay',
-					"Internal": false,
-					"CheckDuplicate": false,
-					"EnableIPv6": false,
-					"IPAM": {
-						"Driver": 'default'
-					}
-				}
-			};
-
-			request(params, function (error, response, body) {
-				assert.ifError(error);
-				done();
-			});
-		});
-	});
-
 	after(function (done) {
 		mongo.closeDb();
 		console.log('Deleting deployments and cleaning up...');
@@ -947,7 +903,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 
-		it("mark all ledger entries as read", function(done){
+		it.skip("mark all ledger entries as read", function(done){
 			var options = {
 				qs: {
 					deploy_token: access_token
@@ -1013,7 +969,7 @@ describe("testing hosts deployment", function () {
 		});
 
 		//todo: need to trigger get action api, redeploy and rebuild
-		it("calling take action on redeploy", function(done){
+		it.skip("calling take action on redeploy", function(done){
 			var options = {
 				qs: {
 					deploy_token: access_token,

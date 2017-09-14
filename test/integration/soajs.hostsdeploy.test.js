@@ -324,8 +324,7 @@ describe("testing hosts deployment", function () {
 			},
 			body: {
 				"ListenAddr": "0.0.0.0:2377",
-				"AdvertiseAddr": "127.0.0.1:2377",
-				"ForceNewCluster": true
+				"AdvertiseAddr": "127.0.0.1:2377"
 			}
 		};
 
@@ -855,7 +854,7 @@ describe("testing hosts deployment", function () {
 
 	});
 
-	describe("testing analytics", function () {
+	describe.skip("testing analytics", function () {
 
 		it("get analytics settings", function (done) {
 			var params = {
