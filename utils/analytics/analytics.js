@@ -13,7 +13,7 @@ const filebeatIndex = require("./indexes/filebeat-index");
 const metricbeatIndex = require("./indexes/metricbeat-index");
 
 const lib = {
-	
+
 	/**
 	 * Load templates and fill the analytics db
 	 * @param context
@@ -23,11 +23,11 @@ const lib = {
 		let soajs = context.soajs;
 		let model = context.model;
 		let settings = context.analyticsSettings;
-		
+
 		function importData(call) {
 			let records = [];
 			let dataFolder = __dirname + "/data/";
-			
+
 			fs.readdir(dataFolder, (err, items) => {
 				async.forEachOf(items, (item, key, callback) => {
 					if (key === 0) {
@@ -53,7 +53,7 @@ const lib = {
 				});
 			});
 		}
-		
+
 		if (settings && settings.mongoImported) {
 			return cb(null, true);
 		}
@@ -73,7 +73,7 @@ const lib = {
 			});
 		}
 	},
-	
+
 	/**
 	 * Create and fill the recipe of the ELK component to be deployed
 	 * @param service
@@ -86,7 +86,7 @@ const lib = {
 			if (!exists) {
 				return cb('Folder [' + path + '] does not exist');
 			}
-			
+
 			let loadContent;
 			try {
 				loadContent = require(path + service);
@@ -94,7 +94,7 @@ const lib = {
 			catch (e) {
 				return cb(e);
 			}
-			
+
 			let serviceParams = {
 				"env": loadContent.env,
 				"name": loadContent.name,
@@ -114,7 +114,7 @@ const lib = {
 				"network": loadContent.deployConfig.network,
 				"ports": loadContent.deployConfig.ports || []
 			};
-			
+
 			if (loadContent.command && loadContent.command.cmd) {
 				serviceParams.command = loadContent.command.cmd;
 			}
@@ -135,7 +135,7 @@ const lib = {
 				}
 				esNameSpace = '-service.' + env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
 				logNameSpace = '-service.' + env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
-				
+
 				if (env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.perService) {
 					esNameSpace += '-soajs-analytics-elasticsearch-service';
 					logNameSpace += '-' + env.code.toLowerCase() + '-logstash-service';
@@ -184,7 +184,7 @@ const lib = {
 			if (service === "filebeat") {
 				serviceParams = serviceParams.replace(/%logNameSpace%/g, logNameSpace);
 			}
-			
+
 			if(serviceParams.indexOf("%env%") !== -1){
 				serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
 				serviceParams = JSON.parse(serviceParams);
@@ -194,12 +194,12 @@ const lib = {
 				serviceParams = JSON.parse(serviceParams);
 				serviceParams.labels['soajs.env.code'] = process.env.SOAJS_ENV.toLowerCase();
 			}
-			
+
 			return cb(null, serviceParams);
-			
+
 		});
 	},
-	
+
 	/**
 	 * check if ElasticSearch is deployed for ELK else deploy it
 	 * @param context
@@ -210,7 +210,7 @@ const lib = {
 		let env = context.envRecord;
 		let model = context.model;
 		let config = context;
-		
+
 		let settings = context.analyticsSettings;
 		if (settings && settings.elasticsearch && settings.elasticsearch.status === "deployed") {
 			//purge data since elasticsearch is not deployed
@@ -221,10 +221,10 @@ const lib = {
 			lib.getAnalyticsContent("elastic", env, (err, content) => {
 				let options = context.deployerOptions;
 				options.params = content;
-				if (process.env.SOAJS_TEST_ANALYTICS === 'test') {
-					return cb(null, true);
-				}
-				
+				// if (process.env.SOAJS_TEST_ANALYTICS === 'test') {
+				// 	return cb(null, true);
+				// }
+
 				coreDrivers.deployService(options, (error) => {
 					if (error) {
 						soajs.log.error(error);
@@ -247,7 +247,7 @@ const lib = {
 			});
 		}
 	},
-	
+
 	/**
 	 * Check if Elastic Search is up and running
 	 * @param context
@@ -261,10 +261,10 @@ const lib = {
 		let tracker = context.tracker;
 		let esClient = context.esClient;
 		let settings = context.analyticsSettings;
-		
-		if (process.env.SOAJS_TEST_ANALYTICS === 'test') {
-			return cb(null, true);
-		}
+
+		// if (process.env.SOAJS_TEST_ANALYTICS === 'test') {
+		// 	return cb(null, true);
+		// }
 		esClient.ping((error) => {
 			if (error) {
 				// soajs.log.error(error);
@@ -272,11 +272,11 @@ const lib = {
 				soajs.log.debug("Waiting for ES Cluster to reply, attempt:", tracker[env.code.toLowerCase()].counterPing, "/", 10);
 				if (tracker[env.code.toLowerCase()].counterPing >= 10) { // wait 5 min
 					soajs.log.error("Elasticsearch wasn't deployed... exiting");
-					
+
 					async.parallel([
 						function (miniCb) {
 							settings.elasticsearch = {};
-							
+
 							model.saveEntry(soajs, {
 								collection : colls.analytics,
 								record: settings
@@ -289,10 +289,10 @@ const lib = {
 								if (error) {
 									return miniCb(error);
 								}
-								
+
 								async.each(environmentRecords, (oneEnv, vCb) => {
 									delete oneEnv.dbs.databases[esDbInfo.db];
-									
+
 									if (oneEnv.dbs.clusters) {
 										delete oneEnv.dbs.clusters[esDbInfo.cluster];
 									}
@@ -304,7 +304,7 @@ const lib = {
 									if (error) {
 										return miniCb(error);
 									}
-									
+
 									if (env.resources) {
 										lib.removeESClustersFromEnvRecord(soajs, esDbInfo.cluster, model, miniCb);
 									}
@@ -332,7 +332,7 @@ const lib = {
 			}
 		});
 	},
-	
+
 	/**
 	 * Function that removes and ES cluster from resources collection.
 	 * @param soajs
@@ -351,7 +351,7 @@ const lib = {
 			}
 		}, cb);
 	},
-	
+
 	/**
 	 * check if elastic search was deployed correctly and if ready to receive data
 	 * @param context
@@ -365,7 +365,7 @@ const lib = {
 		let model = context.model;
 		let tracker = context.tracker;
 		let settings = context.analyticsSettings;
-		
+
 		esClient.db.info((error) => {
 			if (error) {
 				// soajs.log.error(error);
@@ -373,11 +373,11 @@ const lib = {
 				soajs.log.debug("ES cluster found but not ready, Trying again:", tracker[env.code.toLowerCase()].counterInfo, "/", 15);
 				if (tracker[env.code.toLowerCase()].counterInfo >= 15) { // wait 5 min
 					soajs.log.error("Elasticsearch wasn't deployed correctly ... exiting");
-					
+
 					async.parallel([
 						function (miniCb) {
 							settings.elasticsearch = {};
-							
+
 							model.saveEntry(soajs, {
 								collection : colls.analytics,
 								record: settings
@@ -390,10 +390,10 @@ const lib = {
 								if (error) {
 									return miniCb(error);
 								}
-								
+
 								async.each(environmentRecords, (oneEnv, vCb) => {
 									delete oneEnv.dbs.databases[esDbInfo.db];
-									
+
 									if (oneEnv.dbs.clusters) {
 										delete oneEnv.dbs.clusters[esDbInfo.cluster];
 									}
@@ -405,7 +405,7 @@ const lib = {
 									if (error) {
 										return miniCb(error);
 									}
-									
+
 									if (env.resources) {
 										lib.removeESClusterFromResources(soajs, esDbInfo.cluster, model, miniCb);
 									}
@@ -433,7 +433,7 @@ const lib = {
 			}
 		});
 	},
-	
+
 	/**
 	 * check if Elastic search is deployed, ready and can accept data
 	 * @param context
@@ -443,7 +443,7 @@ const lib = {
 		lib.pingElastic(context, cb);
 		//add version to settings record
 	},
-	
+
 	/**
 	 * purge all previous ELK configuration and create new mapping and templates
 	 * @param context
@@ -451,7 +451,7 @@ const lib = {
 	 */
 	"setMapping": function (context, cb) {
 		let soajs = context.soajs;
-		
+
 		lib.purgeElastic(context, (err) => {
 			if (err) {
 				return cb(err);
@@ -466,9 +466,9 @@ const lib = {
 				}
 			}, cb);
 		});
-		
+
 	},
-	
+
 	/**
 	 * purge all previous indexes for filebeat and metricbeat
 	 * @param context
@@ -478,7 +478,7 @@ const lib = {
 		let soajs = context.soajs;
 		let esClient = context.esClient;
 		let config = context;
-		
+
 		if (!config.purge) {
 			//purge not reguired
 			return cb(null, true);
@@ -493,7 +493,7 @@ const lib = {
 			});
 		});
 	},
-	
+
 	/**
 	 * Create templates for all the ES indexes
 	 * @param context
@@ -503,7 +503,7 @@ const lib = {
 		let soajs = context.soajs;
 		let esClient = context.esClient;
 		let model = context.model;
-		
+
 		let combo = {
 			collection: colls.analytics,
 			conditions: {_type: 'template'}
@@ -523,18 +523,22 @@ const lib = {
 					'name': oneTemplate._name,
 					'body': oneTemplate._json
 				};
-				if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-					esClient.db.indices.putTemplate(options, (error) => {
-						return callback(error, true);
-					});
-				}
-				else {
-					return callback(null, true);
-				}
+
+				esClient.db.indices.putTemplate(options, (error) => {
+					return callback(error, true);
+				});
+				// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+				// 	esClient.db.indices.putTemplate(options, (error) => {
+				// 		return callback(error, true);
+				// 	});
+				// }
+				// else {
+				// 	return callback(null, true);
+				// }
 			}, cb);
 		});
 	},
-	
+
 	/**
 	 * Create new indexes with their mapping
 	 * @param context
@@ -544,7 +548,7 @@ const lib = {
 		let soajs = context.soajs;
 		let esClient = context.esClient;
 		let model = context.model;
-		
+
 		//todo change this
 		let combo = {
 			collection: colls.analytics,
@@ -556,24 +560,35 @@ const lib = {
 				index: '.kibana',
 				body: mappings._json
 			};
-			if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-				esClient.db.indices.exists({index: '.kibana'}, (error, result) => {
-					if (error || !result) {
-						esClient.db.indices.create(mapping, (err) => {
-							return cb(err, true);
-						});
-					}
-					else {
-						return cb(null, true);
-					}
-				});
-			}
-			else {
-				return cb(null, true);
-			}
+
+			esClient.db.indices.exists({index: '.kibana'}, (error, result) => {
+				if (error || !result) {
+					esClient.db.indices.create(mapping, (err) => {
+						return cb(err, true);
+					});
+				}
+				else {
+					return cb(null, true);
+				}
+			});
+			// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+			// 	esClient.db.indices.exists({index: '.kibana'}, (error, result) => {
+			// 		if (error || !result) {
+			// 			esClient.db.indices.create(mapping, (err) => {
+			// 				return cb(err, true);
+			// 			});
+			// 		}
+			// 		else {
+			// 			return cb(null, true);
+			// 		}
+			// 	});
+			// }
+			// else {
+			// 	return cb(null, true);
+			// }
 		});
 	},
-	
+
 	/**
 	 * Create new visualizations in Kibana
 	 * @param context
@@ -582,22 +597,25 @@ const lib = {
 	"addVisualizations": function (context, cb) {
 		let soajs = context.soajs;
 		let model = context.model;
-		
+
 		soajs.log.debug("Adding Kibana Visualizations");
 		let BL = {
 			model: model
 		};
 		let options = context.deployerOptions;
-		if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-			coreDrivers.listServices(options, (err, servicesList) => {
-				lib.configureKibana(context, servicesList, cb);
-			});
-		}
-		else {
-			return cb(null, true);
-		}
+		coreDrivers.listServices(options, (err, servicesList) => {
+			lib.configureKibana(context, servicesList, cb);
+		});
+		// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+		// 	coreDrivers.listServices(options, (err, servicesList) => {
+		// 		lib.configureKibana(context, servicesList, cb);
+		// 	});
+		// }
+		// else {
+		// 	return cb(null, true);
+		// }
 	},
-	
+
 	/**
 	 * Function that run ElasticSearch Bulk operations
 	 * @param esClient
@@ -607,7 +625,7 @@ const lib = {
 	"esBulk": function (esClient, array, cb) {
 		esClient.bulk(array, cb);
 	},
-	
+
 	/**
 	 * Configure Kibana and its visualizations
 	 * @param context
@@ -618,7 +636,7 @@ const lib = {
 		let esClient = context.esClient;
 		let env = context.envRecord;
 		let model = context.model;
-		
+
 		var analyticsArray = [];
 		var serviceEnv = env.code.toLowerCase();
 		async.parallel({
@@ -642,7 +660,7 @@ const lib = {
 								else {
 									return callback(null, true);
 								}
-								
+
 								if (oneService.tasks.length > 0) {
 									async.forEachOf(oneService.tasks, (oneTask, key, call) => {
 										if (oneTask.status && oneTask.status.state && oneTask.status.state === "running") {
@@ -668,7 +686,7 @@ const lib = {
 													]
 												);
 											}
-											
+
 											let options = {
 												"$and": [
 													{
@@ -689,7 +707,7 @@ const lib = {
 												if (error) {
 													return call(error);
 												}
-												
+
 												records.forEach((oneRecord) => {
 													let serviceIndex;
 													if (oneRecord._type === "visualization" || oneRecord._type === "search") {
@@ -704,7 +722,7 @@ const lib = {
 															serviceIndex = serviceIndex + serviceEnv + "-" + taskName + "-" + "*";
 														}
 													}
-													
+
 													let injector;
 													if (oneRecord._injector === 'service') {
 														injector = serviceName + "-" + serviceEnv;
@@ -813,7 +831,7 @@ const lib = {
 								};
 								analyticsArray = analyticsArray.concat([recordIndex, onRecord._source]);
 							});
-							
+
 						}
 						return pCallback(null, true);
 					});
@@ -823,7 +841,8 @@ const lib = {
 				if (err) {
 					return cb(err);
 				}
-				if (analyticsArray.length !== 0 && !(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+				// if (analyticsArray.length !== 0 && !(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+				if (analyticsArray.length !== 0) {
 					lib.esBulk(esClient, analyticsArray, (error, response) => {
 						if (error) {
 							soajs.log.error(error);
@@ -837,7 +856,7 @@ const lib = {
 			}
 		);
 	},
-	
+
 	/**
 	 * Deploy Kibana service and pods
 	 * @param context
@@ -848,7 +867,7 @@ const lib = {
 		let env = context.envRecord;
 		let model = context.model;
 		let settings = context.analyticsSettings;
-		
+
 		soajs.log.debug("Checking Kibana");
 		if (settings && settings.kibana && settings.kibana.status === "deployed") {
 			soajs.log.debug("Kibana found..");
@@ -861,18 +880,19 @@ const lib = {
 				options.params = content;
 				async.parallel({
 					"deploy": (call) => {
-						if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-							coreDrivers.deployService(options, call)
-						}
-						else {
-							return call(null, true);
-						}
+						coreDrivers.deployService(options, call)
+						// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+						// 	coreDrivers.deployService(options, call)
+						// }
+						// else {
+						// 	return call(null, true);
+						// }
 					},
 					"update": (call) => {
 						settings.kibana = {
 							"status": "deployed"
 						};
-						
+
 						model.saveEntry(soajs, {
 							collection: colls.analytics,
 							record: settings
@@ -882,7 +902,7 @@ const lib = {
 			});
 		}
 	},
-	
+
 	/**
 	 * Deploy Logstash service and pods
 	 * @param context
@@ -893,7 +913,7 @@ const lib = {
 		let env = context.envRecord;
 		let model = context.model;
 		let settings = context.analyticsSettings;
-		
+
 		soajs.log.debug("Checking Logstash..");
 		if (settings && settings.logstash && settings.logstash[env.code.toLowerCase()] && settings.logstash[env.code.toLowerCase()].status === "deployed") {
 			soajs.log.debug("Logstash found..");
@@ -906,12 +926,13 @@ const lib = {
 				options.params = content;
 				async.parallel({
 					"deploy": (call) => {
-						if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-							coreDrivers.deployService(options, call)
-						}
-						else {
-							return call(null, true);
-						}
+						coreDrivers.deployService(options, call)
+						// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+						// 	coreDrivers.deployService(options, call)
+						// }
+						// else {
+						// 	return call(null, true);
+						// }
 					},
 					"update": (call) => {
 						if (!settings.logstash) {
@@ -920,7 +941,7 @@ const lib = {
 						settings.logstash[env.code.toLowerCase()] = {
 							"status": "deployed"
 						};
-						
+
 						model.saveEntry(soajs, {
 							collection: colls.analytics,
 							record:settings
@@ -930,7 +951,7 @@ const lib = {
 			});
 		}
 	},
-	
+
 	/**
 	 * Deploy Filebeat service and pods
 	 * @param context
@@ -941,7 +962,7 @@ const lib = {
 		let env = context.envRecord;
 		let model = context.model;
 		let settings = context.analyticsSettings;
-		
+
 		soajs.log.debug("Checking Filebeat..");
 		if (settings && settings.filebeat && settings.filebeat[env.code.toLowerCase()] && settings.filebeat[env.code.toLowerCase()].status === "deployed") {
 			soajs.log.debug("Filebeat found..");
@@ -954,12 +975,13 @@ const lib = {
 				options.params = content;
 				async.parallel({
 					"deploy": (call) => {
-						if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-							coreDrivers.deployService(options, call)
-						}
-						else {
-							return call(null, true);
-						}
+						coreDrivers.deployService(options, call)
+						// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+						// 	coreDrivers.deployService(options, call)
+						// }
+						// else {
+						// 	return call(null, true);
+						// }
 					},
 					"update": (call) => {
 						if (!settings.filebeat) {
@@ -968,7 +990,7 @@ const lib = {
 						settings.filebeat[env.code.toLowerCase()] = {
 							"status": "deployed"
 						};
-						
+
 						model.saveEntry(soajs, {
 							collection: colls.analytics,
 							record:settings
@@ -978,7 +1000,7 @@ const lib = {
 			});
 		}
 	},
-	
+
 	/**
 	 * Deploy Metricbeat service and pods
 	 * @param context
@@ -989,7 +1011,7 @@ const lib = {
 		let env = context.envRecord;
 		let model = context.model;
 		let settings = context.analyticsSettings;
-		
+
 		soajs.log.debug("Checking Metricbeat..");
 		if (settings && settings.metricbeat && settings.metricbeat && settings.metricbeat.status === "deployed") {
 			soajs.log.debug("Metricbeat found..");
@@ -1002,12 +1024,13 @@ const lib = {
 				options.params = content;
 				async.parallel({
 					"deploy": (call) => {
-						if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-							coreDrivers.deployService(options, call);
-						}
-						else {
-							return call(null, true);
-						}
+						coreDrivers.deployService(options, call);
+						// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+						// 	coreDrivers.deployService(options, call);
+						// }
+						// else {
+						// 	return call(null, true);
+						// }
 					},
 					"update": (call) => {
 						if (!settings.metricbeat) {
@@ -1016,7 +1039,7 @@ const lib = {
 						settings.metricbeat = {
 							"status": "deployed"
 						};
-						
+
 						model.saveEntry(soajs, {
 							collection: colls.analytics,
 							record: settings
@@ -1026,7 +1049,7 @@ const lib = {
 			});
 		}
 	},
-	
+
 	/**
 	 * Check if all analytics have been deployed and are running and ready
 	 * @param context
@@ -1037,52 +1060,84 @@ const lib = {
 		let env = context.envRecord;
 		let model = context.model;
 		let tracker = context.tracker;
-		
+
 		soajs.log.debug("Finalizing...");
 		let BL = {
 			model: model
 		};
 		let options = context.deployerOptions;
 		let flk = ["kibana", "logstash", env.code.toLowerCase() + '-' + "filebeat", "soajs-metricbeat"];
-		if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-			coreDrivers.listServices(options, (err, servicesList) => {
-				let failed = [];
-				servicesList.forEach((oneService) => {
-					if (flk.indexOf(oneService.name) == !-1) {
-						let status = false;
-						oneService.tasks.forEach((oneTask) => {
-							if (oneTask.status.state === "running") {
-								status = true;
-							}
-						});
-						if (!status) {
-							failed.push(oneService.name)
+
+		coreDrivers.listServices(options, (err, servicesList) => {
+			let failed = [];
+			servicesList.forEach((oneService) => {
+				if (flk.indexOf(oneService.name) == !-1) {
+					let status = false;
+					oneService.tasks.forEach((oneTask) => {
+						if (oneTask.status.state === "running") {
+							status = true;
 						}
+					});
+					if (!status) {
+						failed.push(oneService.name)
 					}
-				});
-				if (failed.length !== 0) {
-					tracker[env.code.toLowerCase()].counterAvailability++;
-					if (tracker[env.code.toLowerCase()].counterAvailability > 150) {
-						soajs.log.error(failed.join(" , ") + "were/was not deployed... exiting");
-						return cb(new Error(failed.join(" , ") + "were/was not deployed... exiting"));
-					}
-					else {
-						setTimeout(() => {
-							return lib.checkAvailability(context, cb);
-						}, 1000);
-					}
-				}
-				else {
-					return cb(null, true)
 				}
 			});
-		}
-		else {
-			return cb(null, true);
-		}
-		
+			if (failed.length !== 0) {
+				tracker[env.code.toLowerCase()].counterAvailability++;
+				if (tracker[env.code.toLowerCase()].counterAvailability > 150) {
+					soajs.log.error(failed.join(" , ") + "were/was not deployed... exiting");
+					return cb(new Error(failed.join(" , ") + "were/was not deployed... exiting"));
+				}
+				else {
+					setTimeout(() => {
+						return lib.checkAvailability(context, cb);
+					}, 1000);
+				}
+			}
+			else {
+				return cb(null, true)
+			}
+		});
+		// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+		// 	coreDrivers.listServices(options, (err, servicesList) => {
+		// 		let failed = [];
+		// 		servicesList.forEach((oneService) => {
+		// 			if (flk.indexOf(oneService.name) == !-1) {
+		// 				let status = false;
+		// 				oneService.tasks.forEach((oneTask) => {
+		// 					if (oneTask.status.state === "running") {
+		// 						status = true;
+		// 					}
+		// 				});
+		// 				if (!status) {
+		// 					failed.push(oneService.name)
+		// 				}
+		// 			}
+		// 		});
+		// 		if (failed.length !== 0) {
+		// 			tracker[env.code.toLowerCase()].counterAvailability++;
+		// 			if (tracker[env.code.toLowerCase()].counterAvailability > 150) {
+		// 				soajs.log.error(failed.join(" , ") + "were/was not deployed... exiting");
+		// 				return cb(new Error(failed.join(" , ") + "were/was not deployed... exiting"));
+		// 			}
+		// 			else {
+		// 				setTimeout(() => {
+		// 					return lib.checkAvailability(context, cb);
+		// 				}, 1000);
+		// 			}
+		// 		}
+		// 		else {
+		// 			return cb(null, true)
+		// 		}
+		// 	});
+		// }
+		// else {
+		// 	return cb(null, true);
+		// }
+
 	},
-	
+
 	/**
 	 * Update settings after everything has been deployed and is running and ready
 	 * @param context
@@ -1094,8 +1149,8 @@ const lib = {
 		let esClient = context.esClient;
 		let model = context.model;
 		let tracker = context.tracker;
-		
-		
+
+
 		soajs.log.debug("Checking Kibana...");
 		let index = {
 			index: ".kibana",
@@ -1112,63 +1167,116 @@ const lib = {
 			collection: colls.analytics,
 			conditions: {"_type": "settings"}
 		};
-		if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-			esClient.db.search(condition, (err, res) => {
-				if (err) {
-					return cb(err);
-				}
-				if (res && res.hits && res.hits.hits && res.hits.hits.length > 0) {
-					model.findEntry(soajs, combo, (err, result) => {
-						if (err) {
-							return cb(err);
-						}
-						index.id = res.hits.hits[0]._id;
-						async.parallel({
-							"updateES": (call) => {
-								esClient.db.update(index, call);
-							},
-							"updateSettings": (call) => {
-								let criteria = {
-									"$set": {
-										"kibana": {
-											"version": index.id,
-											"status": "deployed",
-											"port": "32601"
-										}
+
+		esClient.db.search(condition, (err, res) => {
+			if (err) {
+				return cb(err);
+			}
+			if (res && res.hits && res.hits.hits && res.hits.hits.length > 0) {
+				model.findEntry(soajs, combo, (err, result) => {
+					if (err) {
+						return cb(err);
+					}
+					index.id = res.hits.hits[0]._id;
+					async.parallel({
+						"updateES": (call) => {
+							esClient.db.update(index, call);
+						},
+						"updateSettings": (call) => {
+							let criteria = {
+								"$set": {
+									"kibana": {
+										"version": index.id,
+										"status": "deployed",
+										"port": "32601"
 									}
-								};
-								result.env[env.code.toLowerCase()] = true;
-								criteria["$set"].env = result.env;
-								let options = {
-									"safe": true,
-									"multi": false,
-									"upsert": false
-								};
-								combo.fields = criteria;
-								combo.options = options;
-								soajs.log.debug("Analytics Deployed successfully!");
-								model.updateEntry(soajs, combo, call);
-							}
-						}, cb)
-					});
+								}
+							};
+							result.env[env.code.toLowerCase()] = true;
+							criteria["$set"].env = result.env;
+							let options = {
+								"safe": true,
+								"multi": false,
+								"upsert": false
+							};
+							combo.fields = criteria;
+							combo.options = options;
+							soajs.log.debug("Analytics Deployed successfully!");
+							model.updateEntry(soajs, combo, call);
+						}
+					}, cb)
+				});
+			}
+			else {
+				tracker[env.code.toLowerCase()].counterKibana++;
+				if (tracker[env.code.toLowerCase()].counterKibana > 200) {
+					soajs.log.error("Kibana wasn't deployed... exiting");
+					return cb(new Error("Kibana wasn't deployed... exiting"));
 				}
 				else {
-					tracker[env.code.toLowerCase()].counterKibana++;
-					if (tracker[env.code.toLowerCase()].counterKibana > 200) {
-						soajs.log.error("Kibana wasn't deployed... exiting");
-						return cb(new Error("Kibana wasn't deployed... exiting"));
-					}
-					else {
-						setTimeout(() => {
-							lib.setDefaultIndex(context, cb);
-						}, 5000);
-					}
+					setTimeout(() => {
+						lib.setDefaultIndex(context, cb);
+					}, 5000);
 				}
-			});
-		}
-		else {
-			return cb(null, true);
-		}
+			}
+		});
+		// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+		// 	esClient.db.search(condition, (err, res) => {
+		// 		if (err) {
+		// 			return cb(err);
+		// 		}
+		// 		if (res && res.hits && res.hits.hits && res.hits.hits.length > 0) {
+		// 			model.findEntry(soajs, combo, (err, result) => {
+		// 				if (err) {
+		// 					return cb(err);
+		// 				}
+		// 				index.id = res.hits.hits[0]._id;
+		// 				async.parallel({
+		// 					"updateES": (call) => {
+		// 						esClient.db.update(index, call);
+		// 					},
+		// 					"updateSettings": (call) => {
+		// 						let criteria = {
+		// 							"$set": {
+		// 								"kibana": {
+		// 									"version": index.id,
+		// 									"status": "deployed",
+		// 									"port": "32601"
+		// 								}
+		// 							}
+		// 						};
+		// 						result.env[env.code.toLowerCase()] = true;
+		// 						criteria["$set"].env = result.env;
+		// 						let options = {
+		// 							"safe": true,
+		// 							"multi": false,
+		// 							"upsert": false
+		// 						};
+		// 						combo.fields = criteria;
+		// 						combo.options = options;
+		// 						soajs.log.debug("Analytics Deployed successfully!");
+		// 						model.updateEntry(soajs, combo, call);
+		// 					}
+		// 				}, cb)
+		// 			});
+		// 		}
+		// 		else {
+		// 			tracker[env.code.toLowerCase()].counterKibana++;
+		// 			if (tracker[env.code.toLowerCase()].counterKibana > 200) {
+		// 				soajs.log.error("Kibana wasn't deployed... exiting");
+		// 				return cb(new Error("Kibana wasn't deployed... exiting"));
+		// 			}
+		// 			else {
+		// 				setTimeout(() => {
+		// 					lib.setDefaultIndex(context, cb);
+		// 				}, 5000);
+		// 			}
+		// 		}
+		// 	});
+		// }
+		// else {
+		// 	return cb(null, true);
+		// }
 	}
 };
 

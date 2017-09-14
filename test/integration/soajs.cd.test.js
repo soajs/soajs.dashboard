@@ -366,7 +366,8 @@ describe("testing hosts deployment", function () {
 			var recipes = [
 				{
 					"name": "soajsCatalog",
-					"type": "soajs",
+					"type": "service",
+					"subtype": "soajs",
 					"description": "This is a test catalog for deploying service instances",
 					"recipe": {
 						"deployOptions": {
@@ -484,7 +485,8 @@ describe("testing hosts deployment", function () {
 				},
 				{
 					"name": "soajsCatalog2",
-					"type": "nginx",
+					"type": "server",
+					"subtype": "nginx",
 					"description": "This is a test catalog for deploying service instances",
 					"recipe": {
 						"deployOptions": {
@@ -571,7 +573,8 @@ describe("testing hosts deployment", function () {
 				},
 				{
 					"name": "soajsCatalog3",
-					"type": "soajs",
+					"type": "service",
+					"subtype": "soajs",
 					"description": "This is a test catalog for deploying service instances",
 					"recipe": {
 						"deployOptions": {
@@ -903,7 +906,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 
-		it.skip("mark all ledger entries as read", function(done){
+		it("mark all ledger entries as read", function(done){
 			var options = {
 				qs: {
 					deploy_token: access_token
@@ -969,7 +972,7 @@ describe("testing hosts deployment", function () {
 		});
 
 		//todo: need to trigger get action api, redeploy and rebuild
-		it.skip("calling take action on redeploy", function(done){
+		it("calling take action on redeploy", function(done){
 			var options = {
 				qs: {
 					deploy_token: access_token,

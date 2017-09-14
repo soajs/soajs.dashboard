@@ -854,13 +854,13 @@ describe("testing hosts deployment", function () {
 
 	});
 
-	describe.skip("testing analytics", function () {
+	describe("testing analytics", function () {
 
 		it("get analytics settings", function (done) {
 			var params = {
 				qs: {
 					access_token: access_token,
-					env: 'dashboard'
+					env: 'dev'
 				}
 			};
 
@@ -874,7 +874,7 @@ describe("testing hosts deployment", function () {
 			var params = {
 				qs: {
 					access_token: access_token,
-					env: 'dashboard'
+					env: 'dev'
 				}
 			};
 
@@ -888,7 +888,7 @@ describe("testing hosts deployment", function () {
 			var params = {
 				qs: {
 					access_token: access_token,
-					env: 'dashboard'
+					env: 'dev'
 				}
 			};
 
@@ -902,7 +902,7 @@ describe("testing hosts deployment", function () {
 			var params = {
 				qs: {
 					access_token: access_token,
-					env: 'dashboard'
+					env: 'dev'
 				}
 			};
 
@@ -912,39 +912,39 @@ describe("testing hosts deployment", function () {
 			});
 		});
 
-		it("success - activate analytics - elasticsearch and kibana deployed - dashboard", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token,
-					env: 'dashboard'
-				}
-			};
-
-			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
-				assert.ok(body.result);
-				assert.ok(body.data);
-				done();
-			});
-		});
-		it("success - activate analytics - elasticsearch and kibana deployed - dashboard", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token,
-					env: 'dashboard'
-				}
-			};
-
-			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
-				assert.ok(body.result);
-				assert.ok(body.data);
-				done();
-			});
-		});
-		it("success - activate analytics - elasticsearch and kibana deployed - dev ", function (done) {
+		it("success - activate analytics - elasticsearch and kibana deployed - dev", function (done) {
 			var params = {
 				qs: {
 					access_token: access_token,
 					env: 'dev'
+				}
+			};
+
+			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
+				assert.ok(body.result);
+				assert.ok(body.data);
+				done();
+			});
+		});
+		it("success - activate analytics - elasticsearch and kibana deployed - dev", function (done) {
+			var params = {
+				qs: {
+					access_token: access_token,
+					env: 'dev'
+				}
+			};
+
+			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
+				assert.ok(body.result);
+				assert.ok(body.data);
+				done();
+			});
+		});
+		it.skip("success - activate analytics - elasticsearch and kibana deployed - stg ", function (done) {
+			var params = {
+				qs: {
+					access_token: access_token,
+					env: 'stg'
 				}
 			};
 
