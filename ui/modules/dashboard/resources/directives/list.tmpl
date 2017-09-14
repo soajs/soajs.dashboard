@@ -92,10 +92,10 @@
         <div ng-if="!notsupported" class="form" ng-include="'modules/dashboard/resources/directives/resource.tmpl'"></div>
     </div>
     <div class="modal-footer">
-        <span ng-if="options.allowEdit">
-            <button class="btn btn-success" ng-if="access.update && !notsupported" ng-disabled="addEditResource.$invalid" ng-click="save()">Save</button>
-    		<button class="btn btn-primary" ng-if="access.update && access.deploy && !notsupported && !formData.isDeployed && formData.canBeDeployed && (!formData.instance || !formData.instance.id)" ng-disabled="addEditResource.$invalid" ng-click="saveAndDeploy()">Save & Deploy</button>
-            <button class="btn btn-primary" ng-if="access.update && access.rebuild && !notsupported && formData.isDeployed && formData.canBeDeployed && formData.instance && formData.instance.id" ng-disabled="addEditResource.$invalid" ng-click="saveAndRebuild()">Save & Rebuild</button>
+	    <span ng-if="options.allowEdit">
+            <button class="btn btn-success" ng-if="access.update && !notsupported" ng-disabled="!valid" ng-click="save()">Save</button>
+    		<button class="btn btn-primary" ng-if="access.update && access.deploy && !notsupported && !formData.isDeployed && formData.canBeDeployed && (!formData.instance || !formData.instance.id)" ng-disabled="!valid" ng-click="saveAndDeploy()">Save & Deploy</button>
+            <button class="btn btn-primary" ng-if="access.update && access.rebuild && !notsupported && formData.isDeployed && formData.canBeDeployed && formData.instance && formData.instance.id" ng-disabled="!valid" ng-click="saveAndRebuild()">Save & Rebuild</button>
         </span>
         <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
 	</div>
