@@ -513,7 +513,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                     }
 
                     function saveResourceDeployConfig(cb) {
-                        if(!$scope.formData.canBeDeployed || !$scope.formData.deployOptions || Object.keys($scope.formData.deployOptions).length === 0) {
+                        if(!$scope.formData.deployOptions || Object.keys($scope.formData.deployOptions).length === 0) {
                             if(cb) return cb();
                             else return;
                         }
@@ -538,7 +538,9 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                                 }
                             }
                         };
-
+	                    if(!$scope.formData.canBeDeployed){
+		                    delete options.data.config.options;
+	                    }
                         overlayLoading.show();
                         getSendDataFromServer(currentScope, ngDataApi, options, function(error) {
                             overlayLoading.hide();
