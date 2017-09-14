@@ -42,7 +42,6 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 			buildForm(currentScope, null, formConfig, function(){
 				currentScope.form.refresh();
 				injectFiles.injectCss(cssFile);
-				console.log('form inputs have been loaded....');
 				return cb(null, true);
 			});
 		}).catch(function(error){
