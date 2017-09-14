@@ -76,6 +76,8 @@ module.exports = {
 		"dotRegexString": "\\."
 	},
 
+    "dashboardClusterResourceName": "dash_cluster",
+
     "gitAccounts": {
         "bitbucket": {
             apiDomain: 'https://api.bitbucket.org/1.0',

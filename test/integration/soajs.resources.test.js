@@ -667,28 +667,144 @@ describe("Testing Resources Functionality", function() {
 
     });
 
-    after("add dash_cluster, needed for the rest of the test cases", function(done) {
-        sampleResourceCopy = utils.cloneObj(sampleResource);
-        sampleResourceCopy.name = 'dash_cluster';
+    describe("Testing list/add/edit/delete for dash_cluster", function() {
 
-        params = {
-            qs: {
-                access_token: access_token_owner
-            },
-            form: {
-                env: 'dev',
-                resource: sampleResourceCopy
-            }
-        };
+        before("add dash_cluster to resources collection", function(done) {
+            sampleResourceCopy = utils.cloneObj(sampleResource);
+            sampleResourceCopy.name = 'dash_cluster';
+            sampleResourceCopy.created = 'DEV';
+            sampleResourceCopy.author = 'owner';
 
-        executeMyRequest(params, 'resources/add', 'post', function(body) {
-            assert.ok(body.result);
-            assert.ok(body.data);
-            assert.ok(body.data._id);
-            done();
+            mongo.insert('resources', sampleResourceCopy, function(error, record) {
+                assert.ifError(error);
+                sampleResourceCopyId = record[0]._id.toString();
+                done();
+            });
         });
-    });
 
+        it("fail - trying to add a cluster resource of type mongo called dash_cluster", function(done) {
+            sampleResourceCopy = utils.cloneObj(sampleResource);
+            sampleResourceCopy.name = 'dash_cluster';
+
+            params = {
+                qs: {
+                    access_token: access_token_owner
+                },
+                form: {
+                    env: 'dev',
+                    resource: sampleResourceCopy
+                }
+            };
+
+            executeMyRequest(params, 'resources/add', 'post', function(body) {
+                assert.ok(body.errors);
+                assert.deepEqual(body.errors.details[0], { code: 989, message: errors[989] });
+                done();
+            });
+        });
+
+        it('fail - trying to update/unplug dash_cluster', function (done) {
+            sampleResourceCopy = utils.cloneObj(sampleResource);
+            sampleResourceCopy.name = 'dash_cluster';
+            sampleResourceCopy.plugged = false;
+
+            params = {
+                qs: {
+                    access_token: access_token_owner,
+                    env: 'dev',
+                    id: sampleResourceCopyId
+                },
+                form: {
+                    resource: sampleResourceCopy
+                }
+            };
+
+            executeMyRequest(params, 'resources/update', 'put', function(body) {
+                assert.ok(body.errors);
+                assert.deepEqual(body.errors.details[0], { code: 989, message: errors[989] });
+                done();
+            });
+        });
+
+        it('success - trying to update driver configuration for dash_cluster', function (done) {
+            sampleResourceCopy = utils.cloneObj(sampleResource);
+            sampleResourceCopy.name = 'dash_cluster';
+            sampleResourceCopy.config.test = true;
+
+            params = {
+                qs: {
+                    access_token: access_token_owner,
+                    env: 'dev',
+                    id: sampleResourceCopyId
+                },
+                form: {
+                    resource: sampleResourceCopy
+                }
+            };
+
+            executeMyRequest(params, 'resources/update', 'put', function(body) {
+                assert.ok(body.result);
+                assert.ok(body.data);
+                done();
+            });
+        });
+
+        it('fail - trying to delete dash_cluster', function (done) {
+            params = {
+                qs: {
+                    access_token: access_token_owner,
+                    env: 'dev',
+                    id: sampleResourceCopyId
+                }
+            };
+
+            executeMyRequest(params, 'resources/delete', 'delete', function(body) {
+                assert.ok(body.errors);
+                assert.deepEqual(body.errors.details[0], { code: 989, message: errors[989] });
+                done();
+            });
+        });
+
+        it('success - list resources will mark dash_cluster as sensitive', function (done) {
+            params = {
+                qs: {
+                    access_token: access_token_owner,
+                    env: 'dev'
+                }
+            };
+
+            executeMyRequest(params, 'resources/list', 'get', function(body) {
+                assert.ok(body.result);
+                assert.ok(body.data);
+
+                for(var i = 0; i < body.data.length; i++) {
+                    if(body.data[i].name === 'dash_cluster') {
+                        assert.ok(body.data[i].sensitive)
+                        break;
+                    }
+                }
+                done();
+            });
+        });
+
+        it('success - get dash_cluster resource marked as sensitive', function (done) {
+            params = {
+                qs: {
+                    access_token: access_token_owner,
+                    env: 'dev',
+                    name: 'dash_cluster'
+                }
+            };
+
+            executeMyRequest(params, 'resources/get', 'get', function(body) {
+                assert.ok(body.result);
+                assert.ok(body.data);
+                assert.ok(body.data.sensitive);
+                done();
+            });
+        });
+
+    });
 });
 
 describe("Testing Databases Functionality", function () {

@@ -295,7 +295,9 @@ var errors = {
 	"986": "Validation for output config.js file failed",
 
 	"987": "Autoscaling is only supported in kubernetes mode",
-	"988": "Unable to detect Heapster componenets"
+	"988": "Unable to detect Heapster componenets",
+
+	"989": "The dashboard cluster is a sensitive resource that cannot be added or deleted. Only it's driver configuration can be updated."
 };
 
 
