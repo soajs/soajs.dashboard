@@ -489,6 +489,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                                 method: 'put',
                                 routeName: '/dashboard/resources/update',
                                 params: {
+	                                env: $scope.options.envCode.toUpperCase(),
                                     id: $scope.formData._id
                                 },
                                 data: {
@@ -694,7 +695,10 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                 getSendDataFromServer($scope, ngDataApi, {
                     method: 'delete',
                     routeName: '/dashboard/resources/delete',
-                    params: { id: resource._id }
+                    params: {
+	                    env: $scope.envCode.toUpperCase(),
+                    	id: resource._id
+                    }
                 }, function(error) {
                     overlayLoading.hide();
                     if(error) {

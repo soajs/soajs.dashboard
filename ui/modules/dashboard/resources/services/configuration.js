@@ -41,10 +41,7 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 			};
 			buildForm(currentScope, null, formConfig, function(){
 				currentScope.form.refresh();
-				
 				injectFiles.injectCss(cssFile);
-				// console.log('form inputs have been loaded....');
-				// console.log(currentScope.form.formData);
 				return cb(null, true);
 			});
 		}).catch(function(error){
@@ -75,7 +72,22 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 							"name": "another" + original.name,
 							"value": "<input type='button' value='Add Another' class='btn btn-primary'/>",
 							"onAction": function(id, value, form){
+								let max = 0;
+								let match = false;
+								for( let i=0; i < form.entries.length -1; i++){
+									let regexp = new RegExp("^" + original.name);
+									if(form.entries[i].name && regexp.test(form.entries[i].name)){
+										match = true;
+										let tcount = parseInt(form.entries[i].name.replace(original.name, ''));
+										if(tcount > max){
+											max= tcount;
+										}
+									}
+								}
 								let another = angular.copy(original);
+								if(!match){
+									currentScope.resourceDriverCounter[original.name] = 0;
+								}
 								another.name = another.name + currentScope.resourceDriverCounter[original.name];
 								allMyEntries(another.entries, currentScope.resourceDriverCounter[original.name], original.name);
 								
@@ -89,23 +101,15 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 										for( let i = form.entries.length -1; i>=0; i--){
 											if(form.entries[i].name === original.name + currentEntryCount){
 												form.entries.splice(i, 1);
+												currentScope.driverConfigurationSchema[original.name].entries.forEach((oneEntry) => {
+													delete form.formData[oneEntry.name + currentEntryCount];
+													delete form.formData[oneEntry.name + currentEntryCount];
+												});
+												currentScope.resourceDriverCounter[original.name]--;
 											}
 										}
 									}
 								});
-								
-								let max = 0;
-								let match = false;
-								for( let i=0; i < form.entries.length -1; i++){
-									let regexp = new RegExp("^" + original.name);
-									if(form.entries[i].name && regexp.test(form.entries[i].name)){
-										match = true;
-										let tcount = parseInt(form.entries[i].name.replace(original.name, ''));
-										if(tcount > max){
-											max= tcount;
-										}
-									}
-								}
 								
 								if(match) {
 									for (let i = 0; i < form.entries.length - 1; i++) {
@@ -120,9 +124,8 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 								else{
 									//all inputs removed
 									//push before add another button
-									currentScope.resourceDriverCounter[original.name] =0;
 									for (let i = 0; i < form.entries.length - 1; i++) {
-										if (form.entries[i].name && form.entries[i].name === "another" + original.name + max) {
+										if (form.entries[i].name && form.entries[i].name === "another" + original.name) {
 											let pos = i;
 											form.entries.splice(pos, 0, another);
 											currentScope.resourceDriverCounter[original.name]++;
@@ -162,6 +165,11 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 						for( let i = form.entries.length -1; i>=0; i--){
 							if(form.entries[i].name === original.name + currentEntryCount){
 								form.entries.splice(i, 1);
+								currentScope.driverConfigurationSchema[original.name].entries.forEach((oneEntry) => {
+									delete form.formData[oneEntry.name + currentEntryCount];
+									delete form.formData[oneEntry.name + currentEntryCount];
+								});
+								currentScope.resourceDriverCounter[original.name]--;
 							}
 						}
 					}
@@ -198,24 +206,26 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 			for(let inputName in currentScope.driverConfigurationSchema){
 				if(currentScope.resourceDriverCounter && currentScope.resourceDriverCounter[inputName]){
 					config[currentScope.driverConfigurationSchema[inputName].name] = [];
-					for(let i =0; i < currentScope.resourceDriverCounter[inputName]; i++){
-						
+					for (let i = 0; i < currentScope.form.entries.length; i++) {
 						let arrData = {};
-						//get array item schema
-						currentScope.driverConfigurationSchema[inputName].entries.forEach((oneEntry)=>{
-							doOneLevelInput(oneEntry.name + i, oneEntry.name, oneEntry, data, arrData, currentScope.form.entries);
-							delete data[oneEntry.name + i];
-							delete data["remove" + inputName + i];
-						});
-						
-						//push array item data
-						config[currentScope.driverConfigurationSchema[inputName].name].push(arrData);
+						let regex = new RegExp("^" + inputName + "([0-9]+)$");
+						if (currentScope.form.entries[i].name.match(regex)) {
+							let index = parseInt(currentScope.form.entries[i].name.replace(inputName, ''));
+							//get array item schema
+							currentScope.driverConfigurationSchema[inputName].entries.forEach((oneEntry) => {
+								doOneLevelInput(oneEntry.name + index, oneEntry.name, oneEntry, data, arrData, currentScope.form.entries);
+								delete data[oneEntry.name + index];
+								delete data["remove" + inputName + index];
+							});
+							//push array item data
+							config[currentScope.driverConfigurationSchema[inputName].name].push(arrData);
+						}
 					}
 					delete data['another' + inputName];
 				}
 				
 				// pull remaining inputs
-				else if(data[currentScope.driverConfigurationSchema[inputName].name]){
+				else if(Object.hasOwnProperty.call(data,currentScope.driverConfigurationSchema[inputName].name)){
 					doOneLevelInput(currentScope.driverConfigurationSchema[inputName].name, currentScope.driverConfigurationSchema[inputName].name, currentScope.driverConfigurationSchema[inputName], data, config, currentScope.form.entries);
 					delete data[currentScope.driverConfigurationSchema[inputName].name];
 				}
@@ -234,10 +244,11 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 		return cb();
 		
 		function doOneLevelInput(fromName, toName, oneEntry, from, to, entries){
+			
 			if(oneEntry.entries){
 				oneEntry.entries.forEach((subEntry) =>{
 					if(!to[subEntry.name]){
-						to[subEntry.name] = {};
+						to[subEntry.name] = (subEntry.type === 'group') ? {} : '';
 					}
 					
 					entries.forEach((oneformSubEntry) =>{
@@ -257,7 +268,23 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 					}
 				});
 			}
-			else if(from[fromName]){
+			else if(Object.hasOwnProperty.call(from, fromName)){
+				let patt = /^(\d+)$/; //integer pattern
+				let patt2 = /^(\d+(\.\d+)?)$/; //float pattern
+				
+				if (from[fromName] === 'false') {
+					from[fromName] = false;
+				}
+				else if (from[fromName] === 'true') {
+					from[fromName] = true;
+				}
+				else if(patt.test(from[fromName])){
+					from[fromName] = parseInt(from[fromName]);
+				}
+				else if(patt2.test(from[fromName])){
+					from[fromName] = parseFloat(from[fromName]);
+				}
+				
 				to[toName] = from[fromName];
 				delete from[fromName];
 			}
