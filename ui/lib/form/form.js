@@ -124,28 +124,37 @@ function buildForm(context, modal, configuration, cb) {
 		
 		function internalDataMap(fieldEntry, inputName){
 			if (Array.isArray(fieldEntry.value)) {
-				fieldEntry.value.forEach(function (oneValue) {
-					//oneValue.selected = false;
+				for(let i=0; i < fieldEntry.value.length; i++){
+					let oneValue = fieldEntry.value[i];
 					if (Array.isArray(configuration.data[inputName])) {
 						if (configuration.data[inputName].indexOf(oneValue.v) !== -1) {
 							oneValue.selected = true;
+							context.form.formData[inputName] = oneValue.v;
+							break;
+						}
+						else{
+							delete oneValue.selected;
 						}
 					}
 					else {
 						if(fieldEntry.type === 'uiselect' && configuration.data[inputName] !== undefined && configuration.data[inputName] !== null){
 							if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
 								context.form.formData[inputName] = oneValue;
+								break;
 							}
 						}
 						else if (fieldEntry.type !== 'uiselect' && configuration.data[inputName] !== undefined && configuration.data[inputName] !== null) {
 							if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
 								oneValue.selected = true;
+								context.form.formData[inputName] = oneValue.v;
+								break;
+							}
+							else{
+								delete oneValue.selected;
 							}
 						}
 					}
-				});
-				//todo: fi shi bel select ma ba3rif shou naykto
-				//console.log(fieldEntry);
+				}
 			}
 			else {
 				if (configuration.data[inputName]) {
@@ -212,13 +221,15 @@ function buildForm(context, modal, configuration, cb) {
 					if (oneEntry.value[x].selected) {
 						lastObj = oneEntry.value[x];
 						oneEntry.value.splice(x, 1);
+						context.form.formData[oneEntry.name] = lastObj.v;
 						break;
 					}
 				}
+				
 				if (lastObj) {
 					oneEntry.value.push(lastObj);
 				}
-
+				
 				if (oneEntry.onChange && typeof(oneEntry.onChange.action) === 'function') {
 					oneEntry.action = oneEntry.onChange;
 				}
