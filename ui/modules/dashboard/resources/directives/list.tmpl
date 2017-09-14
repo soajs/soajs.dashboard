@@ -54,7 +54,7 @@
 				                            <span class="icon icon-cloud"></span>Deploy
 			                            </a>
 			
-			                            <a href="" ng-if="access.update && !resource.plugged" ng-disabled="!resource.permission || resource.sensitive" class="btn btn-sm btn-default" ng-class="{disabled: !resource.allowEdit || (resource.canBeDeployed && !resource.isDeployed)}" ng-click="togglePlugResource(resource, true)">
+			                            <a href="" ng-if="access.update && !resource.plugged" ng-disabled="(!resource.permission || resource.sensitive) && !resource.allowEdit" class="btn btn-sm btn-default" ng-click="togglePlugResource(resource, true)">
 				                            <span class="icon icon-power-cord"></span>Plug
 			                            </a>
 			                            
