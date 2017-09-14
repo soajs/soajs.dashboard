@@ -1,29 +1,44 @@
 .resource-box {
-    width: 31% !important;
-    float: left !important;
-    margin-right: 1% !important;
-    padding-left: 0 !important;
-}
-
-.resource-box-body {
+    width: 100% !important;
+    /*float: left !important;*/
+    /*margin-right: 1% !important;*/
+    margin: 0 0 15px 5px;
+    padding:12px;
     display:table;
-    width:100%;
+    border-radius: 8px;
+
+    border: solid 1px #cccccc;
 }
 
-.resource-box-body a {
-    margin-top: 2px;
-    margin-right: 2px;
-    margin-bottom: 2px;
-    width: 49%;
+.resource-box .leftActions{
+    float:left;
+    max-width:7%;
 }
 
-.resource-box-body-three-btn-view a {
-    width: 32%;
+.resource-box .leftActions a{
+    margin-top:6px;
+    margin-right:8px;
+    float:left;
 }
 
-.responsive-width {
-    font-size: 0.8vw;
-    float: right;
+.resource-box .rightActions{
+    float:right;
+    max-width:45%;
+}
+
+.resource-box .rightActions a{
+    float:left !important;
+    margin-right: 12px;
+    min-width:90px;
+}
+
+.resource-box label{
+    padding-top:4px;
+    font-size:16px;
+}
+
+.evenRow{
+    background-color:#f8f8f8;
 }
 
 .greenBox {
@@ -144,4 +159,8 @@ fieldset.autoScale legend {
     border-color: #ebccd1;
     color: #a94442;
     cursor:pointer;
+}
+
+.grey{
+    color: #cccccc;
 }
