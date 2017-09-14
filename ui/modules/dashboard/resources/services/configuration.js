@@ -41,10 +41,8 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 			};
 			buildForm(currentScope, null, formConfig, function(){
 				currentScope.form.refresh();
-				
 				injectFiles.injectCss(cssFile);
-				// console.log('form inputs have been loaded....');
-				// console.log(currentScope.form.formData);
+				console.log('form inputs have been loaded....');
 				return cb(null, true);
 			});
 		}).catch(function(error){
@@ -228,7 +226,7 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 				}
 				
 				// pull remaining inputs
-				else if(data[currentScope.driverConfigurationSchema[inputName].name]){
+				else if(Object.hasOwnProperty.call(data,currentScope.driverConfigurationSchema[inputName].name)){
 					doOneLevelInput(currentScope.driverConfigurationSchema[inputName].name, currentScope.driverConfigurationSchema[inputName].name, currentScope.driverConfigurationSchema[inputName], data, config, currentScope.form.entries);
 					delete data[currentScope.driverConfigurationSchema[inputName].name];
 				}
@@ -247,6 +245,7 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 		return cb();
 		
 		function doOneLevelInput(fromName, toName, oneEntry, from, to, entries){
+			
 			if(oneEntry.entries){
 				oneEntry.entries.forEach((subEntry) =>{
 					if(!to[subEntry.name]){
@@ -270,7 +269,23 @@ resourceConfigurationService.service('resourceConfiguration', ['$http', '$timeou
 					}
 				});
 			}
-			else if(from[fromName]){
+			else if(Object.hasOwnProperty.call(from, fromName)){
+				let patt = /^(\d+)$/; //integer pattern
+				let patt2 = /^(\d+(\.\d+)?)$/; //float pattern
+				
+				if (from[fromName] === 'false') {
+					from[fromName] = false;
+				}
+				else if (from[fromName] === 'true') {
+					from[fromName] = true;
+				}
+				else if(patt.test(from[fromName])){
+					from[fromName] = parseInt(from[fromName]);
+				}
+				else if(patt2.test(from[fromName])){
+					from[fromName] = parseFloat(from[fromName]);
+				}
+				
 				to[toName] = from[fromName];
 				delete from[fromName];
 			}
