@@ -674,6 +674,19 @@ const lib = {
 															index: {
 																_index: '.kibana',
 																_type: 'index-pattern',
+																_id: 'filebeat-*'
+															}
+														},
+														{
+															title: 'filebeat-*',
+															timeFieldName: '@timestamp',
+															fields: filebeatIndex.fields,
+															fieldFormatMap: filebeatIndex.fieldFormatMap
+														},
+														{
+															index: {
+																_index: '.kibana',
+																_type: 'index-pattern',
 																_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + "*"
 															}
 														},
@@ -1011,7 +1024,12 @@ const lib = {
 		let env = context.envRecord;
 		let model = context.model;
 		let settings = context.analyticsSettings;
-
+		
+		//if kubernetes no need
+		if(env.deployer.selected.indexOf("container.kubernetes") !== -1){
+			return cb(null, true);
+		}
+		
 		soajs.log.debug("Checking Metricbeat..");
 		if (settings && settings.metricbeat && settings.metricbeat && settings.metricbeat.status === "deployed") {
 			soajs.log.debug("Metricbeat found..");
@@ -1067,7 +1085,12 @@ const lib = {
 		};
 		let options = context.deployerOptions;
 		let flk = ["kibana", "logstash", env.code.toLowerCase() + '-' + "filebeat", "soajs-metricbeat"];
-
+		
+		//if kubernetes no need
+		if(env.deployer.selected.indexOf("container.kubernetes") !== -1){
+			flk = ["kibana", "logstash", env.code.toLowerCase() + '-' + "filebeat"];
+		}
+		
 		coreDrivers.listServices(options, (err, servicesList) => {
 			if (err) {
 				return cb(err);
@@ -1159,7 +1182,7 @@ const lib = {
 			index: ".kibana",
 			type: 'config',
 			body: {
-				doc: {"defaultIndex": "metricbeat-*"}
+				doc: {"defaultIndex": "filebeat-*"}
 			}
 		};
 		let condition = {
