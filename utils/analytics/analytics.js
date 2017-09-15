@@ -1171,7 +1171,7 @@ const lib = {
 			index: ".kibana",
 			type: 'config',
 			body: {
-				doc: {"defaultIndex": "metricbeat-*"}
+				doc: {"defaultIndex": "filebeat-*"}
 			}
 		};
 		let condition = {
