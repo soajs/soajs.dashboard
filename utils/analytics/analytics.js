@@ -773,6 +773,11 @@ const lib = {
 					}, pCallback);
 				},
 				"metricbeat": (pCallback) => {
+					//if kubernetes no need
+					if(env.deployer.selected.indexOf("container.kubernetes") !== -1){
+						return pCallback(null, true);
+					}
+					
 					analyticsArray = analyticsArray.concat(
 						[
 							{
@@ -1011,7 +1016,12 @@ const lib = {
 		let env = context.envRecord;
 		let model = context.model;
 		let settings = context.analyticsSettings;
-
+		
+		//if kubernetes no need
+		if(env.deployer.selected.indexOf("container.kubernetes") !== -1){
+			return cb(null, true);
+		}
+		
 		soajs.log.debug("Checking Metricbeat..");
 		if (settings && settings.metricbeat && settings.metricbeat && settings.metricbeat.status === "deployed") {
 			soajs.log.debug("Metricbeat found..");
@@ -1067,7 +1077,12 @@ const lib = {
 		};
 		let options = context.deployerOptions;
 		let flk = ["kibana", "logstash", env.code.toLowerCase() + '-' + "filebeat", "soajs-metricbeat"];
-
+		
+		//if kubernetes no need
+		if(env.deployer.selected.indexOf("container.kubernetes") !== -1){
+			flk = ["kibana", "logstash", env.code.toLowerCase() + '-' + "filebeat"];
+		}
+		
 		coreDrivers.listServices(options, (err, servicesList) => {
 			let failed = [];
 			servicesList.forEach((oneService) => {
