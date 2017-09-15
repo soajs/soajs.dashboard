@@ -1069,6 +1069,9 @@ const lib = {
 		let flk = ["kibana", "logstash", env.code.toLowerCase() + '-' + "filebeat", "soajs-metricbeat"];
 
 		coreDrivers.listServices(options, (err, servicesList) => {
+			if (err) {
+				return cb(err);
+			}
 			let failed = [];
 			servicesList.forEach((oneService) => {
 				if (flk.indexOf(oneService.name) == !-1) {
@@ -1323,5 +1326,7 @@ analyticsDriver.deploy = function() {
 		}
 	});
 };
+
+analyticsDriver.lib = lib;
 
 module.exports = analyticsDriver;
