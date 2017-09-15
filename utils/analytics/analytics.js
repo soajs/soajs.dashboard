@@ -221,10 +221,6 @@ const lib = {
 			lib.getAnalyticsContent("elastic", env, (err, content) => {
 				let options = context.deployerOptions;
 				options.params = content;
-				// if (process.env.SOAJS_TEST_ANALYTICS === 'test') {
-				// 	return cb(null, true);
-				// }
-
 				coreDrivers.deployService(options, (error) => {
 					if (error) {
 						soajs.log.error(error);
@@ -262,9 +258,6 @@ const lib = {
 		let esClient = context.esClient;
 		let settings = context.analyticsSettings;
 
-		// if (process.env.SOAJS_TEST_ANALYTICS === 'test') {
-		// 	return cb(null, true);
-		// }
 		esClient.ping((error) => {
 			if (error) {
 				// soajs.log.error(error);
@@ -527,14 +520,6 @@ const lib = {
 				esClient.db.indices.putTemplate(options, (error) => {
 					return callback(error, true);
 				});
-				// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-				// 	esClient.db.indices.putTemplate(options, (error) => {
-				// 		return callback(error, true);
-				// 	});
-				// }
-				// else {
-				// 	return callback(null, true);
-				// }
 			}, cb);
 		});
 	},
@@ -571,21 +556,6 @@ const lib = {
 					return cb(null, true);
 				}
 			});
-			// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-			// 	esClient.db.indices.exists({index: '.kibana'}, (error, result) => {
-			// 		if (error || !result) {
-			// 			esClient.db.indices.create(mapping, (err) => {
-			// 				return cb(err, true);
-			// 			});
-			// 		}
-			// 		else {
-			// 			return cb(null, true);
-			// 		}
-			// 	});
-			// }
-			// else {
-			// 	return cb(null, true);
-			// }
 		});
 	},
 
@@ -606,14 +576,6 @@ const lib = {
 		coreDrivers.listServices(options, (err, servicesList) => {
 			lib.configureKibana(context, servicesList, cb);
 		});
-		// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-		// 	coreDrivers.listServices(options, (err, servicesList) => {
-		// 		lib.configureKibana(context, servicesList, cb);
-		// 	});
-		// }
-		// else {
-		// 	return cb(null, true);
-		// }
 	},
 
 	/**
@@ -894,12 +856,6 @@ const lib = {
 				async.parallel({
 					"deploy": (call) => {
 						coreDrivers.deployService(options, call)
-						// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-						// 	coreDrivers.deployService(options, call)
-						// }
-						// else {
-						// 	return call(null, true);
-						// }
 					},
 					"update": (call) => {
 						settings.kibana = {
@@ -940,12 +896,6 @@ const lib = {
 				async.parallel({
 					"deploy": (call) => {
 						coreDrivers.deployService(options, call)
-						// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-						// 	coreDrivers.deployService(options, call)
-						// }
-						// else {
-						// 	return call(null, true);
-						// }
 					},
 					"update": (call) => {
 						if (!settings.logstash) {
@@ -989,12 +939,6 @@ const lib = {
 				async.parallel({
 					"deploy": (call) => {
 						coreDrivers.deployService(options, call)
-						// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-						// 	coreDrivers.deployService(options, call)
-						// }
-						// else {
-						// 	return call(null, true);
-						// }
 					},
 					"update": (call) => {
 						if (!settings.filebeat) {
@@ -1043,12 +987,6 @@ const lib = {
 				async.parallel({
 					"deploy": (call) => {
 						coreDrivers.deployService(options, call);
-						// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-						// 	coreDrivers.deployService(options, call);
-						// }
-						// else {
-						// 	return call(null, true);
-						// }
 					},
 					"update": (call) => {
 						if (!settings.metricbeat) {
@@ -1125,43 +1063,6 @@ const lib = {
 				return cb(null, true)
 			}
 		});
-		// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-		// 	coreDrivers.listServices(options, (err, servicesList) => {
-		// 		let failed = [];
-		// 		servicesList.forEach((oneService) => {
-		// 			if (flk.indexOf(oneService.name) == !-1) {
-		// 				let status = false;
-		// 				oneService.tasks.forEach((oneTask) => {
-		// 					if (oneTask.status.state === "running") {
-		// 						status = true;
-		// 					}
-		// 				});
-		// 				if (!status) {
-		// 					failed.push(oneService.name)
-		// 				}
-		// 			}
-		// 		});
-		// 		if (failed.length !== 0) {
-		// 			tracker[env.code.toLowerCase()].counterAvailability++;
-		// 			if (tracker[env.code.toLowerCase()].counterAvailability > 150) {
-		// 				soajs.log.error(failed.join(" , ") + "were/was not deployed... exiting");
-		// 				return cb(new Error(failed.join(" , ") + "were/was not deployed... exiting"));
-		// 			}
-		// 			else {
-		// 				setTimeout(() => {
-		// 					return lib.checkAvailability(context, cb);
-		// 				}, 1000);
-		// 			}
-		// 		}
-		// 		else {
-		// 			return cb(null, true)
-		// 		}
-		// 	});
-		// }
-		// else {
-		// 	return cb(null, true);
-		// }
-
 	},
 
 	/**
@@ -1246,63 +1147,6 @@ const lib = {
 				}
 			}
 		});
-		// if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
-		// 	esClient.db.search(condition, (err, res) => {
-		// 		if (err) {
-		// 			return cb(err);
-		// 		}
-		// 		if (res && res.hits && res.hits.hits && res.hits.hits.length > 0) {
-		// 			model.findEntry(soajs, combo, (err, result) => {
-		// 				if (err) {
-		// 					return cb(err);
-		// 				}
-		// 				index.id = res.hits.hits[0]._id;
-		// 				async.parallel({
-		// 					"updateES": (call) => {
-		// 						esClient.db.update(index, call);
-		// 					},
-		// 					"updateSettings": (call) => {
-		// 						let criteria = {
-		// 							"$set": {
-		// 								"kibana": {
-		// 									"version": index.id,
-		// 									"status": "deployed",
-		// 									"port": "32601"
-		// 								}
-		// 							}
-		// 						};
-		// 						result.env[env.code.toLowerCase()] = true;
-		// 						criteria["$set"].env = result.env;
-		// 						let options = {
-		// 							"safe": true,
-		// 							"multi": false,
-		// 							"upsert": false
-		// 						};
-		// 						combo.fields = criteria;
-		// 						combo.options = options;
-		// 						soajs.log.debug("Analytics Deployed successfully!");
-		// 						model.updateEntry(soajs, combo, call);
-		// 					}
-		// 				}, cb)
-		// 			});
-		// 		}
-		// 		else {
-		// 			tracker[env.code.toLowerCase()].counterKibana++;
-		// 			if (tracker[env.code.toLowerCase()].counterKibana > 200) {
-		// 				soajs.log.error("Kibana wasn't deployed... exiting");
-		// 				return cb(new Error("Kibana wasn't deployed... exiting"));
-		// 			}
-		// 			else {
-		// 				setTimeout(() => {
-		// 					lib.setDefaultIndex(context, cb);
-		// 				}, 5000);
-		// 			}
-		// 		}
-		// 	});
-		// }
-		// else {
-		// 	return cb(null, true);
-		// }
 	}
 };
 
