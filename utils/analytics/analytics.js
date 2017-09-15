@@ -674,6 +674,19 @@ const lib = {
 															index: {
 																_index: '.kibana',
 																_type: 'index-pattern',
+																_id: 'filebeat-*'
+															}
+														},
+														{
+															title: 'filebeat-*',
+															timeFieldName: '@timestamp',
+															fields: filebeatIndex.fields,
+															fieldFormatMap: filebeatIndex.fieldFormatMap
+														},
+														{
+															index: {
+																_index: '.kibana',
+																_type: 'index-pattern',
 																_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + "*"
 															}
 														},
@@ -773,11 +786,6 @@ const lib = {
 					}, pCallback);
 				},
 				"metricbeat": (pCallback) => {
-					//if kubernetes no need
-					if(env.deployer.selected.indexOf("container.kubernetes") !== -1){
-						return pCallback(null, true);
-					}
-					
 					analyticsArray = analyticsArray.concat(
 						[
 							{
