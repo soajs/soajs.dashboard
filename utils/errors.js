@@ -297,7 +297,10 @@ var errors = {
 	"987": "Autoscaling is only supported in kubernetes mode",
 	"988": "Unable to detect Heapster componenets",
 
-	"989": "The dashboard cluster is a sensitive resource that cannot be added or deleted. Only it's driver configuration can be updated."
+	"989": "The dashboard cluster is a sensitive resource that cannot be added or deleted. Only it's driver configuration can be updated.",
+
+	"990": "Invalid custom registry entry name/id provided",
+	"991": "Custom registry entry not found"
 };
 
 

@@ -699,6 +699,42 @@ module.exports = {
                 }
 			},
 
+            "/customRegistry/list": {
+                _apiInfo: {
+                    "l": "List Custom Registry Entries",
+                    "group": "Custom Registry",
+                    "groupMain": true
+                },
+                "env": {
+                    "source": ['query.env'],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+                }
+            },
+
+            "/customRegistry/get": {
+                _apiInfo: {
+                    "l": "Get Custom Registry Entry",
+                    "group": "Custom Registry"
+                },
+                "id": {
+					"source": ['query.id'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+                "name": {
+					"source": ['query.name'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
+            },
+
             "/environment/platforms/list": {
                 _apiInfo: {
                     "l": "List Environment Platforms",

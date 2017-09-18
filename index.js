@@ -9,6 +9,9 @@ var dashboardBL = {
 	resources: {
 		module: require("./lib/resources/index.js")
 	},
+	customRegistry: {
+		module: require("./lib/customRegistry/index.js")
+	},
 	product: {
 		module: require("./lib/product/index.js")
 	},
@@ -353,6 +356,84 @@ service.init(function () {
 	service.put("/resources/config/update", function (req, res) {
 		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
 			BL.setConfig(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * List custom registry entries
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/customRegistry/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.customRegistry.module, dbModel, function (BL) {
+			BL.list(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Get a custom registry entry
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/customRegistry/get", function (req, res) {
+		initBLModel(req, res, dashboardBL.customRegistry.module, dbModel, function (BL) {
+			BL.get(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Add a custom registry entry
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/customRegistry/add", function (req, res) {
+		initBLModel(req, res, dashboardBL.customRegistry.module, dbModel, function (BL) {
+			BL.add(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Update a custom registry entry
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/customRegistry/update", function (req, res) {
+		initBLModel(req, res, dashboardBL.customRegistry.module, dbModel, function (BL) {
+			BL.update(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Upgrade custom registry entries from old schema to new one
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/customRegistry/upgrade", function (req, res) {
+		initBLModel(req, res, dashboardBL.customRegistry.module, dbModel, function (BL) {
+			BL.upgrade(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Delete a custom registry entry
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.delete("/customRegistry/delete", function (req, res) {
+		initBLModel(req, res, dashboardBL.customRegistry.module, dbModel, function (BL) {
+			BL.delete(config, req, res, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
