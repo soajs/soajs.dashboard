@@ -252,6 +252,13 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 							var count = parseInt(id.replace('envVarRemove', ''));
 							for(let i = form.entries[7].tabs[1].entries.length -1; i >=0; i--){
 								if(form.entries[7].tabs[1].entries[i].name === 'envVarGroup' + count){
+									//remove from formData
+									for(var fieldname in form.formData){
+										if(['envVarName' + count, 'envVarType' + count, 'computedVar' + count, 'staticVar' + count, 'userInputLabel' + count, 'userInputDefault' + count, 'userInputFieldMsg' + count].indexOf(fieldname) !== -1){
+											delete form.formData[fieldname];
+										}
+									}
+									//remove from entries
 									form.entries[7].tabs[1].entries.splice(i, 1);
 									break;
 								}
@@ -283,6 +290,13 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 							
 							for(let i = form.entries[5].tabs[5].entries.length -1; i >=0; i--){
 								if(form.entries[5].tabs[5].entries[i].name === 'volumeGroup' + count){
+									//remove from formData
+									for(var fieldname in form.formData){
+										if(['volume' + count, 'volumeMount' + count].indexOf(fieldname) !== -1){
+											delete form.formData[fieldname];
+										}
+									}
+									//remove from entries
 									form.entries[5].tabs[5].entries.splice(i, 1);
 									break;
 								}
@@ -339,6 +353,13 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 							
 							for(let i = form.entries[5].tabs[6].entries.length -1; i >=0; i--){
 								if(form.entries[5].tabs[6].entries[i].name === 'portGroup' + count){
+									//remove from formData
+									for(var fieldname in form.formData){
+										if(['port' + count].indexOf(fieldname) !== -1){
+											delete form.formData[fieldname];
+										}
+									}
+									//remove from entries
 									form.entries[5].tabs[6].entries.splice(i, 1);
 									break;
 								}
@@ -383,6 +404,13 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 							
 							for(let i = form.entries[5].tabs[7].entries.length -1; i >=0; i--){
 								if(form.entries[5].tabs[7].entries[i].name === 'labelGroup' + count){
+									//remove from formData
+									for(var fieldname in form.formData){
+										if(['labelName' + count , 'labelValue' + count].indexOf(fieldname) !== -1){
+											delete form.formData[fieldname];
+										}
+									}
+									//remove from formEntries
 									form.entries[5].tabs[7].entries.splice(i, 1);
 									break;
 								}
@@ -733,7 +761,6 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				}
 			}
 		}
-		
 		return apiData;
 	}
 	
