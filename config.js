@@ -4,6 +4,7 @@ var cbSchema = require("./schemas/cb");
 var aclSchema = require("./schemas/acl");
 var catalogSchema = require("./schemas/catalog");
 var resourceSchema = require("./schemas/resource");
+var customRegEntrySchema = require("./schemas/customRegistry");
 var resourceDeployConfigSchema = require("./schemas/resourceDeployConfig");
 var cdOptions = require("./schemas/cdOptions");
 
@@ -1675,6 +1676,21 @@ module.exports = {
 				"resource": resourceSchema
 			},
 
+            "/customRegistry/add": {
+				_apiInfo: {
+                    "l": "Add New Custom Registry Entry",
+                    "group": "Custom Registry"
+                },
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"customRegEntry": customRegEntrySchema
+			},
+
             "/environment/platforms/cert/upload": {
                 _apiInfo: {
                     "l": "Upload Certificate",
@@ -3071,6 +3087,35 @@ module.exports = {
 				}
 			},
 
+            "/customRegistry/update": {
+				_apiInfo: {
+                    "l": "Update Custom Registry Entry",
+                    "group": "Custom Registry"
+                },
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+                "env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"customRegEntry": customRegEntrySchema
+			},
+
+            "/customRegistry/upgrade": {
+				_apiInfo: {
+                    "l": "Upgrade To New Custom Registry",
+                    "group": "Custom Registry"
+                }
+			},
+
             "/environment/platforms/cert/choose": {
                 _apiInfo: {
                     "l": "Choose Existing Certificates",
@@ -3903,6 +3948,27 @@ module.exports = {
 				_apiInfo: {
                     "l": "Delete a resource",
                     "group": "Resources"
+                },
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+                "env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+            "/customRegistry/delete": {
+				_apiInfo: {
+                    "l": "Delete A Custom Registry Entry",
+                    "group": "Custom Registry"
                 },
 				"id": {
 					"source": ['query.id'],

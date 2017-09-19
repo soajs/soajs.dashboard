@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async');
+var tenantsColName = 'tenants';
 
 module.exports = {
 
@@ -105,6 +106,32 @@ module.exports = {
 			return callback();
 		}, function () {
 			return cb(null, updatedRecord);
+		});
+	},
+
+	/**
+	 * Function that checks if current logged in user belongs to group owner
+	 * @param  {Object}   soajs
+	 * @param  {Function} cb
+	 * @return {void}
+	 */
+	checkIfOwner: function(soajs, model, cb) {
+		var uracRecord = soajs.urac;
+		var opts = {
+			collection: tenantsColName,
+			conditions: {
+				code: uracRecord.tenant.code.toUpperCase()
+			}
+		};
+
+		model.findEntry(soajs, opts, function (error, tenantRecord) {
+			if(error) return cb(error);
+
+			if(tenantRecord && tenantRecord.locked && uracRecord.groups.indexOf('owner') !== -1) {
+				return cb(null, true);
+			}
+
+			return cb(null, false);
 		});
 	}
 };
