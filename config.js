@@ -712,6 +712,20 @@ module.exports = {
                     "validation": {
                         "type": "string"
                     }
+                },
+                "start": {
+                    "source": ['query.start'],
+                    "required": false,
+                    "validation": {
+                        "type": "number"
+                    }
+                },
+                "end": {
+                    "source": ['query.end'],
+                    "required": false,
+                    "validation": {
+                        "type": "number"
+                    }
                 }
             },
 
