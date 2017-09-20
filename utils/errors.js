@@ -300,7 +300,11 @@ var errors = {
 	"989": "The dashboard cluster is a sensitive resource that cannot be added or deleted. Only it's driver configuration can be updated.",
 
 	"990": "Invalid custom registry entry name/id provided",
-	"991": "Custom registry entry not found"
+	"991": "Custom registry entry not found",
+	"992": "A custom registry entry with the same name already exists in this environment",
+	"993": "Custom registry entry not found",
+	"994": "You are not allowed to modify or delete this custom registry entry",
+	"995": "Modifying a custom registry entry is only allowed in the environment where it was created",
 };
 
 
