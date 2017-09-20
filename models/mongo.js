@@ -18,6 +18,8 @@ var oauthUracCollectionName = 'oauth_urac';
 var gitAccountsCollectionName = 'git_accounts';
 var gcCollectionName = 'gc';
 var analyticsCollection = "analytics";
+var resourcesCollection = 'resources';
+var customRegCollection = 'custom_registry';
 
 function checkForMongo(soajs) {
     if (!mongo) {
@@ -83,6 +85,15 @@ function checkForMongo(soajs) {
 
 		//analytics
 	    mongo.createIndex(analyticsCollection, {id: 1}, errorLogger);
+
+        //resources
+        mongo.createIndex(customRegCollection, { name: 1, type: 1, category: 1 }, errorLogger); //compound index, includes {name: 1}, {name: 1, type: 1}
+        mongo.createIndex(resourcesCollection, { created: 1, shared: 1, sharedEnv: 1 }, errorLogger); //compound index, includes {created: 1}, {created: 1, shared: 1}
+
+        //custom registry
+        mongo.createIndex(customRegCollection, { name: 1, created: 1 }, errorLogger); //compound index, includes {name: 1}
+        mongo.createIndex(customRegCollection, { created: 1, shared: 1, sharedEnv: 1 }, errorLogger); //compound index, includes {created: 1}, {created: 1, shared: 1}
+
     }
 
     function errorLogger(error) {
@@ -111,7 +122,7 @@ module.exports = {
         checkForMongo(soajs);
         if(!soajs.inputmaskData.id) {
             soajs.log.error('No id provided');
-            
+
             if(cb) return cb('no id provided');
             else return null;
         }
