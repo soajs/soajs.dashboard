@@ -1,0 +1,14 @@
+<table border="0" cellspacing="0" cellpadding="0" width="100%" class="navigation">
+	<tr>
+		<td valign="middle">
+			<ul class="gridRPP">
+				<li ng-repeat="recordsPerPage in grid.recordsPerPageArray">
+					<a href="" ng-class="{active:recordsPerPage === grid.itemsPerPage}" ng-click="grid.changeLimitTo(recordsPerPage)">{{recordsPerPage}}</a>
+				</li>
+			</ul>
+		</td>
+		<td align="right">
+			<pagination total-items="grid.rows.length" ng-model="grid.currentPage" items-per-page="grid.filteredRows.length" num-pages="grid.totalPages" max-size="grid.maxPageSize" class="pagination-sm" boundary-links="true" rotate="false"></pagination>
+		</td>
+	</tr>
+</table>

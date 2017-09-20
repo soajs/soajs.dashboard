@@ -1,0 +1,24 @@
+<table border="0" cellspacing="0" cellpadding="0" width="100%" class="">
+	<tr>
+		<th ng-show="(grid.topActions.length > 0)||(grid.leftActions.length > 0)" colspan="{{(grid.topActions.length > 0) ? (grid.leftActions.length + 1) : grid.leftActions.length}}"></th>
+		<th ng-repeat="column in grid.columns">
+			<a href="" ng-class="{active:grid.sortField===column.field}" ng-click="grid.changeSort(column.field);">{{column.label}}</a>
+		</th>
+	</tr>
+	<tr ng-repeat="row in grid.filteredRows | orderBy:grid.sortField:grid.reverse |limitTo: grid.itemsPerPage"
+	    ng-class="{'first': $first, 'last': $last, selected:row.selected}" ng-class-odd="'odd'" ng-class-even="'even'" class="rows">
+		<td class='leftAction' ng-show="grid.topActions.length > 0">
+			<input ng-model="row.selected" name="IDS[]" type="checkbox" value="{{row['ID']}}"/>
+		</td>
+		<td ng-repeat="action in grid.leftActions" class="leftAction">
+			<a href="" ng-confirm-click="{{action.commandMsg}}" ng-click="action.command(row)">
+				<span class="icon icon-{{action.icon}}" tooltip="{{action.label}}"></span>
+				<!--<img ng-src="themes/{{grid.themeToUse}}/img/{{action.icon}}.png" tooltip="{{action.label}}" border="0"/>-->
+			</a>
+		</td>
+		<td ng-repeat="column in grid.columns" class="columns column-{{column.field}}">
+			<span ng-if="column.filter">{{row[column.field] | filterPicker: column.filter}}</span>
+			<span ng-if="!column.filter" ng-bind-html="row[column.field]"></span>
+		</td>
+	</tr>
+</table>
