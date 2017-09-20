@@ -17,7 +17,7 @@ module.exports = {
                     "^[A-Z]+$": { "type": "boolean" }
                 }
             },
-            "config": { "required": true }
+            "value": { "required": true }
         }
     }
 };
