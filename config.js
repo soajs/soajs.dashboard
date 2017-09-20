@@ -3127,7 +3127,14 @@ module.exports = {
 				_apiInfo: {
                     "l": "Upgrade To New Custom Registry",
                     "group": "Custom Registry"
-                }
+                },
+                "env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
 			},
 
             "/environment/platforms/cert/choose": {
