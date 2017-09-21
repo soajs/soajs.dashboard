@@ -137,23 +137,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		_editor.setShowPrintMargin(false);
 	}
 	
-	$scope.saveCustomRegistry = function () {
-		try{
-			$scope.formEnvironment = angular.copy($scope.grid.rows[0]);
-			$scope.formEnvironment.custom = JSON.parse($scope.jsonEditor.custom.data);
-		}
-		catch(e){
-			console.log(e);
-			$scope.displayAlert('danger', 'Custom Registry: Invalid JSON Object');
-			return;
-		}
-		
-		$scope.newEntry = false;
-		$scope.envId = $scope.formEnvironment._id;
-
-		$scope.save();
-	};
-
 	$scope.getDeploymentMode = function (deployer, value) {
 		if (!deployer.ui) {
 			deployer.ui = {};
@@ -408,6 +391,447 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 		});
 	};
+	
+	
+	$scope.startLimit = 0;
+	$scope.totalCount = 20;
+	$scope.endLimit = 10;
+	$scope.increment = 10;
+	$scope.showNext = true;
+	
+	$scope.getPrev = function () {
+		$scope.startLimit = $scope.startLimit - $scope.increment;
+		if (0 <= $scope.startLimit) {
+			$scope.listCustomRegistry();
+			$scope.showNext = true;
+		}
+		else {
+			$scope.startLimit = 0;
+		}
+	};
+	
+	$scope.getNext = function () {
+		var startLimit = $scope.startLimit + $scope.increment;
+		if (startLimit < $scope.totalCount) {
+			$scope.startLimit = startLimit;
+			$scope.listCustomRegistry();
+		}
+		else {
+			$scope.showNext = false;
+		}
+	};
+	
+	$scope.listCustomRegistry = function (cb) {
+		$scope.oldStyle = false;
+		getEnvironment(function () {
+			overlayLoading.show();
+			getSendDataFromServer($scope, ngDataApi, {
+				method: 'get',
+				routeName: '/dashboard/customRegistry/list',
+				params: {
+					env: $scope.envCode.toUpperCase(),
+					start: $scope.startLimit,
+					end: $scope.endLimit
+				}
+			}, function (error, response) {
+				overlayLoading.hide();
+				if (error) {
+					$scope.displayAlert('danger', error.message);
+				}
+				else {
+					$scope.totalCount = response.count;
+					var nextLimit = $scope.startLimit + $scope.increment;
+					$scope.showNext = ($scope.totalCount > nextLimit);
+					
+					$scope.customRegistries = {list: response.records};
+					$scope.customRegistries.original = angular.copy($scope.customRegistries.list); //keep a copy of the original customRegistry records
+					
+					$scope.customRegistries.list.forEach(function (oneCustomRegistry) {
+						if (oneCustomRegistry.created === $scope.envCode.toUpperCase()) {
+							oneCustomRegistry.allowEdit = true;
+						}
+					});
+					if (cb) return cb();
+				}
+			});
+		});
+		
+		function getEnvironment(cb) {
+			getSendDataFromServer($scope, ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/environment",
+				"params": {
+					"code": $scope.envCode.toUpperCase()
+				}
+			}, function (error, response) {
+				if (error) {
+					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+				}
+				else {
+					if (response.custom && Object.keys(response.custom).length > 0) {
+						$scope.oldStyle = true;
+					}
+					return cb();
+				}
+			});
+		}
+	};
+	
+	$scope.manageCustomRegistry = function(customRegistry, action) {
+		var currentScope = $scope;
+		$modal.open({
+			templateUrl: "addEditCustomRegistry.tmpl",
+			size: 'lg',
+			backdrop: true,
+			keyboard: true,
+			controller: function ($scope, $modalInstance) {
+				fixBackDrop();
+				$scope.formData = {};
+				$scope.envs = [];
+				$scope.message = {};
+				$scope.recipes = [];
+				$scope.access = currentScope.access;
+				let allowEdit = ((action === 'add') || (action === 'update' && customRegistry.permission && customRegistry.created.toUpperCase() === currentScope.envCode.toUpperCase()));
+				$scope.allowEdit = allowEdit;
+				const aceCustomRegistry = {
+					"name": 'customRegistry',
+					"height": '16px',
+					"firstTime": true
+				};
+				$scope.options = {
+					envCode: currentScope.envCode,
+					formAction: action,
+					aceEditorConfig: {
+						maxLines: Infinity,
+						minLines: 1,
+						useWrapMode : true,
+						showGutter: true,
+						mode: 'json',
+						firstLineNumber: 1,
+						onLoad: function (_editor) {
+							_editor.$blockScrolling = Infinity;
+							_editor.scrollToLine(0, true, true);
+							_editor.scrollPageUp();
+							_editor.clearSelection();
+							_editor.setShowPrintMargin(false);
+							_editor.setHighlightActiveLine(false);
+							const heightUpdateFunction = function () {
+								let newHeight =
+									_editor.getSession().getScreenLength()
+									* _editor.renderer.lineHeight
+									+ _editor.renderer.scrollBar.getWidth();
+								
+								if (aceCustomRegistry.fixedHeight) {
+									newHeight = parseInt(aceCustomRegistry.height);
+								}
+								else if(parseInt(aceCustomRegistry.height) && parseInt(aceCustomRegistry.height) > newHeight){
+									newHeight = parseInt(aceCustomRegistry.height);
+								}
+								try{
+									if($scope.formData && $scope.formData.value && aceCustomRegistry.firstTime){
+										aceCustomRegistry.firstTime = false;
+										let screenLength = 1;
+										if(typeof JSON.parse($scope.formData.value) === 'object'){
+											screenLength = Object.keys(JSON.parse($scope.formData.value)).length * 16;
+											if(screenLength > 1){
+												screenLength += 32;
+											}
+										}else{
+											screenLength = 16;
+										}
+										if(screenLength > newHeight){
+											newHeight = screenLength;
+										}
+									}else{
+										aceCustomRegistry.firstTime = false;
+									}
+								}catch(e){
+									aceCustomRegistry.firstTime = false;
+								}
+								_editor.renderer.scrollBar.setHeight(newHeight.toString() + "px");
+								_editor.renderer.scrollBar.setInnerHeight(newHeight.toString() + "px");
+								$timeout(function () {
+									jQuery('#' + aceCustomRegistry.name).height(newHeight.toString());
+									_editor.resize(true);
+								}, 5);
+							};
+							heightUpdateFunction();
+							$timeout(function () {
+								_editor.heightUpdate = heightUpdateFunction();
+								// Set initial size to match initial content
+								heightUpdateFunction();
+
+								// Whenever a change happens inside the ACE editor, update
+								// the size again
+								_editor.getSession().on('change', heightUpdateFunction);
+							}, 2000);
+						}
+					},
+					allowEdit: allowEdit
+				};
+				
+				$scope.title = 'Add New Custom Registry';
+				if(action === 'update' && $scope.options.allowEdit) {
+					$scope.title = 'Update ' + customRegistry.name;
+				}
+				else if(!allowEdit){
+					$scope.title = 'View ' + customRegistry.name;
+				}
+				
+				$scope.displayAlert = function(type, message) {
+					$scope.message[type] = message;
+					setTimeout(function() {
+						$scope.message = {};
+					}, 5000);
+				};
+				
+				$scope.getEnvs = function() {
+					if($scope.envs && $scope.envs.list && $scope.envs.list.length > 0) {
+						return;
+					}
+					
+					overlayLoading.show();
+					getSendDataFromServer(currentScope, ngDataApi, {
+						method: 'get',
+						routeName: '/dashboard/environment/list'
+					}, function (error, envs) {
+						overlayLoading.hide();
+						if(error) {
+							$scope.displayAlert('danger', error.message);
+						}
+						else {
+							$scope.envs.list = [];
+							envs.forEach(function(oneEnv) {
+								//in case of update customRegistry, check customRegistry record to know what env it belongs to
+								if(customRegistry && customRegistry.created) {
+									if(customRegistry.created.toUpperCase() === oneEnv.code.toUpperCase()) return;
+								}
+								//in case of add customRegistry, check current environment
+								else if(currentScope.envCode.toUpperCase() === oneEnv.code.toUpperCase()) {
+									return;
+								}
+								
+								var envEntry = {
+									code: oneEnv.code,
+									description: oneEnv.description,
+									selected: (customRegistry && customRegistry.sharedEnv && customRegistry.sharedEnv[oneEnv.code.toUpperCase()])
+								};
+								
+								if(customRegistry && customRegistry.shared && action === 'update') {
+									if(customRegistry.sharedEnv) {
+										envEntry.selected = (customRegistry.sharedEnv[oneEnv.code.toUpperCase()]);
+									}
+									else {
+										//shared with all envs
+										envEntry.selected = true;
+										$scope.envs.sharedWithAll = true;
+									}
+								}
+								
+								$scope.envs.list.push(envEntry);
+							});
+						}
+					});
+				};
+				
+				$scope.fillForm = function() {
+						$scope.formData = angular.copy(customRegistry);
+						$scope.getEnvs();
+						//ace editor cannot take an object or array as model
+						$scope.formData.value = JSON.stringify($scope.formData.value, null, 2);
+				};
+				
+				$scope.toggleShareWithAllEnvs = function() {
+					if($scope.envs.sharedWithAll) {
+						$scope.envs.list.forEach(function(oneEnv) {
+							oneEnv.selected = true;
+						});
+					}
+					
+					return;
+				};
+				
+				$scope.save = function(cb) {
+					if(!$scope.options.allowEdit) {
+						$scope.displayAlert('warning', 'Configuring this Custom Registry is only allowed in the ' + $scope.formData.created + ' environment');
+						return;
+					}
+					
+					if($scope.formData.deployOptions && $scope.formData.deployOptions.custom) {
+						$scope.formData.deployOptions.custom.type = 'customRegistry';
+					}
+					
+					saveCustomRegistry(function () {
+						if (cb) return cb();
+						
+						$scope.formData = {};
+						$modalInstance.close();
+						if ($scope.access.customRegistry.list) {
+							currentScope.listCustomRegistry();
+						}
+					});
+					
+					function saveCustomRegistry(cb) {
+						var saveOptions = {
+							name: $scope.formData.name,
+							locked: $scope.formData.locked || false,
+							plugged: $scope.formData.plugged || false,
+							shared: $scope.formData.shared || false
+						};
+						if (Object.hasOwnProperty.call($scope.formData, "value")) {
+							try {
+								saveOptions.value = JSON.parse($scope.formData.value);
+							} catch (e) {
+								return $scope.displayAlert('danger', 'Custom Registry: Invalid JSON Object');
+							}
+						}
+						if($scope.formData.shared && !$scope.envs.sharedWithAll) {
+							saveOptions.sharedEnv = {};
+							$scope.envs.list.forEach(function(oneEnv) {
+								if(oneEnv.selected) {
+									saveOptions.sharedEnv[oneEnv.code.toUpperCase()] = true;
+								}
+							});
+						}
+						
+						var options = {};
+						if($scope.options.formAction === 'add') {
+							options = {
+								method: 'post',
+								routeName: '/dashboard/customRegistry/add',
+								data: {
+									env: $scope.options.envCode.toUpperCase(),
+									customRegEntry: saveOptions
+								}
+							};
+						}
+						else {
+							options = {
+								method: 'put',
+								routeName: '/dashboard/customRegistry/update',
+								params: {
+									env: $scope.options.envCode.toUpperCase(),
+									id: $scope.formData._id
+								},
+								data: {
+									customRegEntry: saveOptions
+								}
+							};
+						}
+						
+						overlayLoading.show();
+						getSendDataFromServer(currentScope, ngDataApi, options, function(error, result) {
+							overlayLoading.hide();
+							if(error) {
+								$scope.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.newcustomRegistry = result;
+								$scope.displayAlert('success', 'Custom Registry updated successfully');
+								return cb();
+							}
+						});
+					}
+				};
+				
+				$scope.cancel = function() {
+					$modalInstance.close();
+					if($scope.form && $scope.form.formData){
+						$scope.form.formData = {};
+					}
+				};
+				
+				$scope.fillForm();
+			}
+		});
+	};
+	
+	$scope.deleteCustomRegistry = function (customRegistry) {
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'delete',
+			routeName: '/dashboard/customRegistry/delete',
+			params: {
+				env: $scope.envCode.toUpperCase(),
+				id: customRegistry._id
+			}
+		}, function (error) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.displayAlert('success', 'Custom Registry deleted successfully');
+				if ($scope.access.customRegistry.list) {
+					$scope.listCustomRegistry();
+				}
+			}
+		});
+	};
+	
+	$scope.togglePlugCustomRegistry = function(customRegistry, plug) {
+		var customRegistryRecord = {};
+		//get the original customRegistry record
+		for(var i = 0; i < $scope.customRegistries.original.length; i++) {
+			if($scope.customRegistries.original[i]._id === customRegistry._id) {
+				customRegistryRecord = angular.copy($scope.customRegistries.original[i]);
+				break;
+			}
+		}
+		
+		var customRegistryId = customRegistryRecord._id;
+		delete customRegistryRecord._id;
+		delete customRegistryRecord.created;
+		delete customRegistryRecord.author;
+		delete customRegistryRecord.permission;
+		customRegistryRecord.plugged = plug;
+		
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'put',
+			routeName: '/dashboard/customRegistry/update',
+			params: {
+				env: $scope.envCode.toUpperCase(),
+				id: customRegistryId
+			},
+			data: {
+				customRegEntry: customRegistryRecord
+			}
+		}, function (error) {
+			overlayLoading.hide();
+			if(error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.displayAlert('success', 'Custom Registry updated successfully');
+				if ($scope.access.customRegistry.list) {
+					$scope.listCustomRegistry();
+				}
+			}
+		});
+	};
+	
+	$scope.upgradeCustomRegistry = function(){
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'put',
+			routeName: '/dashboard/customRegistry/upgrade',
+			params: {
+				env: $scope.envCode.toUpperCase()
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.displayAlert('success', "Custom Registry have been upgraded to the latest version.");
+				if ($scope.access.customRegistry.list) {
+					$scope.listCustomRegistry();
+				}
+			}
+		});
+	};
 
 	injectFiles.injectCss('modules/dashboard/environments/environments.css');
 	//default operation
@@ -420,5 +844,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		if ($scope.access.listEnvironments) {
 			$scope.listEnvironments(null);
 		}
+	}
+	if ($scope.access.customRegistry.list) {
+		$scope.envCode = $cookies.getObject("myEnv").code;
+		$scope.listCustomRegistry();
 	}
 }]);

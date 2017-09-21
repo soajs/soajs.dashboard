@@ -590,6 +590,13 @@ var environmentsConfig = {
 		"git": {
 			"listAccounts": ["dashboard", "/gitAccounts/accounts/list", "get"],
 			"listAccountRepos": ["dashboard", "/gitAccounts/getRepos", "get"]
+		},
+		"customRegistry": {
+			"list": ["dashboard", "/customRegistry/list", "get"],
+			"add": ["dashboard", "/customRegistry/add", "post"],
+			"update": ["dashboard", "/customRegistry/update", "put"],
+			"upgrade": ["dashboard", "/customRegistry/upgrade", "put"],
+			"delete": ["dashboard", "/customRegistry/delete", "delete"]
 		}
 	},
 
