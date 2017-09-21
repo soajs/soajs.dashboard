@@ -5,8 +5,8 @@
 			<tab heading="General Settings">
 				<br />
 				<div>
-					<label>CustomRegistry Name</label>
-					<input type="text" class="form-control" ng-model="formData.name" ng-required="true"/>
+					<label>Custom Registry Name</label>
+					<input type="text" class="form-control" ng-model="formData.name" ng-required="true" ng-disabled="options.formAction === 'view'"/>
 					<label class="fieldMsg">Choose the name of the new Custom Registry</label>
 					<br />
 				</div>
@@ -19,7 +19,7 @@
 					<br /><br />
 				</div>
 				<div>
-					<label>Lock CustomRegistry</label>
+					<label>Lock Custom Registry</label>
 					<label ng-show="allowEdit && !sensitive" class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.locked"><span class="buttonSlider round"></span></label>
 					<label ng-show="!allowEdit || sensitive" class="toggleSwitch f-right"><input disabled type="checkbox" ng-model="formData.locked"><span class="buttonSlider round"></span></label>
 					<label class="fieldMsg">Turn this on if you want to protect this Custom Registry and make it readonly for others</label>

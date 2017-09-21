@@ -52,7 +52,9 @@ var environmentsConfig = {
 			required: ['ca', 'cert', 'key']
 		}
 	},
-
+	
+	customRegistryIncrement : 20,
+	
 	form: {
 		template: {
 			'name': '',
@@ -519,6 +521,7 @@ var environmentsConfig = {
 			]
 		}
 	},
+	
 	nginxRequiredCerts: {
 		certificate: {
 			label: 'Chained Certificate',
@@ -534,6 +537,7 @@ var environmentsConfig = {
 	jsoneditorConfig: {
 		'height': '200px'
 	},
+	
 	permissions: {
 		"listEnvironments": ['dashboard', '/environment/list', 'get'],
 		"getEnvironment": ['dashboard', '/environment', 'get'],

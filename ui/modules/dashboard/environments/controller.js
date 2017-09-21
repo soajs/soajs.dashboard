@@ -394,9 +394,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	
 	
 	$scope.startLimit = 0;
-	$scope.totalCount = 20;
-	$scope.endLimit = 10;
-	$scope.increment = 10;
+	$scope.totalCount = 0;
+	$scope.endLimit = environmentsConfig.customRegistryIncrement;
+	$scope.increment = environmentsConfig.customRegistryIncrement;
 	$scope.showNext = true;
 	
 	$scope.getPrev = function () {
@@ -418,6 +418,20 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		}
 		else {
 			$scope.showNext = false;
+		}
+	};
+	
+	$scope.getLast = function () {
+		$scope.startLimit = $scope.totalCount - ($scope.totalCount % $scope.increment);
+		$scope.listCustomRegistry();
+		$scope.showNext = false;
+	};
+	
+	$scope.getFirst = function () {
+		$scope.startLimit = 0;
+		$scope.listCustomRegistry();
+		if($scope.increment < $scope.totalCount){
+			$scope.showNext = true;
 		}
 	};
 	
@@ -667,7 +681,11 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						$scope.formData = {};
 						$modalInstance.close();
 						if ($scope.access.customRegistry.list) {
-							currentScope.listCustomRegistry();
+							if ($scope.options.formAction === 'add') {
+								currentScope.getLast();
+							} else {
+								currentScope.listCustomRegistry();
+							}
 						}
 					});
 					

@@ -74,18 +74,16 @@
 							    </a>
 						    </div>
 						    <label>{{customRegistry.name}}</label>
-						    <!--<label>Name: </label>&nbsp;{{customRegistry.name}}-->
-							<!--<label>Author: </label>&nbsp;{{customRegistry.author}}-->
 						    <div class="rightActions" style="display:inline;">
 							    <a href="" ng-if="access.customRegistry.update && customRegistry.allowEdit && customRegistry.permission" class="btn btn-sm btn-default" ng-click="manageCustomRegistry(customRegistry, 'update')">
 								    <span class="icon icon-cog"></span>Configure
 							    </a>
 							
-							    <a href="" ng-if="access.customRegistry.update && (!customRegistry.allowEdit || !customRegistry.permission)" class="btn btn-sm btn-default" ng-click="manageCustomRegistry(customRegistry, 'update')">
+							    <a href="" ng-if="access.customRegistry.update && (!customRegistry.allowEdit || !customRegistry.permission)" class="btn btn-sm btn-default" ng-click="manageCustomRegistry(customRegistry, 'view')">
 								    <span class="icon icon-search"></span>View
 							    </a>
 							    
-							    <a href="" ng-if="access.customRegistry.update && !customRegistry.plugged" ng-disabled="!customRegistry.permission && !customRegistry.allowEdit" class="btn btn-sm btn-default" ng-click="togglePlugCustomRegistry(customRegistry, true)">
+							    <a href="" ng-if="access.customRegistry.update && !customRegistry.plugged" ng-disabled="!customRegistry.permission && !customRegistry.allowEdit" ng-class="{disabled: !customRegistry.allowEdit}"class="btn btn-sm btn-default" ng-click="togglePlugCustomRegistry(customRegistry, true)">
 								    <span class="icon icon-power-cord"></span>Plug
 							    </a>
 							
@@ -107,11 +105,17 @@
 								    <td align="right">
 									    <ul class="pagination-sm pagination ng-isolate-scope ng-valid">
 										    <li ng-class="{'disabled': startLimit<=0}">
+											    <a ng-click="getFirst();" href="">First</a>
+										    </li>
+										    <li ng-class="{'disabled': startLimit<=0}">
 											    <a ng-click="getPrev();" href="">{{translation.getPrevious[LANG]}} {{endLimit}}</a>
 										    </li>
 										    <li ng-class="{'disabled': !showNext}">
 											    <a ng-click="getNext();" href="" class="ng-binding">{{translation.getNext[LANG]}}
 												    {{endLimit}}</a>
+										    </li>
+										    <li ng-class="{'disabled': !showNext}">
+											    <a ng-click="getLast();" href="" class="ng-binding">Last</a>
 										    </li>
 									    </ul>
 								    </td>
