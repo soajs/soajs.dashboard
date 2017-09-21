@@ -100,6 +100,7 @@ describe("importing sample data", function () {
             require("./soajs.dashboard.test.js");
             require("./soajs.dashboard.test.services.js");
             require("./soajs.uploadCertificate.test.js");
+			require("./soajs.customRegistry.test.js");
 			require("./soajs.resources.test.js");
             require("./soajs.catalog.test.js");
             require("./soajs.hostsdeploy.test.js");
