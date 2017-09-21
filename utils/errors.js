@@ -301,10 +301,10 @@ var errors = {
 
 	"990": "Invalid custom registry entry name/id provided",
 	"991": "Custom registry entry not found",
-	"992": "A custom registry entry with the same name already exists in this environment",
+	"992": "A plugged custom registry entry with the same name exists in this environment or is shared with other environments",
 	"993": "Custom registry entry not found",
 	"994": "You are not allowed to modify or delete this custom registry entry",
-	"995": "Modifying a custom registry entry is only allowed in the environment where it was created",
+	"995": "Modifying a custom registry entry is only allowed in the environment where it was created"
 };
 
 
