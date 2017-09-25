@@ -46,7 +46,7 @@
 				    <br/>
 			    </div>
 			    <div ng-if="customRegistries && customRegistries.list && customRegistries.list.length > 0">
-                        <label style="float: right; padding-right: 1%" class="icon icon-search">&nbsp;<input ng-model="searchKeyword" placeholder="Search..."/></label>
+				    <span  style="float: right"><label class="icon icon-search"></label>&nbsp;<input ng-model="searchKeyword" placeholder="Search..."/></span>
 				    <br /><br />
 	                        <div ng-repeat="customRegistry in customRegistries.list | filter: searchKeyword" class="customRegistry-box" ng-class-odd="'oddRow'" ng-class-even="'evenRow'">
 					    <div>

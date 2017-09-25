@@ -1,4 +1,5 @@
 <alert type="danger" ng-if="message.danger">{{message.danger}}</alert>
+<br />
 <form name="addEditCustomRegistry" id="addEditCustomRegistry" ng-submit="addEditCustomRegistry.$valid && onSubmit()">
 	<div class="form-group" ng-init="$root.valid = addEditCustomRegistry.$valid" ng-keyup="$root.valid = addEditCustomRegistry.$valid" ng-mousemove="$root.valid = addEditCustomRegistry.$valid">
 		<tabset>
