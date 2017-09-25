@@ -63,6 +63,11 @@
 			</tab>
 			<tab heading="Custom Registry Configuration">
 				<br />
+				<div>
+					<label>Text Mode</label>
+					<label class="toggleSwitch"><input type="checkbox" ng-model="textMode" ng-change="enableTextMode()"><span class="buttonSlider round"></span></label>
+					<br />
+				</div>
 				<div id="customRegistry" ui-ace="options.aceEditorConfig" ng-model="formData.value"></div>
 				<label class="fieldMsg">{{translation.customRegistryFieldMsg[LANG]}}</label>
 				<br />

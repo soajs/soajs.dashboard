@@ -505,6 +505,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				$scope.message = {};
 				$scope.recipes = [];
 				$scope.access = currentScope.access;
+				$scope.textMode = false;
 				let allowEdit = ((action === 'add') || (action === 'update' && customRegistry.permission && customRegistry.created.toUpperCase() === currentScope.envCode.toUpperCase()));
 				$scope.allowEdit = allowEdit;
 				const aceCustomRegistry = {
@@ -529,6 +530,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							_editor.clearSelection();
 							_editor.setShowPrintMargin(false);
 							_editor.setHighlightActiveLine(false);
+							$scope.editor = _editor;
 							const heightUpdateFunction = function () {
 								let newHeight =
 									_editor.getSession().getScreenLength()
@@ -546,11 +548,14 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 										aceCustomRegistry.firstTime = false;
 										let screenLength = 1;
 										if(typeof JSON.parse($scope.formData.value) === 'object'){
+											_editor.session.setMode("ace/mode/json");
 											screenLength = Object.keys(JSON.parse($scope.formData.value)).length * 16;
 											if(screenLength > 1){
 												screenLength += 32;
 											}
 										}else{
+											$scope.textMode = true;
+											_editor.session.setMode("ace/mode/text");
 											screenLength = 16;
 										}
 										if(screenLength > newHeight){
@@ -560,6 +565,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 										aceCustomRegistry.firstTime = false;
 									}
 								}catch(e){
+									$scope.textMode = true;
+									_editor.session.setMode("ace/mode/text");
 									aceCustomRegistry.firstTime = false;
 								}
 								_editor.renderer.scrollBar.setHeight(newHeight.toString() + "px");
@@ -574,7 +581,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								_editor.heightUpdate = heightUpdateFunction();
 								// Set initial size to match initial content
 								heightUpdateFunction();
-
+								
 								// Whenever a change happens inside the ACE editor, update
 								// the size again
 								_editor.getSession().on('change', heightUpdateFunction);
@@ -652,7 +659,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						$scope.formData = angular.copy(customRegistry);
 						$scope.getEnvs();
 						//ace editor cannot take an object or array as model
+					if (typeof $scope.formData.value !== "string") {
 						$scope.formData.value = JSON.stringify($scope.formData.value, null, 2);
+					}
 				};
 
 				$scope.toggleShareWithAllEnvs = function() {
@@ -700,7 +709,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							try {
 								saveOptions.value = JSON.parse($scope.formData.value);
 							} catch (e) {
-								return $scope.displayAlert('danger', 'Custom Registry: Invalid JSON Object');
+								saveOptions.value = $scope.formData.value;
 							}
 						}
 						if($scope.formData.shared && !$scope.envs.sharedWithAll) {
@@ -758,7 +767,16 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						$scope.form.formData = {};
 					}
 				};
-
+				
+				$scope.enableTextMode = function() {
+					$scope.textMode = !$scope.textMode;
+					if($scope.textMode){
+						$scope.editor.session.setMode("ace/mode/text");
+					}else{
+						$scope.editor.session.setMode("ace/mode/json");
+					}
+				};
+				
 				$scope.fillForm();
 			}
 		});
