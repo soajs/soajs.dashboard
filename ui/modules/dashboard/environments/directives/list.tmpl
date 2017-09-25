@@ -34,6 +34,7 @@
 			    <button class="btn btn-primary f-right" ng-if="access.customRegistry.list" ng-click="listCustomRegistry()">
 				    <span class="icon icon-loop2"></span>Refresh
 			    </button>
+                <input type="text" class="form-control f-right customRegistry-search" ng-model="searchKeyword" placeholder="Search ..."/>
 			    <br/><br/>
 			    <div ng-show="oldStyle">
 				    <alert type="danger">
@@ -46,49 +47,42 @@
 				    <br/>
 			    </div>
 			    <div ng-if="customRegistries && customRegistries.list && customRegistries.list.length > 0">
-                        <label style="float: right; padding-right: 1%" class="icon icon-search">&nbsp;<input ng-model="searchKeyword" placeholder="Search..."/></label>
 				    <br /><br />
-	                        <div ng-repeat="customRegistry in customRegistries.list | filter: searchKeyword" class="customRegistry-box" ng-class-odd="'oddRow'" ng-class-even="'evenRow'">
+	                <div ng-repeat="customRegistry in customRegistries.list | customRegSearch:searchKeyword" class="customRegistry-box" ng-class-odd="'oddRow'" ng-class-even="'evenRow'">
 					    <div>
 						    <div class="leftActions">
 							    <a tooltip="Shared from the {{customRegistry.created}} environment" ng-if="customRegistry.shared">
 								    <span class="icon icon-share2"></span>
 							    </a>
-							
+
 							    <a ng-if="!customRegistry.shared" disabled>
 								    <span class="icon icon-share2 grey"></span>
 							    </a>
-							
+
 							    <a ng-if="customRegistry.locked">
 								    <span class="icon icon-lock" tooltip="Locked by {{customRegistry.author}}"></span>
 							    </a>
-							
+
 							    <a ng-if="!customRegistry.locked">
 								    <span class="icon icon-unlocked grey"></span>
 							    </a>
-							    <a ng-if="customRegistry.author">
-								    <span class="icon icon-user" tooltip="Created by {{customRegistry.author}}"></span>
-							    </a>
-							    <a ng-if="!customRegistry.author">
-								    <span class="icon icon-user grey"></span>
-							    </a>
 						    </div>
-						    <label>{{customRegistry.name}}</label>
+                            <label>{{customRegistry.name}}</label>&nbsp;<label ng-if="customRegistry.author" class="ownerLabel">( <span class="icon icon-user"></span>{{customRegistry.author}} )</label>
 						    <div class="rightActions" style="display:inline;">
 							    <a href="" ng-if="access.customRegistry.update && customRegistry.allowEdit && customRegistry.permission" class="btn btn-sm btn-default" ng-click="manageCustomRegistry(customRegistry, 'update')">
 								    <span class="icon icon-cog"></span>Configure
 							    </a>
-							
+
 							    <a href="" ng-if="access.customRegistry.update && (!customRegistry.allowEdit || !customRegistry.permission)" class="btn btn-sm btn-default" ng-click="manageCustomRegistry(customRegistry, 'view')">
 								    <span class="icon icon-search"></span>View
 							    </a>
-							    
+
 							    <a href="" ng-if="access.customRegistry.update && !customRegistry.plugged" ng-disabled="!customRegistry.permission && !customRegistry.allowEdit" ng-class="{disabled: !customRegistry.allowEdit}"class="btn btn-sm btn-default" ng-click="togglePlugCustomRegistry(customRegistry, true)">
 								    <span class="icon icon-power-cord"></span>Plug
 							    </a>
-							
+
 							    <a href="" ng-if="access.customRegistry.update && customRegistry.plugged" ng-disabled="!customRegistry.permission" class="btn btn-sm btn-success" ng-class="{disabled: !customRegistry.allowEdit}" ng-click="togglePlugCustomRegistry(customRegistry, false)"><span class="icon icon-power-cord"></span>Unplug</a>
-							
+
 							    <a href="" class="btn btn-sm btn-danger" ng-if="access.customRegistry.delete && customRegistry.permission && customRegistry.allowEdit" ng-click="deleteCustomRegistry(customRegistry)" ng-confirm-click="Are you sure you want to delete this Custom Registry?">
 								    <span class="icon icon-cross" tooltip="Delete Custom Registry"></span>Remove
 							    </a>

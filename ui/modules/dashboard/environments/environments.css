@@ -617,3 +617,12 @@ input:checked + .buttonSlider:before {
 .grey{
     color: #cccccc;
 }
+
+.customRegistry-search {
+    width: 15%;
+    margin-right: 10px;
+}
+
+.ownerLabel {
+    color: #A9A9A9;
+}
