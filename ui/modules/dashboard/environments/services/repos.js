@@ -425,11 +425,11 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 						getCDRecipe($scope, oneRepo, function () {
 							$scope.setDeploy($scope.oneEnv, $scope.version, $scope.oneSrv)
 						});
-						
+
 						$scope.cancel = function () {
 							deployService.close();
 						};
-						
+
 						$scope.displayAlert = function (type, msg, isCode, service, orgMesg) {
 							$scope.alerts = [];
 							if (isCode) {
@@ -440,12 +440,12 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 							}
 							$scope.alerts.push({'type': type, 'msg': msg});
 						};
-						
+
 						$scope.closeAlert = function (index) {
 							$scope.alerts.splice(index, 1);
 						};
-						
-						
+
+
 						$scope.showHide = function (oneService, name) {
 							if (oneService.icon === 'minus') {
 								oneService.icon = 'plus';
@@ -456,7 +456,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 								jQuery('#cd_' + name).slideDown()
 							}
 						};
-						
+
 						$scope.cdShowHide = function (oneSrv, name) {
 							if ($scope.cdConfiguration[oneSrv].icon === 'minus') {
 								$scope.cdConfiguration[oneSrv].icon = 'plus';
@@ -467,7 +467,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 								jQuery('#cdc_' + name).slideDown()
 							}
 						};
-						
+
 						$scope.updateGitBranch = function (oneSrv, oneEnv, version) {
 							$scope.branches.forEach(function (oneBranch) {
 								if (oneBranch.name === $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch){
@@ -477,12 +477,12 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 									}
 								}
 							});
-							
+
 						};
 						$scope.activateAutoScale = function () {
 							$scope.autoScale = !$scope.autoScale;
 						};
-						
+
 						$scope.setDeploy = function (oneEnv, version, oneSrv) {
 							var deployedBranch = '';
 							if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource && $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch) {
@@ -535,7 +535,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 								if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource){
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource = {};
 								}
-								
+
 								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.owner = oneRepo.owner.login;
 								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.repo = oneRepo.name;
 								if (isKubernetes) {
@@ -572,16 +572,16 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 									if ($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit < 1) {
 										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = 500;
 									}
-									
+
 								}
 								if (service && $scope.serviceType === 'daemon' && service.grpConf) {
 									$scope.groupConfigs = service.grpConf;
 								}
-								
+
 								$scope.injectCatalogEntries(oneEnv, version, oneSrv);
 							});
 						};
-						
+
 						$scope.injectCatalogEntries = function (oneEnv, version, oneSrv) {
 							$scope.allowGitOverride = false;
 							if (!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom) {
@@ -603,10 +603,10 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 										if (catalogRecipe.recipe.deployOptions.image.override) {
 											if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.prefix)
 												$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.prefix = catalogRecipe.recipe.deployOptions.image.prefix;
-											
+
 											if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.name)
 												$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.name = catalogRecipe.recipe.deployOptions.image.name;
-											
+
 											if(!$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.tag)
 												$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.image.tag = catalogRecipe.recipe.deployOptions.image.tag;
 										}
@@ -632,7 +632,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 										if (Object.keys($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env).length === 0) {
 											delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.env;
 										}
-										
+
 										$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.env = oneEnv;
 										if (catalogRecipe.recipe.deployOptions.specifyGitConfiguration) {
 											$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.custom.name = oneSrv;
@@ -646,11 +646,11 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 								});
 							}
 						};
-						
+
 						$scope.saveRecipe = function (type) {
 							saveRecipe($scope, type)
 						};
-						
+
 					}
 				});
 			}
@@ -658,6 +658,12 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 	}
 
 	function getCatalogRecipes(currentScope, cb) {
+		//several calls to list recipes are being made to check if oldStyle
+		//check if recipes already retrieved and return them instead of repeating the api call
+		if(currentScope.recipes && Object.keys(currentScope.recipes).length > 0) {
+			return cb(null);
+		}
+
 		currentScope.loadingRecipes = true;
 		getSendDataFromServer(currentScope, ngDataApi, {
 			method: 'get',
@@ -1179,7 +1185,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 		}
 
 	}
-	
+
 	function openUpgradeModal(currentScope){
 		$modal.open({
 			templateUrl: "oldCatalogRecipes.tmpl",
@@ -1194,7 +1200,7 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 			}
 		});
 	}
-	
+
 	return {
 		'listGitAccounts': listGitAccounts,
 		'listRepos': listRepos,
