@@ -581,7 +581,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								_editor.heightUpdate = heightUpdateFunction();
 								// Set initial size to match initial content
 								heightUpdateFunction();
-								
+
 								// Whenever a change happens inside the ACE editor, update
 								// the size again
 								_editor.getSession().on('change', heightUpdateFunction);
@@ -771,7 +771,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						$scope.form.formData = {};
 					}
 				};
-				
+
 				$scope.enableTextMode = function() {
 					$scope.textMode = !$scope.textMode;
 					if($scope.textMode){
@@ -780,7 +780,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						$scope.editor.session.setMode("ace/mode/json");
 					}
 				};
-				
+
 				$scope.fillForm();
 			}
 		});
@@ -899,7 +899,7 @@ environmentsApp.filter('customRegSearch', function() {
 		var output = [];
 		input.forEach(function(oneInput) {
 			if(oneInput) {
-				if((oneInput.name.indexOf(searchKeyword) !== -1) || (oneInput.author.indexOf(searchKeyword) !== -1)) {
+				if((oneInput.name && oneInput.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) !== -1) || (oneInput.author && oneInput.author.toLowerCase().indexOf(searchKeyword.toLowerCase()) !== -1)) {
 					output.push(oneInput);
 				}
 			}

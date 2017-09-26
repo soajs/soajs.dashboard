@@ -21,21 +21,21 @@
                 <div class="body" ng-if="!account.loading">
 	                <div class="inner" ng-class="{'hidden': account.hide}">
                         <label>{{translation.repositories[LANG]}}</label>
-		                <span style="float: right; padding-right: 1%" class="icon icon-search">&nbsp;
-		                <input ng-model="searchKeyword" />&nbsp;
-		                <a href="" ng-if="access.getRepos" ng-click="listRepos(account, 0, 'getRepos');" ng-if="access.getRepos">
-                            <span class="icon icon-loop2" tooltip="{{translation.syncRepo[LANG]}}"></span>
-                        </a>
-                        <a href="" ng-if="access.logout" ng-click="deleteAccount(account);" ng-if="access.deleteAccount" ng-confirm-click="Are you sure you want to delete this account?">
-                            <span class="icon icon-cross" tooltip="{{translation.deleteAccount[LANG]}}"></span>
-                        </a>
-	                </span>
+                        <span style="float: right; padding-right: 1%">&nbsp;
+                            <input type="text" class="form-control gitRepos-search" ng-model="searchKeyword" placeholder="Search ..." />
+                            <a href="" ng-if="access.getRepos" ng-click="listRepos(account, 0, 'getRepos');" ng-if="access.getRepos">
+                                <span class="icon icon-loop2" tooltip="{{translation.syncRepo[LANG]}}"></span>
+                            </a>
+                            <a href="" ng-if="access.logout" ng-click="deleteAccount(account);" ng-if="access.deleteAccount" ng-confirm-click="Are you sure you want to delete this account?">
+                                <span class="icon icon-cross" tooltip="{{translation.deleteAccount[LANG]}}"></span>
+                            </a>
+                        </span>
 		                <div ng-if="account.repo && account.repo.length === 0">
 			                <alert type="warning">{{translation.noReposFound[LANG]}}</alert>
 		                </div>
 		                <div ng-if="access.getRepos" id="reposList">
 			                <ul class="blueListing">
-				                <li class="blueLi row-list {{repo.status}}" ng-repeat="repo in account.repos| filter: searchKeyword" ng-style="{'width': '99%'}">
+				                <li class="blueLi row-list {{repo.status}}" ng-repeat="repo in account.repos | reposSearchFilter:searchKeyword" ng-style="{'width': '99%'}">
 					                <span class="repoFullName">{{repo.full_name}}</span>
 					                <span ng-if="repo.status === 'deleted'" class="f-right mr11"><span class="icon icon-warning"></span>{{translation.repoHasBeenDeleted[LANG]}}</span>
 					                <span ng-if="repo.status === 'active'" class="f-right mr11"><span class="icon icon-checkmark"></span>{{translation.activeRepo[LANG]}}</span>
