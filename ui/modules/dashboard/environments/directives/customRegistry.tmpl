@@ -61,12 +61,12 @@
 					</div>
 				</div>
 			</tab>
-			<tab heading="Custom Registry Configuration">
+			<tab heading="Custom Registry Value">
 				<br />
 				<div>
-					<label>Text Mode</label>
+					<label>I am adding a text value</label>
 					<label class="toggleSwitch"><input type="checkbox" ng-model="textMode" ng-change="enableTextMode()"><span class="buttonSlider round"></span></label>
-					<label class="fieldMsg">Turn this mode on if you want to set the variable value as text (Default mode is JSON)</label>
+					<label class="fieldMsg">Turn on this mode if the value you are about to enter is made up of text only (Default mode does not support text only)</label>
 					<br /><br />
 				</div>
 				<div id="customRegistry" class="customRegistryAceEditor" ui-ace="options.aceEditorConfig" ng-model="formData.value"></div>

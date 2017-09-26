@@ -135,7 +135,9 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 								});
 
 								getCdData(currentScope, function () {
-									getDeployedServices(currentScope);
+									getCatalogRecipes(currentScope, function (error) {
+										getDeployedServices(currentScope);
+									});
 								});
 							});
 						});
@@ -1158,26 +1160,24 @@ deployReposService.service('deployRepos', ['ngDataApi', '$timeout', '$modal', '$
 						deploySettings.options.gitSource.owner = oneEnv.split("=")[1];
 					}
 				}
-				getCatalogRecipes(currentScope, function (error) {
-					if(!error && currentScope.recipes && oneDeployedEntry.labels['soajs.catalog.id']){
-						for (var type in currentScope.recipes) {
-							currentScope.recipes[type].forEach(function (catalogRecipe) {
-								if (catalogRecipe._id === oneDeployedEntry.labels['soajs.catalog.id']) {
-									if(catalogRecipe.recipe.buildOptions && catalogRecipe.recipe.buildOptions.env){
-										for (var envVariable in catalogRecipe.recipe.buildOptions.env) {
-											if (catalogRecipe.recipe.buildOptions.env[envVariable].type === 'userInput' && oneEnv.indexOf(envVariable) !== -1) {
-												deploySettings.options.custom.env[envVariable] = oneEnv.split("=")[1];
-												break;
-											}
+
+				if(currentScope.recipes && oneDeployedEntry.labels['soajs.catalog.id']){
+					for (var type in currentScope.recipes) {
+						currentScope.recipes[type].forEach(function (catalogRecipe) {
+							if (catalogRecipe._id === oneDeployedEntry.labels['soajs.catalog.id']) {
+								if(catalogRecipe.recipe.buildOptions && catalogRecipe.recipe.buildOptions.env){
+									for (var envVariable in catalogRecipe.recipe.buildOptions.env) {
+										if (catalogRecipe.recipe.buildOptions.env[envVariable].type === 'userInput' && oneEnv.indexOf(envVariable) !== -1) {
+											deploySettings.options.custom.env[envVariable] = oneEnv.split("=")[1];
+											break;
 										}
 									}
 								}
-							});
-						}
+							}
+						});
 					}
-					return cb(deploySettings)
-				});
-
+				}
+				return cb(deploySettings)
 			});
 		}
 		else {

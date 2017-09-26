@@ -118,9 +118,12 @@
 					    </table>
 				    </div>
 			    </div>
-			    <alert type="warning" ng-if="!customRegistries || !customRegistries.list || customRegistries.list.length === 0">
-				    No Custom Registry found for this environment!
-			    </alert>
+                <div ng-if="!customRegistries || !customRegistries.list || customRegistries.list.length === 0">
+                    <br /><br />
+                    <alert type="warning">
+    				    No Custom Registry found for this environment!
+    			    </alert>
+                </div>
 		    </div>
 	    </tab>
     </tabset>

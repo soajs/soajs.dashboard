@@ -1016,8 +1016,8 @@ var envTranslation ={
 		"FRA": "Form View"
 	},
 	"customRegistryFieldMsg": {
-		"ENG": "Use this section to add any custom registry information for this environment. Data can be added in JSON, Boolean, Number, String format. ( Text mode should be turned on for String format )",
-		"FRA": "Use this section to add any custom registry information for this environment. Data can be added in JSON, Boolean, Number, String format. ( Text mode should be turned on for String format )"
+		"ENG": "Use this input to add any custom registry value, supported types are: JSON, Boolean, Number, Regular Expression (Turn on text support above if the value is text)",
+		"FRA": "Use this input to add any custom registry value, supported types are: JSON, Boolean, Number, Regular Expression (Turn on text support above if the value is text)"
 	},
 	"defaultRegistry": {
 		"ENG": "Default Registry",
