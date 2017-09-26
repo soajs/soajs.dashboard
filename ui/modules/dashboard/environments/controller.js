@@ -706,10 +706,14 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							shared: $scope.formData.shared || false
 						};
 						if (Object.hasOwnProperty.call($scope.formData, "value")) {
-							try {
-								saveOptions.value = JSON.parse($scope.formData.value);
-							} catch (e) {
+							if ($scope.textMode) {
 								saveOptions.value = $scope.formData.value;
+							} else {
+								try {
+									saveOptions.value = JSON.parse($scope.formData.value);
+								} catch (e) {
+									return $scope.displayAlert('danger', 'Custom Registry: Invalid JSON Object');
+								}
 							}
 						}
 						if($scope.formData.shared && !$scope.envs.sharedWithAll) {
