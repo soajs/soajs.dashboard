@@ -66,9 +66,10 @@
 				<div>
 					<label>Text Mode</label>
 					<label class="toggleSwitch"><input type="checkbox" ng-model="textMode" ng-change="enableTextMode()"><span class="buttonSlider round"></span></label>
-					<br />
+					<label class="fieldMsg">Turn this mode on if you want to set the variable value as text (Default mode is JSON)</label>
+					<br /><br />
 				</div>
-				<div id="customRegistry" ui-ace="options.aceEditorConfig" ng-model="formData.value"></div>
+				<div id="customRegistry" class="customRegistryAceEditor" ui-ace="options.aceEditorConfig" ng-model="formData.value"></div>
 				<label class="fieldMsg">{{translation.customRegistryFieldMsg[LANG]}}</label>
 				<br />
 			</tab>
