@@ -188,9 +188,13 @@ ul {
 }
 
 .ace_editor{
+    height: 500px;
+}
+
+.customRegistryAceEditor {
     max-height: 500px;
     min-height: 18px;
-    overflow-y:scroll;
+    overflow-y: scroll;
 }
 
 .red{
