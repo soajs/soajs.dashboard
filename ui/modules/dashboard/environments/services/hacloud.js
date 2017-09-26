@@ -605,41 +605,78 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			}
 		});
 
-	    function getServiceBranches(opts, cb) {
-		    getSendDataFromServer(currentScope, ngDataApi, {
-			    method: 'get',
-			    routeName: '/dashboard/gitAccounts/accounts/list'
-		    }, function (error, response) {
-			    if (error) {
-				    currentScope.displayAlert('danger', error.message);
-			    } else {
-			    	let nextOpts = {};
-			    	response.forEach((oneGitAccount) =>{
-			    		if(oneGitAccount.owner === opts.repo_owner){
-						    nextOpts._id = oneGitAccount._id;
-						    nextOpts.provider = oneGitAccount.provider;
-					    }
-				    });
+		function getServiceBranches(opts, cb) {
+			getSendDataFromServer(currentScope, ngDataApi, {
+				method: 'get',
+				routeName: '/dashboard/gitAccounts/accounts/list'
+			}, function (error, gitAccounts) {
+				if (error) {
+					currentScope.displayAlert('danger', error.message);
+				} else {
 
-				    getSendDataFromServer(currentScope, ngDataApi, {
-					    method: 'get',
-					    routeName: '/dashboard/gitAccounts/getBranches',
-					    params: {
-						    'id': nextOpts._id,
-						    'provider': nextOpts.provider,
-						    'name': opts.repo_owner + "/" + opts.repo_name,
-						    'type': service.labels['soajs.service.type']
-					    }
-				    }, function (error, response) {
-					    if (error) {
-						    currentScope.displayAlert('danger', error.message);
-					    } else {
-						    return cb(response);
-					    }
-				    });
-			    }
-		    });
-	    }
+					let nextOpts = {};
+					getAccountRepos(gitAccounts, 0, function(){
+						gitAccounts.forEach((oneGitAccount) =>{
+
+							for( let i=0; i < oneGitAccount.repos.length; i++) {
+								let oneRepo = oneGitAccount.repos[i];
+								if(oneRepo.full_name === opts.repo_owner + "/" + opts.repo_name){
+									nextOpts._id = oneGitAccount._id;
+									nextOpts.provider = oneGitAccount.provider;
+									break;
+								}
+							}
+						});
+
+						getSendDataFromServer(currentScope, ngDataApi, {
+							method: 'get',
+							routeName: '/dashboard/gitAccounts/getBranches',
+							params: {
+								'id': nextOpts._id,
+								'provider': nextOpts.provider,
+								'name': opts.repo_owner + "/" + opts.repo_name,
+								'type': 'repo'
+							}
+						}, function (error, response) {
+							if (error) {
+								currentScope.displayAlert('danger', error.message);
+							} else {
+								return cb(response);
+							}
+						});
+
+					});
+				}
+			});
+
+			function getAccountRepos(accounts, counter, cb){
+				let max = accounts.length;
+				if(counter === max){
+					return cb();
+				}
+				else{
+					let oneAccount = accounts[counter];
+					getSendDataFromServer(currentScope, ngDataApi, {
+						method: 'get',
+						routeName: '/dashboard/gitAccounts/getRepos',
+						"params": {
+							id: oneAccount._id,
+							provider: oneAccount.provider,
+							per_page: 1000,
+							page: 1
+						}
+					}, function (error, repos) {
+						if (error) {
+							currentScope.displayAlert('danger', error.message);
+						} else {
+							counter++;
+							oneAccount.repos = repos;
+							getAccountRepos(accounts, counter, cb);
+						}
+					});
+				}
+			}
+		}
 
 		function doRebuild(formData){
 			var params = {
