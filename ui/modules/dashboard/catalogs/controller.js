@@ -523,11 +523,17 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				condition: (data.recipe.deployOptions.restartPolicy) ? data.recipe.deployOptions.restartPolicy.condition: '',
 				maxAttempts: (data.recipe.deployOptions.restartPolicy) ? data.recipe.deployOptions.restartPolicy.maxAttempts: '',
 				network: data.recipe.deployOptions.container.network,
-				workingDir: data.recipe.deployOptions.container.workingDir,
-				command: data.recipe.buildOptions.cmd.deploy.command[0],
-				arguments: data.recipe.buildOptions.cmd.deploy.args.join("\n"),
+				workingDir: data.recipe.deployOptions.container.workingDir
 			};
-			
+			if (data.recipe.buildOptions.cmd
+				&& data.recipe.buildOptions.cmd.deploy
+				&& data.recipe.buildOptions.cmd.deploy.command){
+				output.command = data.recipe.buildOptions.cmd.deploy.command[0];
+				
+				if(data.recipe.buildOptions.cmd.deploy.args){
+					output.arguments = data.recipe.buildOptions.cmd.deploy.args.join("\n");
+				}
+			}
 			if(data.recipe.deployOptions.image && Object.hasOwnProperty.call(data.recipe.deployOptions.image, 'override')){
 				output['imageOverride'] = data.recipe.deployOptions.image.override.toString();
 			}
