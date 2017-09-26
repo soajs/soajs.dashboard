@@ -30,7 +30,7 @@
     "jshint": "2.9.4",
     "lodash": "4.17.4",
     "mocha": "3.2.0",
-    "nock": "^9.0.2",
+    "nock": "9.0.13",
     "shelljs": "0.7.5",
     "sinon": "1.17.6",
     "soajs.controller": "1.0.*",
