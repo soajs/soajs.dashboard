@@ -322,7 +322,7 @@ var catalogAppConfig = {
 								'type': 'text',
 								'value': '',
 								'placeholder': 'bash',
-								'required': true,
+								'required': false,
 								'tooltip': "Enter the command that the container should run once the container of this service is created.",
 								'fieldMsg': "Enter the command that the container should run once the container of this service is created."
 							},
@@ -332,7 +332,7 @@ var catalogAppConfig = {
 								'type': 'textarea',
 								'value': '',
 								'placeholder': '-c\nnode . -T service',
-								'required': true,
+								'required': false,
 								'tooltip': "Provide the arguments for the Container Command; one argument per line",
 								'fieldMsg': "Provide the arguments for the Container Command; one argument per line"
 							},
