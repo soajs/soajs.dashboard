@@ -407,21 +407,21 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             }
 
             //inject user input catalog entry and image override
-	        if(formData['_ci_nginxImageName'] && formData['_ci_nginxImagePrefix'] && formData['_ci_nginxImageTag']){
+	        if(formData['_ci_serverImageName'] && formData['_ci_serverImagePrefix'] && formData['_ci_serverImageTag']){
 		        params.custom['image'] = {
-			        name: formData['_ci_nginxImageName'],
-			        prefix: formData['_ci_nginxImagePrefix'],
-			        tag: formData['_ci_nginxImageTag']
+			        name: formData['_ci_serverImageName'],
+			        prefix: formData['_ci_serverImagePrefix'],
+			        tag: formData['_ci_serverImageTag']
 		        };
 	        }
 
-	        var excludes = ['_ci_nginxImageName', '_ci_nginxImagePrefix', '_ci_nginxImageTag'];
+	        var excludes = ['_ci_serverImageName', '_ci_serverImagePrefix', '_ci_serverImageTag'];
 	        for( var input in formData){
-		        if(input.indexOf('_ci_nginx_') !== -1 && excludes.indexOf(input) === -1){
+		        if(input.indexOf('_ci_server_') !== -1 && excludes.indexOf(input) === -1){
 			        if(!params.custom.env){
 				        params.custom.env = {};
 			        }
-			        params.custom.env[input.replace('_ci_nginx_', '')] = formData[input];
+			        params.custom.env[input.replace('_ci_server_', '')] = formData[input];
 		        }
 	        }
 

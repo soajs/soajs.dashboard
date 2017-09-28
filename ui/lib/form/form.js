@@ -121,7 +121,7 @@ function buildForm(context, modal, configuration, cb) {
 				}
 			}
 		}
-		
+
 		function internalDataMap(fieldEntry, inputName){
 			if (Array.isArray(fieldEntry.value)) {
 				for(let i=0; i < fieldEntry.value.length; i++){
@@ -216,20 +216,13 @@ function buildForm(context, modal, configuration, cb) {
 			}
 
 			if (oneEntry.type === 'select') {
-				var lastObj;
 				for (var x = 0; x < oneEntry.value.length; x++) {
 					if (oneEntry.value[x].selected) {
-						lastObj = oneEntry.value[x];
-						oneEntry.value.splice(x, 1);
-						context.form.formData[oneEntry.name] = lastObj.v;
+						context.form.formData[oneEntry.name] = oneEntry.value[x].v;
 						break;
 					}
 				}
-				
-				if (lastObj) {
-					oneEntry.value.push(lastObj);
-				}
-				
+
 				if (oneEntry.onChange && typeof(oneEntry.onChange.action) === 'function') {
 					oneEntry.action = oneEntry.onChange;
 				}
@@ -267,7 +260,7 @@ function buildForm(context, modal, configuration, cb) {
 					else if(parseInt(oneEntry.height) && parseInt(oneEntry.height) > newHeight){
 						newHeight = parseInt(oneEntry.height);
 					}
-					
+
 					_editor.renderer.scrollBar.setHeight(newHeight.toString() + "px");
 					_editor.renderer.scrollBar.setInnerHeight(newHeight.toString() + "px");
 					configuration.timeout(function () {
@@ -309,7 +302,7 @@ function buildForm(context, modal, configuration, cb) {
 		}
 		context.form.refData = configuration.data;
 	}
-	
+
 	context.form.refresh = function (reload) {
 		for (var i = 0; i < context.form.entries.length; i++) {
 			if (context.form.entries[i].type === 'group') {
@@ -480,6 +473,22 @@ function buildForm(context, modal, configuration, cb) {
 		else {
 			var idx = context.form.formData[fieldName].indexOf(value);
 			context.form.formData[fieldName].splice(idx, 1);
+		}
+	};
+
+	context.form.markSelected = function(entry) {
+		if(entry && entry.value && Array.isArray(entry.value)) {
+			if(!context.form.formData[entry.name]) {
+				for (var i = 0; i < entry.value.length; i++) {
+					if(entry.value[i].selected) {
+						context.form.formData[entry.name] = entry.value[i].v;
+						if(entry.onAction && typeof(entry.onAction) === 'function') {
+							context.form.call(entry.onAction, entry.name , context.form.formData[entry.name], context.form);
+						}
+						break;
+					}
+				}
+			}
 		}
 	};
 
