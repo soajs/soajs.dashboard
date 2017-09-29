@@ -3,7 +3,7 @@
 <form name="addEditCustomRegistry" id="addEditCustomRegistry" ng-submit="addEditCustomRegistry.$valid && onSubmit()">
 	<div class="form-group" ng-init="$root.valid = addEditCustomRegistry.$valid" ng-keyup="$root.valid = addEditCustomRegistry.$valid" ng-mousemove="$root.valid = addEditCustomRegistry.$valid">
 		<tabset>
-			<tab heading="General Settings">
+			<tab heading="General">
 				<br />
 				<div>
 					<label>Custom Registry Name</label>
@@ -11,6 +11,17 @@
 					<label class="fieldMsg">Choose the name of the new Custom Registry</label>
 					<br />
 				</div>
+				<br />
+				<div>
+					<label>I am adding a text value</label>
+					<label class="toggleSwitch f-right"><input type="checkbox" ng-model="textMode" ng-change="enableTextMode()"><span class="buttonSlider round"></span></label>
+					<label class="fieldMsg">Turn on this mode if the value you are about to enter is made up of text only (Default mode does not support text only)</label>
+					<br /><br />
+				</div>
+				<div id="customRegistry" class="customRegistryAceEditor" ui-ace="options.aceEditorConfig" ng-model="formData.value"></div>
+				<label class="fieldMsg">{{translation.customRegistryFieldMsg[LANG]}}</label>
+			</tab>
+			<tab heading="Settings">
 				<br />
 				<div>
 					<label>Plug Custom Registry</label>
@@ -60,18 +71,6 @@
 						</table>
 					</div>
 				</div>
-			</tab>
-			<tab heading="Custom Registry Value">
-				<br />
-				<div>
-					<label>I am adding a text value</label>
-					<label class="toggleSwitch"><input type="checkbox" ng-model="textMode" ng-change="enableTextMode()"><span class="buttonSlider round"></span></label>
-					<label class="fieldMsg">Turn on this mode if the value you are about to enter is made up of text only (Default mode does not support text only)</label>
-					<br /><br />
-				</div>
-				<div id="customRegistry" class="customRegistryAceEditor" ui-ace="options.aceEditorConfig" ng-model="formData.value"></div>
-				<label class="fieldMsg">{{translation.customRegistryFieldMsg[LANG]}}</label>
-				<br />
 			</tab>
 		</tabset>
 	</div>
