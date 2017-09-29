@@ -50,11 +50,11 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                 if(oneResource.created === $scope.envCode.toUpperCase()) {
                     oneResource.allowEdit = true;
                 }
-	
+
 	            if(oneResource.name ==='dash_cluster'){
 		            oneResource.sensitive = true;
 	            }
-	            
+
                 $scope.resources.types[oneResource.type][oneResource.category].push(oneResource);
             });
         }
@@ -179,11 +179,11 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
 
 	            let allowEdit = ((action === 'add') || (action === 'update' && resource.permission && resource.created.toUpperCase() === currentScope.envCode.toUpperCase()));
 	            $scope.allowEdit = allowEdit;
-	            
+
 	            if(resource.name ==='dash_cluster'){
 	            	$scope.sensitive = true;
 	            }
-	            
+
 	            resourceConfiguration.loadDriverSchema($scope, resource, settings, allowEdit, function(error) {
 		            if (error) {
 			            $scope.notsupported = true;
@@ -193,6 +193,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                 $scope.options = {
                     deploymentModes: [],
                     envCode: currentScope.envCode,
+                    envType: currentScope.envType,
                     envPlatform: currentScope.envPlatform,
                     enableAutoScale: false,
                     formAction: action,
@@ -315,7 +316,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                         if($scope.formData && $scope.formData.deployOptions && $scope.formData.deployOptions.deployConfig && $scope.formData.deployOptions.deployConfig.memoryLimit) {
                             $scope.formData.deployOptions.deployConfig.memoryLimit /= 1048576; //convert memory limit from bytes to megabytes
                         }
-	                    
+
                         $scope.buildComputedHostname();
                     }
                 };
@@ -405,14 +406,14 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
 		                }
 		                else if($scope.envPlatform === 'kubernetes') {
 			                $scope.options.computedHostname = $scope.formData.deployOptions.custom.name + '-service';
-			
+
 			                var selected = $scope.envDeployer.selected.split('.');
 			                if($scope.envDeployer && $scope.envDeployer[selected[0]] && $scope.envDeployer[selected[0]][selected[1]] && $scope.envDeployer[selected[0]][selected[1]][selected[2]]) {
 				                var platformConfig = $scope.envDeployer[selected[0]][selected[1]][selected[2]];
-				
+
 				                if(platformConfig && platformConfig.namespace && platformConfig.namespace.default) {
 					                $scope.options.computedHostname += '.' + platformConfig.namespace.default;
-					
+
 					                if(platformConfig.namespace.perService) {
 						                $scope.options.computedHostname += '-' + $scope.formData.deployOptions.custom.name;
 					                }
@@ -792,7 +793,10 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
         getSendDataFromServer($scope, ngDataApi, {
             method: 'put',
             routeName: '/dashboard/resources/update',
-            params: { id: resourceId },
+            params: {
+                id: resourceId,
+                env: $scope.envCode.toUpperCase(),
+            },
             data: { resource: resourceRecord }
         }, function (error) {
             overlayLoading.hide();
@@ -854,6 +858,11 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
     };
 
     $scope.listDeployedServices = function(cb) {
+        if($scope.envType === 'manual') {
+            if(cb) return cb();
+            else return;
+        }
+
         overlayLoading.show();
         getSendDataFromServer($scope, ngDataApi, {
             method: 'get',
@@ -872,6 +881,11 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
     };
 
     $scope.getDeployConfig = function(cb) {
+        if($scope.envType === 'manual') {
+            if(cb) return cb();
+            else return;
+        }
+
         overlayLoading.show();
         getSendDataFromServer($scope, ngDataApi, {
             method: 'get',
@@ -906,6 +920,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
         injectFiles.injectCss("modules/dashboard/resources/resources.css");
         $scope.envCode = $cookies.getObject("myEnv").code;
         $scope.envDeployer = $cookies.getObject("myEnv").deployer;
+        $scope.envType = $scope.envDeployer.type;
     	$scope.envPlatform = $scope.envDeployer.selected.split('.')[1];
         $scope.load();
     }

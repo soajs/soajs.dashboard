@@ -27,7 +27,7 @@
     </div>
     <div>
         <label>Catalog Recipe</label>
-            <select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name group by recipe.type for recipe in recipes" ng-model="formData.deployOptions.recipe" ng-change="displayRecipeInputs()"></select>
+            <select class="form-control" ng-disabled="options.formAction === 'update' && formData.deployOptions.recipe" ng-required="true" ng-options="recipe._id as recipe.name group by recipe.type for recipe in recipes" ng-model="formData.deployOptions.recipe" ng-change="displayRecipeInputs()"></select>
             <label class="fieldMsg">Choose a catalog recipe to use when deploying this resource</label>
             <br>
         </div>

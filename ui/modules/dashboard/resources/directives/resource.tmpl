@@ -81,7 +81,7 @@
 					<ngform-inputs></ngform-inputs>
 				</div>
 			</tab>
-			<tab ng-if="access.deploy || access.rebuild" heading="Deployment Options" ng-show="!sensitive && recipes.length > 0">
+			<tab ng-if="(access.deploy || access.rebuild) && options.envType !== 'manual'" heading="Deployment Options" ng-show="!sensitive && recipes.length > 0">
 				<br />
 				<alert type="warning" ng-if="options.formAction === 'update' && formData.created !== options.envCode" style="text-align: center;">
 					Configuring the deployment options of a resource is only allowed in the environment where it was created.<br />
