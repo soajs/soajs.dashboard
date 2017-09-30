@@ -263,7 +263,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
         });
 
         function deployEnvironment(formData) {
-            var branchObj = JSON.parse(formData.branch);
+            var branchObj = formData.branch;
+            if(typeof branchObj === 'string'){
+            	branchObj = JSON.parse(formData.branch);
+            }
 
             var params = {
                 proxy: false,

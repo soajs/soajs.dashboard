@@ -872,7 +872,10 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
             });
 	        formConfig.entries[0].groups = groups;
             formConfig.entries[0].onAction = function (id, data, form) {
-                var recipeTemplate = JSON.parse(data);
+                let recipeTemplate = data;
+                if(typeof recipeTemplate === 'string'){
+	                recipeTemplate = JSON.parse(data);
+                }
                 delete recipeTemplate._id;
                 delete recipeTemplate.locked;
 	            $scope.modalInstance.close();
