@@ -165,6 +165,10 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
                 $scope.recipes = [];
                 $scope.recipeUserInput = { image: {}, envs: {} };
 
+                $scope.resourceDeployed = false;
+                if(resource && resource.instance && resource.instance.id){
+	                $scope.resourceDeployed = true;
+                }
                 $scope.access = currentScope.access;
                 $scope.envPlatform = currentScope.envPlatform;
                 $scope.envDeployer = currentScope.envDeployer;
@@ -175,8 +179,7 @@ resourcesApp.controller('resourcesAppCtrl', ['$scope', '$http', '$timeout', '$mo
 			            $scope.categoryLabel = oneCategory.l;
 		            }
 	            });
-
-
+	            
 	            let allowEdit = ((action === 'add') || (action === 'update' && resource.permission && resource.created.toUpperCase() === currentScope.envCode.toUpperCase()));
 	            $scope.allowEdit = allowEdit;
 
