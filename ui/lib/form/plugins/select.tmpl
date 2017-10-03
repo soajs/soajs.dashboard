@@ -1,17 +1,6 @@
 <div ng-show="!entry.hidden">
     <label>{{entry.label}}</label>
-    <select name="{{entry.name}}" id="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-model="form.formData[entry.name]" ng-change="form.toggleSelectValues(entry.name, form.formData[entry.name]);  form.call(entry.onAction, entry.name , form.formData[entry.name], form )" class="form-control" ng-if="entry.disabled" disabled>
-        <optgroup ng-if="entry.groups && entry.groups.length > 0" ng-repeat="group in entry.groups" label="{{group}}">
-            <option ng-repeat="dv in entry.value" ng-if="dv.group === group" value="{{dv.v}}" ng-selected="dv.selected === true">{{dv.l}}</option>
-        </optgroup>
-        <option ng-if="!entry.groups ||entry.groups.length === 0" ng-repeat="dv in entry.value" value="{{dv.v}}" ng-selected="dv.selected === true">{{dv.l}}</option>
+    <select name="{{entry.name}}" id="{{entry.name}}" ng-options="dv.v as dv.l group by dv.group disable when dv.disabled for dv in entry.value" ng-init="form.markSelected(entry)" tooltip="{{entry.tooltip}}" ng-model="form.formData[entry.name]" ng-change="form.toggleSelectValues(entry.name, form.formData[entry.name]);  form.call(entry.onAction, entry.name , form.formData[entry.name], form )" class="form-control" ng-required="entry.required" ng-disabled="entry.disabled">
     </select>
-    <select name="{{entry.name}}" id="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-model="form.formData[entry.name]" ng-change="form.toggleSelectValues(entry.name, form.formData[entry.name]);  form.call(entry.onAction, entry.name , form.formData[entry.name], form )" class="form-control" ng-if="!entry.disabled">
-        <optgroup ng-if="entry.groups && entry.groups.length > 0" ng-repeat="group in entry.groups" label="{{group}}">
-            <option ng-repeat="dv in entry.value" ng-if="dv.group === group" value="{{dv.v}}" ng-selected="dv.selected === true">{{dv.l}}</option>
-        </optgroup>
-        <option ng-if="!entry.groups ||entry.groups.length === 0" ng-repeat="dv in entry.value" value="{{dv.v}}" ng-selected="dv.selected === true">{{dv.l}}</option>
-    </select>
-
     <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
 </div>

@@ -38,6 +38,10 @@
 			Write your Yaml code using the below Swagger Editor then click <b>Run</b> and Swagger will render your code and show you how your APIs documentation will look like.<br />
 			Swagger will also provide you with testing capability for your IMFV, and will not render the documentation unless your code is valid, well indented and has the minimal specification that the Swagger engine needs.<br />
 		</p>
+    <p>
+      For more information on how to use the Swagger Editor module, click <a
+      href="https://soajsorg.atlassian.net/wiki/spaces/SWAG/overview" target="_blank">here</a>.
+    </p>
 		<br />
 	</div>
 	<a href="" class="tooltipToggle f-right" ng-click="hideShowToolTip()">
@@ -49,7 +53,8 @@
 				<ngform></ngform>
 			</div>
 		</tab>
-		<tab heading="Swagger Documentation">  <br>
+		<tab heading="Swagger Documentation" ng-click="fillDefaultEditor()"> 
+			<br>
 			<div class="c-both w100 table">
 				<h4 class="f-left">Swagger Editor</h4>
 				<a class="btn btn-primary f-right" ng-click="collapseExpand()" ng-show="schemaCodeF && schemaCodeF!== ''">
@@ -58,8 +63,8 @@
 					<span class="icon icon-circle-right" ng-show="collapsed"></span>
 				</a>
 				<a class="btn btn-danger f-right mr5" ng-click="clearYamlRight()" ng-show="schemaCodeF && schemaCodeF!== ''">
-					<span class="icon icon-cross"></span>
-					Clear
+					<span class="icon icon-undo"></span>
+					Reset Simulator
 				</a>
 				<a class="btn btn-success f-right mr5" ng-click="moveYamlRight()" ng-show="schemaCode && schemaCode!== ''">
 					<span class="icon icon-play3"></span>
@@ -67,7 +72,7 @@
 				</a>
 			</div>
 			<hr/>
-			
+
 			<div class="w100 c-both">
 				<div class="f-left w49" ng-class="{'block': !collapsed, 'hidden': collapsed}">
 					<div id="schemaCode" ui-ace="{useWrapMode : true, showGutter: true, mode: 'yaml', theme:'twilight', firstLineNumber: 1, onLoad: aceLoaded, onChange: updateScopeValue}" ng-model="schemaCode"></div>

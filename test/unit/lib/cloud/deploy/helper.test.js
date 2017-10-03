@@ -118,7 +118,7 @@ describe("testing deploy.js", function () {
         beforeEach(() => {
         });
         it("Fail getAnalyticsEsInfo", function (done) {
-            helpers.getAnalyticsEsInfo(soajs, context, mongoStub, function (error, body) {
+            helpers.getAnalyticsEsInfo(soajs, config, context, mongoStub, function (error, body) {
                 done();
             });
         });
@@ -134,7 +134,7 @@ describe("testing deploy.js", function () {
             mongoStub.findEntry = function (soajs, opts, cb) {
                 cb(null, envRecord);
             };
-            helpers.getAnalyticsEsInfo(soajs, context, mongoStub, function (error, body) {
+            helpers.getAnalyticsEsInfo(soajs, config, context, mongoStub, function (error, body) {
                 done();
             });
         });
@@ -323,7 +323,7 @@ describe("testing deploy.js", function () {
     });
 
     describe("getDashDbInfo", function () {
-        var envRecord = {
+        var registry = {
             code: 'DASHBORAD',
             deployer: {
                 "type": "container",
@@ -355,6 +355,12 @@ describe("testing deploy.js", function () {
                     }
                 }
             },
+            coreDB: {
+                provision: {
+                    "servers": [],
+                    "credentials": {}
+                }
+            },
             dbs: {
                 clusters: {
                     oneCluster: {
@@ -370,13 +376,10 @@ describe("testing deploy.js", function () {
             services: {},
             profile: ''
         };
-        beforeEach(() => {
-            mongoStub.findEntry = function (soajs, opts, cb) {
-                cb(null, envRecord);
-            };
-        });
+
         it("Success getDashDbInfo", function (done) {
-            helpers.getDashDbInfo(soajs, BL, function (error, body) {
+            soajs.registry = registry;
+            helpers.getDashDbInfo(soajs, function (error, body) {
                 done();
             });
         });

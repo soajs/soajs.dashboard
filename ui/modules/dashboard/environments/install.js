@@ -17,10 +17,6 @@ var envTranslation ={
 		"ENG": "Platforms & Certificates",
 		"FRA": "Platforms & Certificates"
 	},
-	"clusters": {
-		"ENG": "Clusters",
-		"FRA": "Clusters"
-	},
 	"hosts": {
 		"ENG": "Hosts",
 		"FRA": "Hosts"
@@ -110,26 +106,6 @@ var envTranslation ={
 		"ENG": "Cluster Name",
 		"FRA": "Cluster Name"
 	},
-	"cluster1": {
-		"ENG": "cluster 1...",
-		"FRA": "cluster 1..."
-	},
-	"clusterType":{
-		"ENG": "Cluster Type",
-		"FRA": "Cluster Type"
-	},
-	"clusterTypePlaceHolder":{
-		"ENG": "Cluster Type",
-		"FRA": "Cluster Type"
-	},
-	"clusterTypePlaceHolderTooltip":{
-		"ENG": "Choose the Cluster Type",
-		"FRA": "Choose the Cluster Type"
-	},
-	"enterTheClusterName": {
-		"ENG": "Enter the cluster name",
-		"FRA": "Enter the cluster name"
-	},
 	"sessionDatabaseCollection": {
 		"ENG": "Session Database Collection",
 		"FRA": "Session Database Collection"
@@ -162,45 +138,9 @@ var envTranslation ={
 		"ENG": "Provide the Session Database Store",
 		"FRA": "Provide the Session Database Store"
 	},
-	"enterEnvironmentClusterName": {
-		"ENG": "Enter Environment Cluster Name.",
-		"FRA": "Enter Environment Cluster Name."
-	},
-	"serversList": {
-		"ENG": "Servers List",
-		"FRA": "Servers List"
-	},
-	"enterListServersSeparatedComma": {
-		"ENG": "Enter the list of servers host:port separated by a comma",
-		"FRA": "Enter the list of servers host:port separated by a comma"
-	},
-	"credentials": {
-		"ENG": "Credentials",
-		"FRA": "Credentials"
-	},
 	"admin": {
 		"ENG": "admin",
 		"FRA": "admin"
-	},
-	"enterCredentialsCluster": {
-		"ENG": "Enter the Credentials of the cluster",
-		"FRA": "Enter the Credentials of the cluster"
-	},
-	"URLParameters": {
-		"ENG": "URL Parameters",
-		"FRA": "URL Parameters"
-	},
-	"enterURLParametersCluster": {
-		"ENG": "Enter the URL Parameters of the cluster",
-		"FRA": "Enter the URL Parameters of the cluster"
-	},
-	"extraParameters": {
-		"ENG": "Extra Parameters",
-		"FRA": "Extra Parameters"
-	},
-	"enterExtraParametersCluster": {
-		"ENG": "Enter the Extra Parameters of the cluster",
-		"FRA": "Enter the Extra Parameters of the cluster"
 	},
 	"hostNumber": {
 		"ENG": "Host(s) Number",
@@ -631,31 +571,6 @@ var envTranslation ={
 	"unableUpdateEnvironmentDatabasePrefix": {
 		"ENG": "Unable to update Environment Database Prefix.",
 		"FRA": "Unable to update Environment Database Prefix."
-	},
-	//clusters
-	"unableFetchEnvironmentCluster": {
-		"ENG": "Unable to fetch Environment Cluster.",
-		"FRA": "Unable to fetch Environment Cluster."
-	},
-	"addNewCluster": {
-		"ENG": "Add New Cluster",
-		"FRA": "Add New Cluster"
-	},
-	"environmentClusterAddedSuccessfully": {
-		"ENG": "Environment Cluster Added Successfully.",
-		"FRA": "Environment Cluster Added Successfully."
-	},
-	"editCluster": {
-		"ENG": "Edit Cluster",
-		"FRA": "Edit Cluster"
-	},
-	"selectedEnvironmentClusterRemoved": {
-		"ENG": "Selected Environment Cluster has been removed.",
-		"FRA": "Selected Environment Cluster has been removed."
-	},
-	"unableRemoveSelectedEnvironmentCluster": {
-		"ENG": "Unable to remove selected Environment Cluster.",
-		"FRA": "Unable to remove selected Environment Cluster."
 	},
 	//directives
 	//addEditDriver
@@ -1101,8 +1016,8 @@ var envTranslation ={
 		"FRA": "Form View"
 	},
 	"customRegistryFieldMsg": {
-		"ENG": "Use this section to add any custom registry information for this environment. Data must be added in JSON format.",
-		"FRA": "Use this section to add any custom registry information for this environment. Data must be added in JSON format."
+		"ENG": "Use this input to add any custom registry value, supported types are: JSON, Boolean, Number, Regular Expression (Turn on text support above if the value is text)",
+		"FRA": "Use this input to add any custom registry value, supported types are: JSON, Boolean, Number, Regular Expression (Turn on text support above if the value is text)"
 	},
 	"defaultRegistry": {
 		"ENG": "Default Registry",
@@ -1115,15 +1030,6 @@ var envTranslation ={
 	"loadingCustomRegistry": {
 		"ENG": "Loading custom registry ...",
 		"FRA": "Loading custom registry ..."
-	},
-	//list-clusters
-	"removeCluster": {
-		"ENG": "Remove Cluster",
-		"FRA": "Remove Cluster"
-	},
-	"areYouSureYouWantRemoveCluster": {
-		"ENG": "Are you sure you want to remove this cluster?",
-		"FRA": "Are you sure you want to remove this cluster?"
 	},
 	//list-databases
 	"areYouSureYouWantRemoveSelectedDatabase": {
@@ -1520,28 +1426,6 @@ var environmentsNav = [
 		'ancestor': [translation.home[LANG]]
 	},
 	{
-		'id': 'environments-clusters',
-		'checkPermission': {
-			'service': 'dashboard',
-			'route': '/environment/clusters/list',
-			'method': 'get'
-		},
-		'label': translation.clusters[LANG],
-		'url': '#/environments-clusters',
-		'tplPath': 'modules/dashboard/environments/directives/list-clusters.tmpl',
-		'icon': 'stack',
-		'pillar':{
-			'name': 'deployment',
-			'label': translation.deploy[LANG],
-			'position': 3
-		},
-		'order': 5,
-		'mainMenu': true,
-		'tracker': true,
-		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/clusters-ctrl.js', 'modules/dashboard/environments/services/clusters.js'],
-		'ancestor': [translation.home[LANG]]
-	},
-	{
 		'id': 'environments-dbs',
 		'checkPermission': {
 			'service': 'dashboard',
@@ -1601,7 +1485,7 @@ var environmentsNav = [
 			'label': translation.deploy[LANG],
 			'position': 3
 		},
-		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/controller.js', 'modules/dashboard/environments/services/clusters.js', 'modules/dashboard/environments/services/database.js', 'modules/dashboard/environments/services/hosts.js', 'modules/dashboard/environments/services/deploy.js'],
+		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/controller.js', 'modules/dashboard/environments/services/database.js', 'modules/dashboard/environments/services/hosts.js', 'modules/dashboard/environments/services/deploy.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
@@ -1626,26 +1510,6 @@ var environmentsNav = [
 		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/hacloud-ctrl.js', 'modules/dashboard/environments/services/nodes.js', 'modules/dashboard/environments/services/hacloud.js', 'modules/dashboard/environments/services/deploy.js'],
 		'ancestor': [translation.home[LANG]]
 	}
-	// {
-	// 	'id': 'environments-analytics',
-	// 	'label': 'Analytics',
-	// 	'url': '#/environments-analytics',
-	// 	'checkPermission': {
-	// 		'service': 'dashboard',
-	// 		'route': '/environment/analytics/check'
-	// 	},
-	// 	'icon': 'stats-bars',
-	// 	'tplPath': 'modules/dashboard/environments/directives/analytics.tmpl',
-	// 	'pillar':{
-	// 		'name': 'deployment',
-	// 		'label': translation.deploy[LANG],
-	// 		'position': 3
-	// 	},
-	// 	'mainMenu': true,
-	// 	'tracker': true,
-	// 	'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/analytics-ctrl.js'],
-	// 	'ancestor': [translation.home[LANG]]
-	// }
 ];
 
 navigation = navigation.concat(environmentsNav);

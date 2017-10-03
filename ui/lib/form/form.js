@@ -105,35 +105,62 @@ function buildForm(context, modal, configuration, cb) {
 		}
 	};
 
-	function rebuildData(fieldEntry) {
+	function rebuildData(fieldEntry, parentGroup) {
 		var keys = Object.keys(configuration.data);
 		for (var x = 0; x < keys.length; x++) {
 			var inputName = keys[x];
 			if (fieldEntry.name === inputName) {
-				if (Array.isArray(fieldEntry.value)) {
-					fieldEntry.value.forEach(function (oneValue) {
-						//oneValue.selected = false;
-						if (Array.isArray(configuration.data[inputName])) {
-							if (configuration.data[inputName].indexOf(oneValue.v) !== -1) {
-								oneValue.selected = true;
-							}
-						}
-						else {
-							if (configuration.data[inputName] !== undefined && configuration.data[inputName] !== null) {
-								if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
-									oneValue.selected = true;
-								}
-							}
-						}
-					});
-				}
-				else {
-					if (configuration.data[inputName]) {
-						fieldEntry.value = configuration.data[inputName];
-						context.form.formData[inputName] = configuration.data[inputName];
+				internalDataMap(fieldEntry, inputName);
+			}
+			else if (!Array.isArray(configuration.data[inputName]) && typeof(configuration.data[inputName]) === 'object' ){
+				for(let i in configuration.data[inputName]){
+					if(i === fieldEntry.name){
+						fieldEntry.value = configuration.data[inputName][i];
+						context.form.formData[inputName + '.' + i] = configuration.data[inputName][i];
 					}
 				}
-				break;
+			}
+		}
+
+		function internalDataMap(fieldEntry, inputName){
+			if (Array.isArray(fieldEntry.value)) {
+				for(let i=0; i < fieldEntry.value.length; i++){
+					let oneValue = fieldEntry.value[i];
+					if (Array.isArray(configuration.data[inputName])) {
+						if (configuration.data[inputName].indexOf(oneValue.v) !== -1) {
+							oneValue.selected = true;
+							context.form.formData[inputName] = oneValue.v;
+							break;
+						}
+						else{
+							delete oneValue.selected;
+						}
+					}
+					else {
+						if(fieldEntry.type === 'uiselect' && configuration.data[inputName] !== undefined && configuration.data[inputName] !== null){
+							if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
+								context.form.formData[inputName] = oneValue;
+								break;
+							}
+						}
+						else if (fieldEntry.type !== 'uiselect' && configuration.data[inputName] !== undefined && configuration.data[inputName] !== null) {
+							if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
+								oneValue.selected = true;
+								context.form.formData[inputName] = oneValue.v;
+								break;
+							}
+							else{
+								delete oneValue.selected;
+							}
+						}
+					}
+				}
+			}
+			else {
+				if (configuration.data[inputName]) {
+					fieldEntry.value = configuration.data[inputName];
+					context.form.formData[inputName] = configuration.data[inputName];
+				}
 			}
 		}
 	}
@@ -141,16 +168,18 @@ function buildForm(context, modal, configuration, cb) {
 	function updateFormData(oneEntry, reload) {
 		if (!reload) {
 			if (oneEntry.value) {
-				if (Array.isArray(oneEntry.value)) {
-					context.form.formData[oneEntry.name] = [];
-					oneEntry.value.forEach(function (oneValue) {
-						if (oneValue.selected === true) {
-							context.form.formData[oneEntry.name].push(oneValue.v);
-						}
-					});
-				}
-				else {
-					context.form.formData[oneEntry.name] = oneEntry.value;
+				if(oneEntry.type !== 'uiselect'){
+					if (Array.isArray(oneEntry.value)) {
+						context.form.formData[oneEntry.name] = [];
+						oneEntry.value.forEach(function (oneValue) {
+							if (oneValue.selected === true) {
+								context.form.formData[oneEntry.name].push(oneValue.v);
+							}
+						});
+					}
+					else {
+						context.form.formData[oneEntry.name] = oneEntry.value;
+					}
 				}
 			}
 			else if (oneEntry.type === 'number') {
@@ -187,16 +216,11 @@ function buildForm(context, modal, configuration, cb) {
 			}
 
 			if (oneEntry.type === 'select') {
-				var lastObj;
 				for (var x = 0; x < oneEntry.value.length; x++) {
 					if (oneEntry.value[x].selected) {
-						lastObj = oneEntry.value[x];
-						oneEntry.value.splice(x, 1);
+						context.form.formData[oneEntry.name] = oneEntry.value[x].v;
 						break;
 					}
-				}
-				if (lastObj) {
-					oneEntry.value.push(lastObj);
 				}
 
 				if (oneEntry.onChange && typeof(oneEntry.onChange.action) === 'function') {
@@ -233,7 +257,10 @@ function buildForm(context, modal, configuration, cb) {
 					if (oneEntry.fixedHeight) {
 						newHeight = parseInt(oneEntry.height);
 					}
-					
+					else if(parseInt(oneEntry.height) && parseInt(oneEntry.height) > newHeight){
+						newHeight = parseInt(oneEntry.height);
+					}
+
 					_editor.renderer.scrollBar.setHeight(newHeight.toString() + "px");
 					_editor.renderer.scrollBar.setInnerHeight(newHeight.toString() + "px");
 					configuration.timeout(function () {
@@ -259,13 +286,13 @@ function buildForm(context, modal, configuration, cb) {
 		for (var i = 0; i < context.form.entries.length; i++) {
 			if (context.form.entries[i].type === 'group') {
 				context.form.entries[i].entries.forEach(function (oneSubEntry) {
-					rebuildData(oneSubEntry);
+					rebuildData(oneSubEntry, context.form.entries[i]);
 				});
 			}
 			else if (context.form.entries[i].type === 'tabset') {
 				context.form.entries[i].tabs.forEach(function (oneTab) {
 					oneTab.entries.forEach(function (oneSubEntry) {
-						rebuildData(oneSubEntry);
+						rebuildData(oneSubEntry, context.form.entries[i]);
 					});
 				});
 			}
@@ -449,6 +476,22 @@ function buildForm(context, modal, configuration, cb) {
 		}
 	};
 
+	context.form.markSelected = function(entry) {
+		if(entry && entry.value && Array.isArray(entry.value)) {
+			if(!context.form.formData[entry.name]) {
+				for (var i = 0; i < entry.value.length; i++) {
+					if(entry.value[i].selected) {
+						context.form.formData[entry.name] = entry.value[i].v;
+						if(entry.onAction && typeof(entry.onAction) === 'function') {
+							context.form.call(entry.onAction, entry.name , context.form.formData[entry.name], context.form);
+						}
+						break;
+					}
+				}
+			}
+		}
+	};
+
 	context.form.showHide = function (oneEntry) {
 		if (oneEntry.collapsed) {
 			oneEntry.collapsed = false;
@@ -544,6 +587,13 @@ function buildForm(context, modal, configuration, cb) {
 		}, 1000);
 	}
 }
+
+soajsApp.directive('ngformInputs', function () {
+	return {
+		restrict: 'E',
+		templateUrl: 'lib/form/inputs.tmpl'
+	};
+});
 
 soajsApp.directive('ngform', function () {
 	return {

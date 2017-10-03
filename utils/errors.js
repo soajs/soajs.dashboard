@@ -78,13 +78,13 @@ var errors = {
 
 	"500": "This record is locked. You cannot delete it",
 	"501": "This record is locked. You cannot modify or delete it",
-	"502": "Invalid cluster name provided",
+	"502": "Invalid resource name/id provided",
 	"503": "Error adding new environment database",
-	"504": "Environment cluster already exists",
-	"505": "Error adding environment cluster",
-	"506": "Error updating environment cluster",
+	"504": "A resource with the same name, type, and category already exists",
+	"505": "Modifying a resource is only allowed in the environment where it was created",
+	"506": "You are not allowed to modify this resource",
 	"507": "Invalid db Information provided for session database",
-	"508": "cluster not found",
+	"508": "Resource not found",
 	"509": "environment database already exist",
 	"510": "environment session database already exist",
 	"511": "environment session database does not exist",
@@ -266,7 +266,7 @@ var errors = {
 	"956": "Authentication failed. The deploy token provided is not valid.",
 
 	"960": "Elasticsearch analytics cluster not found, resetting configuration. Please try deploying Analytics again.",
-	
+
 	"967": "Continuous Integration recipe name already exists for this provider.",
 	"968": "This Account already has a Continuous Integration configured with the selected provider.",
     "969": "The chosen Continuous Integration Service does not exist",
@@ -292,7 +292,19 @@ var errors = {
 	"983": "soa.js file does not exist or is not a valid soajs configuration file",
 	"984": "Unable to parse yml file",
 	"985": "swagger.yml file validation failed",
-	"986": "Validation for output config.js file failed"
+	"986": "Validation for output config.js file failed",
+
+	"987": "Autoscaling is only supported in kubernetes mode",
+	"988": "Unable to detect Heapster componenets",
+
+	"989": "The dashboard cluster is a sensitive resource that cannot be added or deleted. Only it's driver configuration can be updated.",
+
+	"990": "Invalid custom registry entry name/id provided",
+	"991": "Custom registry entry not found",
+	"992": "A plugged custom registry entry with the same name exists in this environment or is shared with other environments",
+	"993": "Custom registry entry not found",
+	"994": "You are not allowed to modify or delete this custom registry entry",
+	"995": "Modifying a custom registry entry is only allowed in the environment where it was created"
 };
 
 

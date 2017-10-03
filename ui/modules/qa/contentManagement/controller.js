@@ -12,9 +12,9 @@ contentManagementApp.controller("ContentManagementModuleQaCtrl", ['$scope', 'ngD
 		constructModulePermissions($scope, $scope.access, {
 			'listEntries': [oneService.name, '/list', 'get'],
 			'addEntry': [oneService.name, '/add', 'post'],
-			'updateEntry': [oneService.name, '/update', 'post'],
+			'updateEntry': [oneService.name, '/update', 'put'],
 			'getEntry': [oneService.name, '/get', 'get'],
-			'deleteEntry': [oneService.name, '/delete', 'get']
+			'deleteEntry': [oneService.name, '/delete', 'del']
 		});
 		
 		//get schema from remote service.
@@ -219,7 +219,7 @@ contentManagementApp.controller("ContentManagementModuleQaCtrl", ['$scope', 'ngD
 									$scope.form.displayAlert('danger', error.message);
 								}
 								else {
-									if (typeof(files) === 'object' && Object.keys(files).length > 0) {
+									if (files && typeof(files) === 'object' && Object.keys(files).length > 0) {
 										cmModuleQaService.UploadFile($scope, config, 'add', files, response, '/' + $scope.selectedService.name + "/upload", function (error) {
 											if (error) {
 												$scope.form.displayAlert('danger', error);
@@ -342,7 +342,7 @@ contentManagementApp.controller("ContentManagementModuleQaCtrl", ['$scope', 'ngD
 							}
 							else {
 								getSendDataFromServer($scope, ngDataApi, {
-									"method": "post",
+									"method": "put",
 									"routeName": "/" + $scope.selectedService.name + $scope.ui.links['update'],
 									"params": {
 										"id": data._id,
@@ -355,7 +355,7 @@ contentManagementApp.controller("ContentManagementModuleQaCtrl", ['$scope', 'ngD
 									}
 									else {
 										var hasContentToUpload = false;
-										if (typeof(files) === 'object' && Object.keys(files).length > 0) {
+										if (files && typeof(files) === 'object' && Object.keys(files).length > 0) {
 											for (var type in files) {
 												if (files[type].length > 0) {
 													hasContentToUpload = true;
@@ -506,8 +506,8 @@ contentManagementApp.controller("ContentManagementModuleQaCtrl", ['$scope', 'ngD
 	
 	$scope.deleteCMDataEntries = function () {
 		var config = {
-            "method": "get",
 			//"url": $scope.selectedDomainAddress,
+			"method": "del",
 			"routeName": "/" + $scope.selectedService.name + $scope.ui.links['delete'],
 			"params": {
 				'id': '%id%',

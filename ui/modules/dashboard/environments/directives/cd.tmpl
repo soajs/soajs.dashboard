@@ -1,56 +1,106 @@
-		<div class="f-left form-g">
-					<fieldset>
-						<legend>Deployment Options</legend>
-						<div>
-							<label>{{translation.branch[LANG]}}:</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingBranches">
-							<select class="form-control" ng-if="!loadingBranches" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch" ng-change="updateGitBranch(oneSrv, oneEnv, version)">
-								<option ng-repeat="myBranch in branches" value="{{myBranch.name}}">
-									{{myBranch.name}}
-								</option>
-							</select>
-							<br/>
-						</div>
-						<div>
-							<label>Memory Limit Per Instance (in MBytes)</label>
-							<input type="number" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit" ng-required="true"/>
-							<label class="fieldMsg">Specify the Maximum memory limit that should be provided when running your service/daemon.</label>
-							<br/>
-						</div>
-						<div>
-							<label>Catalog Recipe</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingRecipes">
-							<select class="form-control" ng-required="true" ng-disabled="deployed" ng-options="recipe._id as recipe.name group by recipe.type for recipe in myRecipes" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.recipe" ng-change="injectCatalogEntries(oneEnv, version, oneSrv)"></select>
-							<label class="fieldMsg">Choose a catalog recipe and define the deployment strategy in this environment.</label>
-							<br>
-						</div>
-						<div ng-include="'modules/dashboard/environments/directives/list-repos-catalogInputs.tmpl'"></div>
-					</fieldset>
-					<fieldset>
-						<legend>Environment Scaling</legend>
-						<div>
-							<label>Deployment Mode</label>
-							<select class="form-control" ng-disabled="deployed" ng-required="true" ng-options="mode for mode in deploymentModes" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode"></select>
-							<label class="fieldMsg">Global/Daemonset mode deploys one replica of the service on each node.</label>
-							<label class="fieldMsg">Replicated/Deployment mode deploys the specified number of replicas based on the availability of resources.</label>
-							<br>
-						</div>
-						<div ng-if="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'replicated' || cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'deployment'">
-							<label>Replica Count</label>
-							<input type="number" ng-disabled="deployed" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas" ng-required="true"/>
-							<label class="fieldMsg">Enter a Replica Count that is greater or equal to 1</label>
-							<br>
-						</div>
-					</fieldset>
-					<fieldset ng-show="showCD">
-						<legend>Continuous Delivery</legend>
-						<div class="halfPage branchLabel">
-							<label>{{translation.branch[LANG]}}:</label>&nbsp;{{cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch}}
-						</div>
-						<div class="halfPage branchLabel">
-							<label>Strategy:</label>
-							<select class="form-control" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].strategy">
-								<option value="notify">notify</option>
-								<option value="update">update</option>
-							</select>
-						</div>
-					</fieldset>
+<div class="f-left form-g">
+	<fieldset>
+		<legend>Deployment Options</legend>
+		<div>
+			<label>{{translation.branch[LANG]}}:</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingBranches">
+			<select class="form-control" ng-if="!loadingBranches" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch" ng-change="updateGitBranch(oneSrv, oneEnv, version)" ng-required="true">
+				<option ng-repeat="myBranch in branches" value="{{myBranch.name}}">
+					{{myBranch.name}}
+				</option>
+			</select>
+			<br/><br/>
+		</div>
+		<div>
+			<label>Memory Limit Per Instance (in MBytes)</label>
+			<input type="number" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit" ng-required="true"/>
+			<label class="fieldMsg">Specify the Maximum memory limit that should be provided when running your
+				service/daemon.</label>
+			<br/>
+		</div>
+		<div ng-if="isKubernetes">
+			<label>CPU Limit Per Instance</label>
+			<input type="text" class="form-control" placeholder="100m or 0.1" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.cpuLimit" ng-required="autoScale"/>
+			<label class="fieldMsg">Specify the Maximum cpu limit (in millicpu or decimal point) that should be provided
+				when running your service/daemon. Click
+				<a href="https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-cpu" target="_blank">here </a>for
+				more information.</label>
+			<br/>
+		</div>
+		<div>
+			<label>Catalog Recipe</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loadingRecipes">
+			<select class="form-control" ng-if="!loadingRecipes" ng-required="true" ng-disabled="deployed" ng-options="recipe._id as recipe.name group by recipe.type for recipe in myRecipes" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.recipe" ng-change="injectCatalogEntries(oneEnv, version, oneSrv)"></select>
+			<label class="fieldMsg">Choose a catalog recipe and define the deployment strategy in this
+				environment.</label>
+			<br>
+		</div>
+		<div ng-include="'modules/dashboard/environments/directives/list-repos-catalogInputs.tmpl'"></div>
+	</fieldset>
+	<fieldset>
+		<legend>Environment Scaling</legend>
+		<div>
+			<label>Deployment Mode</label>
+			<select class="form-control" ng-disabled="deployed" ng-required="true" ng-options="mode for mode in deploymentModes" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode"></select>
+			<label class="fieldMsg">Global/Daemonset mode deploys one replica of the service on each node.</label>
+			<label class="fieldMsg">Replicated/Deployment mode deploys the specified number of replicas based on the
+				availability of resources.</label>
+			<br>
+		</div>
+
+		<alert type="info" ng-if="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode === 'daemonset'">Daemonsets do not support autoscaling.</alert>
+		<fieldset ng-if="isAutoScalable && cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode === 'deployment'">
+			<legend>Auto Scale<label class="switch"><input type="checkbox" ng-model="autoScale" ng-click="activateAutoScale()"><span class="buttonSlider round"></span></label>
+			</legend>
+			<fieldset ng-if="!autoScale && (cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'replicated' || cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'deployment')">
+				<legend>Replication</legend>
+				<label>Replica Count</label>
+				<input type="number" ng-disabled="deployed" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas" ng-required="true"/>
+				<label class="fieldMsg">Enter a Replica Count that is greater or equal to 1</label>
+				<br>
+			</fieldset>
+			<fieldset ng-if="autoScale">
+				<legend>Metrics</legend>
+				<div>
+					<label>CPU</label>
+					<input type="number" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.autoScale.metrics.cpu.percent" ng-required="true"/>
+					<label class="fieldMsg">Enter CPU percentage</label>
+					<br>
 				</div>
+			</fieldset>
+			<fieldset ng-if="autoScale">
+				<legend>Replicas</legend>
+				<div>
+					<label>min</label>
+					<input type="number" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.autoScale.replicas.min" ng-required="true"/>
+					<label class="fieldMsg">Enter minimum Replica Count that is greater or equal to 1</label>
+					<br>
+				</div>
+				<div>
+					<label>max</label>
+					<input type="number" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.autoScale.replicas.max" ng-required="true"/>
+					<label class="fieldMsg">Enter maximum Replica Count that is greater or equal to 1</label>
+					<br>
+				</div>
+			</fieldset>
+		</fieldset>
+	</fieldset>
+	<fieldset ng-if="!isAutoScalable && !autoScale && (cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'replicated' || cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.mode == 'deployment')">
+		<legend>Replication</legend>
+		<label>Replica Count</label>
+		<input type="number" ng-disabled="deployed" class="form-control" ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.replication.replicas" ng-required="true"/>
+		<label class="fieldMsg">Enter a Replica Count that is greater or equal to 1</label>
+		<br>
+	</fieldset>
+	<fieldset ng-if="showCD">
+		<legend>Continuous Delivery</legend>
+		<div class="halfPage branchLabel">
+			<label>{{translation.branch[LANG]}}:</label>&nbsp;{{cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.gitSource.branch}}
+		</div>
+		<div class="halfPage branchLabel">
+			<label>Strategy:</label>
+			<select class="form-control" ng-required="true" data-ng-model="cdConfiguration[oneSrv][oneEnv].cdData.versions[version].strategy">
+				<option value="notify">notify</option>
+				<option value="update">update</option>
+			</select>
+		</div>
+	</fieldset>
+</div>

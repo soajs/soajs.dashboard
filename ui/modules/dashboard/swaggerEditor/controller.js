@@ -9,7 +9,7 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 	$scope.hideToolTip = ($cookies.get("swagger_tooltip_hide")=== "true") || false;
 	$scope.collapsed = false;
 	$scope.swaggerCode = false;
-	
+
 	$scope.myBrowser = detectBrowser();
 	if($scope.myBrowser === 'safari'){
 		$scope.isSafari = true;
@@ -17,7 +17,7 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 	else{
 		$scope.isSafari = false;
 	}
-	
+
 	constructModulePermissions($scope, $scope.access, swaggerEditorConfig.permissions);
 	// This scope will show and hide the editor containing the yaml code and make the swagger ui collapse and expand accordingly.
 	$scope.collapseExpand = function(){
@@ -55,7 +55,33 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 	$scope.updateScopeValue = function () {
 		$scope.schemaCode = $scope.editor.getValue();
 	};
-	
+
+	$scope.fillDefaultEditor = function(){
+		if(!$scope.schemaCodeF || $scope.schemaCodeF === ""){
+			if($scope.form.formData.serviceName && $scope.form.formData.serviceName.trim() !== ''){
+				var serviceName = $scope.form.formData.serviceName.trim();
+				var swaggerYML = "swagger: \"2.0\"\n" +
+					"info:\n" +
+					"  version: \"1.0.0\"\n" +
+					"  title: "+ serviceName + "\n" +
+					"host: localhost\n" +
+					"basePath: /"+ serviceName + "\n" +
+					"schemes:\n" +
+					"  - http\n" +
+					"paths:\n\n" +
+					"parameters:\n\n" +
+					"definitions:\n\n";
+			}
+			$scope.schemaCodeF = swaggerYML;
+			$timeout(function(){
+			  if(!$scope.schemaCodeF){
+          $scope.schemaCodeF = '';
+        }
+				$scope.editor.setValue($scope.schemaCodeF);
+			}, 100);
+		}
+	};
+
 	/*
 	 * This function updates the host value of the swagger simulator and check if the YAML code is valid so it will
 	 * enable the generate button.
@@ -89,11 +115,11 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 			swaggerEditorSrv.generateService($scope);
 		}
 	};
-	
+
 	if ($scope.access.generate) {
 		//show the form
 		$scope.buildEditorForm();
 	}
-	
+
 	injectFiles.injectCss("modules/dashboard/swaggerEditor/swaggerEditor.css");
 }]);

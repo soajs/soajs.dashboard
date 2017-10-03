@@ -1,68 +1,47 @@
 "use strict";
-var modelObj = {
-	cluster: {
-		server: [
-			{
-				'name': 'host%count%',
-				'label': 'Hostname',
-				'type': 'text',
-				'placeholder': '127.0.0.1',
-				'required': true
-			},
-			{
-				'name': 'port%count%',
-				'label': 'Port',
-				'type': 'text',
-				'placeholder': '4000',
-				'required': true
-			},
-			{
-				"name": "removeServer%count%",
-				"type": "html",
-				"value": "<span class='red'><span class='icon icon-cross' title='Remove'></span></span>",
-				"onAction": function (id, data, form) {
-					var number = id.replace("removeServer", "");
-					// need to decrease count
-					delete form.formData['port' + number];
-					delete form.formData['host' + number];
-					form.entries.forEach(function (oneEntry) {
-						if (oneEntry.type === 'group' && oneEntry.name === 'servers') {
-							for (var i = oneEntry.entries.length - 1; i >= 0; i--) {
-								if (oneEntry.entries[i].name === 'port' + number) {
-									oneEntry.entries.splice(i, 1);
-								}
-								else if (oneEntry.entries[i].name === 'host' + number) {
-									oneEntry.entries.splice(i, 1);
-								}
-								else if (oneEntry.entries[i].name === 'removeServer' + number) {
-									oneEntry.entries.splice(i, 1);
-								}
-							}
-						}
-					});
-				}
-			}
-		],
-		credentials: [
-			{
-				'name': 'username',
-				'label': translation.username[LANG],
-				'type': 'text',
-				'placeholder': translation.username[LANG],
-				'tooltip': translation.enterCredentialsCluster[LANG],
-				'required': false
-			},
-			{
-				'name': 'password',
-				'label': translation.password[LANG],
-				'type': 'text',
-				'placeholder': translation.password[LANG],
-				'tooltip': translation.enterCredentialsCluster[LANG],
-				'required': false
-			}
-		]
+var serviceProviders = [
+	{
+		v: 'aws',
+		l: 'Amazon Web Services',
+		image: 'http://cloudzone.azurewebsites.net/wp-content/uploads/2015/12/amazon-aws-s3-storage-logo.png'
+	},
+	{
+		v: 'rackspace',
+		l: 'Rackspace',
+		image: 'https://cdn.saaspass.com/a52e2205866340ea/authenticators/rackspace_128.png'
+	},
+	{
+		v: 'google',
+		l: 'Google Cloud',
+		image: 'https://cloud.google.com/_static/images/cloud/cloud_64dp.png'
+	},
+	{
+		v: 'azure',
+		l: 'Microsoft Azure',
+		image: 'https://dtb5pzswcit1e.cloudfront.net/assets/images/product_logos/icon_azure@2x.png'
+	},
+	{
+		v: 'joyent',
+		l: 'Joyent',
+		image: 'https://cdn1.itcentralstation.com/vendors/logos/original/joyent_avatar_reasonably_small.png?1371107403'
+	},
+	{
+		'v': 'liquidweb',
+		l: 'Liquid Web',
+		image: 'https://www.liquidweb.com/favicon-32x32.png'
+	},
+	{
+		'v': 'digitalocean',
+		l: 'Digital Ocean',
+		image: 'https://cdn.zapier.com/storage/developer/f1ce9f60f6740b7862d589a7f755ad19.128x128.png'
+	},
+	{
+		v: 'other',
+		l: 'Ubuntu',
+		image: 'https://assets.ubuntu.com/v1/cb22ba5d-favicon-16x16.png'
 	}
-};
+];
+
 var environmentsConfig = {
 	deployer: {
 		kubernetes: {
@@ -73,7 +52,9 @@ var environmentsConfig = {
 			required: ['ca', 'cert', 'key']
 		}
 	},
-
+	
+	customRegistryIncrement : 20,
+	
 	form: {
 		template: {
 			'name': '',
@@ -161,6 +142,16 @@ var environmentsConfig = {
 			'actions': {},
 			'entries': [
 				{
+					'name': 'prefix',
+					'label': "Custom Prefix",
+					'type': 'text',
+					'placeholder': 'soajs_',
+					'value': '',
+					'tooltip': "Enter a custom prefix for this Database or leave empty to use the global prefix value.",
+					'fieldMsg': "Enter a custom prefix for this Database or leave empty to use the global prefix value.",
+					'required': false
+				},
+				{
 					'name': 'name',
 					'label': translation.databaseName[LANG],
 					'type': 'text',
@@ -172,10 +163,8 @@ var environmentsConfig = {
 				{
 					'name': 'cluster',
 					'label': translation.clusterName[LANG],
-					'type': 'text',
-					'placeholder': translation.cluster1[LANG],
-					'value': '',
-					'tooltip': translation.enterTheClusterName[LANG],
+					'type': 'select',
+					'value': [{'v': '', 'l': ''}],
 					'required': true
 				},
 				{
@@ -202,6 +191,16 @@ var environmentsConfig = {
 			'actions': {},
 			'entries': [
 				{
+					'name': 'prefix',
+					'label': "Custom Prefix",
+					'type': 'text',
+					'placeholder': 'soajs_',
+					'value': '',
+					'tooltip': "Enter a custom prefix for this Database or leave empty to use the global prefix value.",
+					'fieldMsg': "Enter a custom prefix for this Database or leave empty to use the global prefix value.",
+					'required': false
+				},
+				{
 					'name': 'name',
 					'label': translation.databaseName[LANG],
 					'type': 'text',
@@ -213,10 +212,8 @@ var environmentsConfig = {
 				{
 					'name': 'cluster',
 					'label': translation.clusterName[LANG],
-					'type': 'text',
-					'placeholder': translation.cluster1[LANG],
-					'value': '',
-					'tooltip': translation.enterTheClusterName[LANG],
+					'type': 'select',
+					'value': [{'v': '', 'l': ''}],
 					'required': true
 				},
 				{
@@ -254,265 +251,6 @@ var environmentsConfig = {
 					'tooltip': translation.provideTheSessionDatabaseStore[LANG]
 				}
 			]
-		},
-		clusterType: {
-			'name': '',
-			'label': '',
-			'actions': {},
-			'entries': [
-				{
-					'name': 'type',
-					'label': translation.clusterType[LANG],
-					'type': 'select',
-					'placeholder': translation.clusterTypePlaceHolder[LANG],
-					'value': [
-						{v: 'mongo', l: 'Mongo db'},
-						{v: 'es', l: 'Elasticsearch'},
-						{v: 'sql', l: 'My SQL'},
-						{v: 'oracle', l: 'Oracle'}
-					],
-					'tooltip': translation.clusterTypePlaceHolderTooltip[LANG],
-					'required': true
-				}
-			]
-		},
-		clusters: {
-			default: {
-				'name': '',
-				'label': '',
-				'actions': {},
-				'entries': [
-					{
-						'name': 'name',
-						'label': translation.clusterName[LANG],
-						'type': 'text',
-						'placeholder': translation.cluster1[LANG],
-						'value': '',
-						'tooltip': translation.enterEnvironmentClusterName[LANG],
-						'required': true
-					},
-					{
-						'name': 'servers',
-						'label': translation.serversList[LANG],
-						'tooltip': translation.enterListServersSeparatedComma[LANG],
-						"type": "group",
-						'collapsed': false,
-						"class": "serversList",
-						"entries": []
-					},
-					{
-						"name": "addServer",
-						"type": "html",
-						"value": '<span class=""><input type="button" class="btn btn-sm btn-success" value="Add New Server"></span>'
-					},
-					{
-						'name': 'credentials',
-						'label': translation.credentials[LANG],
-						'tooltip': translation.enterCredentialsCluster[LANG],
-						"type": "group",
-						'collapsed': false,
-						'required': false,
-						"class": "floatGroup",
-						"entries": modelObj.cluster.credentials
-					},
-					{
-						'name': 'urlParam',
-						'label': translation.URLParameters[LANG],
-						'type': 'jsoneditor',
-						'height': '200px',
-						"value": {},
-						'required': true,
-						'tooltip': translation.enterURLParametersCluster[LANG]
-					},
-					{
-						'name': 'extraParam',
-						'label': 'Extra Parameters',
-						'type': 'jsoneditor',
-						'height': '200px',
-						"value": {},
-						'required': true,
-						'tooltip': translation.enterExtraParametersCluster[LANG]
-					},
-					{
-						'name': 'streaming',
-						'label': 'Streaming Options',
-						'type': 'jsoneditor',
-						'height': '200px',
-						"value": {},
-						'required': true
-					}
-				]
-			},
-			mongo: {
-				'name': '',
-				'label': '',
-				'actions': {},
-				'entries': [
-					{
-						'name': 'name',
-						'label': translation.clusterName[LANG],
-						'type': 'text',
-						'placeholder': translation.cluster1[LANG],
-						'value': '',
-						'tooltip': translation.enterEnvironmentClusterName[LANG],
-						'required': true
-					},
-					{
-						'name': 'servers',
-						'label': translation.serversList[LANG],
-						'tooltip': translation.enterListServersSeparatedComma[LANG],
-						'required': true,
-						"type": "group",
-						'collapsed': false,
-						"class": "serversList",
-						"entries": []
-					},
-					{
-						"name": "addServer",
-						"type": "html",
-						"value": '<span class=""><input type="button" class="btn btn-sm btn-success" value="Add New Server"></span>'
-					},
-					{
-						'name': 'credentials',
-						'label': translation.credentials[LANG],
-						'tooltip': translation.enterCredentialsCluster[LANG],
-						"type": "group",
-						'collapsed': true,
-						'required': false,
-						"class": "floatGroup",
-						"entries": modelObj.cluster.credentials
-					},
-					{
-						'name': 'urlParam',
-						'label': translation.URLParameters[LANG],
-						'tooltip': translation.enterURLParametersCluster[LANG],
-						'required': true,
-						"type": "group",
-						'collapsed': false,
-						"class": "urlParams",
-						"entries": [
-							{
-								'name': 'connectTimeoutMS',
-								'label': 'connectTimeoutMS',
-								'type': 'number',
-								'placeholder': '0',
-								'required': false
-							},
-							{
-								'name': 'socketTimeoutMS',
-								'label': 'socketTimeoutMS',
-								'type': 'number',
-								'placeholder': '0',
-								'required': false
-							},
-							{
-								'name': 'maxPoolSize',
-								'label': 'maxPoolSize',
-								'type': 'number',
-								'placeholder': '5',
-								'required': false
-							},
-							{
-								'name': 'wtimeoutMS',
-								'label': 'wtimeoutMS',
-								'type': 'number',
-								'placeholder': '0',
-								'required': false
-							},
-							{
-								'name': 'slaveOk',
-								'label': 'slaveOk',
-								'type': 'boolean',
-								'placeholder': 'true',
-								'required': false
-							}
-
-						]
-					},
-					{
-						'name': 'extraParam',
-						'label': 'Extra Parameters',
-						'type': 'jsoneditor',
-						'height': '200px',
-						"value": {},
-						'required': true,
-						'tooltip': translation.enterExtraParametersCluster[LANG]
-					}
-				]
-			},
-			es: {
-				'name': '',
-				'label': '',
-				'actions': {},
-				'entries': [
-					{
-						'name': 'name',
-						'label': translation.clusterName[LANG],
-						'type': 'text',
-						'placeholder': translation.cluster1[LANG],
-						'value': '',
-						'tooltip': translation.enterEnvironmentClusterName[LANG],
-						'required': true
-					},
-					{
-						'name': 'servers',
-						'label': translation.serversList[LANG],
-						'tooltip': translation.enterListServersSeparatedComma[LANG],
-						"type": "group",
-						'collapsed': false,
-						"class": "serversList",
-						"entries": []
-					},
-					{
-						"name": "addServer",
-						"type": "html",
-						"value": '<span class=""><input type="button" class="btn btn-sm btn-success" value="Add New Server"></span>'
-					},
-					{
-						'name': 'credentials',
-						'label': translation.credentials[LANG],
-						"type": "group",
-						'collapsed': false,
-						'required': false,
-						"class": "floatGroup",
-						"entries": modelObj.cluster.credentials
-					},
-					{
-						'name': 'urlParam',
-						'label': translation.URLParameters[LANG],
-						'tooltip': translation.enterURLParametersCluster[LANG],
-						'required': true,
-						"type": "group",
-						'collapsed': false,
-						"class": "urlParams",
-						"entries": [
-							{
-								'name': 'protocol',
-								'label': 'protocol',
-								'type': 'text',
-								'placeholder': 'http',
-								'required': false
-							}
-						]
-					},
-					{
-						'name': 'extraParam',
-						'label': 'Extra Parameters',
-						'type': 'textarea',
-						'rows': 8,
-						'placeholder': JSON.stringify(
-							{
-								"requestTimeout": 30000,
-								"keepAlive": true,
-								"maxSockets": 300
-							}
-							, null, "\t"),
-						'value': '',
-						'tooltip': translation.enterExtraParametersCluster[LANG],
-						'required': true
-					}
-				]
-			}
 		},
 		host: {
 			'name': '',
@@ -553,6 +291,10 @@ var environmentsConfig = {
 					'name': 'nginx',
 					'label': 'Nginx Configuration',
 					'type': 'group',
+					'description':{
+						'type': 'info',
+						'content': ""
+					},
 					'entries': [
 						{
 							'name': 'nginxDeploymentMode',
@@ -596,6 +338,10 @@ var environmentsConfig = {
 					'name': 'controllers',
 					'label': 'Controller Configuration',
 					'type': 'group',
+					'description':{
+						'type': 'none',
+						'content': ""
+					},
 					'entries': [
 						{
 							'name': 'controllerDeploymentMode',
@@ -719,6 +465,19 @@ var environmentsConfig = {
 				}
 			]
 		},
+		nodeTag: {
+			'entries': [
+				{
+					'name': 'tag',
+					'label': "Service Provider",
+					'type': 'uiselect',
+					'value': serviceProviders,
+					'tooltip': "Select Which Service Provider Hosts this node",
+					'required': true,
+					"fieldMsg": "Tag your nodes based on which Service Providers they are available at."
+				}
+			]
+		},
 		nginxUI: {
 			entries: [
 				{
@@ -735,33 +494,34 @@ var environmentsConfig = {
 					'required': false,
 					'value': []
 				},
-                {
-                    'name': 'supportSSL',
-                    'label': 'Do you want to enable SSL for Nginx?',
-                    'type': 'radio',
-                    'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
-                    'required': false
-                },
-                {
-                    'name': 'certType',
-                    'label': 'Do you want the system to generate self signed certificates?',
-                    'type': 'radio',
-                    'value': [{'v': true, 'l': 'Yes', 'selected': true}, {'v': false, 'l': 'No'}],
-                    'required': false,
-                    'hidden': true
-                },
-                {
-                    'name': 'kubeSecret',
-                    'label': 'Kubernetes secret',
-                    'type': 'text',
-                    'value': null,
-                    'fieldMsg': 'Provide the kubernetes secret that contains the certificates',
-                    'required': false,
-                    'hidden': true
-                },
+				{
+					'name': 'supportSSL',
+					'label': 'Do you want to enable SSL for Nginx?',
+					'type': 'radio',
+					'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
+					'required': false
+				},
+				{
+					'name': 'certType',
+					'label': 'Do you want the system to generate self signed certificates?',
+					'type': 'radio',
+					'value': [{'v': true, 'l': 'Yes', 'selected': true}, {'v': false, 'l': 'No'}],
+					'required': false,
+					'hidden': true
+				},
+				{
+					'name': 'kubeSecret',
+					'label': 'Kubernetes secret',
+					'type': 'text',
+					'value': null,
+					'fieldMsg': 'Provide the kubernetes secret that contains the certificates',
+					'required': false,
+					'hidden': true
+				},
 			]
 		}
 	},
+	
 	nginxRequiredCerts: {
 		certificate: {
 			label: 'Chained Certificate',
@@ -777,25 +537,21 @@ var environmentsConfig = {
 	jsoneditorConfig: {
 		'height': '200px'
 	},
+	
 	permissions: {
 		"listEnvironments": ['dashboard', '/environment/list', 'get'],
+		"getEnvironment": ['dashboard', '/environment', 'get'],
 		"addEnvironment": ['dashboard', '/environment/add', 'post'],
 		"deleteEnvironment": ['dashboard', '/environment/delete', 'delete'],
 		"editEnvironment": ['dashboard', '/environment/update', 'put'],
 		"listHosts": ['dashboard', '/hosts/list', 'get'],
-		"cd": ['dashboard','/cd', 'post'],
+		"cd": ['dashboard', '/cd', 'post'],
 		"dbs": {
 			"list": ['dashboard', '/environment/dbs/list', 'get'],
 			"add": ['dashboard', '/environment/dbs/add', 'post'],
 			"delete": ['dashboard', '/environment/dbs/delete', 'delete'],
 			"update": ['dashboard', '/environment/dbs/update', 'put'],
 			"updatePrefix": ['dashboard', '/environment/dbs/updatePrefix', 'put']
-		},
-		"clusters": {
-			"list": ['dashboard', '/environment/clusters/list', 'get'],
-			"add": ['dashboard', '/environment/clusters/add', 'post'],
-			"delete": ['dashboard', '/environment/clusters/delete', 'delete'],
-			"update": ['dashboard', '/environment/clusters/update', 'put']
 		},
 		"platforms": {
 			"list": ['dashboard', '/environment/platforms/list', 'get'],
@@ -825,10 +581,12 @@ var environmentsConfig = {
 				"scale": ['dashboard', '/cloud/services/scale', 'put'],
 				"redeploy": ['dashboard', '/cloud/services/redeploy', 'put'],
 				"logs": ['dashboard', '/cloud/services/instances/logs', 'get'],
-				"operation": ['dashboard', '/cloud/services/maintenance', 'post']
+				"operation": ['dashboard', '/cloud/services/maintenance', 'post'],
+				"deployPlugin": ['dashboard', '/cloud/plugins/deploy', 'post'],
+				"autoScale": ['dashboard', '/cloud/services/autoscale', 'put'],
 			}
 		},
-		"analytics":{
+		"analytics": {
 			"getSettings": ["dashboard", "/analytics/getSettings", "get"],
 			"activate": ["dashboard", "/analytics/activateAnalytics", "get"],
 			"deactivate": ["dashboard", "/analytics/deactivateAnalytics", "get"]
@@ -836,6 +594,134 @@ var environmentsConfig = {
 		"git": {
 			"listAccounts": ["dashboard", "/gitAccounts/accounts/list", "get"],
 			"listAccountRepos": ["dashboard", "/gitAccounts/getRepos", "get"]
+		},
+		"customRegistry": {
+			"list": ["dashboard", "/customRegistry/list", "get"],
+			"add": ["dashboard", "/customRegistry/add", "post"],
+			"update": ["dashboard", "/customRegistry/update", "put"],
+			"upgrade": ["dashboard", "/customRegistry/upgrade", "put"],
+			"delete": ["dashboard", "/customRegistry/delete", "delete"]
+		}
+	},
+
+	providers: serviceProviders,
+
+	recipeTypes: {
+		soajs:{
+			l:"SOAJS",
+			'categories': {
+				other: {'l': "Other"}
+			}
+		},
+		database:{
+			l:"Database",
+			'categories': {
+				other: {'l': "Other"}
+			}
+		},
+		nginx:{
+			l:"Nginx",
+			'categories': {
+				other: {'l': "Other"}
+			}
+		},
+		service: {
+			'l': "Service",
+			'categories': {
+				soajs:{
+					l:'SOAJS'
+				},
+				nodejs:{
+					l:'NodeJs'
+				},
+				php:{
+					l:'PHP'
+				},
+				java:{
+					l:'Java'
+				},
+				asp:{
+					l:'ASP'
+				},
+				other:{
+					l:'Other'
+				}
+			}
+		},
+		daemon: {
+			'l': "Daemon",
+			'categories': {
+				soajs:{
+					l:'SOAJS'
+				},
+				nodejs:{
+					l:'NodeJs'
+				},
+				php:{
+					l:'PHP'
+				},
+				java:{
+					l:'Java'
+				},
+				asp:{
+					l:'ASP'
+				},
+				other:{
+					l:'Other'
+				}
+			}
+		},
+		cluster: {
+			'l': "Cluster",
+			'categories': {
+				mongo: {'l': "Mongo"},
+				elasticsearch: {'l': "ElasticSearch"},
+				mysql: {'l': "MySQL"},
+				oracle: {'l': "Oracle"},
+				other: {'l': "Other"}
+			}
+		},
+		server: {
+			'l': "Server",
+			'categories': {
+				nginx: {
+					'l': "Nginx"
+				},
+				apache: {
+					'l': "Apache"
+				},
+				iis: {
+					'l': "IIS"
+				},
+				other: {
+					'l': "Other"
+				}
+			}
+		},
+		cdn: {
+			'l': "CDN",
+			'categories': {
+				amazons3: {"l": "Amazon S3"},
+				rackspace: {"l": "Rackspace"},
+				// cloudflare: {"l": "Cloudflare"},
+				other: {"l": "Other"}
+			}
+		},
+		system: {
+			'l': "System",
+			'categories': {
+				kibana: {'l': "Kibana"},
+				metricbeat: {'l': "Metricbeat"},
+				logstash: {'l': "Logstash"},
+				filebeat: {'l': "Filebeat"},
+				other: {"l": "Other"}
+			}
+		},
+		other:{
+			'l': "Other",
+			'categories': {
+				other: {'l': "Other"}
+			}
 		}
 	}
 };

@@ -1,9 +1,109 @@
+<script type="text/ng-template" id="editRecipe.tmpl">
+	<div class="form">
+		<div class="modal-header">
+			<h3 class="modal-title" ng-show="recipe.name">{{recipe.name}} / Version {{recipe.v}}<span class="pull-right">{{recipe.ts | date}}</span></h3>
+			<h3 class="modal-title" ng-show="!recipe.name">Creating New Recipe</h3>
+		</div>
+		<div class="catalogRecipeForm modal-body">
+			<ngform></ngform>
+		</div>
+	</div>
+</script>
+
+<script type="text/ng-template" id="newRecipe.tmpl">
+	<div class="form">
+		<div class="modal-header">
+			<h3 class="modal-title">Create New Recipe</h3>
+		</div>
+		<div class="catalogRecipeForm modal-body">
+			<ngform></ngform>
+		</div>
+	</div>
+</script>
+
 <section ng-controller="catalogAppCtrl" class="catalogAppCtrl">
-	<tabset>
+	<tabset ng-show="oldStyle">
+		<tab heading="Latest Versions">
+			<br>
+			<alert type="danger">
+				<h3 style="margin-top:5px;">Warning</h3>
+				<hr>
+				Some catalog recipes have not been upgraded yet, they still use a schema compatible with previous SOAJS version(s).<br />
+				This prevents you from configuring or deploying any repository and/or resource. Please upgrade these recipes to the latest version <a href="" ng-if="access.upgrade" ng-click="upgradeAll()">[ Upgrade ]</a>
+			</alert>
+			<br />
+			<div class="f-right w30 searchBoxContainer">
+				<button class="btn btn-success f-right" ng-click="listRecipes()">
+					Refresh&nbsp;&nbsp;<span class="icon icon-loop2"></span>
+				</button>
+			</div>
+			<div ng-if="recipes && recipes.length === 0">
+				<br />
+				<alert type="warning">No catalog recipes found</alert>
+			</div>
+			<div ng-if="access.list">
+				<div ng-if="recipes && recipes.length > 0" class="entryBoxes">
+					<br />
+					<div ng-repeat="recipe in recipes" class="entryBox recipe-box" ng-class="{blueRecipeBox: !recipe.locked, greenRecipeBox: (recipe.type === 'soajs' && !recipe.locked)}">
+						<div class="header" ng-class="{blueBoxHeader: !recipe.locked, greenBoxHeader: (recipe.type ==='soajs' && !recipe.locked)}">
+							{{recipe.name}}<span ng-if="recipe.type ==='soajs'"><em>(soajs)</em></span>  <span ng-if="recipe.locked" class="icon icon-lock"></span>
+							<div class="rightActions" style="display:inline;">
+								<a href="" ng-if="access.delete && !recipe.locked" ng-click="deleteRecipe(recipe)" ng-confirm-click="Are you sure you want to delete this recipe?">
+									<span class="icon icon-cross" tooltip="Delete Recipe"></span>
+								</a>
+							</div>
+						</div>
+						<div class="body">
+							<img ng-src="{{catalogImage}}" class="catalogIcon" width="32px" height="32px"/>
+							<label>{{recipe.type|capitalizeFirst}} Recipe</label>
+							<p>{{recipe.description}}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</tab>
+		<tab heading="Previous Versions">
+			<br>
+			<alert type="danger">
+				<h3 style="margin-top:5px;">Warning</h3>
+				<hr>
+				Detected Old Style Recipe Schemas, click here to upgrade your recipes to the latest version <a href="" ng-click="upgradeAll()">[ Upgrade ]</a>
+			</alert>
+			<br />
+			<div class="f-right w30 searchBoxContainer">
+				<button class="btn btn-success f-right" ng-click="listArchives()">
+					Refresh&nbsp;&nbsp;<span class="icon icon-loop2"></span>
+				</button>
+			</div>
+			<div ng-if="access.list">
+				<div ng-if="archives && archives.length > 0" class="entryBoxes">
+					<br />
+					<div ng-repeat="recipe in archives" class="entryBox recipe-box" ng-class="{blueRecipeBox: !recipe.locked, greenRecipeBox: (recipe.type === 'soajs' && !recipe.locked)}">
+						<div class="header" ng-class="{blueBoxHeader: !recipe.locked, greenBoxHeader: (recipe.type ==='soajs' && !recipe.locked)}">
+							{{recipe.name}}<span ng-if="recipe.type ==='soajs'"><em>(soajs)</em></span>  <span ng-if="recipe.locked" class="icon icon-lock"></span>
+							<div class="rightActions" style="display:inline;">
+								<a href="" ng-if="access.delete && !recipe.locked" ng-click="deleteRecipe(recipe, true)" ng-confirm-click="Are you sure you want to delete this recipe?">
+									<span class="icon icon-cross" tooltip="Delete Recipe"></span>
+								</a>
+							</div>
+						</div>
+						<div class="body">
+							<img ng-src="{{catalogImage}}" class="catalogIcon" width="32px" height="32px"/>
+							<label>{{recipe.type|capitalizeFirst}} Recipe</label>
+							<p>{{recipe.description}}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</tab>
+	</tabset>
+	<tabset ng-show="!oldStyle">
 		<tab heading="Latest Versions">
 			<br />
-			<div class="f-right w20 searchBoxContainer">
-				<input type="text" name="tag" ng-model="query" ng-keyup="filterData(query, $index)" class="form-control text-field-align-right mb5" placeholder="Search"/>
+			<div class="f-right w30 searchBoxContainer">
+				<button class="btn btn-success f-right" ng-click="listRecipes()">
+					Refresh&nbsp;&nbsp;<span class="icon icon-loop2"></span>
+				</button>
 			</div>
 			<div class="dropdown f-left">
 				<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -21,56 +121,79 @@
 			<div ng-if="access.list">
 				<div ng-if="recipes && recipes.length > 0" class="entryBoxes">
 					<br />
-					<div ng-repeat="recipe in recipes" class="entryBox recipe-box" ng-class="{blueRecipeBox: !recipe.locked, greenRecipeBox: (recipe.type === 'soajs' && !recipe.locked)}">
-						<div class="header" ng-class="{blueBoxHeader: !recipe.locked, greenBoxHeader: (recipe.type ==='soajs' && !recipe.locked)}">
-							{{recipe.name}}<span ng-if="recipe.type ==='soajs'"><em>(soajs)</em></span>  <span ng-if="recipe.locked" class="icon icon-lock"></span>
-							<div class="rightActions" style="display:inline;">
-								<a href="" ng-if="access.delete && !recipe.locked" ng-click="deleteRecipe(recipe)" ng-confirm-click="Are you sure you want to delete this recipe?">
-									<span class="icon icon-cross" tooltip="Delete Recipe"></span>
-								</a>
-								<a href="" ng-if="access.update && !recipe.locked" ng-click="updateRecipe(recipe)">
-									<span class="icon icon-pencil" tooltip="Update Recipe"></span>
-								</a>
-								<a href="" ng-if="access.list" ng-click="viewRecipe(recipe)">
-									<span class="icon icon-zoom-in" tooltip="View Recipe"></span>
-								</a>
-							</div>
-						</div>
-						<div class="body">
-							<img ng-src="{{catalogImage}}" class="catalogIcon" width="32px" height="32px"/>
-							<label>{{recipe.type|capitalizeFirst}} Recipe</label>
-							<p>{{recipe.description}}</p>
-						</div>
-					</div>
+					<tabset>
+						<tab ng-repeat="(recipeType, recipeSubType) in recipeTypes" heading="{{recipeType}}">
+							<br />
+							<accordion close-others="false">
+								<accordion-group ng-repeat="(subtype, recipes) in recipeSubType">
+									<accordion-heading>{{subtype}}</accordion-heading>
+									<div ng-repeat="recipe in recipes | orderBy:'-v'" class="entryBox recipe-box" ng-class="{blueRecipeBox: !recipe.locked, greenRecipeBox: (recipe.subtype === 'soajs' && !recipe.locked)}">
+										<div class="header" ng-class="{blueBoxHeader: !recipe.locked, greenBoxHeader: (recipe.subtype ==='soajs' && !recipe.locked)}">
+											{{recipe.name}}<span><em>( v:{{recipe.v}} )</em></span> <span ng-if="recipe.locked" class="icon icon-lock"></span>
+											<div class="rightActions" style="display:inline;">
+												<a href="" ng-if="access.delete && !recipe.locked" ng-click="deleteRecipe(recipe)" ng-confirm-click="Are you sure you want to delete this recipe?">
+													<span class="icon icon-cross" tooltip="Delete Recipe"></span>
+												</a>
+												<a href="" ng-if="!recipe.locked && access.update" ng-click="updateRecipe(recipe)">
+													<span class="icon icon-pencil" tooltip="Update Recipe"></span>
+												</a>
+												<a href="" ng-if="recipe.locked" ng-click="viewRecipe(recipe)">
+													<span class="icon icon-search" tooltip="View Recipe"></span>
+												</a>
+											</div>
+										</div>
+										<div class="body">
+											<img ng-src="{{catalogImage}}" class="catalogIcon" width="32px" height="32px"/>
+											<label>{{recipe.type|capitalizeFirst}} Recipe</label>
+											<p>{{recipe.description}}</p>
+										</div>
+									</div>
+								</accordion-group>
+							</accordion>
+						</tab>
+					</tabset>
 				</div>
 			</div>
 		</tab>
 		<tab heading="Previous Versions">
 			<br />
-			<div class="f-right w20 searchBoxContainer">
-				<input type="text" name="tag" ng-model="queryVersions" ng-keyup="filterDataVersions(queryVersions, $index)" class="form-control text-field-align-right mb5" placeholder="Search"/>
+			<div class="f-right w30 searchBoxContainer">
+				<button class="btn btn-success f-right" ng-click="listArchives()">
+					Refresh&nbsp;&nbsp;<span class="icon icon-loop2"></span>
+				</button>
 			</div>
 			<div ng-if="access.list">
 				<div ng-if="archives && archives.length > 0" class="entryBoxes">
 					<br />
-					<div ng-repeat="recipe in archives" class="entryBox recipe-box" ng-class="{blueRecipeBox: !recipe.locked, greenRecipeBox: (recipe.type === 'soajs' && !recipe.locked)}">
-						<div class="header" ng-class="{blueBoxHeader: !recipe.locked, greenBoxHeader: (recipe.type ==='soajs' && !recipe.locked)}">
-							{{recipe.name}}<span ng-if="recipe.type ==='soajs'"><em>(soajs)</em></span>  <span ng-if="recipe.locked" class="icon icon-lock"></span>
-							<div class="rightActions" style="display:inline;">
-								<a href="" ng-if="access.delete && !recipe.locked" ng-click="deleteRecipe(recipe, true)" ng-confirm-click="Are you sure you want to delete this recipe?">
-									<span class="icon icon-cross" tooltip="Delete Recipe"></span>
-								</a>
-								<a href="" ng-if="access.list" ng-click="viewRecipe(recipe)">
-									<span class="icon icon-zoom-in" tooltip="View Recipe"></span>
-								</a>
-							</div>
-						</div>
-						<div class="body">
-							<img ng-src="{{catalogImage}}" class="catalogIcon" width="32px" height="32px"/>
-							<label>{{recipe.type|capitalizeFirst}} Recipe</label>
-							<p>{{recipe.description}}</p>
-						</div>
-					</div>
+					<tabset>
+						<tab ng-repeat="(recipeType, recipeSubType) in recipeTypesArchives" heading="{{recipeType}}">
+							<br />
+							<accordion close-others="false">
+								<accordion-group ng-repeat="(subtype, recipes) in recipeSubType">
+									<accordion-heading>{{subtype}}</accordion-heading>
+									<div ng-repeat="recipe in recipes | orderBy:'-v'" class="entryBox recipe-box" ng-class="{blueRecipeBox: !recipe.locked, greenRecipeBox: (recipe.subtype === 'soajs' && !recipe.locked)}">
+										<div class="header" ng-class="{blueBoxHeader: !recipe.locked, greenBoxHeader: (recipe.subtype ==='soajs' && !recipe.locked)}">
+											{{recipe.name}}<span><em>( v:{{recipe.v}} )</em></span>  <span ng-if="recipe.locked" class="icon icon-lock"></span>
+											<div class="rightActions" style="display:inline;">
+												<a href="" ng-if="access.delete && !recipe.locked" ng-click="deleteRecipe(recipe, true)" ng-confirm-click="Are you sure you want to delete this recipe?">
+													<span class="icon icon-cross" tooltip="Delete Recipe"></span>
+												</a>
+
+												<a href="" ng-click="viewRecipe(recipe)">
+													<span class="icon icon-search" tooltip="View Recipe"></span>
+												</a>
+											</div>
+										</div>
+										<div class="body">
+											<img ng-src="{{catalogImage}}" class="catalogIcon" width="32px" height="32px"/>
+											<label>{{recipe.type|capitalizeFirst}} Recipe</label>
+											<p>{{recipe.description}}</p>
+										</div>
+									</div>
+								</accordion-group>
+							</accordion>
+						</tab>
+					</tabset>
 				</div>
 			</div>
 		</tab>

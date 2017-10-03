@@ -1,0 +1,102 @@
+<section ng-controller="resourcesAppCtrl">
+    <div ng-if="access.list">
+        <button class="btn btn-primary f-left" ng-if="access.add" ng-click="addResource()">Add New Resource</button>
+        <button class="btn btn-primary f-right" ng-if="access.list" ng-click="listResources()"><span class="icon icon-loop2"></span>Refresh</button>
+        <br /><br />
+	    <div ng-show="oldStyle">
+		    <alert type="danger">
+			    <h3 style="margin-top:5px;">Warning</h3>
+			    <hr>
+			    Some of the Resources have not been upgraded yet in this environment, they still use a configuration from previous SOAJS version(s).<br />
+			    This prevents you from updating their configuration and also impacts the databases section. Please upgrade these resources to the latest version <a href="" ng-click="upgradeAll()">[ Upgrade ]</a>
+		    </alert>
+		    <br />
+	    </div>
+        <div ng-if="resources && resources.list && resources.list.length > 0">
+            <tabset>
+                <tab ng-repeat="(type, categories) in resources.types" heading="{{type|capitalizeFirst}}">
+                    <br />
+                    <accordion close-others="false">
+                        <accordion-group is-open="true" ng-repeat="(category, content) in categories">
+                            <accordion-heading>{{category}}</accordion-heading>
+                            
+	                        <div ng-repeat="resource in content" class="resource-box" ng-class-odd="'oddRow'" ng-class-even="'evenRow'">
+	                            <div>
+		                            <div class="leftActions">
+			                            <a tooltip="Shared from the {{resource.created}} environment" ng-if="resource.shared" >
+				                            <span class="icon icon-share2"></span>
+			                            </a>
+			
+			                            <a ng-if="!resource.shared" disabled>
+				                            <span class="icon icon-share2 grey"></span>
+			                            </a>
+			
+			                            <a ng-if="resource.locked" >
+				                            <span class="icon icon-lock" tooltip="Locked by {{resource.author}}"></span>
+			                            </a>
+			
+			                            <a ng-if="!resource.locked" >
+				                            <span class="icon icon-unlocked grey"></span>
+			                            </a>
+		                            </div>
+		                            <label>{{resource.name}}</label>
+                                    
+		                            <div class="rightActions" style="display:inline;">
+			                            <a href="" ng-if="access.update && resource.allowEdit && resource.permission" class="btn btn-sm btn-default" ng-click="manageResource(resource, 'update')">
+				                            <span class="icon icon-cog"></span>Configure
+			                            </a>
+			
+			                            <a href="" ng-if="access.update && (!resource.allowEdit || !resource.permission)" class="btn btn-sm btn-default" ng-click="manageResource(resource, 'update')">
+	                                        <span class="icon icon-search"></span>View
+			                            </a>
+			
+			                            <a href="" ng-if="access.deploy && resource.canBeDeployed && resource.permission" class="btn btn-sm btn-primary" ng-class="{disabled: !resource.allowEdit || (resource.isDeployed && resource.instance && resource.instance.id)}" ng-click="deployResource(resource)">
+				                            <span class="icon icon-cloud"></span>Deploy
+			                            </a>
+			
+			                            <a href="" ng-if="access.update && !resource.plugged" ng-disabled="(!resource.permission || resource.sensitive) && !resource.allowEdit" class="btn btn-sm btn-default" ng-click="togglePlugResource(resource, true)">
+				                            <span class="icon icon-power-cord"></span>Plug
+			                            </a>
+			                            
+			                            <a href="" ng-if="access.update && resource.plugged" ng-disabled="!resource.permission || resource.sensitive" class="btn btn-sm btn-success" ng-class="{disabled: !resource.allowEdit}" ng-click="togglePlugResource(resource, false)"><span class="icon icon-power-cord"></span>Unplug</a>
+			                           
+			                            <a href="" class="btn btn-sm btn-danger" ng-if="access.delete && resource.permission && resource.allowEdit && !resource.sensitive" ng-click="deleteResource(resource)" ng-confirm-click="Are you sure you want to delete this resource?">
+				                            <span class="icon icon-cross" tooltip="Delete Resource"></span>Remove
+			                            </a>
+			                            <a href="" class="btn btn-sm btn-danger" ng-if="!access.delete || !resource.permission || !resource.allowEdit || resource.sensitive" disabled>
+				                            <span class="icon icon-cross" tooltip="Delete Resource"></span>Remove
+			                            </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </accordion-group>
+                    </accordion>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</section>
+
+<script type="text/ng-template" id="addEditResource.tmpl">
+    <div class="modal-header custom-modal-header">
+		<h3 class="modal-title">{{title}}
+			<span ng-if="driverLogo" class="f-right">
+				<img ng-src='{{driverLogo}}' alt='' style='max-height:46px'/>
+			</span>
+		</h3>
+	</div>
+    <div class="modal-body">
+	    <div ng-if="notsupported">
+		    <alert type="danger">The selected Driver is not supported, please choose another.</alert>
+	    </div>
+        <div ng-if="!notsupported" class="form" ng-include="'modules/dashboard/resources/directives/resource.tmpl'"></div>
+    </div>
+    <div class="modal-footer">
+	    <span ng-if="options.allowEdit">
+            <button class="btn btn-success" ng-if="access.update && !notsupported" ng-disabled="!valid" ng-click="save()">Save</button>
+    		<button class="btn btn-primary" ng-if="access.update && access.deploy && !notsupported && !formData.isDeployed && formData.canBeDeployed && (!formData.instance || !formData.instance.id)" ng-disabled="!valid" ng-click="saveAndDeploy()">Save & Deploy</button>
+            <button class="btn btn-primary" ng-if="access.update && access.rebuild && !notsupported && formData.isDeployed && formData.canBeDeployed && formData.instance && formData.instance.id" ng-disabled="!valid" ng-click="saveAndRebuild()">Save & Rebuild</button>
+        </span>
+        <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+	</div>
+</script>

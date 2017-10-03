@@ -62,6 +62,16 @@ nodeSrv.service('nodeSrv', ['ngDataApi', '$timeout', '$modal', function (ngDataA
 			}
 			else {
 				currentScope.nodes.list = response;
+				
+				currentScope.nodes.list.forEach(function(oneNode){
+					if(oneNode.labels && oneNode.labels.provider){
+						currentScope.serviceProviders.forEach(function(oneProvider){
+							if(oneProvider.v === oneNode.labels.provider){
+								oneNode.tag = oneProvider;
+							}
+						});
+					}
+				});
 			}
 		});
 	}
@@ -174,11 +184,69 @@ nodeSrv.service('nodeSrv', ['ngDataApi', '$timeout', '$modal', function (ngDataA
 		});
 	}
 	
+	function changeTag(currentScope, node){
+		var data ={};
+		var formConfig = angular.copy(environmentsConfig.form.nodeTag);
+		
+		if(node.tag){
+			data.tag = node.tag.v;
+		}
+		
+		var options = {
+			timeout: $timeout,
+			form: formConfig,
+			name: 'tagNode',
+			label: 'Tag Node',
+			data: data,
+			actions: [
+				{
+					'type': 'submit',
+					'label': translation.submit[LANG],
+					'btn': 'primary',
+					'action': function (formData) {
+						overlayLoading.show();
+						getSendDataFromServer(currentScope, ngDataApi, {
+							"method": "put",
+							"routeName": "/dashboard/cloud/nodes/tag",
+							"data":{
+								"id": node.id,
+								"tag": formData.tag.v
+							}
+						}, function (error, response) {
+							overlayLoading.hide();
+							if (error) {
+								currentScope.displayAlert('danger', error.message);
+							}
+							else {
+								currentScope.modalInstance.close();
+								currentScope.form.formData = {};
+								currentScope.displayAlert('success', 'Node tagged successfully');
+								currentScope.listNodes();
+							}
+						});
+					}
+				},
+				{
+					'type': 'reset',
+					'label': translation.cancel[LANG],
+					'btn': 'danger',
+					'action': function () {
+						currentScope.modalInstance.dismiss('cancel');
+						currentScope.form.formData = {};
+					}
+				}
+			]
+		};
+		
+		buildFormWithModal(currentScope, $modal, options);
+	}
+	
 	return {
 		'listNodes': listNodes,
 		'addNode': addNode,
 		'removeNode': removeNode,
 		'updateNode': updateNode,
-		'checkCerts' : checkCerts
+		'checkCerts' : checkCerts,
+		'changeTag': changeTag
 	};
 }]);

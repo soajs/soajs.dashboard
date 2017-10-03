@@ -1,0 +1,42 @@
+{
+  "host": {
+    "type": "text",
+    "name": "host",
+    "label": "AWS Host",
+    "required": true,
+    "value": "",
+    "placeholder": "http://files.parse.com/..."
+  },
+  "bucket": {
+    "type": "text",
+    "name": "bucket",
+    "label": "AWS Bucket",
+    "required": true,
+    "value": "",
+    "placeholder": "my.unique.bucket.name"
+  },
+  "key": {
+    "name": "key",
+    "label": "AWS Key",
+    "value": "",
+    "type": "password",
+    "placeholder": "My Key...",
+    "required": true
+  },
+  "expires": {
+    "name": "expires",
+    "label": "Expires",
+    "value": 60,
+    "type": "number",
+    "placeholder": "60",
+    "required": false
+  },
+  "acl": {
+    "name": "acl",
+    "label": "AWS ACL",
+    "value": "",
+    "type": "text",
+    "placeholder": "public-read",
+    "required": false
+  }
+}

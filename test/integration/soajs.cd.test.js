@@ -312,50 +312,6 @@ describe("testing hosts deployment", function () {
 		});
 	});
 
-	before('Activate swarm mode for local docker engine and create overlay network', function (done) {
-		var params = {
-			method: 'POST',
-			uri: 'http://unix:/var/run/docker.sock:/swarm/init',
-			json: true,
-			headers: {
-				Host: '127.0.0.1'
-			},
-			body: {
-				"ListenAddr": "0.0.0.0:2377",
-				"AdvertiseAddr": "127.0.0.1:2377",
-				"ForceNewCluster": true
-			}
-		};
-
-		request(params, function (error, response, nodeId) {
-			assert.ifError(error);
-
-			params = {
-				method: 'POST',
-				uri: 'http://unix:/var/run/docker.sock:/networks/create',
-				json: true,
-				headers: {
-					Host: '127.0.0.1'
-				},
-				body: {
-					"Name": 'soajsnet',
-					"Driver": 'overlay',
-					"Internal": false,
-					"CheckDuplicate": false,
-					"EnableIPv6": false,
-					"IPAM": {
-						"Driver": 'default'
-					}
-				}
-			};
-
-			request(params, function (error, response, body) {
-				assert.ifError(error);
-				done();
-			});
-		});
-	});
-
 	after(function (done) {
 		mongo.closeDb();
 		console.log('Deleting deployments and cleaning up...');
@@ -410,7 +366,8 @@ describe("testing hosts deployment", function () {
 			var recipes = [
 				{
 					"name": "soajsCatalog",
-					"type": "soajs",
+					"type": "service",
+					"subtype": "soajs",
 					"description": "This is a test catalog for deploying service instances",
 					"recipe": {
 						"deployOptions": {
@@ -528,7 +485,8 @@ describe("testing hosts deployment", function () {
 				},
 				{
 					"name": "soajsCatalog2",
-					"type": "nginx",
+					"type": "server",
+					"subtype": "nginx",
 					"description": "This is a test catalog for deploying service instances",
 					"recipe": {
 						"deployOptions": {
@@ -615,7 +573,8 @@ describe("testing hosts deployment", function () {
 				},
 				{
 					"name": "soajsCatalog3",
-					"type": "soajs",
+					"type": "service",
+					"subtype": "soajs",
 					"description": "This is a test catalog for deploying service instances",
 					"recipe": {
 						"deployOptions": {

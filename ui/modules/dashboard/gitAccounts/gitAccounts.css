@@ -286,3 +286,10 @@ li.accountType {
     color: #3c763d;
     font-weight: bold;
 }
+
+.gitRepos-search {
+    width: 70%;
+    height: 25px;
+    display: inline;
+    margin-right: 10px;
+}

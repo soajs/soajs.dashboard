@@ -114,31 +114,52 @@
 
 <script type="text/ng-template" id="deployService.tmpl">
 	<div class="modal-body">
-		<div ng-show="alerts.length >0">
-			<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)" dismiss-on-timeout="5000">
-				{{alert.msg}}
-			</alert>
-			<br>
-		</div>
-		<div class="configCd entryBoxes entryBoxesGrid">
-			<div class="modal-header cdFormHeader">
-				<h3 class="modal-title capitalize">Configure {{oneSrv}} Deployment</h3>
+		<div class="form">
+			<div ng-show="alerts.length >0">
+				<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)" dismiss-on-timeout="5000">
+					{{alert.msg}}
+				</alert>
+				<br>
 			</div>
-			<div class="body">
-				<div class="entryAction" ng-show="maxEntries > 1">
-					<a href="" ng-click="cdShowHide(oneSrv, cdData.name)">
-						<span class="icon icon-{{cdData.icon || 'plus'}}"></span>
-					</a>
+			<form name="deployRepo" id="deployRepo">
+				<div class="form-group">
+					<div class="configCd entryBoxes entryBoxesGrid">
+						<div class="modal-header cdFormHeader">
+							<h3 class="modal-title capitalize">Configure {{oneSrv}} Deployment</h3>
+						</div>
+						<div class="body">
+							<div class="entryAction" ng-show="maxEntries > 1">
+								<a href="" ng-click="cdShowHide(oneSrv, cdData.name)">
+									<span class="icon icon-{{cdData.icon || 'plus'}}"></span>
+								</a>
+							</div>
+							<div ng-include="'modules/dashboard/environments/directives/cd.tmpl'"></div>
+						</div>
+					</div>
 				</div>
-				<div ng-include="'modules/dashboard/environments/directives/cd.tmpl'"></div>
-			</div>
+			</form>
 		</div>
 	<div class="modal-footer">
-		<button ng-show="maxEntries > 0 && controllerScope.access.cd" class="btn btn-success" ng-click="saveRecipe()">Save</button>
-		<button ng-show="maxEntries > 0 && controllerScope.access.hacloud.services.add" ng-if="!deployed" class="btn btn-primary" ng-click="saveRecipe('deploy')">First Time Deploy</button>
-		<button ng-show="maxEntries > 0 && controllerScope.access.hacloud.services.redeploy" ng-if="deployed" class="btn btn-info" ng-click="saveRecipe('rebuild')">Rebuild Service</button>
+		<button ng-show="maxEntries > 0 && controllerScope.access.cd" ng-disabled = "deployRepo.$invalid" class="btn btn-success" ng-click="saveRecipe()">Save</button>
+		<button ng-show="maxEntries > 0 && controllerScope.access.hacloud.services.add" ng-disabled = "deployRepo.$invalid" ng-if="!deployed" class="btn btn-primary" ng-click="saveRecipe('deploy')">First Time Deploy</button>
+		<button ng-show="maxEntries > 0 && controllerScope.access.hacloud.services.redeploy" ng-disabled = "deployRepo.$invalid" ng-if="deployed" class="btn btn-info" ng-click="saveRecipe('rebuild')">Rebuild Service</button>
 		<button class="btn btn-danger" ng-click="cancel()">Close</button>
 	</div>
 	</div>
 </script>
 
+<script type="text/ng-template" id="oldCatalogRecipes.tmpl">
+	<div class="form">
+		<div class="modal-header">
+			<h3 class="modal-title">Old Catalog Schemas Detected</h3>
+		</div>
+		<div class="modal-body">
+			<alert type="danger">
+				<h3 style="margin-top:5px;">Warning</h3>
+				<hr>
+				Some catalog recipes have not been upgraded yet, they still use a schema compatible with previous SOAJS version(s).<br />
+				This prevents you from configuring or deploying any repository. Please upgrade these recipes to the latest version <a href="" ng-click="upgradeRecipes()">[ Upgrade ]</a>
+			</alert>
+		</div>
+	</div>
+</script>

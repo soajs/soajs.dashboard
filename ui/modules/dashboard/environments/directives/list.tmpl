@@ -27,13 +27,105 @@
                 </div>
             </div>
         </tab>
-        <tab heading="{{translation.customRegistry[LANG]}}">
-            <br />
-	        <div id="customRegistry" ui-ace="{maxLines: Infinity, useWrapMode : true, showGutter: true, mode: 'json', firstLineNumber: 1, onLoad: customLoaded}" ng-model="jsonEditor.custom.data" style="height: 500px;"></div>
-            <label class="fieldMsg">{{translation.customRegistryFieldMsg[LANG]}}</label>
-            <br />
-            <a href="" ng-click="saveCustomRegistry()" class="btn btn-primary f-right">{{translation.update[LANG]}}</a>
-        </tab>
+	    <tab heading="{{translation.customRegistry[LANG]}}">
+		    <br/>
+		    <div ng-if="access.customRegistry.list">
+			    <button class="btn btn-primary f-left" ng-if="access.customRegistry.add" ng-click="manageCustomRegistry({}, 'add')">Add New Custom Registry</button>
+			    <button class="btn btn-primary f-right" ng-if="access.customRegistry.list" ng-click="listCustomRegistry()">
+				    <span class="icon icon-loop2"></span>Refresh
+			    </button>
+                <input type="text" class="form-control f-right customRegistry-search" ng-model="searchKeyword" placeholder="Search ..."/>
+			    <br/><br/>
+			    <div ng-show="oldStyle">
+				    <alert type="danger">
+					    <h3 style="margin-top:5px;">Warning</h3>
+					    <hr>
+					    Custom Registry in this environment have not been upgraded yet, it still use a
+					    configuration from previous SOAJS version(s).<br/>
+					    Please upgrade this Custom Registry to the latest version <a href="" ng-click="upgradeCustomRegistry()">[ Upgrade ]</a>
+				    </alert>
+				    <br/>
+			    </div>
+			    <div ng-if="customRegistries && customRegistries.list && customRegistries.list.length > 0">
+				    <br /><br />
+	                <div ng-repeat="customRegistry in customRegistries.list | customRegSearch:searchKeyword" class="customRegistry-box" ng-class-odd="'oddRow'" ng-class-even="'evenRow'">
+					    <div>
+						    <div class="leftActions">
+							    <a tooltip="Shared from the {{customRegistry.created}} environment" ng-if="customRegistry.shared">
+								    <span class="icon icon-share2"></span>
+							    </a>
+
+							    <a ng-if="!customRegistry.shared" disabled>
+								    <span class="icon icon-share2 grey"></span>
+							    </a>
+
+							    <a ng-if="customRegistry.locked">
+								    <span class="icon icon-lock" tooltip="Locked by {{customRegistry.author}}"></span>
+							    </a>
+
+							    <a ng-if="!customRegistry.locked">
+								    <span class="icon icon-unlocked grey"></span>
+							    </a>
+						    </div>
+                            <label>{{customRegistry.name}}</label>&nbsp;<label ng-if="customRegistry.author" class="ownerLabel">( <span class="icon icon-user"></span>{{customRegistry.author}} )</label>
+						    <div class="rightActions" style="display:inline;">
+							    <a href="" ng-if="access.customRegistry.update && customRegistry.allowEdit && customRegistry.permission" class="btn btn-sm btn-default" ng-click="manageCustomRegistry(customRegistry, 'update')">
+								    <span class="icon icon-cog"></span>Configure
+							    </a>
+
+							    <a href="" ng-if="access.customRegistry.update && (!customRegistry.allowEdit || !customRegistry.permission)" class="btn btn-sm btn-default" ng-click="manageCustomRegistry(customRegistry, 'view')">
+								    <span class="icon icon-search"></span>View
+							    </a>
+
+							    <a href="" ng-if="access.customRegistry.update && !customRegistry.plugged" ng-disabled="!customRegistry.permission && !customRegistry.allowEdit" ng-class="{disabled: !customRegistry.allowEdit}"class="btn btn-sm btn-default" ng-click="togglePlugCustomRegistry(customRegistry, true)">
+								    <span class="icon icon-power-cord"></span>Plug
+							    </a>
+
+							    <a href="" ng-if="access.customRegistry.update && customRegistry.plugged" ng-disabled="!customRegistry.permission" class="btn btn-sm btn-success" ng-class="{disabled: !customRegistry.allowEdit}" ng-click="togglePlugCustomRegistry(customRegistry, false)"><span class="icon icon-power-cord"></span>Unplug</a>
+
+							    <a href="" class="btn btn-sm btn-danger" ng-if="access.customRegistry.delete && customRegistry.permission && customRegistry.allowEdit" ng-click="deleteCustomRegistry(customRegistry)" ng-confirm-click="Are you sure you want to delete this Custom Registry?">
+								    <span class="icon icon-cross" tooltip="Delete Custom Registry"></span>Remove
+							    </a>
+							    <a href="" class="btn btn-sm btn-danger" ng-if="!access.customRegistry.delete || !customRegistry.permission || !customRegistry.allowEdit" disabled>
+								    <span class="icon icon-cross" tooltip="Delete Custom Registry"></span>Remove
+							    </a>
+						    </div>
+					    </div>
+				    </div>
+				    <div class="grid">
+					    <table cellspacing="0" cellpadding="0" border="0" width="100%" class="navigation">
+						    <tbody>
+							    <tr>
+								    <td align="right">
+									    <ul class="pagination-sm pagination ng-isolate-scope ng-valid">
+										    <li ng-class="{'disabled': startLimit<=0}">
+											    <a ng-click="getFirst();" href="">First</a>
+										    </li>
+										    <li ng-class="{'disabled': startLimit<=0}">
+											    <a ng-click="getPrev();" href="">{{translation.getPrevious[LANG]}} {{endLimit}}</a>
+										    </li>
+										    <li ng-class="{'disabled': !showNext}">
+											    <a ng-click="getNext();" href="" class="ng-binding">{{translation.getNext[LANG]}}
+												    {{endLimit}}</a>
+										    </li>
+										    <li ng-class="{'disabled': !showNext}">
+											    <a ng-click="getLast();" href="" class="ng-binding">Last</a>
+										    </li>
+									    </ul>
+								    </td>
+							    </tr>
+						    </tbody>
+					    </table>
+				    </div>
+			    </div>
+                <div ng-if="!customRegistries || !customRegistries.list || customRegistries.list.length === 0">
+                    <br /><br />
+                    <alert type="warning">
+    				    No Custom Registry found for this environment!
+    			    </alert>
+                </div>
+		    </div>
+	    </tab>
     </tabset>
 </section>
 
@@ -62,4 +154,20 @@
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="reloadDashboard()">{{translation.reloadDashboard[LANG]}}</button>
     </div>
+</script>
+
+<script type="text/ng-template" id="addEditCustomRegistry.tmpl">
+	<div class="modal-header custom-modal-header">
+		<h3 class="modal-title">{{title}}
+		</h3>
+	</div>
+	<div class="modal-body">
+		<div class="form" ng-include="'modules/dashboard/environments/directives/customRegistry.tmpl'"></div>
+	</div>
+	<div class="modal-footer">
+	    <span ng-if="options.allowEdit">
+            <button class="btn btn-success" ng-if="access.customRegistry.update && !notsupported" ng-disabled="!valid" ng-click="save()">Save</button>
+        </span>
+		<button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+	</div>
 </script>

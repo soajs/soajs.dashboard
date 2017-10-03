@@ -1,0 +1,64 @@
+<div>
+	<table ng-if="grid.navigation" cellspacing="0" cellpadding="0" border="0" width="100%" class="navigation">
+		<tbody>
+			<tr>
+				<td>
+				</td>
+				<td></td>
+				<td align="right">
+					Found {{grid.navigation.totalCount}} Record(s)
+				</td>
+				<td align="right" class="pageCount">
+					Page {{grid.navigation.pageActive}} of {{grid.navigation.totalPagesActive}}
+				</td>
+				<td align="right" class="apiNavigation apiNavigationWide">
+					<ul class="pagination-sm pagination">
+						<li ng-if="grid.apiNavigation.previous" ng-class="{'disabled': grid.navigation.startLimit<=0}">
+							<a ng-click="grid.apiNavigation.previous.command()" href="">
+								{{translation.getPrevious[LANG]}} {{grid.navigation.endLimit}}
+							</a>
+						</li>
+						<li ng-if="grid.apiNavigation.next" ng-class="{'disabled': !grid.navigation.showNext}">
+							<a ng-click="grid.apiNavigation.next.command()" href="">
+								{{translation.getNext[LANG]}} {{grid.navigation.endLimit}}
+							</a>
+						</li>
+						<li ng-if="grid.apiNavigation.last" ng-class="{'disabled': !grid.navigation.showNext}">
+							<a ng-click="grid.apiNavigation.last.command();" href="">{{translation.last[LANG]}}</a>
+						</li>
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<table border="0" cellspacing="0" cellpadding="0" width="100%" class="">
+	<tr class="header">
+		<td>
+			<div ng-show="grid.topActions.length > 0">
+				{{translation.select[LANG]}}:
+				<a href="" ng-click="grid.selectAll()">{{translation.All[LANG]}}</a> -
+				<a href="" ng-click="grid.selectNone()">{{translation.None[LANG]}}</a> |
+				<div class="btn-sm btn-group" dropdown>
+					<button type="button" class="btn btn-sm btn-danger dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+						{{translation.moreAction[LANG]}} <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" role="menu">
+						<li ng-repeat="action in grid.topActions">
+							<a href="" ng-confirm-click="{{action.commandMsg}}" ng-click="action.command()">{{action.label}}</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</td>
+		<td align="right">
+			<div ng-show="grid.search">
+				{{translation.searchGrid[LANG]}}:
+				<input class="searchInput" ng-model="grid.query" type="text" ng-keyup="grid.filterData(grid.query); grid.applySearch=true"/>
+				<button ng-click="grid.query =''; grid.filterData('')" class="btn-filter btn btn-sm btn-danger">
+					{{translation.clearGridSearch[LANG]}}
+				</button>
+			</div>
+		</td>
+	</tr>
+</table>

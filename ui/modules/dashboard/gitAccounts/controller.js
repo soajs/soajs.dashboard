@@ -28,7 +28,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                 $scope.accounts.forEach(function(oneAccount){
                 	oneAccount.hide = true;
                 });
-                
+
                 if ($scope.accounts.length > 0) {
                     var counter = 0;
                     $scope.listRepos($scope.accounts, counter, 'getRepos');
@@ -480,11 +480,11 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
             }
         });
     };
-	
+
 	$scope.configureRepo = function (oneRepo, gitAccount) {
 		repoSrv.configureRepo($scope, oneRepo, gitAccount, gitAccountsAppConfig);
 	};
-	
+
 	$scope.showHide = function (account) {
 		if (!account.hide) {
 			jQuery('#a_' + account._id + " .body .inner").slideUp();
@@ -505,3 +505,22 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
         $scope.listAccounts();
     }
 }]);
+
+gitAccountsApp.filter('reposSearchFilter', function() {
+	return function(input, searchKeyword) {
+		if(!searchKeyword) return input;
+		if(!input || !Array.isArray(input) || input.length === 0) return input;
+
+		var output = [];
+		input.forEach(function(oneInput) {
+			if(oneInput) {
+                //using full_name since it's composed of owner + name
+				if(oneInput.full_name && oneInput.full_name.toLowerCase().indexOf(searchKeyword.toLowerCase()) !== -1) {
+					output.push(oneInput);
+				}
+			}
+		});
+
+		return output;
+	}
+});

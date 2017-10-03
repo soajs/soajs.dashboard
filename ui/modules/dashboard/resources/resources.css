@@ -1,0 +1,166 @@
+.resource-box {
+    width: 100% !important;
+    /*float: left !important;*/
+    /*margin-right: 1% !important;*/
+    margin: 0 0 15px 5px;
+    padding:12px;
+    display:table;
+    border-radius: 8px;
+
+    border: solid 1px #cccccc;
+}
+
+.resource-box .leftActions{
+    float:left;
+    max-width:7%;
+}
+
+.resource-box .leftActions a{
+    margin-top:6px;
+    margin-right:8px;
+    float:left;
+}
+
+.resource-box .rightActions{
+    float:right;
+    max-width:45%;
+}
+
+.resource-box .rightActions a{
+    float:left !important;
+    margin-right: 12px;
+    min-width:90px;
+}
+
+.resource-box label{
+    padding-top:4px;
+    font-size:16px;
+}
+
+.evenRow{
+    background-color:#f8f8f8;
+}
+
+.greenBox {
+    border: solid 1px #3c763d !important;
+}
+
+.greenBoxHeader {
+    background-color: #dff0d8 !important;
+    border-bottom-color: #3c763d !important;
+}
+
+.custom-modal-header {
+    background-color: #5BC0DE;
+    color: white;
+}
+
+/* The switch - the box around the slider */
+.toggleSwitch {
+  position: relative;
+  display: inline-block;
+
+  width: 50px !important;
+  height: 20px !important;
+  top: 7px;
+  left: 6px;
+}
+
+/* Hide default HTML checkbox */
+.toggleSwitch input {display:none;}
+
+/* The slider */
+.buttonSlider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.buttonSlider:before {
+  position: absolute;
+  content: "";
+  height: 17px;
+  width: 17px;
+  left: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+
+  top: 1px;
+}
+
+input:checked + .buttonSlider {
+  background-color: #5BC0DE;
+}
+
+input:focus + .buttonSlider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .buttonSlider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.buttonSlider.round {
+  border-radius: 34px;
+}
+
+.buttonSlider.round:before {
+  border-radius: 50%;
+}
+
+.custom-fieldset div label:not(.fieldMsg) {
+    margin-top: 10px;
+    float: left;
+    width: 24%;
+}
+
+.custom-fieldset div input, .custom-fieldset div select {
+    float: right;
+    width: 74%;
+}
+
+.ng-scope fieldset.autoScale{
+ border: none;
+    padding : 0;
+}
+fieldset.autoScale legend {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    padding:0;
+}
+
+.ace_text-input {position:absolute!important}
+
+.tip-alert h3 {
+    background-color: inherit;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 20px;
+}
+
+.tip-alert p {
+    margin-bottom: 0;
+    margin-top: 3px;
+}
+
+.red{
+    border-color: #ebccd1;
+    color: #a94442;
+    cursor:pointer;
+}
+
+.grey{
+    color: #cccccc;
+}

@@ -1,0 +1,77 @@
+<alert type="danger" ng-if="message.danger">{{message.danger}}</alert>
+<br />
+<form name="addEditCustomRegistry" id="addEditCustomRegistry" ng-submit="addEditCustomRegistry.$valid && onSubmit()">
+	<div class="form-group" ng-init="$root.valid = addEditCustomRegistry.$valid" ng-keyup="$root.valid = addEditCustomRegistry.$valid" ng-mousemove="$root.valid = addEditCustomRegistry.$valid">
+		<tabset>
+			<tab heading="General">
+				<br />
+				<div>
+					<label>Custom Registry Name</label>
+					<input type="text" class="form-control" ng-model="formData.name" ng-required="true" ng-disabled="options.formAction === 'view'"/>
+					<label class="fieldMsg">Choose the name of the new Custom Registry</label>
+					<br />
+				</div>
+				<br />
+				<div>
+					<label>I am adding a text value</label>
+					<label class="toggleSwitch f-right"><input type="checkbox" ng-model="textMode" ng-change="enableTextMode()"><span class="buttonSlider round"></span></label>
+					<label class="fieldMsg">Turn on this mode if the value you are about to enter is made up of text only (Default mode does not support text only)</label>
+					<br /><br />
+				</div>
+				<div id="customRegistry" class="customRegistryAceEditor" ui-ace="options.aceEditorConfig" ng-model="formData.value"></div>
+				<label class="fieldMsg">{{translation.customRegistryFieldMsg[LANG]}}</label>
+			</tab>
+			<tab heading="Settings">
+				<br />
+				<div>
+					<label>Plug Custom Registry</label>
+					<label ng-show="allowEdit && !sensitive" class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.plugged"><span class="buttonSlider round"></span></label>
+					<label ng-show="!allowEdit || sensitive" class="toggleSwitch f-right"><input disabled type="checkbox" ng-model="formData.plugged"><span class="buttonSlider round"></span></label>
+					<label class="fieldMsg">Turn this on if you want this Custom Registry to be available for your services & daemons</label>
+					<br /><br />
+				</div>
+				<div>
+					<label>Lock Custom Registry</label>
+					<label ng-show="allowEdit && !sensitive" class="toggleSwitch f-right"><input type="checkbox" ng-model="formData.locked"><span class="buttonSlider round"></span></label>
+					<label ng-show="!allowEdit || sensitive" class="toggleSwitch f-right"><input disabled type="checkbox" ng-model="formData.locked"><span class="buttonSlider round"></span></label>
+					<label class="fieldMsg">Turn this on if you want to protect this Custom Registry and make it readonly for others</label>
+					<br /><br />
+				</div>
+				<div ng-show="allowEdit && !sensitive">
+					<label>Share Custom Registry With Other Environments</label>
+					<label class="toggleSwitch f-right"><input type="checkbox" ng-click="getEnvs()" ng-model="formData.shared"><span class="buttonSlider round"></span></label>
+					<label class="fieldMsg">Sharing a Custom Registry makes it accessible via other environments</label>
+					<br /><br />
+				</div>
+				<div ng-show="!allowEdit || sensitive">
+					<label>Share Custom Registry With Other Environments</label>
+					<label class="toggleSwitch f-right"><input disabled type="checkbox" ng-click="getEnvs()" ng-model="formData.shared"><span class="buttonSlider round"></span></label>
+					<label class="fieldMsg">Sharing a Custom Registry makes it accessible via other environments</label>
+					<br /><br />
+				</div>
+				<div ng-if="formData.shared">
+					<div>
+						<label ng-show="allowEdit && !sensitive">
+							<input type="checkbox" ng-model="envs.sharedWithAll" ng-click="toggleShareWithAllEnvs()"/>
+							Share with all environments
+						</label>
+						<label ng-show="!allowEdit || sensitive">
+							Shared with environment(s)
+						</label>
+					</div>
+					<div class="grid">
+						<table width="100%" border="0" cellpadding="5" cellspacing="3">
+							<tbody>
+								<tr class="first odd" ng-class="{'first': $first, 'last': $last, 'odd': $odd, 'even': $even}" ng-repeat="env in envs.list">
+									<td width="5%" ng-show="allowEdit"><input type="checkbox" name="{{env.code}}" ng-model="env.selected" ng-disabled="envs.sharedWithAll" /></td>
+									<td width="20%" align="left">{{env.code}}</td>
+									<td width="75%">{{env.description}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</tab>
+		</tabset>
+	</div>
+</form>

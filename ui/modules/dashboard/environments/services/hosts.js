@@ -5,18 +5,16 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 	function getEnvironment(currentScope, envCode, cb){
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
-			"routeName": "/dashboard/environment/list"
+			"routeName": "/dashboard/environment",
+			"params":{
+				"code": envCode
+			}
 		}, function (error, response) {
 			if (error) {
 				currentScope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
 			else {
-				for (var x = 0; x < response.length; x++) {
-					if (response[x].code === envCode.toUpperCase()) {
-						currentScope.myEnvironment = response[x];
-						break;
-					}
-				}
+				currentScope.myEnvironment = response;
 				return cb();
 			}
 		});

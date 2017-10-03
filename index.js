@@ -6,6 +6,12 @@ var dashboardBL = {
 	environment: {
 		module: require("./lib/environment/index.js")
 	},
+	resources: {
+		module: require("./lib/resources/index.js")
+	},
+	customRegistry: {
+		module: require("./lib/customRegistry/index.js")
+	},
 	product: {
 		module: require("./lib/product/index.js")
 	},
@@ -63,6 +69,9 @@ var dashboardBL = {
 		},
 		namespace:{
 			module: require("./lib/cloud/namespaces/index.js")
+		},
+		autoscale: {
+			module: require('./lib/cloud/autoscale/index.js')
 		}
 	}
 };
@@ -157,6 +166,19 @@ service.init(function () {
 		});
 	});
 
+    /**
+     * Get a specific environment
+     * @param {String} API route
+     * @param {Function} API middleware
+     */
+    service.get("/environment", function (req, res) {
+        initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+            BL.get(config, req, res, function (error, data) {
+                return res.json(req.soajs.buildResponse(error, data));
+            });
+        });
+    });
+
 	/**
 	 * Update environment tenant security key
 	 * @param {String} API route
@@ -236,52 +258,182 @@ service.init(function () {
 	});
 
 	/**
-	 * Add environment cluster
+	 * List resources
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.post("/environment/clusters/add", function (req, res) {
-		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			BL.addCluster(config, req, res, function (error, data) {
+	service.get("/resources/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.listResources(config, req, res, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
 	});
 
 	/**
-	 * Delete environment cluster
+	 * Get one resource
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.delete("/environment/clusters/delete", function (req, res) {
-		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			BL.deleteCluster(config, req, res, function (error, data) {
+	service.get("/resources/get", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.getResource(config, req, res, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
 	});
 
 	/**
-	 * Update environment cluster
+	 * Upgrade Resources
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.put("/environment/clusters/update", function (req, res) {
-		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			BL.updateCluster(config, req, res, function (error, data) {
+	service.get("/resources/upgrade", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.upgradeResources(config, req, res, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
 	});
 
 	/**
-	 * List environment clusters
+	 * Add new resource
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.get("/environment/clusters/list", function (req, res) {
-		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			BL.listClusters(config, req, res, function (error, data) {
+	service.post("/resources/add", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.addResource(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Delete a resource
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.delete("/resources/delete", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.deleteResource(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Update a resource
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/resources/update", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.updateResource(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Get resources deploy configuration
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/resources/config", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.getConfig(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Set resources deploy configuration
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/resources/config/update", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.setConfig(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * List custom registry entries
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/customRegistry/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.customRegistry.module, dbModel, function (BL) {
+			BL.list(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Get a custom registry entry
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/customRegistry/get", function (req, res) {
+		initBLModel(req, res, dashboardBL.customRegistry.module, dbModel, function (BL) {
+			BL.get(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Add a custom registry entry
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/customRegistry/add", function (req, res) {
+		initBLModel(req, res, dashboardBL.customRegistry.module, dbModel, function (BL) {
+			BL.add(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Update a custom registry entry
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/customRegistry/update", function (req, res) {
+		initBLModel(req, res, dashboardBL.customRegistry.module, dbModel, function (BL) {
+			BL.update(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Upgrade custom registry entries from old schema to new one
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/customRegistry/upgrade", function (req, res) {
+		initBLModel(req, res, dashboardBL.customRegistry.module, dbModel, function (BL) {
+			BL.upgrade(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Delete a custom registry entry
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.delete("/customRegistry/delete", function (req, res) {
+		initBLModel(req, res, dashboardBL.customRegistry.module, dbModel, function (BL) {
+			BL.delete(config, req, res, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -945,7 +1097,7 @@ service.init(function () {
 	 */
 
 	/**
-	 * Get all available cluster nodes
+	 * Get all available nodes
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
@@ -958,7 +1110,7 @@ service.init(function () {
 	});
 
 	/**
-	 * Add a new cluster node
+	 * Add a new node
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
@@ -971,7 +1123,7 @@ service.init(function () {
 	});
 
 	/**
-	 * Remove an existing cluster node
+	 * Remove an existing node
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
@@ -984,13 +1136,26 @@ service.init(function () {
 	});
 
 	/**
-	 * Update the role or availability of an existing cluster node
+	 * Update the role or availability of an existing node
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
 	service.put("/cloud/nodes/update", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.nodes.module, dbModel, function (BL) {
 			BL.updateNode(config, req.soajs, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Update the tag of a node
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/cloud/nodes/tag", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.nodes.module, dbModel, function (BL) {
+			BL.tagNode(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1017,6 +1182,32 @@ service.init(function () {
 	service.post("/cloud/services/soajs/deploy", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.deploy.module, dbModel, function (BL) {
 			BL.deployService(config, req.soajs, service.registry, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Deploy a plugin, such as heapster
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/cloud/plugins/deploy", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.deploy.module, dbModel, function (BL) {
+			BL.deployPlugin(config, req.soajs, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Check if heapster is deployed
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/cloud/heapster", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.autoscale.module, dbModel, function (BL) {
+			BL.checkHeapster(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1082,6 +1273,32 @@ service.init(function () {
 	service.get("/cloud/services/instances/logs", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
 			BL.streamLogs(config, req.soajs, res, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Autoscale one or more services
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/cloud/services/autoscale", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.autoscale.module, dbModel, function(BL) {
+			BL.set(config, req.soajs, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Configure environment autoscaling
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/cloud/services/autoscale/config", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.autoscale.module, dbModel, function(BL) {
+			BL.updateEnvAutoscaleConfig(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1177,6 +1394,19 @@ service.init(function () {
 	service.get("/catalog/recipes/get", function (req, res) {
 		initBLModel(req, res, dashboardBL.catalog.module, dbModel, function (BL) {
 			BL.get(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Upgrade Catalog Recipes to latest versions
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/catalog/recipes/upgrade", function (req, res) {
+		initBLModel(req, res, dashboardBL.catalog.module, dbModel, function (BL) {
+			BL.upgrade(config, req, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});

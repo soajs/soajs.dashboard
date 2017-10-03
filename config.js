@@ -3,86 +3,10 @@ var serviceConfig = require("./schemas/serviceConfig");
 var cbSchema = require("./schemas/cb");
 var aclSchema = require("./schemas/acl");
 var catalogSchema = require("./schemas/catalog");
-
-var cdOptions = {
-	"recipe": {
-		"type": "string", "required": true,
-	},
-	"gitSource": {
-		"type": "object",
-		"required": true,
-		"properties": {
-			"owner": {"required": true, "type": "string"},
-			"repo": {"required": true, "type": "string"},
-			"branch": {"required": true, "type": "string", "minLength": 1, 'pattern': /[a-z]+/},
-			"commit": {"required": false, "type": "string"}
-		}
-	},
-	"deployConfig": {
-		"type": "object",
-		"required": true,
-		"properties": {
-			"memoryLimit": {"required": false, "type": "number", "default": 209715200},
-			"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
-			"replication": {
-				"required": true,
-				"type": "object",
-				"properties": {
-					"mode": {
-						"required": true,
-						"type": "string",
-						"enum": ['replicated', 'global', 'deployment', 'daemonset']
-					},
-					"replicas": {"required": false, "type": "number"}
-				}
-			}
-		}
-	},
-	"custom": {
-		"type": "object",
-		"required": false,
-		"properties": {
-			"image": {
-				"type": "object",
-				"required": false,
-				"properties": {
-					"prefix": {"required": false, "type": "string"},
-					"name": {"required": false, "type": "string"},
-					"tag": {"required": false, "type": "string"},
-				}
-			},
-			"env": {
-				"type": "object",
-				"required": false,
-				"additionalProperties": {"type": "string"}
-			},
-			"type": {
-				"required": true,
-				"type": "string"
-			},
-			"name": {
-				"required": false,
-				"type": "string"
-			},
-			"version": {
-				"required": false,
-				"type": "string"
-			},
-			"daemonGroup": {
-				"required": false,
-				"type": "string"
-			},
-			"gc": {
-				"required": false,
-				"type": "object",
-				"properties": {
-					"gcName": {"required": true, "type": "string"},
-					"gcVersion": {"required": true, "type": "number"}
-				}
-			}
-		}
-	}
-};
+var resourceSchema = require("./schemas/resource");
+var customRegEntrySchema = require("./schemas/customRegistry");
+var resourceDeployConfigSchema = require("./schemas/resourceDeployConfig");
+var cdOptions = require("./schemas/cdOptions");
 
 module.exports = {
     type: 'service',
@@ -152,6 +76,8 @@ module.exports = {
 		"dotToken": "__dot__",
 		"dotRegexString": "\\."
 	},
+
+    "dashboardClusterResourceName": "dash_cluster",
 
     "gitAccounts": {
         "bitbucket": {
@@ -672,6 +598,27 @@ module.exports = {
                 },
             },
 
+            "/environment": {
+                _apiInfo: {
+                    "l": "Get Environment",
+                    "group": "Environment"
+                },
+                "id": {
+                    "required": false,
+                    "source": ["query.id"],
+                    "validation": {
+                        "type": "string"
+                    }
+                },
+                "code": {
+                    "required": false,
+                    "source": ["query.code"],
+                    "validation": {
+                        "type": "string"
+                    }
+                }
+            },
+
 	        "/environment/list": {
                 _apiInfo: {
                     "l": "List Environments",
@@ -695,12 +642,112 @@ module.exports = {
                 "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
             },
 
-            "/environment/clusters/list": {
-                _apiInfo: {
-                    "l": "List Environment Database Clusters",
-                    "group": "Environment Clusters"
+			"/resources/list": {
+				_apiInfo: {
+                    "l": "List Available Resources",
+                    "group": "Resources",
+					"groupMain": true
                 },
-                "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+            "/resources/get": {
+				_apiInfo: {
+                    "l": "Get One Resource",
+                    "group": "Resources"
+                },
+				"id": {
+					"source": ['query.id'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+                "name": {
+					"source": ['query.name'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+	        "/resources/upgrade": {
+		        _apiInfo: {
+			        "l": "Upgrade Resources to latest version",
+			        "group": "Resources",
+			        "groupMain": true
+		        },
+		        "env": {
+			        "source": ['query.env'],
+			        "required": true,
+			        "validation": {
+				        "required": true
+			        }
+		        }
+	        },
+
+			"/resources/config": {
+				_apiInfo: {
+                    "l": "Get Resources Deploy Configuration",
+                    "group": "Resources"
+                }
+			},
+
+            "/customRegistry/list": {
+                _apiInfo: {
+                    "l": "List Custom Registry Entries",
+                    "group": "Custom Registry",
+                    "groupMain": true
+                },
+                "env": {
+                    "source": ['query.env'],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+                },
+                "start": {
+                    "source": ['query.start'],
+                    "required": false,
+                    "validation": {
+                        "type": "number"
+                    }
+                },
+                "end": {
+                    "source": ['query.end'],
+                    "required": false,
+                    "validation": {
+                        "type": "number"
+                    }
+                }
+            },
+
+            "/customRegistry/get": {
+                _apiInfo: {
+                    "l": "Get Custom Registry Entry",
+                    "group": "Custom Registry"
+                },
+                "id": {
+					"source": ['query.id'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+                "name": {
+					"source": ['query.name'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
             },
 
             "/environment/platforms/list": {
@@ -1039,6 +1086,20 @@ module.exports = {
                 }
             },
 
+			"/cloud/heapster": {
+				"_apiInfo": {
+                    "l": "Check if Heapster is Deployed",
+                    "group": "HA Cloud"
+                },
+				"env": {
+                    "source": ['query.env'],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+                }
+			},
+
             "/catalog/recipes/list": {
                 "_apiInfo": {
                     "l": "List Catalog Recipes",
@@ -1080,6 +1141,13 @@ module.exports = {
                     }
                 }
             },
+
+	        "/catalog/recipes/upgrade" :{
+		        "_apiInfo": {
+			        "l": "Upgrade Catalog Recipes to latest Version",
+			        "group": "Catalog"
+		        }
+	        },
 
             "/cd": {
                 "_apiInfo": {
@@ -1519,7 +1587,7 @@ module.exports = {
                     }
                 }
             },
-            
+
 	        "/environment/add": {
                 _apiInfo: {
                     "l": "Add Environment",
@@ -1573,6 +1641,11 @@ module.exports = {
                     "l": "Add Environment Database",
                     "group": "Environment Databases"
                 },
+	            "prefix": {
+		            "source": ['body.prefix'],
+		            "required": false,
+		            "validation": {"type": "string", "required": false}
+	            },
                 "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
                 "name": {"source": ['body.name'], "required": true, "validation": {"type": "string", "required": true}},
                 "cluster": {
@@ -1602,15 +1675,35 @@ module.exports = {
                 }
             },
 
-            "/environment/clusters/add": {
-                _apiInfo: {
-                    "l": "Add Environment Database Cluster",
-                    "group": "Environment Clusters"
+			"/resources/add": {
+				_apiInfo: {
+                    "l": "Add New Resource",
+                    "group": "Resources"
                 },
-                "commonFields": ['cluster'],
-                "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
-                "name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
-            },
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"resource": resourceSchema
+			},
+
+            "/customRegistry/add": {
+				_apiInfo: {
+                    "l": "Add New Custom Registry Entry",
+                    "group": "Custom Registry"
+                },
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"customRegEntry": customRegEntrySchema
+			},
 
             "/environment/platforms/cert/upload": {
                 _apiInfo: {
@@ -1817,7 +1910,7 @@ module.exports = {
                     }
                 }
             },
-	
+
 	        "/daemons/groupConfig/list": {
 		        _apiInfo: {
 			        "l": "List Daemon Group Configuration",
@@ -1832,7 +1925,7 @@ module.exports = {
 			        }
 		        }
 	        },
-	        
+
             "/daemons/groupConfig/add": {
                 _apiInfo: {
                     "l": "Add Daemon Group Configuration",
@@ -1912,6 +2005,7 @@ module.exports = {
                         "required": true,
                         "properties": {
                             "memoryLimit": { "required": false, "type": "number", "default": 209715200 },
+							"cpuLimit": { "required": false, "type": "string" },
                             "isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
                             "replication": {
                                 "required": true,
@@ -1924,6 +2018,37 @@ module.exports = {
                         }
                     }
                 },
+				"autoScale": {
+					"source": ['body.autoScale'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"properties": {
+							"replicas": {
+								"type": "object",
+								"required": true,
+								"properties": {
+									"min": { "type": "number", "required": true },
+									"max": { "type": "number", "required": true }
+								}
+							},
+							"metrics": {
+								"type": "object",
+								"required": true,
+								"properties": {
+									//NOTE: only CPU metrics are supported
+									"cpu": {
+										"type": "object",
+										"required": true,
+										"properties": {
+											"percent": { "type": "number", "required": true }
+										}
+									}
+								}
+							}
+						}
+					}
+				},
                 "custom":{
                     "source": ["body.custom"],
                     "required":false,
@@ -1947,6 +2072,10 @@ module.exports = {
                             },
                             "type": {
                                 "required": true,
+                                "type": "string"
+                            },
+                            "resourceId": {
+                                "required": false,
                                 "type": "string"
                             },
                             "name": {
@@ -1974,6 +2103,28 @@ module.exports = {
                     }
                 }
             },
+
+			"/cloud/plugins/deploy": {
+				"_apiInfo": {
+					"l": "Deploy A Custom Resource",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"plugin": {
+					"source": ['body.plugin'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": [ 'heapster' ]
+					}
+				}
+			},
 
             "/cloud/nodes/add": {
                 "_apiInfo": {
@@ -2851,6 +3002,11 @@ module.exports = {
                     "l": "Update Environment Database",
                     "group": "Environment Databases"
                 },
+	            "prefix": {
+		            "source": ['body.prefix'],
+		            "required": false,
+		            "validation": {"type": "string", "required": false}
+	            },
                 "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
                 "name": {"source": ['body.name'], "required": true, "validation": {"type": "string", "required": true}},
                 "cluster": {
@@ -2893,15 +3049,100 @@ module.exports = {
                 }
             },
 
-            "/environment/clusters/update": {
-                _apiInfo: {
-                    "l": "Update Environment Database Cluster",
-                    "group": "Environment Clusters"
+			"/resources/update": {
+				_apiInfo: {
+                    "l": "Update Resource",
+                    "group": "Resources"
                 },
-                "commonFields": ['cluster'],
-                "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
-                "name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
-            },
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+                "env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"resource": resourceSchema
+			},
+
+			"/resources/config/update": {
+				_apiInfo: {
+                    "l": "Set Resource Deploy Configuration",
+                    "group": "Resources"
+                },
+                "env": {
+                    "source": ['body.env'],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+                },
+                "resourceName": {
+                    "source": ['body.resourceName'],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+                },
+				"config": {
+					"source": ['body.config'],
+					"required": true,
+					"validation": {
+						"type": "object",
+                        "default": {},
+						"properties": {
+							"deploy": { "type": "boolean", "required": true },
+							"options": {
+								"type":"object",
+                                "required": false,
+								"properties": resourceDeployConfigSchema
+							}
+						}
+					}
+				}
+			},
+
+            "/customRegistry/update": {
+				_apiInfo: {
+                    "l": "Update Custom Registry Entry",
+                    "group": "Custom Registry"
+                },
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+                "env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"customRegEntry": customRegEntrySchema
+			},
+
+            "/customRegistry/upgrade": {
+				_apiInfo: {
+                    "l": "Upgrade To New Custom Registry",
+                    "group": "Custom Registry"
+                },
+                "env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
 
             "/environment/platforms/cert/choose": {
                 _apiInfo: {
@@ -3307,6 +3548,27 @@ module.exports = {
                 }
             },
 
+		    "/cloud/nodes/tag": {
+			    "_apiInfo": {
+				    "l": "Update HA Cloud Node Tag",
+				    "group": "HA Cloud"
+			    },
+			    "id": {
+				    "source": ['body.id'],
+				    "required": true,
+				    "validation": {
+					    "type": "string"
+				    }
+			    },
+			    "tag": {
+				    "source": ['body.tag'],
+				    "required": true,
+				    "validation": {
+					    "type": "string"
+				    }
+			    }
+		    },
+
             "/cloud/services/scale": {
                 "_apiInfo": {
                     "l": "Scale HA Service",
@@ -3396,6 +3658,103 @@ module.exports = {
                     }
                 }
             },
+
+			"/cloud/services/autoscale": {
+				"_apiInfo": {
+                    "l": "Autoscale Services",
+                    "group": "HA Cloud"
+                },
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"action": {
+					"source": ['body.action'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": [ "update", "turnOff" ]
+					}
+				},
+				"autoscaler": {
+					"source": ['body.autoscaler'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"properties": {
+							"replicas": {
+								"type": "object",
+								"properties": {
+									"min": { "type": "number", "required": true },
+									"max": { "type": "number", "required": true }
+								}
+							},
+							"metrics": { "type": "object", "required": true }
+						}
+					}
+				},
+				"services": {
+					"source": ['body.services'],
+					"required": true,
+					"validation": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"id": { "type": "string", "required": true },
+								"type": { "type": "string", "required": true, "enum": [ "deployment" ] }
+							}
+						}
+					}
+				}
+			},
+
+			"/cloud/services/autoscale/config": {
+				"_apiInfo": {
+                    "l": "Configure Environment Autoscaling",
+                    "group": "HA Cloud"
+                },
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"autoscale": {
+					"source": ['body.autoscale'],
+					"required": true,
+					"validation": {
+						"type": "object",
+						"required": true,
+						"properties": {
+							"replicas": {
+								"type": "object",
+								"properties": {
+									"min": { "type": "number", "required": true },
+									"max": { "type": "number", "required": true }
+								}
+							},
+							"metrics": {
+								"type": "object",
+								"required": true,
+								"properties": {
+									//NOTE: only CPU metrics are supported for now
+									"cpu": {
+										"type": "object",
+										"properties": {
+											"percent": { "type": "number", "required": true }
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
 
             "/catalog/recipes/update": {
                 "_apiInfo": {
@@ -3613,14 +3972,47 @@ module.exports = {
                 "name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
             },
 
-            "/environment/clusters/delete": {
-                _apiInfo: {
-                    "l": "Delete Environment Database Cluster",
-                    "group": "Environment Clusters"
+			"/resources/delete": {
+				_apiInfo: {
+                    "l": "Delete a resource",
+                    "group": "Resources"
                 },
-                "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
-                "name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
-            },
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+                "env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+            "/customRegistry/delete": {
+				_apiInfo: {
+                    "l": "Delete A Custom Registry Entry",
+                    "group": "Custom Registry"
+                },
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+                "env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
 
             "/environment/platforms/cert/delete": {
                 _apiInfo: {

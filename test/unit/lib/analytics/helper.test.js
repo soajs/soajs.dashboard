@@ -51,9 +51,9 @@ var res = {};
 var config = helper.requireModule('./config.js');
 
 describe("testing analytics/helper.js", function () {
-	
+
 	describe("testing setEsCluster", function () {
-		var envRecord = {
+		var registry = {
 			dbs: {
 				databases: {},
 				clusters: {}
@@ -91,13 +91,13 @@ describe("testing analytics/helper.js", function () {
 		};
 		var settings = {};
 		it("Success setEsCluster", function (done) {
-			req.soajs.inputmaskData = {};
-			analytics.setEsCluster(req, res, config, envRecord, settings, mongoStub, function (error, body) {
-				// assert.ok(body);
+			req.soajs.inputmaskData = { env: 'dev' };
+			analytics.setEsCluster(req, res, config, registry, settings, mongoStub, function (error, body) {
+				assert.ok(body);
 				done();
 			});
 		});
 
 	});
-	
+
 });
