@@ -1,8 +1,0 @@
-<label>{{entry.label}}</label>
-<p class="input-group">
-    <input type="text" class="form-control" datepicker-popup="MMMM-dd-yyyy" ng-model="form.formData[entry.name]" id="{{entry.name}}" name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-required="entry.required" is-open="entry.opened" ng-if="entry.disabled" disabled/>
-    <input type="text" class="form-control" datepicker-popup="MMMM-dd-yyyy" ng-model="form.formData[entry.name]" id="{{entry.name}}" name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-required="entry.required" is-open="entry.opened" ng-if="!entry.disabled"/>
-    <span class="input-group-btn">
-        <button type="button" class="btn btn-default" ng-click="entry.openDate($event,$index)"><i class="glyphicon glyphicon-calendar"></i></button>
-    </span>
-</p>

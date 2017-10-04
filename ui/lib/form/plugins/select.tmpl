@@ -1,6 +1,0 @@
-<div ng-show="!entry.hidden">
-    <label>{{entry.label}}</label>
-    <select name="{{entry.name}}" id="{{entry.name}}" ng-options="dv.v as dv.l group by dv.group disable when dv.disabled for dv in entry.value" ng-init="form.markSelected(entry)" tooltip="{{entry.tooltip}}" ng-model="form.formData[entry.name]" ng-change="form.toggleSelectValues(entry.name, form.formData[entry.name]);  form.call(entry.onAction, entry.name , form.formData[entry.name], form )" class="form-control" ng-required="entry.required" ng-disabled="entry.disabled">
-    </select>
-    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
-</div>

@@ -1,3 +1,0 @@
-<label ng-if="entry.label">{{entry.label}}</label>
-<div id="{{entry.name}}" class="staticValue" ng-bind-html="entry.value|toTrustedHtml" ng-click="form.call(entry.onAction, entry.name , form.formData[entry.name], form )"></div>
-<div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
