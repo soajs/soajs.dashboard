@@ -55,7 +55,8 @@ module.exports = {
                                         "isPublished": { "type": "boolean", "required": false },
                                         "port": { "type": "number", "required": false },
                                         "target": { "type": "number", "required": true },
-                                        "published": { "type": "number", "required": false }
+                                        "published": { "type": "number", "required": false },
+                                        "preserveClientIP": { "type": "boolean", "required": false }
                                     }
                                 }
                             },
