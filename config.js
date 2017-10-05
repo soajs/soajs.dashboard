@@ -3639,6 +3639,7 @@ module.exports = {
                         "required": false,
                         "properties": {
                         	"branch": {"type":"string", "required": false},
+                        	"commit": {"type":"string", "required": false},
 	                        "memory": {"type":"number", "required": false, "minimum": 500},
                             "image" :{
                                 "type":"object",
