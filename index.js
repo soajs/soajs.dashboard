@@ -1017,32 +1017,6 @@ service.init(function () {
 	});
 
 	/**
-	 * Get an external key
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.get("/key/get", function (req, res) {
-		initBLModel(req, res, dashboardBL.tenant.module, dbModel, function (BL) {
-			BL.extKeyGet(config, req, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
-			});
-		});
-	});
-
-	/**
-	 * Get user permissions
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.get("/permissions/get", function (req, res) {
-		initBLModel(req, res, dashboardBL.tenant.module, dbModel, function (BL) {
-			BL.permissionsGet(config, req, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
-			});
-		});
-	});
-
-	/**
 	 * Dashboard Keys
 	 */
 
