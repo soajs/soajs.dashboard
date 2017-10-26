@@ -7,7 +7,6 @@ var servicesColl = "services";
 var daemonsColl = "daemons";
 var gitColl = "git_accounts";
 var staticColl = "staticContent";
-var analyticsColl = "analytics";
 
 var methods = {
 	"getEnvironment": function (soajs, model, code, cb) {

@@ -7,7 +7,6 @@ var mongo = null;
 
 var servicesCollectionName = 'services';
 var daemonsCollectionName = 'daemons';
-var staticContentCollectionName = 'staticContent';
 var groupConfigCollectionName = 'daemon_grpconf';
 var environmentCollectionName = 'environment';
 var gridfsCollectionName = 'fs.files';
@@ -17,7 +16,6 @@ var hostsCollectionName = 'hosts';
 var oauthUracCollectionName = 'oauth_urac';
 var gitAccountsCollectionName = 'git_accounts';
 var gcCollectionName = 'gc';
-var analyticsCollection = "analytics";
 var resourcesCollection = 'resources';
 var customRegCollection = 'custom_registry';
 
@@ -83,8 +81,6 @@ function checkForMongo(soajs) {
 		mongo.createIndex(gcCollectionName, {name: 1}, errorLogger);
 		mongo.createIndex(gcCollectionName, {_id: 1, refId: 1, v: 1}, errorLogger);
 
-		//analytics
-	    mongo.createIndex(analyticsCollection, {id: 1}, errorLogger);
 
         //resources
         mongo.createIndex(customRegCollection, { name: 1, type: 1, category: 1 }, errorLogger); //compound index, includes {name: 1}, {name: 1, type: 1}
