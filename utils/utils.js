@@ -53,6 +53,8 @@ module.exports = {
         options.driver = selected[1] + '.' + selected[2];
         options.env = envRecord.code.toLowerCase();
 
+		options.registry = envRecord; //NOTE: might switch to registry instead of envRecord
+
         for (var i = 0; i < selected.length; i++) {
             envDeployer = envDeployer[selected[i]];
         }
