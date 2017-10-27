@@ -1243,7 +1243,7 @@ service.init(function () {
 	 */
 	service.get("/cloud/services/instances/logs", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
-			BL.streamLogs(config, req.soajs, res, deployer, function (error, data) {
+			BL.streamLogs(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
