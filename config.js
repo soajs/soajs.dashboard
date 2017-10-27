@@ -1557,8 +1557,7 @@ module.exports = {
                     "required": true,
                     "validation": {
                         "type": "string",
-                        "format": "alphanumeric",
-                        "maxLength": 4
+                        "format": "alphanumeric"
                     }
                 },
                 "domain": {
