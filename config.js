@@ -1048,7 +1048,14 @@ module.exports = {
                 "_apiInfo": {
                     "l": "List HA Cloud Nodes",
                     "group": "HA Cloud"
-                }
+                },
+	            "env": {
+		            "source": ['query.env'],
+		            "required": true,
+		            "validation": {
+			            "type": "string"
+		            }
+	            }
             },
 
             "/cloud/services/instances/logs": {
@@ -1083,7 +1090,14 @@ module.exports = {
                 "_apiInfo": {
                     "l": "List Available Namespaces",
                     "group": "HA Cloud"
-                }
+                },
+	            "env": {
+		            "source": ['query.env'],
+		            "required": true,
+		            "validation": {
+			            "type": "string"
+		            }
+	            }
             },
 	        
 	        "/cloud/resource": {
@@ -4191,6 +4205,13 @@ module.exports = {
                     "l": "Delete a Namespace",
                     "group": "HA Cloud"
                 },
+	            "env": {
+		            "source": ['query.env'],
+		            "required": true,
+		            "validation": {
+			            "type": "string"
+		            }
+	            },
                 "namespaceId": {
                     "source": ['query.namespaceId'],
                     "required": true,
