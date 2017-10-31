@@ -778,7 +778,22 @@ module.exports = {
                     "l": "Get Product",
                     "group": "Product"
                 },
-                "commonFields": ['id']
+	            "id": {
+		            "source": ['query.id'],
+		            "required": false,
+		            "validation": {
+			            "type": "string"
+		            }
+	            },
+	            "productCode": {
+		            "source": ["query.productCode"],
+		            "required": false,
+		            "validation": {
+			            "type": "string",
+			            "format": "alphanumeric",
+			            "maxLength": 6
+		            }
+	            }
             },
 
             "/product/packages/list": {
