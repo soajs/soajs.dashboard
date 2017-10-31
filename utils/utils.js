@@ -53,14 +53,19 @@ module.exports = {
         options.driver = selected[1] + '.' + selected[2];
         options.env = envRecord.code.toLowerCase();
 
-		options.registry = envRecord; //NOTE: might switch to registry instead of envRecord
-
         for (var i = 0; i < selected.length; i++) {
             envDeployer = envDeployer[selected[i]];
         }
 
         options.deployerConfig = envDeployer;
-        options.soajs = { registry: soajs.registry };
+        // options.soajs = { registry: soajs.registry };
+		//soajs.registry refers to dashboard env registry, using envRecord instead
+		//normalizing serviceConfig object between registry and environment record
+		if(envRecord.services && envRecord.services.config) {
+			envRecord.serviceConfig = envRecord.services.config;
+		}
+
+		options.soajs = { registry: envRecord };
         options.model = BL.model;
 
         //switch strategy name to follow drivers convention
