@@ -1085,20 +1085,62 @@ module.exports = {
                     "group": "HA Cloud"
                 }
             },
-
-			"/cloud/heapster": {
-				"_apiInfo": {
-                    "l": "Check if Heapster is Deployed",
-                    "group": "HA Cloud"
-                },
-				"env": {
-                    "source": ['query.env'],
-                    "required": true,
-                    "validation": {
-                        "type": "string"
-                    }
-                }
-			},
+	        
+	        "/cloud/resource": {
+		        "_apiInfo": {
+			        "l": "Check if resource is Deployed",
+			        "group": "HA Cloud"
+		        },
+		        "env": {
+			        "source": ['query.env'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        },
+		        "resource": {
+			        "source": ['query.resource'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        },
+		        "namespace": {
+			        "source": ['query.namespace'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        }
+	        },
+	
+	        "/cloud/metrics/services": {
+		        "_apiInfo": {
+			        "l": "List Services Metrics",
+			        "group": "HA Cloud"
+		        },
+		        "env": {
+			        "source": ['query.env'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        }
+	        },
+	
+	        "/cloud/metrics/nodes": {
+		        "_apiInfo": {
+			        "l": "List Nodes Metrics",
+			        "group": "HA Cloud"
+		        },
+		        "env": {
+			        "source": ['query.env'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        }
+	        },
 
             "/catalog/recipes/list": {
                 "_apiInfo": {
@@ -2121,7 +2163,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": [ 'heapster' ]
+						"enum": [ 'heapster','metrics-server' ]
 					}
 				}
 			},

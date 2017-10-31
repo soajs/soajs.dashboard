@@ -191,4 +191,52 @@ describe("testing services.js", function () {
 		});
 
 	});
+	
+	describe("testing checkResource", function () {
+		
+		before("init", function (done) {
+			deployer.listKubeServices = function (options, cb) {
+				var kubeServices = [
+					{
+						apiVersion: 'v1',
+						kind: 'Service',
+						metadata: {
+							name: 'heapster',
+							namespace: 'kube-system'
+						}
+					}
+				];
+				
+				return cb(null, kubeServices);
+			};
+			
+			done();
+		});
+		
+		it("success - will find heapster service", function (done) {
+			req.soajs.inputmaskData.env = 'dev';
+			req.soajs.inputmaskData.resource = 'heapster';
+			req.soajs.inputmaskData.namespace = 'kube-system';
+			services.checkResource(config, req.soajs, deployer, function (error, result) {
+				assert.ok(result);
+				assert.equal(result.deployed, true);
+				done();
+			});
+		});
+		
+		it("success - will not find heapster service", function (done) {
+			deployer.listKubeServices = function (options, cb) {
+				return cb(null, []);
+			};
+			req.soajs.inputmaskData.env = 'dev';
+			req.soajs.inputmaskData.resource = 'heapster';
+			req.soajs.inputmaskData.namespace = 'kube-system';
+			services.checkResource(config, req.soajs, deployer, function (error, result) {
+				assert.ok(result);
+				assert.equal(result.deployed, false);
+				done();
+			});
+		});
+		
+	});
 });
