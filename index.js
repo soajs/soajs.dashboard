@@ -27,9 +27,6 @@ var dashboardBL = {
 	swagger: {
 		module: require("./lib/swagger/index.js")
 	},
-	analytics: {
-		module: require("./lib/analytics/index.js")
-	},
 	cb:{
 		module: require("./lib/contentbuilder/index")
 	},
@@ -1023,32 +1020,6 @@ service.init(function () {
 	});
 
 	/**
-	 * Get an external key
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.get("/key/get", function (req, res) {
-		initBLModel(req, res, dashboardBL.tenant.module, dbModel, function (BL) {
-			BL.extKeyGet(config, req, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
-			});
-		});
-	});
-
-	/**
-	 * Get user permissions
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.get("/permissions/get", function (req, res) {
-		initBLModel(req, res, dashboardBL.tenant.module, dbModel, function (BL) {
-			BL.permissionsGet(config, req, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
-			});
-		});
-	});
-
-	/**
 	 * Dashboard Keys
 	 */
 
@@ -1275,7 +1246,7 @@ service.init(function () {
 	 */
 	service.get("/cloud/services/instances/logs", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
-			BL.streamLogs(config, req.soajs, res, deployer, function (error, data) {
+			BL.streamLogs(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -2418,48 +2389,6 @@ service.init(function () {
 	service.post("/swagger/generate", function (req, res) {
 		initBLModel(req, res, dashboardBL.swagger.module, dbModel, function (BL) {
 			BL.generate(config, req, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
-			});
-		});
-	});
-
-	/**
-	 * Analytics:
-	 * Api that get settings of current Analytics in all environments
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.get("/analytics/getSettings", function (req, res) {
-		initBLModel(req, res, dashboardBL.analytics.module, dbModel, function (BL) {
-			BL.getSettings(config, req, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
-			});
-		});
-	});
-
-	/**
-	 * Analytics:
-	 * Api that activate analytics in an environment
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.get("/analytics/activateAnalytics", function (req, res) {
-		initBLModel(req, res, dashboardBL.analytics.module, dbModel, function (BL) {
-			BL.activateAnalytics(config, req, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
-			});
-		});
-	});
-
-	/**
-	 * Analytics:
-	 * Api that deactivate analytics in an environment
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.get("/analytics/deactivateAnalytics", function (req, res) {
-		initBLModel(req, res, dashboardBL.analytics.module, dbModel, function (BL) {
-			BL.deactivateAnalytics(config, req, res, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});

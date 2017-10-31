@@ -565,7 +565,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 			it("success - will manually add environment", function (done) {
 				delete validEnvRecord._id;
 				validEnvRecord.code = 'STG';
-				validEnvRecord.analytics = false;
 				mongo.insert('environment', validEnvRecord, function (error) {
 					assert.ifError(error);
 					done();

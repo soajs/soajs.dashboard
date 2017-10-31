@@ -223,7 +223,6 @@ var errors = {
  	"813": "Unable to delete service, make sure the deployer is configured properly",
  	"814": "Unable to remove container records. However, the service was deleted successfully",
  	"815": "Unable to remove host records. However, the service was deleted successfully",
- 	"816": "Unable to get analytics configuration for this environment",
  	"817": "Unable to list nodes",
  	"818": "This operation is only permitted in the dashboard environment",
  	"819": "Unable to update environments' deployer. However, the node was added successfully",
@@ -264,8 +263,6 @@ var errors = {
 
 	"955": "No CI configuration found",
 	"956": "Authentication failed. The deploy token provided is not valid.",
-
-	"960": "Elasticsearch analytics cluster not found, resetting configuration. Please try deploying Analytics again.",
 
 	"967": "Continuous Integration recipe name already exists for this provider.",
 	"968": "This Account already has a Continuous Integration configured with the selected provider.",

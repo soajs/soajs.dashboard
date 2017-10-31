@@ -58,7 +58,14 @@ module.exports = {
         }
 
         options.deployerConfig = envDeployer;
-        options.soajs = { registry: soajs.registry };
+        // options.soajs = { registry: soajs.registry };
+		//soajs.registry refers to dashboard env registry, using envRecord instead
+		//normalizing serviceConfig object between registry and environment record
+		if(envRecord.services && envRecord.services.config) {
+			envRecord.serviceConfig = envRecord.services.config;
+		}
+
+		options.soajs = { registry: envRecord };
         options.model = BL.model;
 
         //switch strategy name to follow drivers convention

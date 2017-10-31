@@ -66,8 +66,8 @@ module.exports = {
         "url": "https://hub.docker.com/v2/repositories/%organization%/%imagename%/tags/"
     },
     "HA":{
-        "blacklist": ['soajs_mongo_password', 'soajs_git_token', 'soajs_config_repo_token', 'soajs_analytics_es_password'],
-        "dynamicCatalogVariables": ['$SOAJS_NX_CONTROLLER_IP_N', '$SOAJS_MONGO_IP_N', '$SOAJS_MONGO_PORT_N', '$SOAJS_ANALYTICS_ES_IP_N', '$SOAJS_ANALYTICS_ES_PORT_N'],
+        "blacklist": ['soajs_mongo_password', 'soajs_git_token', 'soajs_config_repo_token'],
+        "dynamicCatalogVariables": ['$SOAJS_NX_CONTROLLER_IP_N', '$SOAJS_MONGO_IP_N', '$SOAJS_MONGO_PORT_N'],
         "clustersList": ['mysql', 'sql', "mongo", 'mongodb', "es", 'elasticsearch']
     },
 
@@ -1562,48 +1562,6 @@ module.exports = {
                         "type": "string"
                     }
                 }
-            },
-
-            "/analytics/getSettings": {
-                _apiInfo: {
-                    "l": "Get Analytics Settings",
-                    "group": "elk"
-                },
-                "env": {
-                    "source": ['query.env'],
-                    "required": true,
-                    "validation": {
-                        "type": "string", "required": true
-                    }
-                }
-            },
-
-            "/analytics/activateAnalytics": {
-                _apiInfo: {
-                    "l": "Activate Analytics",
-                    "group": "elk"
-                },
-                "env": {
-                    "source": ['query.env'],
-                    "required": true,
-                    "validation": {
-                        "type": "string", "required": true
-                    }
-                }
-            },
-
-            "/analytics/deactivateAnalytics": {
-                _apiInfo: {
-                    "l": "Deactivate Analytics",
-                    "group": "elk"
-                },
-                "env": {
-                    "source": ['query.env'],
-                    "required": true,
-                    "validation": {
-                        "type": "string", "required": true
-                    }
-                }
             }
         },
 
@@ -1641,8 +1599,7 @@ module.exports = {
                     "required": true,
                     "validation": {
                         "type": "string",
-                        "format": "alphanumeric",
-                        "maxLength": 4
+                        "format": "alphanumeric"
                     }
                 },
                 "domain": {
