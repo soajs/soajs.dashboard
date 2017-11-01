@@ -69,6 +69,9 @@ var dashboardBL = {
 		},
 		autoscale: {
 			module: require('./lib/cloud/autoscale/index.js')
+		},
+		metrics: {
+			module: require('./lib/cloud/metrics/index.js')
 		}
 	}
 };
@@ -1172,13 +1175,13 @@ service.init(function () {
 	});
 
 	/**
-	 * Check if heapster is deployed
+	 * Check if resource is deployed
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.get("/cloud/heapster", function (req, res) {
-		initBLModel(req, res, dashboardBL.cloud.autoscale.module, dbModel, function (BL) {
-			BL.checkHeapster(config, req.soajs, deployer, function (error, data) {
+	service.get("/cloud/resource", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (BL) {
+			BL.checkResource(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1243,7 +1246,7 @@ service.init(function () {
 	 */
 	service.get("/cloud/services/instances/logs", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
-			BL.streamLogs(config, req.soajs, res, deployer, function (error, data) {
+			BL.streamLogs(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1296,6 +1299,32 @@ service.init(function () {
 	service.delete("/cloud/namespaces/delete", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.namespace.module, dbModel, function (BL) {
 			BL.delete(config, req.soajs, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+	
+	/**
+	 * Get Services Metrics
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/cloud/metrics/services", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.metrics.module, dbModel, function (BL) {
+			BL.getServicesMetrics(config, req.soajs, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+	
+	/**
+	 * Get Nodes Metrics ( kubernetes only)
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/cloud/metrics/nodes", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.metrics.module, dbModel, function (BL) {
+			BL.getNodesMetrics(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});

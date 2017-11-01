@@ -1063,7 +1063,14 @@ module.exports = {
                 "_apiInfo": {
                     "l": "List HA Cloud Nodes",
                     "group": "HA Cloud"
-                }
+                },
+	            "env": {
+		            "source": ['query.env'],
+		            "required": true,
+		            "validation": {
+			            "type": "string"
+		            }
+	            }
             },
 
             "/cloud/services/instances/logs": {
@@ -1098,22 +1105,71 @@ module.exports = {
                 "_apiInfo": {
                     "l": "List Available Namespaces",
                     "group": "HA Cloud"
-                }
-            },
-
-			"/cloud/heapster": {
-				"_apiInfo": {
-                    "l": "Check if Heapster is Deployed",
-                    "group": "HA Cloud"
                 },
-				"env": {
-                    "source": ['query.env'],
-                    "required": true,
-                    "validation": {
-                        "type": "string"
-                    }
-                }
-			},
+	            "env": {
+		            "source": ['query.env'],
+		            "required": true,
+		            "validation": {
+			            "type": "string"
+		            }
+	            }
+            },
+	        
+	        "/cloud/resource": {
+		        "_apiInfo": {
+			        "l": "Check if resource is Deployed",
+			        "group": "HA Cloud"
+		        },
+		        "env": {
+			        "source": ['query.env'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        },
+		        "resource": {
+			        "source": ['query.resource'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        },
+		        "namespace": {
+			        "source": ['query.namespace'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        }
+	        },
+	
+	        "/cloud/metrics/services": {
+		        "_apiInfo": {
+			        "l": "List Services Metrics",
+			        "group": "HA Cloud"
+		        },
+		        "env": {
+			        "source": ['query.env'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        }
+	        },
+	
+	        "/cloud/metrics/nodes": {
+		        "_apiInfo": {
+			        "l": "List Nodes Metrics",
+			        "group": "HA Cloud"
+		        },
+		        "env": {
+			        "source": ['query.env'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        }
+	        },
 
             "/catalog/recipes/list": {
                 "_apiInfo": {
@@ -1572,8 +1628,7 @@ module.exports = {
                     "required": true,
                     "validation": {
                         "type": "string",
-                        "format": "alphanumeric",
-                        "maxLength": 4
+                        "format": "alphanumeric"
                     }
                 },
                 "domain": {
@@ -2094,7 +2149,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": [ 'heapster' ]
+						"enum": [ 'heapster','metrics-server' ]
 					}
 				}
 			},
@@ -4165,6 +4220,13 @@ module.exports = {
                     "l": "Delete a Namespace",
                     "group": "HA Cloud"
                 },
+	            "env": {
+		            "source": ['query.env'],
+		            "required": true,
+		            "validation": {
+			            "type": "string"
+		            }
+	            },
                 "namespaceId": {
                     "source": ['query.namespaceId'],
                     "required": true,

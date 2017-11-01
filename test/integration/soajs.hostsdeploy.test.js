@@ -1001,14 +1001,16 @@ describe("testing hosts deployment", function () {
 			});
 		});
 
-		it("check heapster", function(done) {
+		it("check resource", function(done) {
 			var params = {
 				qs: {
-					env: 'dashboard'
+					env: 'dashboard',
+					resource: 'heapster',
+					namescpace: 'kube-system'
 				}
 			};
 
-			executeMyRequest(params, "cloud/heapster", "get", function (body) {
+			executeMyRequest(params, "cloud/resource", "get", function (body) {
 				done();
 			});
 		});
