@@ -6,6 +6,7 @@ var catalogSchema = require("./schemas/catalog");
 var resourceSchema = require("./schemas/resource");
 var customRegEntrySchema = require("./schemas/customRegistry");
 var resourceDeployConfigSchema = require("./schemas/resourceDeployConfig");
+var environmentSchema = require("./schemas/environmentSchema");
 var cdOptions = require("./schemas/cdOptions");
 
 module.exports = {
@@ -1622,45 +1623,13 @@ module.exports = {
                     "l": "Add Environment",
                     "group": "Environment"
                 },
-                "commonFields": ['description', 'services'],
-                "code": {
-                    "source": ['body.code'],
-                    "required": true,
-                    "validation": {
-                        "type": "string",
-                        "format": "alphanumeric"
-                    }
-                },
-                "domain": {
-                    "source": ['body.domain'],
-                    "required": true,
-                    "validation": {
-                        "type": "string",
-                        "format": "hostname"
-                    }
-                },
-                "apiPrefix": {
-                    "source": ['body.apiPrefix'],
-                    "required": false,
-                    "default": "api",
-                    "validation": {
-                        "type": "string"
-                    }
-                },
-                "sitePrefix": {
-                    "source": ['body.sitePrefix'],
-                    "required": false,
-                    "default": "site",
-                    "validation": {
-                        "type": "string"
-                    }
-                },
-                "sensitive": {
-                    "source": ['body.sensitive'],
-                    "required": false,
-                    "validation": {
-                        "type": "boolean"
-                    }
+                "data":{
+                	"source": ['body.data'],
+	                "required": true,
+	                "validation":{
+                		"type":"object",
+		                "properties": environmentSchema
+	                }
                 }
             },
 

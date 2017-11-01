@@ -9,7 +9,7 @@ var errors = {
 	"405": "Invalid environment id provided",
 	"406": "Unable to update tenant key security information",
 	"407": "Invalid or no Platform Driver configuration provided!",
-
+	"408": "You have requested to use the SOAJS Framework in this environment. Make sure that cookie secret, session name and session secret are provided.",
 	"409": "Invalid product id provided",
 	"410": "Unable to add the product record",
 	"411": "Unable to update the product record",
