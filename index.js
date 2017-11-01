@@ -144,10 +144,8 @@ service.init(function () {
 	 */
 	service.delete("/environment/delete", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
-				BL.delete(config, req, registry, deployer, function (error, data) {
-					return res.json(req.soajs.buildResponse(error, data));
-				});
+			BL.delete(config, req, service.registry, deployer, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
 	});
@@ -1527,10 +1525,8 @@ service.init(function () {
 	 */
 	service.post("/cd/deploy", function (req, res) {
 		initBLModel(req, res, dashboardBL.cd.module, dbModel, function (BL) {
-			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
-				BL.cdDeploy(config, req, registry, deployer, dashboardBL.cd.helper, function (error, data) {
-					return res.jsonp(req.soajs.buildResponse(error, data));
-				});
+			BL.cdDeploy(config, req, service.registry, deployer, dashboardBL.cd.helper, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
 	});
@@ -1854,10 +1850,8 @@ service.init(function () {
 	service.put('/gitAccounts/repo/deactivate', function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function(cloudBL){
 			initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
-				getEnvRegistry(req.soajs, res, service.registry, function(registry) {
-					BL.deactivateRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, cloudBL, registry, deployer, function (error, data) {
-						return res.json(req.soajs.buildResponse(error, data));
-					});
+				BL.deactivateRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, cloudBL, service.registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
 				});
 			});
 		});
@@ -1913,10 +1907,8 @@ service.init(function () {
 	 */
 	service.get("/services/env/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.hosts.module, dbModel, function (BL) {
-			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
-				BL.listHostEnv(config, req.soajs, registry, deployer, dashboardBL.hosts.helper, function (error, data) {
-					return res.json(req.soajs.buildResponse(error, data));
-				});
+			BL.listHostEnv(config, req.soajs, service.registry, deployer, dashboardBL.hosts.helper, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
 	});
@@ -1984,10 +1976,8 @@ service.init(function () {
 	service.delete("/daemons/groupConfig/delete", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function(cloudBL){
 			initBLModel(req, res, dashboardBL.daemons.module, dbModel, function (BL) {
-				getEnvRegistry(req.soajs, res, service.registry, function(registry) {
-					BL.deleteGroupConfig(config, req, res, cloudBL, registry, deployer, function (error, data) {
-						return res.json(req.soajs.buildResponse(error, data));
-					});
+				BL.deleteGroupConfig(config, req, res, cloudBL, service.registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
 				});
 			});
 		});
