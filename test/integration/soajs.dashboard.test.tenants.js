@@ -292,11 +292,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 				it("success - will list product", function (done) {
 					executeMyRequest({}, 'product/list', 'get', function (body) {
 						assert.ok(body.data);
-						assert.equal(body.data.length, 2);
+						assert.equal(body.data.length, 1);
 
-						productId = body.data[1]._id.toString();
-						delete body.data[1]._id;
-						assert.deepEqual(body.data[1], {
+						productId = body.data[0]._id.toString();
+						delete body.data[0]._id;
+						assert.deepEqual(body.data[0], {
 							"code": "TPROD",
 							"name": "test product updated",
 							"description": "this is a dummy updated description",

@@ -41,6 +41,12 @@ var mongoStub = {
 	},
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
+	},
+	initConnection: function (soajs) {
+		return true;
+	},
+	closeConnection: function (soajs) {
+		return true;
 	}
 };
 
