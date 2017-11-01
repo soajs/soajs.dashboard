@@ -35,7 +35,7 @@ var lib = {
 			extraParam: soajs.registry.coreDB.provision.extraParam
 		};
 		if (process.env.SOAJS_SAAS) {
-			if (soajs.servicesConfig.SOAJS_COMPANY) {
+			if (soajs.servicesConfig && soajs.servicesConfig.SOAJS_COMPANY) {
 				if (soajs.servicesConfig.SOAJS_COMPANY === process.env.SOAJS_SAAS) {
 					provision.prefix += process.env.SOAJS_SAAS + '_';
 				}

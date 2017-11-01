@@ -145,7 +145,7 @@ describe("testing maintenance.js", function () {
 			};
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.serviceId = '123';
-			maintenance.streamLogs(config, req.soajs, {}, deployer, function (error, body) {
+			maintenance.streamLogs(config, req.soajs, deployer, function (error, body) {
 				assert.ok(error);
 				done();
 			});

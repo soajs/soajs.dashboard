@@ -15,18 +15,18 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-				
 			},
 			error: function (data) {
-				
 			},
 			info: function (data) {
-				
 			}
 		},
-		inputmaskData: {}
+		inputmaskData: {
+			env: 'dev'
+		}
 	}
 };
+
 var mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
