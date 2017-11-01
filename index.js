@@ -109,6 +109,16 @@ function initBLModel (req, res, BLModule, modelName, cb) {
 	});
 }
 
+function getEnvRegistry(soajs, res, registry, cb) {
+	registry.loadByEnv({ envCode: soajs.inputmaskData.env.toLowerCase() }, function(error, registry) {
+		if(error) {
+			return res.json(soajs.buildResponse({ code: 446, msg: config.errors[446] }));
+		}
+
+		return cb(registry);
+	});
+}
+
 service.init(function () {
 	/**
 	 * Environments features
@@ -134,8 +144,10 @@ service.init(function () {
 	 */
 	service.delete("/environment/delete", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			BL.delete(config, req, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.delete(config, req, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -524,8 +536,10 @@ service.init(function () {
 	 */
 	service.put("/environment/platforms/deployer/update", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			BL.updateDeployerConfig(config, req, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.updateDeployerConfig(config, req, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1077,8 +1091,10 @@ service.init(function () {
 	 */
 	service.get("/cloud/nodes/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.nodes.module, dbModel, function (BL) {
-			BL.listNodes(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.listNodes(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1090,8 +1106,10 @@ service.init(function () {
 	 */
 	service.post("/cloud/nodes/add", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.nodes.module, dbModel, function (BL) {
-			BL.addNode(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.addNode(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1103,8 +1121,10 @@ service.init(function () {
 	 */
 	service.delete("/cloud/nodes/remove", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.nodes.module, dbModel, function (BL) {
-			BL.removeNode(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.removeNode(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1116,8 +1136,10 @@ service.init(function () {
 	 */
 	service.put("/cloud/nodes/update", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.nodes.module, dbModel, function (BL) {
-			BL.updateNode(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.updateNode(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1142,8 +1164,10 @@ service.init(function () {
 	 */
 	service.get("/cloud/services/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (BL) {
-			BL.listServices(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.listServices(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1155,8 +1179,10 @@ service.init(function () {
 	 */
 	service.post("/cloud/services/soajs/deploy", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.deploy.module, dbModel, function (BL) {
-			BL.deployService(config, req.soajs, service.registry, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.deployService(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1168,8 +1194,10 @@ service.init(function () {
 	 */
 	service.post("/cloud/plugins/deploy", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.deploy.module, dbModel, function (BL) {
-			BL.deployPlugin(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.deployPlugin(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1181,8 +1209,10 @@ service.init(function () {
 	 */
 	service.get("/cloud/resource", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (BL) {
-			BL.checkResource(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.checkResource(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1194,8 +1224,10 @@ service.init(function () {
 	 */
 	service.put("/cloud/services/redeploy", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.deploy.module, dbModel, function (BL) {
-			BL.redeployService(config, req.soajs, service.registry, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.redeployService(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1207,8 +1239,10 @@ service.init(function () {
 	 */
 	service.put("/cloud/services/scale", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (BL) {
-			BL.scaleService(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.scaleService(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1220,8 +1254,10 @@ service.init(function () {
 	 */
 	service.delete("/cloud/services/delete", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (BL) {
-			BL.deleteService(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.deleteService(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1233,8 +1269,10 @@ service.init(function () {
 	 */
 	service.post("/cloud/services/maintenance", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
-			BL.maintenance(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.maintenance(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1246,8 +1284,10 @@ service.init(function () {
 	 */
 	service.get("/cloud/services/instances/logs", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
-			BL.streamLogs(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.streamLogs(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1259,8 +1299,10 @@ service.init(function () {
 	 */
 	service.put("/cloud/services/autoscale", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.autoscale.module, dbModel, function(BL) {
-			BL.set(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.set(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1285,8 +1327,10 @@ service.init(function () {
 	 */
 	service.get("/cloud/namespaces/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.namespace.module, dbModel, function (BL) {
-			BL.list(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.list(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1298,12 +1342,14 @@ service.init(function () {
 	 */
 	service.delete("/cloud/namespaces/delete", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.namespace.module, dbModel, function (BL) {
-			BL.delete(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.delete(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
-	
+
 	/**
 	 * Get Services Metrics
 	 * @param {String} API route
@@ -1311,12 +1357,14 @@ service.init(function () {
 	 */
 	service.get("/cloud/metrics/services", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.metrics.module, dbModel, function (BL) {
-			BL.getServicesMetrics(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.getServicesMetrics(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
-	
+
 	/**
 	 * Get Nodes Metrics ( kubernetes only)
 	 * @param {String} API route
@@ -1324,8 +1372,10 @@ service.init(function () {
 	 */
 	service.get("/cloud/metrics/nodes", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.metrics.module, dbModel, function (BL) {
-			BL.getNodesMetrics(config, req.soajs, deployer, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.getNodesMetrics(config, req.soajs, registry, deployer, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1436,8 +1486,10 @@ service.init(function () {
 	 */
 	service.get("/cd/updates", function (req, res) {
 		initBLModel(req, res, dashboardBL.cd.module, dbModel, function (BL) {
-			BL.getUpdates(config, req, deployer, dashboardBL.cd.helper, dashboardBL.cloud.service.module, function (error, data) {
-				return res.jsonp(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.getUpdates(config, req, registry, deployer, dashboardBL.cd.helper, dashboardBL.cloud.service.module, function (error, data) {
+					return res.jsonp(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1475,8 +1527,10 @@ service.init(function () {
 	 */
 	service.post("/cd/deploy", function (req, res) {
 		initBLModel(req, res, dashboardBL.cd.module, dbModel, function (BL) {
-			BL.cdDeploy(config, req, service.registry, deployer, dashboardBL.cd.helper, function (error, data) {
-				return res.jsonp(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.cdDeploy(config, req, registry, deployer, dashboardBL.cd.helper, function (error, data) {
+					return res.jsonp(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1488,8 +1542,10 @@ service.init(function () {
 	 */
 	service.put("/cd/action", function (req, res) {
 		initBLModel(req, res, dashboardBL.cd.module, dbModel, function (BL) {
-			BL.cdAction(config, service.registry, req, deployer, dashboardBL.cd.helper, function (error, data) {
-				return res.jsonp(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.cdAction(config, req, registry, deployer, dashboardBL.cd.helper, function (error, data) {
+					return res.jsonp(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1756,8 +1812,10 @@ service.init(function () {
 	 */
 	service.get("/gitAccounts/getYaml", function (req, res) {
 		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
-			BL.getFile(config, req, dashboardBL.git.driver, deployer, dashboardBL.git.helper, dashboardBL.git.model, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.getFile(config, req, dashboardBL.git.driver, registry, deployer, dashboardBL.git.helper, dashboardBL.git.model, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1796,8 +1854,10 @@ service.init(function () {
 	service.put('/gitAccounts/repo/deactivate', function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function(cloudBL){
 			initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
-				BL.deactivateRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, cloudBL, deployer, function (error, data) {
-					return res.json(req.soajs.buildResponse(error, data));
+				getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+					BL.deactivateRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, cloudBL, registry, deployer, function (error, data) {
+						return res.json(req.soajs.buildResponse(error, data));
+					});
 				});
 			});
 		});
@@ -1853,8 +1913,10 @@ service.init(function () {
 	 */
 	service.get("/services/env/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.hosts.module, dbModel, function (BL) {
-			BL.listHostEnv(config, req.soajs, deployer, dashboardBL.hosts.helper, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+			getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+				BL.listHostEnv(config, req.soajs, registry, deployer, dashboardBL.hosts.helper, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1922,8 +1984,10 @@ service.init(function () {
 	service.delete("/daemons/groupConfig/delete", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function(cloudBL){
 			initBLModel(req, res, dashboardBL.daemons.module, dbModel, function (BL) {
-				BL.deleteGroupConfig(config, req, res, cloudBL, deployer, function (error, data) {
-					return res.json(req.soajs.buildResponse(error, data));
+				getEnvRegistry(req.soajs, res, service.registry, function(registry) {
+					BL.deleteGroupConfig(config, req, res, cloudBL, registry, deployer, function (error, data) {
+						return res.json(req.soajs.buildResponse(error, data));
+					});
 				});
 			});
 		});
