@@ -4,7 +4,7 @@
 'use strict';
 var soajsCore = require("soajs");
 var Mongo = soajsCore.mongo;
-var mongo = null;
+var mongoObj = null;
 
 var soajsUtils = soajsCore.utils;
 
@@ -48,10 +48,15 @@ var lib = {
 	 * @param {SOAJS Object} soajs
 	 */
 	"closeConnection": function (soajs) {
-		soajs.mongoDb.closeDb();
+		if (soajs.mongoDb) {
+			soajs.mongoDb.closeDb();
+		}
 	},
 	
 	"checkForMongo": function (soajs) {
+		if (!mongoObj) {
+			mongoObj = new Mongo(soajs.registry.coreDB.provision);
+		}
 		if (!soajs.mongoDb) {
 			lib.initConnection(soajs);
 		}

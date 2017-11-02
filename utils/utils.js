@@ -83,7 +83,7 @@ module.exports = {
      * @param {Callback Function} cb
      */
     getEnvironment: function (soajs, model, code, cb) {
-        var opts = {
+	    var opts = {
             collection: 'environment',
             conditions: { code: code.toUpperCase() }
         };

@@ -121,7 +121,9 @@ service.init(function () {
 	 */
 	service.post("/environment/add", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.add(config, service, soajs.provision, dbModel, req, res, function (error, data) {
+				BL.model.closeConnection(req.soajs);
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -134,7 +136,9 @@ service.init(function () {
 	 */
 	service.delete("/environment/delete", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.delete(config, req, res, function (error, data) {
+				BL.model.closeConnection(req.soajs);
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -147,7 +151,9 @@ service.init(function () {
 	 */
 	service.put("/environment/update", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.update(config, req, res, function (error, data) {
+				BL.model.closeConnection(req.soajs);
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -160,7 +166,9 @@ service.init(function () {
 	 */
 	service.get("/environment/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.list(config, req, res, function (error, data) {
+				BL.model.closeConnection(req.soajs);
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -173,8 +181,10 @@ service.init(function () {
      */
     service.get("/environment", function (req, res) {
         initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-            BL.get(config, req, res, function (error, data) {
-                return res.json(req.soajs.buildResponse(error, data));
+	        BL.model.initConnection(req.soajs);
+	        BL.get(config, req, res, function (error, data) {
+		        BL.model.closeConnection(req.soajs);
+		        return res.json(req.soajs.buildResponse(error, data));
             });
         });
     });
@@ -186,7 +196,9 @@ service.init(function () {
 	 */
 	service.put("/environment/key/update", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.keyUpdate(config, soajs.provision, req, res, function (error, data) {
+				BL.model.closeConnection(req.soajs);
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -199,7 +211,9 @@ service.init(function () {
 	 */
 	service.get("/environment/dbs/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.listDbs(config, req, res, function (error, data) {
+				BL.model.closeConnection(req.soajs);
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -212,7 +226,9 @@ service.init(function () {
 	 */
 	service.delete("/environment/dbs/delete", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.deleteDb(config, req, res, function (error, data) {
+				BL.model.closeConnection(req.soajs);
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -225,7 +241,9 @@ service.init(function () {
 	 */
 	service.post("/environment/dbs/add", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.addDb(config, req, res, function (error, data) {
+				BL.model.closeConnection(req.soajs);
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -238,7 +256,9 @@ service.init(function () {
 	 */
 	service.put("/environment/dbs/update", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.updateDb(config, req, res, function (error, data) {
+				BL.model.closeConnection(req.soajs);
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -251,7 +271,9 @@ service.init(function () {
 	 */
 	service.put("/environment/dbs/updatePrefix", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.updateDbsPrefix(config, req, res, function (error, data) {
+				BL.model.closeConnection(req.soajs);
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -264,7 +286,9 @@ service.init(function () {
 	 */
 	service.get("/resources/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.listResources(config, req, res, function (error, data) {
+				BL.model.closeConnection(req.soajs);
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -278,6 +302,7 @@ service.init(function () {
 	service.get("/resources/get", function (req, res) {
 		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
 			BL.getResource(config, req, res, function (error, data) {
+				// BL.model.closeConnection(req.soajs);
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -446,6 +471,7 @@ service.init(function () {
 	 */
 	service.get("/environment/platforms/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.listPlatforms(config, req, res, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
@@ -459,6 +485,7 @@ service.init(function () {
 	 */
 	service.post("/environment/platforms/cert/upload", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.uploadCerts(config, req, res, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
@@ -472,6 +499,7 @@ service.init(function () {
 	 */
 	service.delete("/environment/platforms/cert/delete", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.removeCert(config, req, res, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
@@ -485,6 +513,7 @@ service.init(function () {
 	 */
 	service.put("/environment/platforms/cert/choose", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.chooseExistingCerts(config, req, res, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
@@ -498,7 +527,9 @@ service.init(function () {
 	 */
 	service.put("/environment/platforms/driver/changeSelected", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.changeSelectedDriver(config, req, res, function (error, data) {
+				BL.model.closeConnection(req.soajs);
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -511,7 +542,9 @@ service.init(function () {
 	 */
 	service.put("/environment/platforms/deployer/type/change", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.changeDeployerType(config, req, res, function (error, data) {
+				BL.model.closeConnection(req.soajs);
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -524,7 +557,9 @@ service.init(function () {
 	 */
 	service.put("/environment/platforms/deployer/update", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			BL.model.initConnection(req.soajs);
 			BL.updateDeployerConfig(config, req, res, function (error, data) {
+				BL.model.closeConnection(req.soajs);
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
