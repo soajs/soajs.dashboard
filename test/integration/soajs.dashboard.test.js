@@ -250,80 +250,83 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 
-        describe("get environment tests", function () {
-            it("success - get environment/code", function (done) {
-                var params = {
-                    qs: {
-                        "code": "dev"
-                    }
-                };
-                executeMyRequest(params, 'environment/', 'get', function (body) {
-                    assert.ok(body.data);
-                    assert.deepEqual(body.data.code, "DEV");
-                    done();
-                });
-            });
+		describe("get environment tests", function () {
+			it("success - get environment/code", function (done) {
+				var params = {
+					qs: {
+						"code": "dev"
+					}
+				};
+				executeMyRequest(params, 'environment/', 'get', function (body) {
+					assert.ok(body.data);
+					assert.deepEqual(body.data.code, "DEV");
+					done();
+				});
+			});
 
-            it('success - get environment/id', function (done) {
+			it('success - get environment/id', function (done) {
 				mongo.findOne('environment', { code: 'DEV' }, function (error, envRecord) {
 					assert.ifError(error);
 					assert.ok(envRecord);
 
 					var params = {
-	                    qs: { 'id': envRecord._id.toString() }
-	                };
-	                executeMyRequest(params, 'environment/', 'get', function (body) {
-	                	assert.ok(body.data);
-	                    assert.deepEqual(body.data.code, "DEV");
-	                    done();
-	                });
+						qs: { 'id': envRecord._id.toString() }
+					};
+					executeMyRequest(params, 'environment/', 'get', function (body) {
+						assert.ok(body.data);
+						assert.deepEqual(body.data.code, "DEV");
+						done();
+					});
 				});
-            });
+			});
 
-            it('fail - invalid environment id provided', function (done) {
-                var params = {
-                    qs: {'id': 'qwrr'}
-                };
-                executeMyRequest(params, 'environment/', 'get', function (body) {
-                	assert.ok(body.errors);
-                    assert.deepEqual(body.errors.details[0], {"code": 405, "message": errorCodes[405]});
-                    done();
-                });
-            });
+			it('fail - invalid environment id provided', function (done) {
+				var params = {
+					qs: { 'id': 'qwrr' }
+				};
+				executeMyRequest(params, 'environment/', 'get', function (body) {
+					assert.ok(body.errors);
+					assert.deepEqual(body.errors.details[0], { "code": 405, "message": errorCodes[405] });
+					done();
+				});
+			});
 
-            it('fail - Unable to get the environment records', function (done) {
-                var params = {
-                    qs: {'code': 'freeww'}
-                };
-                executeMyRequest(params, 'environment/', 'get', function (body) {
-                    assert.ok(body.errors);
-                    assert.deepEqual(body.errors.details[0], {"code": 402, "message": errorCodes[402]});
-                    done();
-                });
-            });
+			it('fail - Unable to get the environment records', function (done) {
+				var params = {
+					qs: { 'code': 'freeww' }
+				};
+				executeMyRequest(params, 'environment/', 'get', function (body) {
+					assert.ok(body.errors);
+					assert.deepEqual(body.errors.details[0], { "code": 402, "message": errorCodes[402] });
+					done();
+				});
+			});
 
-            it('fail - no id or code provided', function (done) {
-                var params = {
-                    qs: {}
-                };
-                executeMyRequest(params, 'environment/', 'get', function (body) {
-                    assert.ok(body.errors);
-                    assert.deepEqual(body.errors.details[0], {
-                        "code": 405,
-                        "message": errorCodes[405]
-                    });
-                    done();
-                });
-            });
-        });
+			it('fail - no id or code provided', function (done) {
+				var params = {
+					qs: {}
+				};
+				executeMyRequest(params, 'environment/', 'get', function (body) {
+					assert.ok(body.errors);
+					assert.deepEqual(body.errors.details[0], {
+						"code": 405,
+						"message": errorCodes[405]
+					});
+					done();
+				});
+			});
+		});
 
 		describe("add environment tests", function () {
 			it("success - will add environment", function (done) {
 				var data2 = util.cloneObj(validEnvRecord);
 				data2.code = 'STG';
 				data2.services.config.session.proxy = "true";
+				delete data2._id;
 				var params = {
-					form: data2
+					form: {
+						data: data2
+					}
 				};
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
 					assert.ok(body.data);
@@ -365,14 +368,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 					form: validEnvRecord
 				};
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
-					assert.deepEqual(body.errors.details[0], {"code": 403, "message": errorCodes[403]});
+					assert.deepEqual(body.errors.details[0], { "code": 403, "message": errorCodes[403] });
 
 					done();
 				});
 			});
 
 			it('mongo test', function (done) {
-				mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
+				mongo.findOne('environment', { 'code': 'DEV' }, function (error, envRecord) {
 					assert.ifError(error);
 					envId = envRecord._id.toString();
 					delete envRecord._id;
@@ -392,7 +395,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				var data2 = util.cloneObj(validEnvRecord);
 				data2.services.config.session.proxy = "true";
 				var params = {
-					qs: {"id": envId},
+					qs: { "id": envId },
 					form: {
 						"domain": "api.myDomain.com",
 						"profile": data2.profile,
@@ -412,7 +415,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				var data2 = util.cloneObj(validEnvRecord);
 				data2.services.config.session.proxy = "false";
 				var params = {
-					qs: {"id": envId},
+					qs: { "id": envId },
 					form: {
 						"domain": "api.myDomain.com",
 						"profile": data2.profile,
@@ -430,7 +433,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it("success - will update environment", function (done) {
 				var params = {
-					qs: {"id": envId},
+					qs: { "id": envId },
 					form: {
 						"domain": "api.myDomain.com",
 						"profile": validEnvRecord.profile,
@@ -448,7 +451,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it('fail - missing params', function (done) {
 				var params = {
-					qs: {"id": envId},
+					qs: { "id": envId },
 					form: {
 						"description": 'this is a dummy description'
 					}
@@ -464,7 +467,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it('fail - invalid environment id provided', function (done) {
 				var params = {
-					qs: {"id": "aaaabbbbccc"},
+					qs: { "id": "aaaabbbbccc" },
 					form: {
 						"domain": validEnvRecord.profile,
 						"profile": validEnvRecord.profile,
@@ -474,19 +477,19 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				};
 				executeMyRequest(params, 'environment/update', 'put', function (body) {
-					assert.deepEqual(body.errors.details[0], {"code": 405, "message": errorCodes[405]});
+					assert.deepEqual(body.errors.details[0], { "code": 405, "message": errorCodes[405] });
 					done();
 				});
 			});
 
 			it('mongo test', function (done) {
-				mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
+				mongo.findOne('environment', { 'code': 'DEV' }, function (error, envRecord) {
 					assert.ifError(error);
 					envId = envRecord._id.toString();
 					delete envRecord._id;
 					delete envRecord.profile;
 					var tester = util.cloneObj(validEnvRecord);
-					tester.dbs = {clusters: {}, config: {}, databases: {}};
+					tester.dbs = { clusters: {}, config: {}, databases: {} };
 					tester.description = "this is a dummy updated description";
 					delete tester.services.config.session.proxy;
 					delete tester.profile;
@@ -503,39 +506,39 @@ describe("DASHBOARD UNIT Tests:", function () {
 					qs: {}
 				};
 				executeMyRequest(params, 'environment/delete', 'delete', function (body) {
-					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: id"});
+					assert.deepEqual(body.errors.details[0], { "code": 172, "message": "Missing required field: id" });
 					done();
 				});
 			});
 
 			it('fail - invalid environment id provided', function (done) {
 				var params = {
-					qs: {'id': 'aaaabbcdddd'}
+					qs: { 'id': 'aaaabbcdddd' }
 				};
 				executeMyRequest(params, 'environment/delete', 'delete', function (body) {
-					assert.deepEqual(body.errors.details[0], {"code": 405, "message": errorCodes[405]});
+					assert.deepEqual(body.errors.details[0], { "code": 405, "message": errorCodes[405] });
 					done();
 				});
 			});
 
 			it("fail - cannot delete environment that has running hosts", function (done) {
 				var params = {
-					qs: {'id': envId}
+					qs: { 'id': envId }
 				};
 				executeMyRequest(params, 'environment/delete', 'delete', function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {"code": 906, "message": errorCodes[906]});
+					assert.deepEqual(body.errors.details[0], { "code": 906, "message": errorCodes[906] });
 					done();
 				});
 			});
 
 			it("success - will delete environment", function (done) {
-				mongo.findOne('environment', {code: 'STG'}, function (error, stgRecord) {
+				mongo.findOne('environment', { code: 'STG' }, function (error, stgRecord) {
 					assert.ifError(error);
 					assert.ok(stgRecord);
 
 					var params = {
-						qs: {'id': stgRecord._id.toString()}
+						qs: { 'id': stgRecord._id.toString() }
 					};
 					executeMyRequest(params, 'environment/delete', 'delete', function (body) {
 						assert.ok(body.data);
@@ -739,7 +742,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					}
 				};
-				mongo.update("environment", {}, update, {multi: true}, function (error) {
+				mongo.update("environment", {}, update, { multi: true }, function (error) {
 					assert.ifError(error);
 					done();
 				});
@@ -748,7 +751,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 			it("fail - user not logged in", function (done) {
 				executeMyRequest({},
 					'settings/tenant/get', 'get', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 601, "message": "No Logged in User found."});
+						assert.deepEqual(body.errors.details[0], {
+							"code": 601,
+							"message": "No Logged in User found."
+						});
 						done();
 					});
 			});
@@ -792,15 +798,15 @@ describe("DASHBOARD UNIT Tests:", function () {
 					form: {
 						"secret": "my secret key",
 						"redirectURI": "http://www.myredirecturi.com/",
-						"oauthType" : "urac",
-						"availableEnv" : ["dashboard","dev","stg"]
+						"oauthType": "urac",
+						"availableEnv": ["dashboard", "dev", "stg"]
 					}
 				};
 
 				executeMyRequest(params, 'settings/tenant/oauth/add/', 'post', function (body) {
 					assert.ok(body.data);
 
-					mongo.findOne('tenants', {'code': 'test'}, function (error, tenantRecord) {
+					mongo.findOne('tenants', { 'code': 'test' }, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.deepEqual(tenantRecord.oauth, {
 							"secret": "my secret key",
@@ -822,13 +828,13 @@ describe("DASHBOARD UNIT Tests:", function () {
 					form: {
 						"secret": "my secret key2",
 						"redirectURI": "http://www.myredirecturi.com/",
-						"oauthType" : "urac",
-						"availableEnv" : ["dashboard","dev","stg"]
+						"oauthType": "urac",
+						"availableEnv": ["dashboard", "dev", "stg"]
 					}
 				};
 				executeMyRequest(params, 'settings/tenant/oauth/update/', 'put', function (body) {
 					assert.ok(body.data);
-					mongo.findOne('tenants', {'code': 'test'}, function (error, tenantRecord) {
+					mongo.findOne('tenants', { 'code': 'test' }, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.deepEqual(tenantRecord.oauth, {
 							"secret": "my secret key2",
@@ -875,8 +881,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 					form: {
 						"secret": "my secret key2",
 						"redirectURI": "http://www.myredirecturi.com/",
-						"oauthType" : "urac",
-						"availableEnv" : ["dashboard","dev","stg"]
+						"oauthType": "urac",
+						"availableEnv": ["dashboard", "dev", "stg"]
 					}
 				};
 				executeMyRequest(params, 'settings/tenant/oauth/update/', 'put', function (body) {
@@ -897,7 +903,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				};
 
 				executeMyRequest(params, 'settings/tenant/oauth/users/add/', 'post', function (body) {
-					mongo.findOne('oauth_urac', {'userId': 'oauth_user'}, function (error, tenantRecord) {
+					mongo.findOne('oauth_urac', { 'userId': 'oauth_user' }, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.ok(tenantRecord);
 						assert.equal(tenantRecord.userId, "oauth_user");
@@ -921,7 +927,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				};
 				executeMyRequest(params, 'settings/tenant/oauth/users/update/', 'put', function (body) {
 					assert.ok(body.data);
-					mongo.findOne('oauth_urac', {'userId': 'oauth_user_up'}, function (error, tenantRecord) {
+					mongo.findOne('oauth_urac', { 'userId': 'oauth_user_up' }, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.ok(tenantRecord);
 						assert.equal(tenantRecord.userId, 'oauth_user_up');
@@ -966,9 +972,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 					"keys": []
 				};
 				var push = {
-					'$push': {'applications': newApplication}
+					'$push': { 'applications': newApplication }
 				};
-				mongo.update('tenants', {'_id': mongo.ObjectId(tenantId)}, push, {
+				mongo.update('tenants', { '_id': mongo.ObjectId(tenantId) }, push, {
 					'upsert': false,
 					'safe': true
 				}, function (error) {
@@ -999,7 +1005,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				executeMyRequest(params, 'settings/tenant/application/key/add', 'post', function (body) {
 					assert.ok(body.data);
 
-					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function (error, tenantRecord) {
+					mongo.findOne('tenants', { '_id': mongo.ObjectId(tenantId) }, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.ok(tenantRecord);
 						key = tenantRecord.applications[tenantRecord.applications.length - 1].keys[0].key.toString();
@@ -1043,7 +1049,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				};
 				executeMyRequest(params, 'settings/tenant/application/key/ext/add/', 'post', function (body) {
 					assert.ok(body.data);
-					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function (error, tenantRecord) {
+					mongo.findOne('tenants', { '_id': mongo.ObjectId(tenantId) }, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.ok(tenantRecord);
 						extKey = tenantRecord.applications[tenantRecord.applications.length - 1].keys[0].extKeys[0].extKey;
@@ -1148,8 +1154,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 					assert.ok(body.data);
 					assert.deepEqual(body.data, {
 						dev: {
-							mail: {'a': 'b'},
-							urac: {'x': 'y'}
+							mail: { 'a': 'b' },
+							urac: { 'x': 'y' }
 						}
 					});
 
@@ -1195,7 +1201,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			it("fail - missing required params", function (done) {
 				executeMyRequest({}, "environment/platforms/list", 'get', function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
+					assert.deepEqual(body.errors.details[0], { 'code': 172, 'message': 'Missing required field: env' });
 					done();
 				});
 			});
@@ -1228,7 +1234,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 				executeMyRequest(params, 'environment/platforms/driver/changeSelected', 'put', function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
+					assert.deepEqual(body.errors.details[0], { 'code': 172, 'message': 'Missing required field: env' });
 					done();
 				});
 			});
@@ -1277,7 +1283,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 		describe("list Hosts", function () {
 
 			it("success - will get hosts list", function (done) {
-				executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function (body) {
+				executeMyRequest({ qs: { 'env': 'dev' } }, 'hosts/list', 'get', function (body) {
 					assert.ok(body.data);
 					hostsCount = body.data.hosts.length;
 					done();
@@ -1300,7 +1306,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 
 			it("success - will get an empty list", function (done) {
-				executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function (body) {
+				executeMyRequest({ qs: { 'env': 'dev' } }, 'hosts/list', 'get', function (body) {
 					assert.ok(body.data);
 					assert.equal(body.data.hosts.length, 0);
 					done();
@@ -1318,7 +1324,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 
 			it("success - will get hosts list", function (done) {
-				executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function (body) {
+				executeMyRequest({ qs: { 'env': 'dev' } }, 'hosts/list', 'get', function (body) {
 					assert.ok(body.data);
 					assert.ok(body.data.hosts.length > 0);
 					assert.equal(body.data.hosts.length, hostsCount);
@@ -1343,13 +1349,13 @@ describe("DASHBOARD UNIT Tests:", function () {
 				"version": 1
 			};
 			it("success - will get the env list in case the service has more than 1 env", function (done) {
-				mongo.update("environment", {code : {$in: ["DEV","PROD"]} }, {"$unset": {"sensitive": ""}}, function(error){
+				mongo.update("environment", { code: { $in: ["DEV", "PROD"] } }, { "$unset": { "sensitive": "" } }, function (error) {
 					assert.ifError(error);
 					mongo.insert('hosts', swaggerDash, function (error) {
 						assert.ifError(error);
 						mongo.insert('hosts', swaggerDev, function (error) {
 							assert.ifError(error);
-							executeMyRequest({qs: {'service': 'swaggersample'}}, 'services/env/list', 'get', function (body) {
+							executeMyRequest({ qs: { 'service': 'swaggersample' } }, 'services/env/list', 'get', function (body) {
 								assert.ok(body.result);
 								assert.ok(body.data.dev.domain);
 								assert.ok(body.data.dev.tenants);
@@ -1361,7 +1367,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 
 			it("success - will get the env list in case the service has one env", function (done) {
-				executeMyRequest({qs: {'service': 'dashboard'}}, 'services/env/list', 'get', function (body) {
+				executeMyRequest({ qs: { 'service': 'dashboard' } }, 'services/env/list', 'get', function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data.dev.domain);
 					assert.ok(body.data.dev.tenants);
@@ -1370,7 +1376,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 
 			it("fail - service doesn't exist", function (done) {
-				executeMyRequest({qs: {'service': 'noService'}}, 'services/env/list', 'get', function (body) {
+				executeMyRequest({ qs: { 'service': 'noService' } }, 'services/env/list', 'get', function (body) {
 					assert.equal(body.result, false);
 					done();
 				});
@@ -1432,7 +1438,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				};
 				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function (body) {
-					assert.deepEqual(body.errors.details[0], {"code": 605, "message": "Service Host not found."});
+					assert.deepEqual(body.errors.details[0], { "code": 605, "message": "Service Host not found." });
 					done();
 				});
 			});
@@ -1449,29 +1455,29 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				};
 				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function (body) {
-					assert.deepEqual(body.errors.details[0], {"code": 604, "message": "Service not found."});
+					assert.deepEqual(body.errors.details[0], { "code": 604, "message": "Service not found." });
 					done();
 				});
 			});
 
-            it("fail - invalid ip address", function (done) {
-                var params = {
-                    form: {
-                        'env': 'dev',
-                        'serviceName': 'controller',
-                        'servicePort': 4000,
-                        'hostname': 'controller',
-                        'operation': 'heartbeat',
-                        'serviceHost': '71.255.67.89'
-                    }
-                };
-                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function (body) {
-                	assert.equal(body.result, false);
-                	assert.ok(body.errors);
-                    assert.deepEqual(body.errors.details[0], {"code": 605, "message": "Service Host not found."});
-                    done();
-                });
-            });
+			it("fail - invalid ip address", function (done) {
+				var params = {
+					form: {
+						'env': 'dev',
+						'serviceName': 'controller',
+						'servicePort': 4000,
+						'hostname': 'controller',
+						'operation': 'heartbeat',
+						'serviceHost': '71.255.67.89'
+					}
+				};
+				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function (body) {
+					assert.equal(body.result, false);
+					assert.ok(body.errors);
+					assert.deepEqual(body.errors.details[0], { "code": 605, "message": "Service Host not found." });
+					done();
+				});
+			});
 
 			it("success - heartbeat controller and service", function (done) {
 				var params = {
@@ -1559,7 +1565,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 
 			it("success - change security key", function (done) {
-				mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
+				mongo.findOne('environment', { 'code': 'DEV' }, function (error, envRecord) {
 					assert.ifError(error);
 					assert.ok(envRecord);
 					//Login first
@@ -1677,7 +1683,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 		before(function (done) {
 			//get tenant/product info from db
-			mongo.findOne('tenants', {'code': "test"}, function (error, record) {
+			mongo.findOne('tenants', { 'code': "test" }, function (error, record) {
 				assert.ifError(error);
 				assert.ok(record);
 				tenantId = record._id.toString();
@@ -1687,7 +1693,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				productCode = record.applications[0].product;
 				packageCode = record.applications[0].package;
 
-				mongo.findOne('products', {'code': productCode}, function (error, record) {
+				mongo.findOne('products', { 'code': productCode }, function (error, record) {
 					assert.ifError(error);
 					assert.ok(record);
 					productId = record._id.toString();
@@ -1709,7 +1715,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				if (body.result === false)
 					assert.ifError(body.result);
 
-				assert.deepEqual(body.errors.details[0], {"code": 462, "message": errorCodes[462]});
+				assert.deepEqual(body.errors.details[0], { "code": 462, "message": errorCodes[462] });
 				done();
 			});
 		});
@@ -1726,7 +1732,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				if (body.result === false)
 					assert.ifError(body.result);
 
-				assert.deepEqual(body.errors.details[0], {"code": 463, "message": errorCodes[463]});
+				assert.deepEqual(body.errors.details[0], { "code": 463, "message": errorCodes[463] });
 				done();
 			});
 		});
@@ -1744,7 +1750,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				if (body.result === false)
 					assert.ifError(body.result);
 
-				assert.deepEqual(body.errors.details[0], {"code": 464, "message": errorCodes[464]});
+				assert.deepEqual(body.errors.details[0], { "code": 464, "message": errorCodes[464] });
 				done();
 			});
 		});
@@ -1764,7 +1770,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			executeMyRequest(params, 'tenant/application/key/ext/delete', 'post', function (body) {
 				assert.ok(body);
 				assert.ok(body.errors);
-				assert.deepEqual(body.errors.details[0], {"code": 465, "message": errorCodes[465]});
+				assert.deepEqual(body.errors.details[0], { "code": 465, "message": errorCodes[465] });
 				done();
 			});
 		});
@@ -1780,7 +1786,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				if (body.result === false)
 					assert.ifError(body.result);
 
-				assert.deepEqual(body.errors.details[0], {"code": 466, "message": errorCodes[466]});
+				assert.deepEqual(body.errors.details[0], { "code": 466, "message": errorCodes[466] });
 				done();
 			});
 		});
@@ -1797,7 +1803,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				if (body.result === false)
 					assert.ifError(body.result);
 
-				assert.deepEqual(body.errors.details[0], {"code": 467, "message": errorCodes[467]});
+				assert.deepEqual(body.errors.details[0], { "code": 467, "message": errorCodes[467] });
 				done();
 			});
 		});
