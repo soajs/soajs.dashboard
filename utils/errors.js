@@ -65,7 +65,9 @@ var errors = {
 	"454": "Tenant does not exist",
 	"455": "Tenant Key already exists",
 	"456": "Error adding Tenant Key",
-
+	
+	"457": "You are not allowed to create an environment named PORTAL or DASHBOARD",
+	
 	"460": "Unable to find product",
 	"461": "Unable to find package",
 

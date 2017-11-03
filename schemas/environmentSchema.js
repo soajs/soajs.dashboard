@@ -44,6 +44,10 @@ var environment = {
 		"required": false,
 		"type": "string"
 	},
+	"deployPortal": {
+		"required": false,
+		"type": "boolean"
+	},
 	"deploy": {
 		"required": false,
 		"type": "object",
