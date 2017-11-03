@@ -38,9 +38,9 @@ module.exports = {
      * @param {Object} soajs
      * @returns {Object} options
      */
-    buildDeployerOptions: function (envRecord, soajs, BL) {
+    buildDeployerOptions: function (registry, soajs, BL) {
         var options = {};
-        var envDeployer = envRecord.deployer;
+        var envDeployer = registry.deployer;
 
         if (!envDeployer) return null;
         if (Object.keys(envDeployer).length === 0) return null;
@@ -51,21 +51,15 @@ module.exports = {
 
         options.strategy = selected[1];
         options.driver = selected[1] + '.' + selected[2];
-        options.env = envRecord.code.toLowerCase();
+        options.env = registry.environment.toLowerCase();
 
         for (var i = 0; i < selected.length; i++) {
             envDeployer = envDeployer[selected[i]];
         }
 
         options.deployerConfig = envDeployer;
-        // options.soajs = { registry: soajs.registry };
-		//soajs.registry refers to dashboard env registry, using envRecord instead
-		//normalizing serviceConfig object between registry and environment record
-		if(envRecord.services && envRecord.services.config) {
-			envRecord.serviceConfig = envRecord.services.config;
-		}
+        options.soajs = { registry: registry };
 
-		options.soajs = { registry: envRecord };
         options.model = BL.model;
 
         //switch strategy name to follow drivers convention
