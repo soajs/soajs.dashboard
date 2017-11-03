@@ -4,8 +4,7 @@ var environment = {
 	"code": {
 		"required": true,
 		"type": "string",
-		"format": "alphanumeric",
-		"maxLength": 4
+		"format": "alphanumeric"
 	},
 	"description": {
 		"required": true,
