@@ -43,7 +43,6 @@
     "bitbucket-server-nodejs": "^2.10.0",
     "compare-versions": "3.0.1",
     "cron": "1.2.1",
-    "dockerode": "aff04/dockerode.git",
     "easy-zip": "0.0.4",
     "formidable": "1.0.17",
     "github": "^0.2.4",
