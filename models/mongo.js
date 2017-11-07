@@ -25,6 +25,11 @@ var customRegCollection = 'custom_registry';
 var firstRun = true;
 var lib = {
 	"initConnection": function (soajs) {
+		function errorLogger(error) {
+			if (error) {
+				return soajs.log.error(error);
+			}
+		}
 		var provision = {
 			name: soajs.registry.coreDB.provision.name,
 			prefix: soajs.registry.coreDB.provision.prefix,
@@ -35,25 +40,19 @@ var lib = {
 			extraParam: soajs.registry.coreDB.provision.extraParam
 		};
 		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.SOAJS_COMPANY) {
-			provision.prefix += soajs.servicesConfig.SOAJS_COMPANY + '_';
+			if (Array.isArray(soajs.servicesConfig.SOAJS_COMPANY)) {
+				if (soajs.inputmaskData.projectId) {
+					if (soajs.servicesConfig.SOAJS_COMPANY.indexOf(soajs.inputmaskData.projectId) !== -1) {
+						provision.prefix = soajs.inputmaskData.projectId + '_';
+					}
+				} else {
+					// error
+					return false;
+				}
+			}
+
 		}
 		soajs.mongoDb = new Mongo(provision);
-	},
-	/**
-	 * Close the mongo connection
-	 * @param {SOAJS Object} soajs
-	 */
-	"closeConnection": function (soajs) {
-		if (soajs.mongoDb) {
-			soajs.mongoDb.closeDb();
-		}
-	},
-	
-	"checkForMongo": function (soajs) {
-		if (!soajs.mongoDb) {
-			lib.initConnection(soajs);
-		}
-		
 		if (firstRun) {
 			//services
 			if (!mongoObj) {
@@ -137,10 +136,21 @@ var lib = {
 			firstRun = false;
 		}
 		
-		function errorLogger(error) {
-			if (error) {
-				return soajs.log.error(error);
-			}
+		return true;
+	},
+	/**
+	 * Close the mongo connection
+	 * @param {SOAJS Object} soajs
+	 */
+	"closeConnection": function (soajs) {
+		if (soajs.mongoDb) {
+			soajs.mongoDb.closeDb();
+		}
+	},
+	
+	"checkForMongo": function (soajs) {
+		if (!soajs.mongoDb) {
+			lib.initConnection(soajs);
 		}
 	},
 	

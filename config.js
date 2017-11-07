@@ -579,6 +579,13 @@ module.exports = {
 					'type': 'array',
 					'items': { 'type': 'string' }
 				}
+			},
+			"env": {
+				'source': ['query.env'],
+				'required': true,
+				'validation': {
+					'type': 'string'
+				}
 			}
 		},
 
@@ -587,13 +594,6 @@ module.exports = {
 				"_apiInfo": {
 					"l": "Lists the ledgers of a specific environment",
 					"group": "Continuous Delivery"
-				},
-				"env": {
-					'source': ['query.env'],
-					'required': true,
-					'validation': {
-						'type': 'string'
-					}
 				},
 				"start": {
 					'source': ['query.start'],
@@ -604,7 +604,7 @@ module.exports = {
 						'minimum': 0
 					}
 				},
-				"commonFields": ['projectId']
+				"commonFields": ['projectId', 'env']
 			},
 
 			"/environment": {
@@ -650,11 +650,7 @@ module.exports = {
 					"l": "List Environment Databases",
 					"group": "Environment Databases"
 				},
-				"commonFields": ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true, "validation": { "type": "string", "required": true }
-				}
+				"commonFields": ['projectId', 'env']
 			},
 
 			"/resources/list": {
@@ -663,14 +659,7 @@ module.exports = {
 					"group": "Resources",
 					"groupMain": true
 				},
-				"commonFields": ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
+				"commonFields": ['projectId', 'env']
 			},
 
 			"/resources/get": {
@@ -701,21 +690,15 @@ module.exports = {
 					"group": "Resources",
 					"groupMain": true
 				},
-				"commonFields": ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"required": true
-					}
-				}
+				"commonFields": ['projectId', 'env']
 			},
 
 			"/resources/config": {
 				_apiInfo: {
 					"l": "Get Resources Deploy Configuration",
 					"group": "Resources"
-				}
+				},
+				"commonFields": ['projectId']
 			},
 
 			"/customRegistry/list": {
@@ -724,14 +707,7 @@ module.exports = {
 					"group": "Custom Registry",
 					"groupMain": true
 				},
-				"commonFields": ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
+				"commonFields": ['projectId', 'env'],
 				"start": {
 					"source": ['query.start'],
 					"required": false,
@@ -775,15 +751,7 @@ module.exports = {
 					"l": "List Environment Platforms",
 					"group": "Environment Platforms"
 				},
-				"commonFields": ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				}
+				"commonFields": ['projectId', 'env']
 			},
 
 			"/product/list": {
@@ -1067,15 +1035,7 @@ module.exports = {
 					"group": "Hosts",
 					"groupMain": true
 				},
-				'commonFields': ['projectId'],
-				'env': {
-					'source': ['query.env'],
-					'required': true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				}
+				'commonFields': ['projectId', 'env']
 			},
 
 			"/cloud/services/list": {
@@ -1083,14 +1043,7 @@ module.exports = {
 					"l": "List Cloud Services",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
-				"env": {
-					"source": ["query.env"],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
+				'commonFields': ['projectId', 'env']
 			},
 
 			"/cloud/nodes/list": {
@@ -1098,14 +1051,7 @@ module.exports = {
 					"l": "List HA Cloud Nodes",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
+				'commonFields': ['projectId', 'env']
 			},
 
 			"/cloud/services/instances/logs": {
@@ -1113,14 +1059,7 @@ module.exports = {
 					"l": "Get Service Container Logs",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
+				'commonFields': ['projectId', 'env'],
 				"serviceId": {
 					"source": ['query.serviceId'],
 					"required": true,
@@ -1142,14 +1081,7 @@ module.exports = {
 					"l": "List Available Namespaces",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
+				'commonFields': ['projectId', 'env']
 			},
 
 			"/cloud/resource": {
@@ -1157,14 +1089,7 @@ module.exports = {
 					"l": "Check if resource is Deployed",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
+				'commonFields': ['projectId', 'env'],
 				"resource": {
 					"source": ['query.resource'],
 					"required": true,
@@ -1186,14 +1111,7 @@ module.exports = {
 					"l": "List Services Metrics",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
+				'commonFields': ['projectId', 'env']
 			},
 
 			"/cloud/metrics/nodes": {
@@ -1201,14 +1119,7 @@ module.exports = {
 					"l": "List Nodes Metrics",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
+				'commonFields': ['projectId', 'env']
 			},
 
 			"/catalog/recipes/list": {
@@ -1260,7 +1171,7 @@ module.exports = {
 					"l": "Upgrade Catalog Recipes to latest Version",
 					"group": "Catalog"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['projectId']
 			},
 
 			"/cd": {
@@ -1268,7 +1179,7 @@ module.exports = {
 					"l": "Get CD Configuration",
 					"group": "Continuous Delivery"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['projectId']
 			},
 
 			"/cd/updates": {
@@ -1276,14 +1187,7 @@ module.exports = {
 					"l": "Get Update Notification Ledger",
 					"group": "Continuous Delivery"
 				},
-				'commonFields': ['projectId'],
-				"env": {
-					'source': ['query.env'],
-					'required': true,
-					'validation': {
-						'type': 'string'
-					}
-				}
+				'commonFields': ['projectId', 'env']
 			},
 
 			"/ci": {
@@ -1598,7 +1502,7 @@ module.exports = {
 					"l": "Get Yaml file",
 					"group": "Git Accounts"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['projectId', 'env'],
 				"owner": {
 					"source": ['query.owner'],
 					"required": true,
@@ -1632,13 +1536,6 @@ module.exports = {
 					"required": false,
 					"validation": {
 						"type": "integer"
-					}
-				},
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
 					}
 				},
 				"type": {
@@ -1696,16 +1593,13 @@ module.exports = {
 					"l": "Add Environment Database",
 					"group": "Environment Databases"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['projectId', 'env'],
 				"prefix": {
 					"source": ['body.prefix'],
 					"required": false,
-					"validation": { "type": "string", "required": false }
-				},
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": { "type": "string", "required": true }
+					"validation": {
+						"type": "string", "required": false
+					}
 				},
 				"name": {
 					"source": ['body.name'],
@@ -3094,16 +2988,11 @@ module.exports = {
 					"l": "Update Environment Database",
 					"group": "Environment Databases"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['projectId', 'env'],
 				"prefix": {
 					"source": ['body.prefix'],
 					"required": false,
 					"validation": { "type": "string", "required": false }
-				},
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": { "type": "string", "required": true }
 				},
 				"name": {
 					"source": ['body.name'],
@@ -3142,12 +3031,7 @@ module.exports = {
 					"l": "Update Environment Databases Prefix",
 					"group": "Environment Databases"
 				},
-				"commonFields": ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": { "type": "string", "required": true }
-				},
+				"commonFields": ['projectId', 'env'],
 				"prefix": {
 					"source": ['body.prefix'],
 					"required": false,
@@ -3160,16 +3044,9 @@ module.exports = {
 					"l": "Update Resource",
 					"group": "Resources"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['projectId', 'env'],
 				"id": {
 					"source": ['query.id'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"env": {
-					"source": ['query.env'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -3221,16 +3098,9 @@ module.exports = {
 					"l": "Update Custom Registry Entry",
 					"group": "Custom Registry"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['projectId', 'env'],
 				"id": {
 					"source": ['query.id'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"env": {
-					"source": ['query.env'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -3244,14 +3114,7 @@ module.exports = {
 					"l": "Upgrade To New Custom Registry",
 					"group": "Custom Registry"
 				},
-				"commonFields": ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
+				"commonFields": ['projectId', 'env']
 			},
 
 			"/environment/platforms/cert/choose": {
@@ -3259,15 +3122,7 @@ module.exports = {
 					"l": "Choose Existing Certificates",
 					"group": "Environment Platforms"
 				},
-				"commonFields": ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				},
+				"commonFields": ['projectId', 'env'],
 				"platform": {
 					"source": ['query.platform'],
 					"required": true,
@@ -3296,15 +3151,7 @@ module.exports = {
 					"l": "Change Selected Driver",
 					"group": "Environment Platforms"
 				},
-				"commonFields": ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				},
+				"commonFields": ['projectId', 'env'],
 				"selected": {
 					"source": ['body.selected'],
 					"required": true,
@@ -3319,15 +3166,7 @@ module.exports = {
 					"l": "Change Deployer Type",
 					"group": "Environment Platforms"
 				},
-				"commonFields": ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				},
+				"commonFields": ['projectId', 'env'],
 				"deployerType": {
 					"source": ['body.deployerType'],
 					"required": true,
@@ -3343,15 +3182,7 @@ module.exports = {
 					"l": "Change Deployer Type",
 					"group": "Environment Platforms"
 				},
-				"commonFields": ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				},
+				"commonFields": ['projectId', 'env'],
 				"driver": {
 					"source": ['body.driver'],
 					"required": true,
@@ -3631,14 +3462,7 @@ module.exports = {
 					"l": "Update HA Cloud Node",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
+				'commonFields': ['projectId', 'env'],
 				"nodeId": {
 					"source": ['query.nodeId'],
 					"required": true,
@@ -3783,14 +3607,7 @@ module.exports = {
 					"l": "Autoscale Services",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
+				'commonFields': ['projectId', 'env'],
 				"action": {
 					"source": ['body.action'],
 					"required": true,
@@ -3837,14 +3654,7 @@ module.exports = {
 					"l": "Configure Environment Autoscaling",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
+				'commonFields': ['projectId', 'env'],
 				"autoscale": {
 					"source": ['body.autoscale'],
 					"required": true,
@@ -4094,12 +3904,7 @@ module.exports = {
 					"l": "Delete Environment Database",
 					"group": "Environment Databases"
 				},
-				"commonFields": ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": { "type": "string", "required": true }
-				},
+				"commonFields": ['projectId', 'env'],
 				"name": {
 					"source": ['query.name'],
 					"required": true,
@@ -4112,16 +3917,9 @@ module.exports = {
 					"l": "Delete a resource",
 					"group": "Resources"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['projectId', 'env'],
 				"id": {
 					"source": ['query.id'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"env": {
-					"source": ['query.env'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -4134,16 +3932,9 @@ module.exports = {
 					"l": "Delete A Custom Registry Entry",
 					"group": "Custom Registry"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['projectId', 'env'],
 				"id": {
 					"source": ['query.id'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"env": {
-					"source": ['query.env'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -4156,16 +3947,9 @@ module.exports = {
 					"l": "Remove Certificate",
 					"group": "Environment Platforms"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['projectId', 'env'],
 				"id": {
 					"source": ['query.id'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"env": {
-					"source": ['query.env'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -4281,14 +4065,7 @@ module.exports = {
 					"l": "Remove HA Cloud Node",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
+				'commonFields': ['projectId', 'env'],
 				"nodeId": {
 					"source": ['query.nodeId'],
 					"required": true,
@@ -4303,14 +4080,7 @@ module.exports = {
 					"l": "Delete HA Service",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
+				'commonFields': ['projectId', 'env'],
 				"serviceId": {
 					"source": ['query.serviceId'],
 					"required": true,
@@ -4332,14 +4102,7 @@ module.exports = {
 					"l": "Delete a Namespace",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
+				'commonFields': ['projectId', 'env'],
 				"namespaceId": {
 					"source": ['query.namespaceId'],
 					"required": true,
