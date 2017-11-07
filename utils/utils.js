@@ -124,10 +124,11 @@ module.exports = {
 				code: uracRecord.tenant.code.toUpperCase()
 			}
 		};
-
+		
 		model.findEntry(soajs, opts, function (error, tenantRecord) {
-			if(error) return cb(error);
-
+			if(error) {
+				return cb(error);
+			}
 			if(tenantRecord && tenantRecord.locked && uracRecord.groups.indexOf('owner') !== -1) {
 				return cb(null, true);
 			}
