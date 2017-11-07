@@ -4045,7 +4045,20 @@ module.exports = {
                     "l": "Delete Product",
                     "group": "Product"
                 },
-                "commonFields": ['id']
+	            "id": {
+		            "source": ['query.id'],
+		            "required": false,
+		            "validation": {
+			            "type": "string"
+		            }
+	            },
+	            "code": {
+		            "source": ['query.code'],
+		            "required": false,
+		            "validation": {
+			            "type": "string"
+		            }
+	            }
             },
 
             "/product/packages/delete": {
@@ -4069,7 +4082,20 @@ module.exports = {
                     "l": "Delete Tenant",
                     "group": "Tenant"
                 },
-                "commonFields": ['id']
+	            "id": {
+		            "source": ['query.id'],
+		            "required": false,
+		            "validation": {
+			            "type": "string"
+		            }
+	            },
+	            "code": {
+		            "source": ['query.code'],
+		            "required": false,
+		            "validation": {
+			            "type": "string"
+		            }
+	            }
             },
 
             "/tenant/oauth/delete": {
