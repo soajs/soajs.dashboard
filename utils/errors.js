@@ -79,7 +79,6 @@ var errors = {
 	"467": "You are not allowed to remove the package you are currently logged in with",
 	
 	"468": "Invalid product code provided",
-	"469": "Invalid tenant code provided",
 	"470": "Missing required field: either id or code",
 
 	"500": "This record is locked. You cannot delete it",
