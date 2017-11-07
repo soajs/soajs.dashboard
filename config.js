@@ -872,7 +872,21 @@ module.exports = {
 					"l": "Get Tenant",
 					"group": "Tenant"
 				},
-				"commonFields": ['id', 'projectId']
+				"commonFields": ['projectId'],
+				"id": {
+					"source": ['query.id'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"code": {
+					"source": ["query.code"],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
 			},
 
 			"/tenant/oauth/list": {
@@ -1847,14 +1861,22 @@ module.exports = {
 					"l": "Add Tenant Application External Key",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['appId', 'key', 'expDate', 'device', 'geo', 'projectId'],
+				"commonFields": ['projectId', 'appId', 'key', 'expDate', 'device', 'geo'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
 					"validation": {
 						"type": "string"
 					}
-				}
+				},
+				"dashboardAccess": {
+					"source": ['body.dashboardAccess'],
+					"required": true,
+					"default": false,
+					"validation": {
+						"type": "boolean"
+					}
+				},
 			},
 
 			"/settings/tenant/application/key/ext/delete": { //TODO: should be delete, remove params passed in body and change its method
@@ -3969,7 +3991,21 @@ module.exports = {
 					"l": "Delete Product",
 					"group": "Product"
 				},
-				"commonFields": ['id', 'projectId']
+				"commonFields": ['projectId'],
+				"id": {
+					"source": ['query.id'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"code": {
+					"source": ['query.code'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
 			},
 
 			"/product/packages/delete": {
@@ -3993,7 +4029,21 @@ module.exports = {
 					"l": "Delete Tenant",
 					"group": "Tenant"
 				},
-				"commonFields": ['id', 'projectId']
+				"commonFields": ['projectId'],
+				"id": {
+					"source": ['query.id'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"code": {
+					"source": ['query.code'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
 			},
 
 			"/tenant/oauth/delete": {
@@ -4141,7 +4191,7 @@ module.exports = {
 				},
 				"commonFields": ["id", 'projectId']
 			},
-			
+
 			"/gitAccounts/logout": {
 				"_apiInfo": {
 					"l": "Github Logout",

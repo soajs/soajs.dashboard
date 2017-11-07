@@ -77,6 +77,9 @@ var errors = {
 	"465": "You are not allowed to remove the external key you are currently logged in with",
 	"466": "You are not allowed to remove the product you are currently logged in with",
 	"467": "You are not allowed to remove the package you are currently logged in with",
+	
+	"468": "Invalid product code provided",
+	"470": "Missing required field: either id or code",
 
 	"500": "This record is locked. You cannot delete it",
 	"501": "This record is locked. You cannot modify or delete it",
