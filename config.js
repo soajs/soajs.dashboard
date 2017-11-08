@@ -1841,7 +1841,15 @@ module.exports = {
                     "validation": {
                         "type": "string"
                     }
-                }
+                },
+	            "dashboardAccess":{
+		            "source": ['body.dashboardAccess'],
+		            "required": true,
+		            "default": false,
+		            "validation": {
+			            "type": "boolean"
+		            }
+	            }
             },
 
             "/tenant/application/key/ext/delete": { //TODO: should be delete, remove params passed in body and change its method
