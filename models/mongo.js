@@ -41,9 +41,9 @@ var lib = {
 		};
 		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.SOAJS_COMPANY) {
 			if (Array.isArray(soajs.servicesConfig.SOAJS_COMPANY)) {
-				if (soajs.inputmaskData.projectId) {
-					if (soajs.servicesConfig.SOAJS_COMPANY.indexOf(soajs.inputmaskData.projectId) !== -1) {
-						provision.prefix = soajs.inputmaskData.projectId + '_';
+				if (soajs.inputmaskData.project) {
+					if (soajs.servicesConfig.SOAJS_COMPANY.indexOf(soajs.inputmaskData.project) !== -1) {
+						provision.prefix = soajs.inputmaskData.project + '_';
 					}
 				} else {
 					// error
