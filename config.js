@@ -3987,7 +3987,8 @@ module.exports = {
                     "l": "Delete Environment",
                     "group": "Environment"
                 },
-                "commonFields": ['id']
+                "commonFields": ['id'],
+	            "force": {"source": ['query.force'], "required": true, "default": false, "validation": {"type": "boolean"}}
             },
 
             "/environment/dbs/delete": {
