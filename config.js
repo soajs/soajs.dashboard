@@ -143,8 +143,8 @@ module.exports = {
 
 	"schema": {
 		"commonFields": {
-			"projectId": {
-				"source": ['query.projectId'],
+			"project": {
+				"source": ['query.project'],
 				"required": false,
 				"validation": {
 					"type": "string"
@@ -611,7 +611,7 @@ module.exports = {
 						'minimum': 0
 					}
 				},
-				"commonFields": ['projectId', 'env']
+				"commonFields": ['project', 'env']
 			},
 
 			"/environment": {
@@ -619,7 +619,7 @@ module.exports = {
 					"l": "Get Environment",
 					"group": "Environment"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"id": {
 					"required": false,
 					"source": ["query.id"],
@@ -642,7 +642,7 @@ module.exports = {
 					"group": "Environment",
 					"groupMain": true
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"short": {
 					"required": false,
 					"source": ["query.short", "body.short"],
@@ -657,7 +657,7 @@ module.exports = {
 					"l": "List Environment Databases",
 					"group": "Environment Databases"
 				},
-				"commonFields": ['projectId', 'env']
+				"commonFields": ['project', 'env']
 			},
 
 			"/resources/list": {
@@ -666,7 +666,7 @@ module.exports = {
 					"group": "Resources",
 					"groupMain": true
 				},
-				"commonFields": ['projectId', 'env']
+				"commonFields": ['project', 'env']
 			},
 
 			"/resources/get": {
@@ -674,7 +674,7 @@ module.exports = {
 					"l": "Get One Resource",
 					"group": "Resources"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": false,
@@ -697,7 +697,7 @@ module.exports = {
 					"group": "Resources",
 					"groupMain": true
 				},
-				"commonFields": ['projectId', 'env']
+				"commonFields": ['project', 'env']
 			},
 
 			"/resources/config": {
@@ -705,7 +705,7 @@ module.exports = {
 					"l": "Get Resources Deploy Configuration",
 					"group": "Resources"
 				},
-				"commonFields": ['projectId']
+				"commonFields": ['project']
 			},
 
 			"/customRegistry/list": {
@@ -714,7 +714,7 @@ module.exports = {
 					"group": "Custom Registry",
 					"groupMain": true
 				},
-				"commonFields": ['projectId', 'env'],
+				"commonFields": ['project', 'env'],
 				"start": {
 					"source": ['query.start'],
 					"required": false,
@@ -736,7 +736,7 @@ module.exports = {
 					"l": "Get Custom Registry Entry",
 					"group": "Custom Registry"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": false,
@@ -758,7 +758,7 @@ module.exports = {
 					"l": "List Environment Platforms",
 					"group": "Environment Platforms"
 				},
-				"commonFields": ['projectId', 'env']
+				"commonFields": ['project', 'env']
 			},
 
 			"/product/list": {
@@ -767,7 +767,7 @@ module.exports = {
 					"group": "Product",
 					"groupMain": true
 				},
-				"commonFields": ['projectId']
+				"commonFields": ['project']
 			},
 
 			"/product/get": {
@@ -775,7 +775,7 @@ module.exports = {
 					"l": "Get Product",
 					"group": "Product"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": false,
@@ -799,7 +799,7 @@ module.exports = {
 					"l": "List Product Packages",
 					"group": "Product"
 				},
-				"commonFields": ['id', 'projectId']
+				"commonFields": ['id', 'project']
 			},
 
 			"/product/packages/get": {
@@ -807,7 +807,7 @@ module.exports = {
 					"l": "Get Product Package",
 					"group": "Product"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"packageCode": {
 					"source": ["query.packageCode"],
 					"required": true,
@@ -831,7 +831,7 @@ module.exports = {
 					"l": "Get Tenant Security Permissions",
 					"group": "Tenant"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"envCode": {
 					"source": ["query.envCode"],
 					"required": false,
@@ -847,7 +847,7 @@ module.exports = {
 					"l": "Get the user dashboard key",
 					"group": "Tenant"
 				},
-				"commonFields": ['projectId']
+				"commonFields": ['project']
 			},
 
 			"/tenant/list": {
@@ -855,7 +855,7 @@ module.exports = {
 					"l": "List Tenants",
 					"group": "Tenant"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"type": {
 					"source": ['query.type'],
 					"required": false,
@@ -879,7 +879,7 @@ module.exports = {
 					"l": "Get Tenant",
 					"group": "Tenant"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": false,
@@ -901,7 +901,7 @@ module.exports = {
 					"l": "Get Tenant oAuth Configuration",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'projectId']
+				"commonFields": ['id', 'project']
 			},
 
 			"/tenant/oauth/users/list": {
@@ -909,7 +909,7 @@ module.exports = {
 					"l": "List Tenant oAuth Users",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'projectId']
+				"commonFields": ['id', 'project']
 			},
 
 			"/tenant/application/list": {
@@ -917,7 +917,7 @@ module.exports = {
 					"l": "List Tenant Applications",
 					"group": "Tenant Application"
 				},
-				"commonFields": ['id', 'projectId']
+				"commonFields": ['id', 'project']
 			},
 
 			"/tenant/application/key/list": {
@@ -925,7 +925,7 @@ module.exports = {
 					"l": "List Tenant Application Keys",
 					"group": "Tenant Application"
 				},
-				"commonFields": ['id', 'appId', 'projectId']
+				"commonFields": ['id', 'appId', 'project']
 			},
 
 			"/tenant/application/key/ext/list": {
@@ -933,7 +933,7 @@ module.exports = {
 					"l": "List Tenant Application External Keys",
 					"group": "Tenant Application"
 				},
-				"commonFields": ['id', 'appId', 'key', 'projectId']
+				"commonFields": ['id', 'appId', 'key', 'project']
 			},
 
 			"/tenant/application/key/config/list": {
@@ -941,7 +941,7 @@ module.exports = {
 					"l": "List Tenant Application Key Configuration",
 					"group": "Tenant Application"
 				},
-				"commonFields": ['id', 'appId', 'key', 'projectId']
+				"commonFields": ['id', 'appId', 'key', 'project']
 			},
 
 			"/tenant/db/keys/list": {
@@ -949,7 +949,7 @@ module.exports = {
 					"l": "List Dashboard Tenant Keys",
 					"group": "Dashboard Tenants"
 				},
-				"commonFields": ['projectId']
+				"commonFields": ['project']
 			},
 
 			"/settings/tenant/get": {
@@ -957,7 +957,7 @@ module.exports = {
 					"l": "Get Tenant",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['projectId']
+				"commonFields": ['project']
 			},
 
 			"/settings/tenant/oauth/list": {
@@ -965,7 +965,7 @@ module.exports = {
 					"l": "Get Tenant oAuth Configuration",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['projectId']
+				"commonFields": ['project']
 			},
 
 			"/settings/tenant/oauth/users/list": {
@@ -973,7 +973,7 @@ module.exports = {
 					"l": "List Tenant oAuth Users",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['projectId']
+				"commonFields": ['project']
 			},
 
 			"/settings/tenant/application/list": {
@@ -981,7 +981,7 @@ module.exports = {
 					"l": "List Tenant Applications",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['projectId']
+				"commonFields": ['project']
 			},
 
 			"/settings/tenant/application/key/list": {
@@ -989,7 +989,7 @@ module.exports = {
 					"l": "List Tenant Application Keys",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['appId', 'projectId']
+				"commonFields": ['appId', 'project']
 			},
 
 			"/settings/tenant/application/key/ext/list": {
@@ -997,7 +997,7 @@ module.exports = {
 					"l": "List Tenant Application External Keys",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['appId', 'key', 'projectId']
+				"commonFields": ['appId', 'key', 'project']
 			},
 
 			"/settings/tenant/application/key/config/list": {
@@ -1005,7 +1005,7 @@ module.exports = {
 					"l": "List Tenant Application Key Configuration",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['appId', 'key', 'projectId']
+				"commonFields": ['appId', 'key', 'project']
 			},
 			/*
 			 * This API will return the env where a service is deployed.
@@ -1017,7 +1017,7 @@ module.exports = {
 					"l": "List The Environment Where A Service Is Deployed",
 					"group": "Services"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				'service': {
 					'source': ['query.service'],
 					'required': true,
@@ -1039,7 +1039,7 @@ module.exports = {
 					"l": "List Service Configuration",
 					"group": "Daemons"
 				},
-				'commonFields': ['id', 'jobName', 'projectId']
+				'commonFields': ['id', 'jobName', 'project']
 			},
 
 			"/daemons/groupConfig/tenantExtKeys/list": {
@@ -1047,7 +1047,7 @@ module.exports = {
 					"l": "List Job's External Keys",
 					"group": "Daemons"
 				},
-				'commonFields': ['id', 'jobName', 'projectId']
+				'commonFields': ['id', 'jobName', 'project']
 			},
 
 			"/hosts/list": {
@@ -1056,7 +1056,7 @@ module.exports = {
 					"group": "Hosts",
 					"groupMain": true
 				},
-				'commonFields': ['projectId', 'env']
+				'commonFields': ['project', 'env']
 			},
 
 			"/cloud/services/list": {
@@ -1064,7 +1064,7 @@ module.exports = {
 					"l": "List Cloud Services",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env']
+				'commonFields': ['project', 'env']
 			},
 
 			"/cloud/nodes/list": {
@@ -1072,7 +1072,7 @@ module.exports = {
 					"l": "List HA Cloud Nodes",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env']
+				'commonFields': ['project', 'env']
 			},
 
 			"/cloud/services/instances/logs": {
@@ -1080,7 +1080,7 @@ module.exports = {
 					"l": "Get Service Container Logs",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env', 'namespace'],
+				'commonFields': ['project', 'env', 'namespace'],
 				"serviceId": {
 					"source": ['query.serviceId'],
 					"required": true,
@@ -1102,7 +1102,7 @@ module.exports = {
 					"l": "List Available Namespaces",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env']
+				'commonFields': ['project', 'env']
 			},
 
 			"/cloud/resource": {
@@ -1110,7 +1110,7 @@ module.exports = {
 					"l": "Check if resource is Deployed",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env'],
+				'commonFields': ['project', 'env'],
 				"resource": {
 					"source": ['query.resource'],
 					"required": true,
@@ -1132,7 +1132,7 @@ module.exports = {
 					"l": "List Services Metrics",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env']
+				'commonFields': ['project', 'env']
 			},
 
 			"/cloud/metrics/nodes": {
@@ -1140,7 +1140,7 @@ module.exports = {
 					"l": "List Nodes Metrics",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env']
+				'commonFields': ['project', 'env']
 			},
 
 			"/catalog/recipes/list": {
@@ -1148,7 +1148,7 @@ module.exports = {
 					"l": "List Catalog Recipes",
 					"group": "Catalog"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				'version': {
 					"source": ['query.version'],
 					"required": false,
@@ -1170,7 +1170,7 @@ module.exports = {
 					"l": "Get a Catalog",
 					"group": "Catalog"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": true,
@@ -1192,7 +1192,7 @@ module.exports = {
 					"l": "Upgrade Catalog Recipes to latest Version",
 					"group": "Catalog"
 				},
-				'commonFields': ['projectId']
+				'commonFields': ['project']
 			},
 
 			"/cd": {
@@ -1200,7 +1200,7 @@ module.exports = {
 					"l": "Get CD Configuration",
 					"group": "Continuous Delivery"
 				},
-				'commonFields': ['projectId']
+				'commonFields': ['project']
 			},
 
 			"/cd/updates": {
@@ -1208,7 +1208,7 @@ module.exports = {
 					"l": "Get Update Notification Ledger",
 					"group": "Continuous Delivery"
 				},
-				'commonFields': ['projectId', 'env']
+				'commonFields': ['project', 'env']
 			},
 
 			"/ci": {
@@ -1216,7 +1216,7 @@ module.exports = {
 					"l": "Get CI Accounts",
 					"group": "Continuous Integration"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"owner": {
 					"source": ['query.owner'],
 					"required": false,
@@ -1245,7 +1245,7 @@ module.exports = {
 					"l": "Get CI Providers",
 					"group": "Continuous Integration"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"owner": {
 					"source": ['query.owner'],
 					"required": false,
@@ -1267,7 +1267,7 @@ module.exports = {
 					"l": "Download CI Recipe",
 					"group": "Continuous Integration"
 				},
-				"commonFields": ["id", 'projectId']
+				"commonFields": ["id", 'project']
 			},
 
 			"/ci/script/download": {
@@ -1275,7 +1275,7 @@ module.exports = {
 					"l": "Download CI Script",
 					"group": "Continuous Integration"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"provider": {
 					"required": false,
 					"source": ["query.provider"],
@@ -1290,7 +1290,7 @@ module.exports = {
 					"l": "Turn On/Off Repository CI",
 					"group": "Continuous Integration"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				'id': {
 					'source': ['query.id'],
 					'required': true,
@@ -1326,7 +1326,7 @@ module.exports = {
 					"l": "Get CI Repository Settings & Environment Variables",
 					"group": "Continuous Integration"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				'id': {
 					'source': ['query.id'],
 					'required': true,
@@ -1355,7 +1355,7 @@ module.exports = {
 					"l": "Get the CI configuration file of the repository from provider",
 					"group": "Continuous Integration"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"provider": {
 					"source": ['query.provider'],
 					"required": true,
@@ -1391,7 +1391,7 @@ module.exports = {
 					"l": "List Git Accounts",
 					"group": "Git Accounts"
 				},
-				'commonFields': ['projectId']
+				'commonFields': ['project']
 			},
 
 			"/gitAccounts/getRepos": {
@@ -1399,7 +1399,7 @@ module.exports = {
 					"l": "Get Repositories",
 					"group": "Git Accounts"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": true,
@@ -1444,7 +1444,7 @@ module.exports = {
 					"l": "Get Repository Branches",
 					"group": "Git Accounts"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"name": {
 					"source": ['query.name'],
 					"required": true,
@@ -1481,7 +1481,7 @@ module.exports = {
 					"group": "Content Builder",
 					"groupMain": true
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				'port': {
 					'required': false,
 					'source': ['query.port'],
@@ -1496,7 +1496,7 @@ module.exports = {
 					"l": "Get One Content Schema",
 					"group": "Content Builder"
 				},
-				"commonFields": ["id", 'projectId'],
+				"commonFields": ["id", 'project'],
 				"version": {
 					"required": false,
 					"source": ["query.version"],
@@ -1511,7 +1511,7 @@ module.exports = {
 					"l": "List Content Schema Revisions",
 					"group": "Content Builder"
 				},
-				'commonFields': ['projectId']
+				'commonFields': ['project']
 			},
 			/*
 			 * this API will get the content and the url of any file located on a specific
@@ -1523,7 +1523,7 @@ module.exports = {
 					"l": "Get Yaml file",
 					"group": "Git Accounts"
 				},
-				'commonFields': ['projectId', 'env'],
+				'commonFields': ['project', 'env'],
 				"owner": {
 					"source": ['query.owner'],
 					"required": true,
@@ -1575,7 +1575,7 @@ module.exports = {
 					"l": "List Services",
 					"group": "Services"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				'includeEnvs': {
 					'source': ['query.includeEnvs'],
 					'required': false,
@@ -1598,7 +1598,7 @@ module.exports = {
 					"l": "Add Environment",
 					"group": "Environment"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"data": {
 					"source": ['body.data'],
 					"required": true,
@@ -1614,7 +1614,7 @@ module.exports = {
 					"l": "Add Environment Database",
 					"group": "Environment Databases"
 				},
-				'commonFields': ['projectId', 'env'],
+				'commonFields': ['project', 'env'],
 				"prefix": {
 					"source": ['body.prefix'],
 					"required": false,
@@ -1659,7 +1659,7 @@ module.exports = {
 					"l": "Add New Resource",
 					"group": "Resources"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
@@ -1675,7 +1675,7 @@ module.exports = {
 					"l": "Add New Custom Registry Entry",
 					"group": "Custom Registry"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
@@ -1691,7 +1691,7 @@ module.exports = {
 					"l": "Upload Certificate",
 					"group": "Environment Platforms"
 				},
-				'commonFields': ['projectId']
+				'commonFields': ['project']
 			},
 
 			"/product/add": {
@@ -1699,7 +1699,7 @@ module.exports = {
 					"l": "Add Product",
 					"group": "Product"
 				},
-				"commonFields": ['description', 'name', 'projectId'],
+				"commonFields": ['description', 'name', 'project'],
 				"code": {
 					"source": ['body.code'],
 					"required": true,
@@ -1717,7 +1717,7 @@ module.exports = {
 					"l": "Add Product Package",
 					"group": "Product"
 				},
-				"commonFields": ['id', 'name', 'description', '_TTL', 'acl', 'projectId'],
+				"commonFields": ['id', 'name', 'description', '_TTL', 'acl', 'project'],
 				"code": {
 					"source": ["body.code"],
 					"required": true,
@@ -1735,7 +1735,7 @@ module.exports = {
 					"l": "Add Tenant",
 					"group": "Tenant"
 				},
-				"commonFields": ['name', 'description', 'projectId'],
+				"commonFields": ['name', 'description', 'project'],
 				"code": {
 					"source": ['body.code'],
 					"required": true,
@@ -1775,7 +1775,7 @@ module.exports = {
 					"l": "Add Tenant oAuth Configuration",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'secret', 'redirectURI', 'oauthType', 'availableEnv', 'projectId']
+				"commonFields": ['id', 'secret', 'redirectURI', 'oauthType', 'availableEnv', 'project']
 			},
 
 			"/tenant/oauth/users/add": {
@@ -1783,7 +1783,7 @@ module.exports = {
 					"l": "Add Tenant oAuth User",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'userId', 'password', 'projectId']
+				"commonFields": ['id', 'userId', 'password', 'project']
 			},
 
 			"/tenant/application/add": {
@@ -1791,7 +1791,7 @@ module.exports = {
 					"l": "Add Tenant Application",
 					"group": "Tenant Application"
 				},
-				"commonFields": ['id', '_TTL', 'description', 'acl', 'productCode', 'packageCode', 'projectId']
+				"commonFields": ['id', '_TTL', 'description', 'acl', 'productCode', 'packageCode', 'project']
 			},
 
 			"/tenant/application/key/add": {
@@ -1799,7 +1799,7 @@ module.exports = {
 					"l": "Add Tenant Application Key",
 					"group": "Tenant Application"
 				},
-				"commonFields": ['id', 'appId', 'projectId']
+				"commonFields": ['id', 'appId', 'project']
 			},
 
             "/tenant/application/key/ext/add": {
@@ -1807,7 +1807,7 @@ module.exports = {
                     "l": "Add Tenant Application External Key",
                     "group": "Tenant Application"
                 },
-                "commonFields": ['id', 'appId', 'key', 'expDate', 'device', 'geo', 'projectId'],
+                "commonFields": ['id', 'appId', 'key', 'expDate', 'device', 'geo', 'project'],
                 "env": {
                     "source": ['body.env'],
                     "required": true,
@@ -1830,7 +1830,7 @@ module.exports = {
 					"l": "Delete Tenant Application External Key",
 					"group": "Tenant Application"
 				},
-				"commonFields": ['id', 'appId', 'key', 'extKey', 'projectId'],
+				"commonFields": ['id', 'appId', 'key', 'extKey', 'project'],
 				"extKeyEnv": {
 					"source": ['body.extKeyEnv'],
 					"required": true,
@@ -1845,7 +1845,7 @@ module.exports = {
 					"l": "Get Current Tenant Access Level",
 					"group": "Tenant"
 				},
-				"commonFields": ['id', 'projectId']
+				"commonFields": ['id', 'project']
 			},
 
 			"/settings/tenant/oauth/add": {
@@ -1853,7 +1853,7 @@ module.exports = {
 					"l": "Add Tenant oAuth Configuration",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['secret', 'redirectURI', 'oauthType', 'availableEnv', 'projectId']
+				"commonFields": ['secret', 'redirectURI', 'oauthType', 'availableEnv', 'project']
 			},
 
 			"/settings/tenant/oauth/users/add": {
@@ -1861,7 +1861,7 @@ module.exports = {
 					"l": "Add Tenant oAuth User",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['userId', 'password', 'projectId']
+				"commonFields": ['userId', 'password', 'project']
 			},
 
 			"/settings/tenant/application/key/add": {
@@ -1869,7 +1869,7 @@ module.exports = {
 					"l": "Add Tenant Application Key",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['appId', 'projectId']
+				"commonFields": ['appId', 'project']
 			},
 
 			"/settings/tenant/application/key/ext/add": {
@@ -1877,7 +1877,7 @@ module.exports = {
 					"l": "Add Tenant Application External Key",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['projectId', 'appId', 'key', 'expDate', 'device', 'geo'],
+				"commonFields": ['project', 'appId', 'key', 'expDate', 'device', 'geo'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
@@ -1900,7 +1900,7 @@ module.exports = {
 					"l": "Delete Tenant Application External Key",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['appId', 'key', 'extKey', 'projectId'],
+				"commonFields": ['appId', 'key', 'extKey', 'project'],
 				"extKeyEnv": {
 					"source": ['body.extKeyEnv'],
 					"required": true,
@@ -1915,7 +1915,7 @@ module.exports = {
 					"l": "List Daemon Group Configuration",
 					"group": "Daemons"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				'grpConfNames': {
 					'source': ['body.grpConfNames'],
 					'required': false,
@@ -1931,7 +1931,7 @@ module.exports = {
 					"l": "Add Daemon Group Configuration",
 					"group": "Daemons"
 				},
-				'commonFields': ['projectId',
+				'commonFields': ['project',
 					'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
 				'type': {
 					"required": true,
@@ -1948,7 +1948,7 @@ module.exports = {
 					"l": "List Daemons",
 					"group": "Daemons"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				'daemonNames': {
 					'source': ['body.daemonNames'],
 					'required': false,
@@ -1971,7 +1971,7 @@ module.exports = {
 					"l": "Deploy A New SOAJS Service",
 					"group": "HA Cloud"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
@@ -2116,7 +2116,7 @@ module.exports = {
 					"l": "Deploy A Custom Resource",
 					"group": "HA Cloud"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
@@ -2139,7 +2139,7 @@ module.exports = {
 					"l": "Add HA Cloud Node",
 					"group": "HA Cloud"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
@@ -2176,7 +2176,7 @@ module.exports = {
 					"l": "Perform A Maintenance Operation on a Deployed Service",
 					"group": "HA Cloud"
 				},
-				"commonFields": ['projectId', 'namespace'],
+				"commonFields": ['project', 'namespace'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
@@ -2220,7 +2220,7 @@ module.exports = {
 					"l": "Add New Catalog",
 					"group": "Catalog"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"catalog": catalogSchema
 			},
 
@@ -2229,7 +2229,7 @@ module.exports = {
 					"l": "Activate CI Provider",
 					"group": "Continuous Integration"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"id": {
 					"source": ['body.id'],
 					"required": false,
@@ -2279,7 +2279,7 @@ module.exports = {
 					"l": "Add New CI Recipe",
 					"group": "Continuous Integration"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"provider": {
 					"source": ['body.provider'],
 					"required": true,
@@ -2308,7 +2308,7 @@ module.exports = {
 					"l": "Save CD Configuration for a specific Service",
 					"group": "Continuous Delivery"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"config": {
 					"source": ['body.config'],
 					"required": false,
@@ -2355,7 +2355,7 @@ module.exports = {
 					"l": "Pause CD Configuration",
 					"group": "Continuous Delivery"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"config": {
 					"source": ['body.config'],
 					"required": false,
@@ -2375,7 +2375,7 @@ module.exports = {
 					"l": "Trigger CD Deployment",
 					"group": "Continuous Delivery"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"deploy_token": {
 					"source": ['query.deploy_token'],
 					"required": true,
@@ -2439,7 +2439,7 @@ module.exports = {
 					"l": "Github Login",
 					"group": "Git Accounts"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"username": {
 					"source": ['body.username'],
 					"required": true,
@@ -2510,7 +2510,7 @@ module.exports = {
 					"l": "Activate Repository",
 					"group": "Git Accounts"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": true,
@@ -2560,7 +2560,7 @@ module.exports = {
 					"l": "Add New Content Schema",
 					"group": "Content Builder"
 				},
-				"commonFields": ["name", 'projectId'],
+				"commonFields": ["name", 'project'],
 				"config": {
 					"required": true,
 					"source": ["body.config"],
@@ -2573,7 +2573,7 @@ module.exports = {
 					"l": "Perform Maintenance Operation",
 					"group": "Hosts"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"operation": {
 					"required": true,
 					"source": ['body.operation'],
@@ -2626,7 +2626,7 @@ module.exports = {
 					"group": "Simulate",
 					"groupMain": true
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"data": {
 					"required": true,
 					"source": ['body.data'],
@@ -2653,7 +2653,7 @@ module.exports = {
 					"group": "swagger",
 					"groupMain": true
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"language": {
 					"required": false,
 					"source": ["body.language"],
@@ -2760,7 +2760,7 @@ module.exports = {
 					"l": "Updates Service Settings",
 					"group": "Services"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": true,
@@ -2796,7 +2796,7 @@ module.exports = {
 					"l": "Mark as read",
 					"group": "Continuous Delivery"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"data": {
 					"required": true,
 					"source": ["body.data"],
@@ -2834,7 +2834,7 @@ module.exports = {
 					"l": "Take Action",
 					"group": "Continuous Delivery"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"data": {
 					"required": true,
 					"source": ["body.data"],
@@ -2951,7 +2951,7 @@ module.exports = {
 					"l": "Update Environment",
 					"group": "Environment"
 				},
-				"commonFields": ['id', 'description', 'services', 'projectId'],
+				"commonFields": ['id', 'description', 'services', 'project'],
 				"domain": {
 					"source": ['body.domain'],
 					"required": true,
@@ -3004,7 +3004,7 @@ module.exports = {
 					"l": "Update Environment Tenant Key Security",
 					"group": "Environment"
 				},
-				"commonFields": ['id', 'projectId'],
+				"commonFields": ['id', 'project'],
 				"algorithm": {
 					"source": ['body.algorithm'],
 					"required": true,
@@ -3026,7 +3026,7 @@ module.exports = {
 					"l": "Update Environment Database",
 					"group": "Environment Databases"
 				},
-				"commonFields": ['projectId', 'env'],
+				"commonFields": ['project', 'env'],
 				"prefix": {
 					"source": ['body.prefix'],
 					"required": false,
@@ -3069,7 +3069,7 @@ module.exports = {
 					"l": "Update Environment Databases Prefix",
 					"group": "Environment Databases"
 				},
-				"commonFields": ['projectId', 'env'],
+				"commonFields": ['project', 'env'],
 				"prefix": {
 					"source": ['body.prefix'],
 					"required": false,
@@ -3082,7 +3082,7 @@ module.exports = {
 					"l": "Update Resource",
 					"group": "Resources"
 				},
-				"commonFields": ['projectId', 'env'],
+				"commonFields": ['project', 'env'],
 				"id": {
 					"source": ['query.id'],
 					"required": true,
@@ -3098,7 +3098,7 @@ module.exports = {
 					"l": "Set Resource Deploy Configuration",
 					"group": "Resources"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
@@ -3136,7 +3136,7 @@ module.exports = {
 					"l": "Update Custom Registry Entry",
 					"group": "Custom Registry"
 				},
-				"commonFields": ['projectId', 'env'],
+				"commonFields": ['project', 'env'],
 				"id": {
 					"source": ['query.id'],
 					"required": true,
@@ -3152,7 +3152,7 @@ module.exports = {
 					"l": "Upgrade To New Custom Registry",
 					"group": "Custom Registry"
 				},
-				"commonFields": ['projectId', 'env']
+				"commonFields": ['project', 'env']
 			},
 
 			"/environment/platforms/cert/choose": {
@@ -3160,7 +3160,7 @@ module.exports = {
 					"l": "Choose Existing Certificates",
 					"group": "Environment Platforms"
 				},
-				"commonFields": ['projectId', 'env'],
+				"commonFields": ['project', 'env'],
 				"platform": {
 					"source": ['query.platform'],
 					"required": true,
@@ -3189,7 +3189,7 @@ module.exports = {
 					"l": "Change Selected Driver",
 					"group": "Environment Platforms"
 				},
-				"commonFields": ['projectId', 'env'],
+				"commonFields": ['project', 'env'],
 				"selected": {
 					"source": ['body.selected'],
 					"required": true,
@@ -3204,7 +3204,7 @@ module.exports = {
 					"l": "Change Deployer Type",
 					"group": "Environment Platforms"
 				},
-				"commonFields": ['projectId', 'env'],
+				"commonFields": ['project', 'env'],
 				"deployerType": {
 					"source": ['body.deployerType'],
 					"required": true,
@@ -3220,7 +3220,7 @@ module.exports = {
 					"l": "Change Deployer Type",
 					"group": "Environment Platforms"
 				},
-				"commonFields": ['projectId', 'env'],
+				"commonFields": ['project', 'env'],
 				"driver": {
 					"source": ['body.driver'],
 					"required": true,
@@ -3253,7 +3253,7 @@ module.exports = {
 					"l": "Update Product",
 					"group": "Product"
 				},
-				"commonFields": ['id', 'name', 'description', 'projectId']
+				"commonFields": ['id', 'name', 'description', 'project']
 			},
 
 			"/product/packages/update": {
@@ -3261,7 +3261,7 @@ module.exports = {
 					"l": "Update Product Package",
 					"group": "Product"
 				},
-				"commonFields": ['id', 'name', 'description', '_TTL', 'acl', 'projectId'],
+				"commonFields": ['id', 'name', 'description', '_TTL', 'acl', 'project'],
 				"code": {
 					"source": ["query.code"],
 					"required": true,
@@ -3277,14 +3277,14 @@ module.exports = {
 					"l": "Update Tenant",
 					"group": "Tenant"
 				},
-				"commonFields": ['id', 'name', 'description', 'projectId'],
+				"commonFields": ['id', 'name', 'description', 'project'],
 				"type": {
 					"source": ['body.type'],
 					"required": false,
 					"default": "client",
 					"validation": {
 						"type": "string",
-						"enum": ["admin", "product", "client", 'projectId']
+						"enum": ["admin", "product", "client", 'project']
 					}
 				},
 				"tag": {
@@ -3301,7 +3301,7 @@ module.exports = {
 					"l": "Update Tenant oAuth Configuration",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'secret', 'redirectURI', 'oauthType', 'availableEnv', 'projectId']
+				"commonFields": ['id', 'secret', 'redirectURI', 'oauthType', 'availableEnv', 'project']
 			},
 
 			"/tenant/oauth/users/update": {
@@ -3309,7 +3309,7 @@ module.exports = {
 					"l": "Update Tenant oAuth User",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'uId', 'projectId'],
+				"commonFields": ['id', 'uId', 'project'],
 				"userId": {
 					"source": ['body.userId'],
 					"required": false,
@@ -3339,7 +3339,7 @@ module.exports = {
 						"enum": ['6', '12', '24', '48', '72', '96', '120', '144', '168']
 					}
 				},
-				"commonFields": ['projectId', 'id', 'appId', 'description', 'acl', 'productCode', 'packageCode', 'clearAcl']
+				"commonFields": ['project', 'id', 'appId', 'description', 'acl', 'productCode', 'packageCode', 'clearAcl']
 			},
 
 			"/tenant/application/key/ext/update": {
@@ -3347,7 +3347,7 @@ module.exports = {
 					"l": "Update Tenant Application External Key",
 					"group": "Tenant Application"
 				},
-				"commonFields": ['id', 'appId', 'key', 'extKey', 'expDate', 'device', 'geo', 'projectId'],
+				"commonFields": ['id', 'appId', 'key', 'extKey', 'expDate', 'device', 'geo', 'project'],
 				"extKeyEnv": {
 					"source": ['query.extKeyEnv'],
 					"required": true,
@@ -3362,7 +3362,7 @@ module.exports = {
 					"l": "Update Tenant Application Key Configuration",
 					"group": "Tenant Application"
 				},
-				"commonFields": ['id', 'appId', 'key', 'envCode', 'config', 'projectId']
+				"commonFields": ['id', 'appId', 'key', 'envCode', 'config', 'project']
 			},
 
 			"/settings/tenant/update": {
@@ -3370,7 +3370,7 @@ module.exports = {
 					"l": "Update Tenant",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['name', 'description', 'projectId'],
+				"commonFields": ['name', 'description', 'project'],
 				"type": {
 					"source": ['body.type'],
 					"required": false,
@@ -3387,7 +3387,7 @@ module.exports = {
 					"l": "Update Tenant oAuth Configuration",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['secret', 'redirectURI', 'oauthType', 'availableEnv', 'projectId']
+				"commonFields": ['secret', 'redirectURI', 'oauthType', 'availableEnv', 'project']
 			},
 
 			"/settings/tenant/oauth/users/update": {
@@ -3395,7 +3395,7 @@ module.exports = {
 					"l": "Update Tenant oAuth User",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['uId', 'projectId'],
+				"commonFields": ['uId', 'project'],
 				"userId": {
 					"source": ['body.userId'],
 					"required": false,
@@ -3417,7 +3417,7 @@ module.exports = {
 					"l": "Update Tenant Application External Key",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['appId', 'key', 'extKey', 'expDate', 'device', 'geo', 'projectId'],
+				"commonFields": ['appId', 'key', 'extKey', 'expDate', 'device', 'geo', 'project'],
 				"extKeyEnv": {
 					"source": ['query.extKeyEnv'],
 					"required": true,
@@ -3432,7 +3432,7 @@ module.exports = {
 					"l": "Update Tenant Application Key Configuration",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['appId', 'key', 'envCode', 'config', 'projectId']
+				"commonFields": ['appId', 'key', 'envCode', 'config', 'project']
 			},
 
 			"/daemons/groupConfig/update": {
@@ -3440,7 +3440,7 @@ module.exports = {
 					"l": "Update Daemon Group Configuration",
 					"group": "Daemons"
 				},
-				'commonFields': ['projectId', 'id', 'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
+				'commonFields': ['project', 'id', 'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
 				'type': {
 					"required": true,
 					"source": ["body.type"],
@@ -3456,7 +3456,7 @@ module.exports = {
 					"l": "Update Service Configuration",
 					"group": "Daemons"
 				},
-				'commonFields': ['id', 'jobName', 'projectId'],
+				'commonFields': ['id', 'jobName', 'project'],
 				'env': {
 					'source': ['body.env'],
 					'required': true,
@@ -3478,7 +3478,7 @@ module.exports = {
 					"l": "Update Job's External Keys",
 					"group": "Daemons"
 				},
-				'commonFields': ['id', 'jobName', 'projectId'],
+				'commonFields': ['id', 'jobName', 'project'],
 				'tenantExtKeys': {
 					'source': ['body.tenantExtKeys'],
 					'required': true,
@@ -3500,7 +3500,7 @@ module.exports = {
 					"l": "Update HA Cloud Node",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env'],
+				'commonFields': ['project', 'env'],
 				"nodeId": {
 					"source": ['query.nodeId'],
 					"required": true,
@@ -3530,7 +3530,7 @@ module.exports = {
 					"l": "Update HA Cloud Node Tag",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"id": {
 					"source": ['body.id'],
 					"required": true,
@@ -3552,7 +3552,7 @@ module.exports = {
 					"l": "Scale HA Service",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'namespace'],
+				'commonFields': ['project', 'namespace'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
@@ -3581,7 +3581,7 @@ module.exports = {
 					"l": "Redeploy HA Service",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'namespace'],
+				'commonFields': ['project', 'namespace'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
@@ -3645,7 +3645,7 @@ module.exports = {
 					"l": "Autoscale Services",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env', 'namespace'],
+				'commonFields': ['project', 'env', 'namespace'],
 				"action": {
 					"source": ['body.action'],
 					"required": true,
@@ -3692,7 +3692,7 @@ module.exports = {
 					"l": "Configure Environment Autoscaling",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env'],
+				'commonFields': ['project', 'env'],
 				"autoscale": {
 					"source": ['body.autoscale'],
 					"required": true,
@@ -3730,7 +3730,7 @@ module.exports = {
 					"l": "Update Catalog",
 					"group": "Catalog"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": true,
@@ -3746,7 +3746,7 @@ module.exports = {
 					"l": "Deactivate Repository",
 					"group": "Git Accounts"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": true,
@@ -3789,7 +3789,7 @@ module.exports = {
 					"l": "Deactivate CI Provider",
 					"group": "Continuous Integration"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"owner": {
 					"source": ['body.owner'],
 					"required": true,
@@ -3811,7 +3811,7 @@ module.exports = {
 					"l": "Edit CI Recipe",
 					"group": "Continuous Integration"
 				},
-				"commonFields": ["id", 'projectId'],
+				"commonFields": ["id", 'project'],
 				"provider": {
 					"source": ['body.provider'],
 					"required": true,
@@ -3840,7 +3840,7 @@ module.exports = {
 					"l": "Update CI Repository Settings",
 					"group": "Continuous Integration"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": true,
@@ -3890,7 +3890,7 @@ module.exports = {
 					"l": "Update Content Schema",
 					"group": "Content Builder"
 				},
-				"commonFields": ["id", 'projectId'],
+				"commonFields": ["id", 'project'],
 				"config": {
 					"required": true,
 					"source": ["body.config"],
@@ -3903,7 +3903,7 @@ module.exports = {
 					"l": "Deactivate Repository",
 					"group": "Git Accounts"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": true,
@@ -3928,21 +3928,26 @@ module.exports = {
 			}
 		},
 
-		"delete": {
-			"/environment/delete": {
-				_apiInfo: {
-					"l": "Delete Environment",
-					"group": "Environment"
-				},
-				"commonFields": ['id', 'projectId']
-			},
+        "delete": {
+            "/environment/delete": {
+                _apiInfo: {
+                    "l": "Delete Environment",
+                    "group": "Environment"
+                },
+                "commonFields": ['id', 'project'],
+	            "force": {
+		            "source": ['query.force'],
+		            "required": true, "default": false,
+		            "validation": {"type": "boolean"}
+	            }
+            },
 
 			"/environment/dbs/delete": {
 				_apiInfo: {
 					"l": "Delete Environment Database",
 					"group": "Environment Databases"
 				},
-				"commonFields": ['projectId', 'env'],
+				"commonFields": ['project', 'env'],
 				"name": {
 					"source": ['query.name'],
 					"required": true,
@@ -3955,7 +3960,7 @@ module.exports = {
 					"l": "Delete a resource",
 					"group": "Resources"
 				},
-				"commonFields": ['projectId', 'env'],
+				"commonFields": ['project', 'env'],
 				"id": {
 					"source": ['query.id'],
 					"required": true,
@@ -3970,7 +3975,7 @@ module.exports = {
 					"l": "Delete A Custom Registry Entry",
 					"group": "Custom Registry"
 				},
-				"commonFields": ['projectId', 'env'],
+				"commonFields": ['project', 'env'],
 				"id": {
 					"source": ['query.id'],
 					"required": true,
@@ -3985,7 +3990,7 @@ module.exports = {
 					"l": "Remove Certificate",
 					"group": "Environment Platforms"
 				},
-				"commonFields": ['projectId', 'env'],
+				"commonFields": ['project', 'env'],
 				"id": {
 					"source": ['query.id'],
 					"required": true,
@@ -4007,7 +4012,7 @@ module.exports = {
 					"l": "Delete Product",
 					"group": "Product"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": false,
@@ -4029,7 +4034,7 @@ module.exports = {
 					"l": "Delete Product Package",
 					"group": "Product"
 				},
-				"commonFields": ['id', 'projectId'],
+				"commonFields": ['id', 'project'],
 				"code": {
 					"source": ['query.code'],
 					"required": true,
@@ -4045,7 +4050,7 @@ module.exports = {
 					"l": "Delete Tenant",
 					"group": "Tenant"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": false,
@@ -4067,7 +4072,7 @@ module.exports = {
 					"l": "Delete Tenant oAuth Configuration",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'projectId']
+				"commonFields": ['id', 'project']
 			},
 
 			"/tenant/oauth/users/delete": {
@@ -4075,7 +4080,7 @@ module.exports = {
 					"l": "Delete Tenant oAuth User",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'uId', 'projectId']
+				"commonFields": ['id', 'uId', 'project']
 			},
 
 			"/tenant/application/delete": {
@@ -4083,7 +4088,7 @@ module.exports = {
 					"l": "Delete Tenant Application",
 					"group": "Tenant Application"
 				},
-				"commonFields": ['id', 'appId', 'projectId']
+				"commonFields": ['id', 'appId', 'project']
 			},
 
 			"/tenant/application/key/delete": {
@@ -4091,7 +4096,7 @@ module.exports = {
 					"l": "Delete Tenant Application Key",
 					"group": "Tenant Application"
 				},
-				"commonFields": ['id', 'appId', 'key', 'projectId']
+				"commonFields": ['id', 'appId', 'key', 'project']
 			},
 
 			"/settings/tenant/oauth/delete": {
@@ -4099,7 +4104,7 @@ module.exports = {
 					"l": "Delete Tenant oAuth Configuration",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['projectId']
+				"commonFields": ['project']
 			},
 
 			"/settings/tenant/oauth/users/delete": {
@@ -4107,7 +4112,7 @@ module.exports = {
 					"l": "Delete Tenant oAuth User",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['uId', 'projectId']
+				"commonFields": ['uId', 'project']
 			},
 
 			"/settings/tenant/application/key/delete": {
@@ -4115,7 +4120,7 @@ module.exports = {
 					"l": "Delete Tenant Application Key",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['appId', 'key', 'projectId']
+				"commonFields": ['appId', 'key', 'project']
 			},
 
 			"/daemons/groupConfig/delete": {
@@ -4123,7 +4128,7 @@ module.exports = {
 					"l": "Delete Daemon Group Configuration",
 					"group": "Daemons"
 				},
-				'commonFields': ['id', 'projectId']
+				'commonFields': ['id', 'project']
 			},
 
 			"/cloud/nodes/remove": {
@@ -4131,7 +4136,7 @@ module.exports = {
 					"l": "Remove HA Cloud Node",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env'],
+				'commonFields': ['project', 'env'],
 				"nodeId": {
 					"source": ['query.nodeId'],
 					"required": true,
@@ -4146,7 +4151,7 @@ module.exports = {
 					"l": "Delete HA Service",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env', 'namespace'],
+				'commonFields': ['project', 'env', 'namespace'],
 				"serviceId": {
 					"source": ['query.serviceId'],
 					"required": true,
@@ -4168,7 +4173,7 @@ module.exports = {
 					"l": "Delete a Namespace",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env'],
+				'commonFields': ['project', 'env'],
 				"namespaceId": {
 					"source": ['query.namespaceId'],
 					"required": true,
@@ -4183,7 +4188,7 @@ module.exports = {
 					"l": "Delete a Catalog",
 					"group": "Catalog"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": true,
@@ -4205,7 +4210,7 @@ module.exports = {
 					"l": "Delete CI Recipe",
 					"group": "Continuous Integration"
 				},
-				"commonFields": ["id", 'projectId']
+				"commonFields": ["id", 'project']
 			},
 
 			"/gitAccounts/logout": {
@@ -4213,7 +4218,7 @@ module.exports = {
 					"l": "Github Logout",
 					"group": "Git Accounts"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['project'],
 				"id": {
 					"source": ['query.id'],
 					"required": true,
