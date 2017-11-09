@@ -30,17 +30,14 @@ var mongoStub = {
 	}
 };
 var deployer = {
-
 	redeployService: function (options, cb) {
 		return cb(null, true);
 	},
-
 	listServices: function (options, cb) {
 		var services = [];
 		return cb(null, services);
 	},
-
-	deployService: function(options, cb) {
+	deployService: function (options, cb) {
 		return cb(null, true);
 	}
 
@@ -48,6 +45,50 @@ var deployer = {
 var BL = {
 	model: mongoStub
 };
+
+var registry = {
+	loadByEnv: function (obj, cb) {
+		var env = {
+			code: 'DEV',
+			environment: 'dev',
+			deployer: {
+				"type": "container",
+				"selected": "container.docker.local",
+				"container": {
+					"docker": {
+						"local": {
+							"socketPath": "/var/run/docker.sock"
+						},
+						"remote": {
+							"nodes": ""
+						}
+					},
+					"kubernetes": {
+						"local": {
+							"nginxDeployType": "",
+							"namespace": {},
+							"auth": {
+								"token": ""
+							}
+						},
+						"remote": {
+							"nginxDeployType": "",
+							"namespace": {},
+							"auth": {
+								"token": ""
+							}
+						}
+					}
+				}
+			},
+			dbs: {},
+			services: {},
+			profile: ''
+		};
+		return cb(null, env);
+	}
+};
+
 describe("testing helper soajs.cd.js", function () {
 	var soajs = {
 		registry: {
@@ -57,13 +98,13 @@ describe("testing helper soajs.cd.js", function () {
 		},
 		log: {
 			debug: function (data) {
-				if(process.env.SOAJS_DEBUG_LOGS) console.log(data);
+				if (process.env.SOAJS_DEBUG_LOGS) console.log(data);
 			},
 			error: function (data) {
-				if(process.env.SOAJS_DEBUG_LOGS) console.log(data);
+				if (process.env.SOAJS_DEBUG_LOGS) console.log(data);
 			},
 			info: function (data) {
-				if(process.env.SOAJS_DEBUG_LOGS) console.log(data);
+				if (process.env.SOAJS_DEBUG_LOGS) console.log(data);
 			}
 		},
 		inputmaskData: {},
@@ -76,6 +117,7 @@ describe("testing helper soajs.cd.js", function () {
 	};
 	var envRecord = {
 		code: 'DEV',
+		environment: 'dev',
 		deployer: {
 			"type": "container",
 			"selected": "container.docker.local",
@@ -111,9 +153,9 @@ describe("testing helper soajs.cd.js", function () {
 		profile: ''
 	};
 
-	describe("testing deepVersionComparison", function() {
+	describe("testing deepVersionComparison", function () {
 		var oneImage = {}, tag = "", opts = {}, newObj = {};
-		before(function(done) {
+		before(function (done) {
 			oneImage = { name: '1.0.x-1.0.x', last_updated: 1499852120 };
 			opts.imageInfo = { prefix: 'soajsorg' };
 			tag = '1.0.x-1.0.x';
@@ -121,13 +163,13 @@ describe("testing helper soajs.cd.js", function () {
 			done();
 		});
 
-		it("success - no update detected, official image", function(done) {
+		it("success - no update detected, official image", function (done) {
 			var result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
 			assert.ok(result);
 			done();
 		});
 
-		it("success - deployer update detected, official image", function(done) {
+		it("success - deployer update detected, official image", function (done) {
 			oneImage.name = '1.1.x-1.0.x';
 			var result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
 			assert.ok(result);
@@ -135,7 +177,7 @@ describe("testing helper soajs.cd.js", function () {
 			done();
 		});
 
-		it("success - core update detected, official image", function(done) {
+		it("success - core update detected, official image", function (done) {
 			oneImage.name = '1.0.x-1.1.x';
 			var result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
 			assert.ok(result);
@@ -143,7 +185,7 @@ describe("testing helper soajs.cd.js", function () {
 			done();
 		});
 
-		it("success - image update, custom image", function(done) {
+		it("success - image update, custom image", function (done) {
 			opts.imageInfo.prefix = 'soajstest';
 			oneImage.name = '2.0';
 			tag = '1.0';
@@ -153,7 +195,7 @@ describe("testing helper soajs.cd.js", function () {
 			done();
 		});
 
-		it("success - image tag is not a number", function(done) {
+		it("success - image tag is not a number", function (done) {
 			tag = "testing";
 			var result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
 			assert.ok(result);
@@ -163,10 +205,10 @@ describe("testing helper soajs.cd.js", function () {
 
 	});
 
-	describe("testing processUndeployedServices", function() {
+	describe("testing processUndeployedServices", function () {
 		var deployedServices = [], allServices = [], cdInfo = {};
 
-		before(function(done) {
+		before(function (done) {
 			deployedServices.push({
 				service: {
 					id: 'rp11111exmaol22',
@@ -279,7 +321,7 @@ describe("testing helper soajs.cd.js", function () {
 			done();
 		});
 
-		it("success - will build list of undeployed services, version specified", function(done) {
+		it("success - will build list of undeployed services, version specified", function (done) {
 			req.soajs.inputmaskData = {
 				repo: 'testSrv-repo',
 				branch: 'master',
@@ -291,7 +333,7 @@ describe("testing helper soajs.cd.js", function () {
 			});
 		});
 
-		it("success - will build list of undeployed services, version not specified", function(done) {
+		it("success - will build list of undeployed services, version not specified", function (done) {
 			req.soajs.inputmaskData = {
 				repo: 'testSrv-repo',
 				branch: 'master',
@@ -304,7 +346,7 @@ describe("testing helper soajs.cd.js", function () {
 			});
 		});
 
-		it("success - will build list of one service, daemon specified is already deployed", function(done) {
+		it("success - will build list of one service, daemon specified is already deployed", function (done) {
 			deployedServices = [
 				{
 					service: {
@@ -376,13 +418,12 @@ describe("testing helper soajs.cd.js", function () {
 			},
 			strategy: 'update'
 		};
-		var options = {
-
-		};
+		var options = {};
 
 		it("success - commit error, service is deployed", function (done) {
 			oneService.commitError = true;
-			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
+			// req, BL, oneService, registry, deployer, options, callback
+			helpers.processOneService(req, BL, oneService, registry, deployer, options, function (error, body) {
 				oneService.commitError = false;
 				done();
 			});
@@ -398,7 +439,7 @@ describe("testing helper soajs.cd.js", function () {
 					}
 				}
 			};
-			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
+			helpers.processOneService(req, BL, oneService, registry, deployer, options, function (error, body) {
 				oneService.commitError = false;
 				oneService.service.labels = {};
 				oneService.options = {};
@@ -408,15 +449,15 @@ describe("testing helper soajs.cd.js", function () {
 
 		it("Success update", function (done) {
 			//NOTE: mocking environment variables for service to include daemon group config variable
-			oneService.service.env = [ 'SOAJS_DAEMON_GRP_CONF=testGroup' ];
-			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
+			oneService.service.env = ['SOAJS_DAEMON_GRP_CONF=testGroup'];
+			helpers.processOneService(req, BL, oneService, registry, deployer, options, function (error, body) {
 				done();
 			});
 		});
 
 		it("Success notify, service is deployed", function (done) {
 			oneService.pause = true;
-			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
+			helpers.processOneService(req, BL, oneService, registry, deployer, options, function (error, body) {
 				oneService.pause = false;
 				done();
 			});
@@ -432,7 +473,7 @@ describe("testing helper soajs.cd.js", function () {
 					}
 				}
 			};
-			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
+			helpers.processOneService(req, BL, oneService, registry, deployer, options, function (error, body) {
 				oneService.pause = false;
 				oneService.service.labels = {};
 				oneService.options = {};
@@ -440,7 +481,7 @@ describe("testing helper soajs.cd.js", function () {
 			});
 		});
 
-		it.skip("success - deploy", function(done) {
+		it.skip("success - deploy", function (done) {
 			delete oneService.service.labels;
 			oneService.deploy = true;
 			oneService.options = {
@@ -450,7 +491,7 @@ describe("testing helper soajs.cd.js", function () {
 					}
 				}
 			};
-			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
+			helpers.processOneService(req, BL, oneService, registry, deployer, options, function (error, body) {
 				done();
 			});
 		});
@@ -911,7 +952,7 @@ describe("testing helper soajs.cd.js", function () {
 			});
 		});
 
-		it("Success - repository cd information found for custom deployed service", function(done) {
+		it("Success - repository cd information found for custom deployed service", function (done) {
 			req.soajs.inputmaskData.repo = 'testRepo';
 			req.soajs.inputmaskData.owner = 'testOwner';
 			req.soajs.inputmaskData.branch = 'master';
@@ -985,8 +1026,7 @@ describe("testing helper soajs.cd.js", function () {
 				}];
 				return cb(null, services);
 			};
-
-			helpers.getEnvsServices(envs, req, deployer, BL, function (error, body) {
+			helpers.getEnvsServices(envs, req, registry, deployer, BL, function (error, body) {
 				done();
 			});
 		});
@@ -1219,18 +1259,19 @@ describe("testing helper soajs.cd.js", function () {
 		var cloudServices = {
 			init: function (modelName, cb) {
 				var BL = {
-					listServices: function (config, soajs, deployer, cb) {
+					listServices: function (config, soajs,registry, deployer, cb) {
 						return cb(null, []);
 					}
 				};
 				return cb(null, BL);
 			}
 		};
-		it("Success getServices", function (done) {
+		it("Success 1", function (done) {
 			soajs.inputmaskData = {
 				env: "dev"
 			};
-			helpers.getServices(config, req, deployer, cloudServices, function (error, body) {
+			// getServices: function (config, req, registry, deployer, cloudServices, cb)
+			helpers.getServices(config, req, registry, deployer, cloudServices, function (error, body) {
 				done();
 			});
 		});
