@@ -1699,7 +1699,8 @@ module.exports = {
 					"validation": {
 						"type": "string",
 						"format": "alphanumeric",
-						"maxLength": 6
+						"minLength": 4,
+						"maxLength": 5
 					}
 				}
 			},
@@ -1717,7 +1718,7 @@ module.exports = {
 						"type": "string",
 						"format": "alphanumeric",
 						"minLength": 4,
-						"maxLength": 6
+						"maxLength": 5
 					}
 				}
 			},
@@ -3920,14 +3921,19 @@ module.exports = {
 			}
 		},
 
-		"delete": {
-			"/environment/delete": {
-				_apiInfo: {
-					"l": "Delete Environment",
-					"group": "Environment"
-				},
-				"commonFields": ['id', 'project']
-			},
+        "delete": {
+            "/environment/delete": {
+                _apiInfo: {
+                    "l": "Delete Environment",
+                    "group": "Environment"
+                },
+                "commonFields": ['id', 'project'],
+	            "force": {
+		            "source": ['query.force'],
+		            "required": true, "default": false,
+		            "validation": {"type": "boolean"}
+	            }
+            },
 
 			"/environment/dbs/delete": {
 				_apiInfo: {
