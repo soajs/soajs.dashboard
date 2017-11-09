@@ -586,6 +586,13 @@ module.exports = {
 				'validation': {
 					'type': 'string'
 				}
+			},
+			"namespace": {
+				'source': ['query.namespace'],
+				'required': false,
+				'validation': {
+					'type': 'string'
+				}
 			}
 		},
 
@@ -1073,7 +1080,7 @@ module.exports = {
 					"l": "Get Service Container Logs",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env'],
+				'commonFields': ['projectId', 'env', 'namespace'],
 				"serviceId": {
 					"source": ['query.serviceId'],
 					"required": true,
@@ -2169,7 +2176,7 @@ module.exports = {
 					"l": "Perform A Maintenance Operation on a Deployed Service",
 					"group": "HA Cloud"
 				},
-				"commonFields": ['projectId'],
+				"commonFields": ['projectId', 'namespace'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
@@ -3545,7 +3552,7 @@ module.exports = {
 					"l": "Scale HA Service",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['projectId', 'namespace'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
@@ -3574,7 +3581,7 @@ module.exports = {
 					"l": "Redeploy HA Service",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId'],
+				'commonFields': ['projectId', 'namespace'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
@@ -3638,7 +3645,7 @@ module.exports = {
 					"l": "Autoscale Services",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env'],
+				'commonFields': ['projectId', 'env', 'namespace'],
 				"action": {
 					"source": ['body.action'],
 					"required": true,
@@ -4139,7 +4146,7 @@ module.exports = {
 					"l": "Delete HA Service",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['projectId', 'env'],
+				'commonFields': ['projectId', 'env', 'namespace'],
 				"serviceId": {
 					"source": ['query.serviceId'],
 					"required": true,

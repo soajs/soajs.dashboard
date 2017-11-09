@@ -53,6 +53,11 @@ module.exports = {
         options.driver = selected[1] + '.' + selected[2];
         options.env = registry.environment.toLowerCase();
 
+		if(options.strategy === 'kubernetes' && soajs.inputmaskData.namespace) {
+			//if a namespace is specified, add user set namespace to override the registry config
+			options.namespace = soajs.inputmaskData.namespace;
+		}
+
         for (var i = 0; i < selected.length; i++) {
             envDeployer = envDeployer[selected[i]];
         }
@@ -124,7 +129,7 @@ module.exports = {
 				code: uracRecord.tenant.code.toUpperCase()
 			}
 		};
-		
+
 		model.findEntry(soajs, opts, function (error, tenantRecord) {
 			if(error) {
 				return cb(error);
