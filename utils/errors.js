@@ -65,9 +65,9 @@ var errors = {
 	"454": "Tenant does not exist",
 	"455": "Tenant Key already exists",
 	"456": "Error adding Tenant Key",
-	
+
 	"457": "You are not allowed to create an environment named PORTAL or DASHBOARD",
-	
+
 	"460": "Unable to find product",
 	"461": "Unable to find package",
 
@@ -77,7 +77,7 @@ var errors = {
 	"465": "You are not allowed to remove the external key you are currently logged in with",
 	"466": "You are not allowed to remove the product you are currently logged in with",
 	"467": "You are not allowed to remove the package you are currently logged in with",
-	
+
 	"468": "Invalid product code provided",
 	"470": "Missing required field: either id or code",
 
@@ -306,7 +306,9 @@ var errors = {
 	"992": "A plugged custom registry entry with the same name exists in this environment or is shared with other environments",
 	"993": "Custom registry entry not found",
 	"994": "You are not allowed to modify or delete this custom registry entry",
-	"995": "Modifying a custom registry entry is only allowed in the environment where it was created"
+	"995": "Modifying a custom registry entry is only allowed in the environment where it was created",
+
+	"996": "At least one of the deployment's exposed ports conflicts with existing deployments"
 };
 
 
