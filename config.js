@@ -1699,7 +1699,8 @@ module.exports = {
 					"validation": {
 						"type": "string",
 						"format": "alphanumeric",
-						"maxLength": 6
+						"minLength": 4,
+						"maxLength": 5
 					}
 				}
 			},
@@ -1717,7 +1718,7 @@ module.exports = {
 						"type": "string",
 						"format": "alphanumeric",
 						"minLength": 4,
-						"maxLength": 6
+						"maxLength": 5
 					}
 				}
 			},
