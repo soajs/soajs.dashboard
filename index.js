@@ -307,6 +307,15 @@ service.init(function () {
 	});
 	
 	/**
+	 * return Profile of the current environment
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/environment/profile", function (req, res) {
+		return res.json(req.soajs.buildResponse(null, req.soajs.registry.coreDB.provision));
+	});
+	
+	/**
 	 * List resources
 	 * @param {String} API route
 	 * @param {Function} API middleware
