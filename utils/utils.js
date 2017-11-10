@@ -20,10 +20,10 @@ module.exports = {
 			}
 
 			if (data.error.source === 'driver') {
-				return mainCb({"code": data.error.code, "msg": data.error.msg});
+				return mainCb({ "code": data.error.code, "msg": data.error.msg });
 			}
 
-			return mainCb({"code": data.code, "msg": data.config.errors[data.code]});
+			return mainCb({ "code": data.code, "msg": data.config.errors[data.code] });
 		} else {
 			if (cb) {
 				return cb();
@@ -31,64 +31,64 @@ module.exports = {
 		}
 	},
 
-    /**
-     * Build an object that contains required values to be included when calling a soajs.core.drivers function
-     *
-     * @param {Object} envRecord
-     * @param {Object} soajs
-     * @returns {Object} options
-     */
-    buildDeployerOptions: function (registry, soajs, BL) {
-        var options = {};
-        var envDeployer = registry.deployer;
+	/**
+	 * Build an object that contains required values to be included when calling a soajs.core.drivers function
+	 *
+	 * @param {Object} envRecord
+	 * @param {Object} soajs
+	 * @returns {Object} options
+	 */
+	buildDeployerOptions: function (registry, soajs, BL) {
+		var options = {};
+		var envDeployer = registry.deployer;
 
-        if (!envDeployer) return null;
-        if (Object.keys(envDeployer).length === 0) return null;
-        if (!envDeployer.type || !envDeployer.selected) return null;
-        if (envDeployer.type === 'manual') return null;
+		if (!envDeployer) return null;
+		if (Object.keys(envDeployer).length === 0) return null;
+		if (!envDeployer.type || !envDeployer.selected) return null;
+		if (envDeployer.type === 'manual') return null;
 
-        var selected = envDeployer.selected.split('.');
+		var selected = envDeployer.selected.split('.');
 
-        options.strategy = selected[1];
-        options.driver = selected[1] + '.' + selected[2];
-        options.env = registry.environment.toLowerCase();
+		options.strategy = selected[1];
+		options.driver = selected[1] + '.' + selected[2];
+		options.env = registry.environment.toLowerCase();
 
-		if(options.strategy === 'kubernetes' && soajs.inputmaskData.namespace) {
+		if (options.strategy === 'kubernetes' && soajs.inputmaskData.namespace) {
 			//if a namespace is specified, add user set namespace to override the registry config
 			options.namespace = soajs.inputmaskData.namespace;
 		}
 
-        for (var i = 0; i < selected.length; i++) {
-            envDeployer = envDeployer[selected[i]];
-        }
+		for (var i = 0; i < selected.length; i++) {
+			envDeployer = envDeployer[selected[i]];
+		}
 
-        options.deployerConfig = envDeployer;
-        options.soajs = { registry: registry };
+		options.deployerConfig = envDeployer;
+		options.soajs = { registry: registry };
 
-        options.model = BL.model;
+		options.model = BL.model;
 
-        //switch strategy name to follow drivers convention
-        if (options.strategy === 'docker') options.strategy = 'swarm';
+		//switch strategy name to follow drivers convention
+		if (options.strategy === 'docker') options.strategy = 'swarm';
 
-        return options;
-    },
+		return options;
+	},
 
-    /**
-     * Get an evironment record from data store
-     *
-     * @param {Object} soajs
-     * @param {String} code
-     * @param {Object} BL
-     * @param {Callback Function} cb
-     */
-    getEnvironment: function (soajs, model, code, cb) {
-	    var opts = {
-            collection: 'environment',
-            conditions: { code: code.toUpperCase() }
-        };
+	/**
+	 * Get an evironment record from data store
+	 *
+	 * @param {Object} soajs
+	 * @param {String} code
+	 * @param {Object} BL
+	 * @param {Callback Function} cb
+	 */
+	getEnvironment: function (soajs, model, code, cb) {
+		var opts = {
+			collection: 'environment',
+			conditions: { code: code.toUpperCase() }
+		};
 
-        model.findEntry(soajs, opts, cb);
-    },
+		model.findEntry(soajs, opts, cb);
+	},
 
 	/**
 	 * Function that replaces characters in object keys with alternatives
@@ -102,7 +102,7 @@ module.exports = {
 		var updatedRecord = {};
 		var replacementRegex = new RegExp(regex, 'g');
 		async.eachOf(record, function (oneRecordEntry, key, callback) {
-			if(key.match(replacementRegex)) {
+			if (key.match(replacementRegex)) {
 				updatedRecord[key.replace(replacementRegex, replacementString)] = oneRecordEntry;
 			}
 			else {
@@ -121,8 +121,13 @@ module.exports = {
 	 * @param  {Function} cb
 	 * @return {void}
 	 */
-	checkIfOwner: function(soajs, model, cb) {
+	checkIfOwner: function (soajs, model, cb) {
 		var uracRecord = soajs.urac;
+		if (!soajs.urac || !soajs.urac.tenant) {
+			soajs.log.error('Urac tenant not found');
+			return cb(null, false);
+		}
+
 		var opts = {
 			collection: tenantsColName,
 			conditions: {
@@ -131,10 +136,10 @@ module.exports = {
 		};
 
 		model.findEntry(soajs, opts, function (error, tenantRecord) {
-			if(error) {
+			if (error) {
 				return cb(error);
 			}
-			if(tenantRecord && tenantRecord.locked && uracRecord.groups.indexOf('owner') !== -1) {
+			if (tenantRecord && tenantRecord.locked && uracRecord.groups.indexOf('owner') !== -1) {
 				return cb(null, true);
 			}
 

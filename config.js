@@ -651,6 +651,13 @@ module.exports = {
 					}
 				}
 			},
+			
+			"/environment/profile": {
+				_apiInfo: {
+					"l": "Get Profile",
+					"group": "Environment"
+				}
+			},
 
 			"/environment/dbs/list": {
 				_apiInfo: {
@@ -1743,13 +1750,6 @@ module.exports = {
 						"type": "string",
 						"format": "alphanumeric",
 						"maxLength": 4
-					}
-				},
-				"email": {
-					"source": ['body.email'],
-					"required": true,
-					"validation": {
-						"type": "email"
 					}
 				},
 				"type": {
