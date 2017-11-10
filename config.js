@@ -651,6 +651,13 @@ module.exports = {
 					}
 				}
 			},
+			
+			"/environment/profile": {
+				_apiInfo: {
+					"l": "Get Profile",
+					"group": "Environment"
+				}
+			},
 
 			"/environment/dbs/list": {
 				_apiInfo: {
