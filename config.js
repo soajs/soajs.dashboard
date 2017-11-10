@@ -1752,13 +1752,6 @@ module.exports = {
 						"maxLength": 4
 					}
 				},
-				"email": {
-					"source": ['body.email'],
-					"required": true,
-					"validation": {
-						"type": "email"
-					}
-				},
 				"type": {
 					"source": ['body.type'],
 					"required": false,
