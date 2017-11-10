@@ -2835,6 +2835,13 @@ module.exports = {
 					"group": "Continuous Delivery"
 				},
 				"commonFields": ['project'],
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
 				"data": {
 					"required": true,
 					"source": ["body.data"],
