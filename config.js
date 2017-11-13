@@ -1481,45 +1481,7 @@ module.exports = {
 					}
 				}
 			},
-
-			"/cb/list": {
-				"_apiInfo": {
-					"l": "List Content Schema",
-					"group": "Content Builder",
-					"groupMain": true
-				},
-				'commonFields': ['project'],
-				'port': {
-					'required': false,
-					'source': ['query.port'],
-					'validation': {
-						'type': 'boolean'
-					}
-				}
-			},
-
-			"/cb/get": {
-				"_apiInfo": {
-					"l": "Get One Content Schema",
-					"group": "Content Builder"
-				},
-				"commonFields": ["id", 'project'],
-				"version": {
-					"required": false,
-					"source": ["query.version"],
-					"validation": {
-						"type": "integer"
-					}
-				}
-			},
-
-			"/cb/listRevisions": {
-				"_apiInfo": {
-					"l": "List Content Schema Revisions",
-					"group": "Content Builder"
-				},
-				'commonFields': ['project']
-			},
+			
 			/*
 			 * this API will get the content and the url of any file located on a specific
 			 * github/bitbucket account for a certain repo.
@@ -2552,19 +2514,6 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
-				}
-			},
-
-			"/cb/add": {
-				"_apiInfo": {
-					"l": "Add New Content Schema",
-					"group": "Content Builder"
-				},
-				"commonFields": ["name", 'project'],
-				"config": {
-					"required": true,
-					"source": ["body.config"],
-					"validation": cbSchema
 				}
 			},
 
@@ -3889,19 +3838,6 @@ module.exports = {
 					"validation": {
 						"type": "object"
 					}
-				}
-			},
-
-			"/cb/update": {
-				"_apiInfo": {
-					"l": "Update Content Schema",
-					"group": "Content Builder"
-				},
-				"commonFields": ["id", 'project'],
-				"config": {
-					"required": true,
-					"source": ["body.config"],
-					"validation": cbSchema
 				}
 			},
 

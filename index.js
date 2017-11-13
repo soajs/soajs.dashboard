@@ -27,9 +27,6 @@ var dashboardBL = {
 	swagger: {
 		module: require("./lib/swagger/index.js")
 	},
-	cb: {
-		module: require("./lib/contentbuilder/index")
-	},
 	hosts: {
 		module: require("./lib/hosts/index.js"),
 		helper: require("./lib/hosts/helper.js")
@@ -2844,90 +2841,6 @@ service.init(function () {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
 					});
-				});
-			});
-		});
-	});
-	
-	/**
-	 * content builder features
-	 */
-	
-	/**
-	 * List available content builders
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.get("/cb/list", function (req, res) {
-		initBLModel(req, res, dashboardBL.cb.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.list(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-	
-	/**
-	 * Get a specific content builder
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.get("/cb/get", function (req, res) {
-		initBLModel(req, res, dashboardBL.cb.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.get(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-	
-	/**
-	 * List revisions of a specific content builder
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.get("/cb/listRevisions", function (req, res) {
-		initBLModel(req, res, dashboardBL.cb.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.revisions(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-	
-	/**
-	 * Add a new content builder
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.post("/cb/add", function (req, res) {
-		initBLModel(req, res, dashboardBL.cb.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.add(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-	
-	/**
-	 * Update an existing content builder
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.put("/cb/update", function (req, res) {
-		initBLModel(req, res, dashboardBL.cb.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.update(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
 				});
 			});
 		});
