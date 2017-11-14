@@ -40,22 +40,28 @@ var lib = {
 			URLParam: soajs.registry.coreDB.provision.URLParam,
 			extraParam: soajs.registry.coreDB.provision.extraParam
 		};
-		soajs.log.debug('process.env.SOAJS_SAAS:', process.env.SOAJS_SAAS);
-		soajs.log.debug('soajs.servicesConfig:');
-		soajs.log.debug(soajs.servicesConfig);
+		if(soajs.log){
+			soajs.log.debug('process.env.SOAJS_SAAS:', process.env.SOAJS_SAAS);
+			soajs.log.debug('soajs.servicesConfig:');
+			soajs.log.debug(soajs.servicesConfig);
+		}
 		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.dashboard && soajs.servicesConfig.dashboard.SOAJS_COMPANY) {
 			if (soajs.inputmaskData.project && soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project]) {
 				provision.prefix = soajs.inputmaskData.project + '_';
 				provision.credentials = soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project].credentials;
-				soajs.log.debug('New provision:');
-				soajs.log.debug(provision);
+				if(soajs.log) {
+					soajs.log.debug('New provision:');
+					soajs.log.debug(provision);
+				}
 			}
 			else {
 				// error
 				return false;
 			}
 		} else {
-			soajs.log.debug('Main connection');
+			if(soajs.log) {
+				soajs.log.debug('Main connection');
+			}
 		}
 		soajs.mongoDb = new Mongo(provision);
 		if (firstRun) {
