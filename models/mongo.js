@@ -58,10 +58,6 @@ var lib = {
 				// error
 				return false;
 			}
-		} else {
-			if (soajs.log) {
-				soajs.log.debug('Main connection');
-			}
 		}
 		soajs.mongoDb = new Mongo(provision);
 		if (firstRun) {
