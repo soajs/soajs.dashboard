@@ -1,5 +1,5 @@
 'use strict';
-
+var soajsUtils = require("soajs").utils;
 var async = require('async');
 var tenantsColName = 'tenants';
 
@@ -65,7 +65,8 @@ module.exports = {
 		options.deployerConfig = envDeployer;
 		
 		envRecord.serviceConfig = envRecord.services.config;
-		envRecord.coreDB = soajs.registry.coreDB;
+		envRecord.coreDB = soajsUtils.cloneObj(soajs.registry.coreDB);
+		delete envRecord.coreDB.registryLocation;
 		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.dashboard && soajs.servicesConfig.dashboard.SOAJS_COMPANY) {
 			if (soajs.inputmaskData.project && soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project]) {
 				envRecord.coreDB.provision.prefix = soajs.inputmaskData.project + '_';

@@ -54,9 +54,6 @@ var lib = {
 				return false;
 			}
 		}
-		if(soajs.log){
-			soajs.log.debug(provision);
-		}
 		soajs.mongoDb = new Mongo(provision);
 		if (firstRun) {
 			soajs.mongoDb.createIndex(servicesCollectionName, {port: 1}, {unique: true}, errorLogger);
