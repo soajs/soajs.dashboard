@@ -40,18 +40,14 @@ var lib = {
 			extraParam: soajs.registry.coreDB.provision.extraParam
 		};
 		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.SOAJS_COMPANY) {
-			if (Array.isArray(soajs.servicesConfig.SOAJS_COMPANY)) {
-				if (soajs.inputmaskData.project) {
-					if (soajs.servicesConfig.SOAJS_COMPANY[soajs.inputmaskData.project]) {
-						provision.prefix = soajs.inputmaskData.project + '_';
-						provision.credentials = soajs.servicesConfig.SOAJS_COMPANY[soajs.inputmaskData.project].credentials;
-					}
-				} else {
-					// error
-					return false;
-				}
+			if (soajs.inputmaskData.project && soajs.servicesConfig.SOAJS_COMPANY[soajs.inputmaskData.project]) {
+				provision.prefix = soajs.inputmaskData.project + '_';
+				provision.credentials = soajs.servicesConfig.SOAJS_COMPANY[soajs.inputmaskData.project].credentials;
 			}
-
+			else {
+				// error
+				return false;
+			}
 		}
 		soajs.mongoDb = new Mongo(provision);
 		if (firstRun) {
