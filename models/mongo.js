@@ -40,12 +40,13 @@ var lib = {
 			URLParam: soajs.registry.coreDB.provision.URLParam,
 			extraParam: soajs.registry.coreDB.provision.extraParam
 		};
+		soajs.log.debug('process.env.SOAJS_SAAS:', process.env.SOAJS_SAAS);
 		soajs.log.debug('soajs.servicesConfig:');
 		soajs.log.debug(soajs.servicesConfig);
-		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.SOAJS_COMPANY) {
-			if (soajs.inputmaskData.project && soajs.servicesConfig.SOAJS_COMPANY[soajs.inputmaskData.project]) {
+		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.dashboard && soajs.servicesConfig.dashboard.SOAJS_COMPANY) {
+			if (soajs.inputmaskData.project && soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project]) {
 				provision.prefix = soajs.inputmaskData.project + '_';
-				provision.credentials = soajs.servicesConfig.SOAJS_COMPANY[soajs.inputmaskData.project].credentials;
+				provision.credentials = soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project].credentials;
 				soajs.log.debug('New provision:');
 				soajs.log.debug(provision);
 			}
