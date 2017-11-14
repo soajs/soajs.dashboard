@@ -40,9 +40,13 @@ var lib = {
 			extraParam: soajs.registry.coreDB.provision.extraParam
 		};
 		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.SOAJS_COMPANY) {
+			soajs.log.debug('soajs.servicesConfig:');
+			soajs.log.debug(soajs.servicesConfig);
 			if (soajs.inputmaskData.project && soajs.servicesConfig.SOAJS_COMPANY[soajs.inputmaskData.project]) {
 				provision.prefix = soajs.inputmaskData.project + '_';
 				provision.credentials = soajs.servicesConfig.SOAJS_COMPANY[soajs.inputmaskData.project].credentials;
+				soajs.log.debug('New provision:');
+				soajs.log.debug(provision);
 			}
 			else {
 				// error
