@@ -40,7 +40,7 @@ var lib = {
 			URLParam: soajs.registry.coreDB.provision.URLParam,
 			extraParam: soajs.registry.coreDB.provision.extraParam
 		};
-		if(soajs.log){
+		if (soajs.log) {
 			soajs.log.debug('process.env.SOAJS_SAAS:', process.env.SOAJS_SAAS);
 			soajs.log.debug('soajs.servicesConfig:');
 			soajs.log.debug(soajs.servicesConfig);
@@ -49,8 +49,8 @@ var lib = {
 			if (soajs.inputmaskData.project && soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project]) {
 				provision.prefix = soajs.inputmaskData.project + '_';
 				provision.credentials = soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project].credentials;
-				if(soajs.log) {
-					soajs.log.debug('New provision:');
+				if (soajs.log) {
+					soajs.log.debug('Switching to connection of', soajs.inputmaskData.project);
 					soajs.log.debug(provision);
 				}
 			}
@@ -59,7 +59,7 @@ var lib = {
 				return false;
 			}
 		} else {
-			if(soajs.log) {
+			if (soajs.log) {
 				soajs.log.debug('Main connection');
 			}
 		}
