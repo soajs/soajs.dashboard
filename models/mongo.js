@@ -47,13 +47,15 @@ var lib = {
 				provision.credentials = soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project].credentials;
 				if (soajs.log) {
 					soajs.log.debug('Switching to connection of', soajs.inputmaskData.project);
-					soajs.log.debug(provision);
 				}
 			}
 			else {
 				// error
 				return false;
 			}
+		}
+		if(soajs.log){
+			soajs.log.debug(provision);
 		}
 		soajs.mongoDb = new Mongo(provision);
 		if (firstRun) {
