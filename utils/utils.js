@@ -38,9 +38,9 @@ module.exports = {
 	 * @param {Object} soajs
 	 * @returns {Object} options
 	 */
-	buildDeployerOptions: function (registry, soajs, BL) {
+	buildDeployerOptions: function (envRecord, soajs, BL) {
 		var options = {};
-		var envDeployer = registry.deployer;
+		var envDeployer = envRecord.deployer;
 
 		if (!envDeployer) return null;
 		if (Object.keys(envDeployer).length === 0) return null;
@@ -51,7 +51,7 @@ module.exports = {
 
 		options.strategy = selected[1];
 		options.driver = selected[1] + '.' + selected[2];
-		options.env = registry.environment.toLowerCase();
+		options.env = envRecord.code.toLowerCase();
 
 		if (options.strategy === 'kubernetes' && soajs.inputmaskData.namespace) {
 			//if a namespace is specified, add user set namespace to override the registry config
@@ -63,7 +63,7 @@ module.exports = {
 		}
 
 		options.deployerConfig = envDeployer;
-		options.soajs = { registry: registry };
+		options.soajs = { registry: envRecord };
 
 		options.model = BL.model;
 
