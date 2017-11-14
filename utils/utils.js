@@ -63,6 +63,16 @@ module.exports = {
 		}
 
 		options.deployerConfig = envDeployer;
+		
+		envRecord.serviceConfig = envRecord.services.config;
+		envRecord.coreDB = soajs.registry.coreDB;
+		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.dashboard && soajs.servicesConfig.dashboard.SOAJS_COMPANY) {
+			if (soajs.inputmaskData.project && soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project]) {
+				envRecord.coreDB.provision.prefix = soajs.inputmaskData.project + '_';
+				envRecord.coreDB.provision.credentials = soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project].credentials;
+			}
+		}
+		
 		options.soajs = { registry: envRecord };
 
 		options.model = BL.model;
