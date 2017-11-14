@@ -30,6 +30,7 @@ var lib = {
 				return soajs.log.error(error);
 			}
 		}
+
 		var provision = {
 			name: soajs.registry.coreDB.provision.name,
 			prefix: soajs.registry.coreDB.provision.prefix,
@@ -39,9 +40,9 @@ var lib = {
 			URLParam: soajs.registry.coreDB.provision.URLParam,
 			extraParam: soajs.registry.coreDB.provision.extraParam
 		};
+		soajs.log.debug('soajs.servicesConfig:');
+		soajs.log.debug(soajs.servicesConfig);
 		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.SOAJS_COMPANY) {
-			soajs.log.debug('soajs.servicesConfig:');
-			soajs.log.debug(soajs.servicesConfig);
 			if (soajs.inputmaskData.project && soajs.servicesConfig.SOAJS_COMPANY[soajs.inputmaskData.project]) {
 				provision.prefix = soajs.inputmaskData.project + '_';
 				provision.credentials = soajs.servicesConfig.SOAJS_COMPANY[soajs.inputmaskData.project].credentials;
@@ -52,6 +53,8 @@ var lib = {
 				// error
 				return false;
 			}
+		} else {
+			soajs.log.debug('Main connection');
 		}
 		soajs.mongoDb = new Mongo(provision);
 		if (firstRun) {
