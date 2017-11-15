@@ -41,19 +41,19 @@ var lib = {
 			extraParam: soajs.registry.coreDB.provision.extraParam
 		};
 		
-		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.dashboard && soajs.servicesConfig.dashboard.SOAJS_COMPANY) {
-			if (soajs.inputmaskData.project && soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project]) {
-				provision.prefix = soajs.inputmaskData.project + '_';
-				provision.credentials = soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project].credentials;
+		var switchedConnection = lib.switchConnection(soajs);
+		if (switchedConnection) {
+			if (typeof  switchedConnection === 'object' && Object.keys(switchedConnection).length > 0) {
+				provision = switchedConnection;
 				if (soajs.log) {
 					soajs.log.debug('Switching to connection of', soajs.inputmaskData.project);
 				}
 			}
-			else {
-				// error
-				return false;
-			}
+		} else {
+			//error
+			return false;
 		}
+		
 		soajs.mongoDb = new Mongo(provision);
 		if (firstRun) {
 			soajs.mongoDb.createIndex(servicesCollectionName, {port: 1}, {unique: true}, errorLogger);
@@ -247,6 +247,19 @@ var lib = {
 	"distinctEntries": function (soajs, opts, cb) {
 		lib.checkForMongo(soajs);
 		soajs.mongoDb.distinct(opts.collection, opts.fields, opts.conditions, cb);
+	},
+	
+	"switchConnection" : function (soajs) {
+		var provision = true;
+		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.dashboard && soajs.servicesConfig.dashboard.SOAJS_COMPANY) {
+			if (soajs.inputmaskData.project && soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project] && soajs.registry.coreDB[soajs.inputmaskData.project]) {
+				provision = soajs.registry.coreDB[soajs.inputmaskData.project];
+			}
+			else {
+				return false;
+			}
+		}
+		return provision
 	}
 };
 module.exports = lib;

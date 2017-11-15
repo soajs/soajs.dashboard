@@ -301,14 +301,15 @@ service.init(function () {
 	 */
 	service.get("/environment/profile", function (req, res) {
 		let provision = req.soajs.registry.coreDB.provision;
-		if (process.env.SOAJS_SAAS && req.soajs.servicesConfig && req.soajs.servicesConfig.dashboard && req.soajs.servicesConfig.dashboard.SOAJS_COMPANY) {
-			if (req.soajs.inputmaskData.project && req.soajs.servicesConfig.dashboard.SOAJS_COMPANY[req.soajs.inputmaskData.project]) {
-				provision.prefix = req.soajs.inputmaskData.project + '_';
-				provision.credentials = req.soajs.servicesConfig.dashboard.SOAJS_COMPANY[req.soajs.inputmaskData.project].credentials;
+		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			var switchedConnection = BL.model.switchConnection(soajs);
+			if (switchedConnection) {
+				if (typeof  switchedConnection === 'object' && Object.keys(switchedConnection).length > 0) {
+					provision = switchedConnection;
+				}
 			}
-		}
-		
-		return res.json(req.soajs.buildResponse(null, provision));
+			return res.json(req.soajs.buildResponse(null, provision));
+		});
 	});
 	
 	/**
