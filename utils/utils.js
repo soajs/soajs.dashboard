@@ -65,15 +65,15 @@ module.exports = {
 		options.deployerConfig = envDeployer;
 		
 		var serviceConfig = soajsUtils.cloneObj(envRecord.services.config);
+		envRecord.coreDB = soajsUtils.cloneObj(soajs.registry.coreDB);
 		
 		var switchedConnection = BL.model.switchConnection(soajs);
 		if (switchedConnection) {
 			if (typeof  switchedConnection === 'object' && Object.keys(switchedConnection).length > 0) {
-				envRecord = switchedConnection;
+				envRecord.coreDB.provision = soajsUtils.cloneObj(switchedConnection);
 			}
 		}
 		envRecord.serviceConfig = serviceConfig;
-		envRecord.coreDB = soajsUtils.cloneObj(soajs.registry.coreDB);
 		delete envRecord.coreDB.registryLocation;
 		
 		options.soajs = { registry: envRecord };
