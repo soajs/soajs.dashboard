@@ -253,16 +253,11 @@ var lib = {
 		var provision = true;
 		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.dashboard && soajs.servicesConfig.dashboard.SOAJS_COMPANY) {
 			if (soajs.inputmaskData.project && soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project]) {
-			
-				let myResource;
-				for(let i=0; i < soajs.registry.resources.length; i++){
-					if(soajs.registry.resources[i].name === soajs.inputmaskData.project){
-						myResource = soajs.registry.resources[i];
-						break;
-					}
+				if(soajs.registry.resources.cluster[soajs.inputmaskData.project]){
+					provision = soajsUtils.cloneObj(soajs.registry.resources.cluster[soajs.inputmaskData.project].config);
+					provision.name = soajs.registry.coreDB.provision.name;
+					provision.prefix = soajs.inputmaskData.project + "_";
 				}
-				
-				provision = myResource;
 			}
 			else {
 				return false;
