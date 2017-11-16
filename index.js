@@ -302,7 +302,7 @@ service.init(function () {
 	service.get("/environment/profile", function (req, res) {
 		let provision = req.soajs.registry.coreDB.provision;
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			var switchedConnection = BL.model.switchConnection(soajs);
+			var switchedConnection = BL.model.switchConnection(req.soajs);
 			if (switchedConnection) {
 				if (typeof  switchedConnection === 'object' && Object.keys(switchedConnection).length > 0) {
 					provision = switchedConnection;
