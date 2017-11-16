@@ -656,7 +656,8 @@ module.exports = {
 				_apiInfo: {
 					"l": "Get Profile",
 					"group": "Environment"
-				}
+				},
+				"commonFields": ['project']
 			},
 
 			"/environment/dbs/list": {
