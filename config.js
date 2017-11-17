@@ -1066,7 +1066,13 @@ module.exports = {
 				},
 				'commonFields': ['project', 'env']
 			},
-
+			"/hosts/awareness": {
+				"_apiInfo": {
+					"l": "Get Controller Hosts",
+					"group": "Hosts"
+				},
+				"commonFields": ['project', 'env']
+			},
 			"/cloud/services/list": {
 				"_apiInfo": {
 					"l": "List Cloud Services",
@@ -2517,59 +2523,7 @@ module.exports = {
 					}
 				}
 			},
-
-			"/hosts/maintenanceOperation": {
-				"_apiInfo": {
-					"l": "Perform Maintenance Operation",
-					"group": "Hosts"
-				},
-				"commonFields": ['project'],
-				"operation": {
-					"required": true,
-					"source": ['body.operation'],
-					"validation": {
-						"type": "string",
-						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats']
-					}
-				},
-				"serviceName": {
-					"source": ['body.serviceName'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"serviceHost": {
-					"source": ['body.serviceHost'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"servicePort": {
-					"source": ['body.servicePort'],
-					"required": true,
-					"validation": {
-						"type": "integer",
-						"min": 4000
-					}
-				},
-				"env": {
-					"source": ['body.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"hostname": {
-					"source": ['body.hostname'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
-			},
-
+			
 			"/swagger/simulate": {
 				"_apiInfo": {
 					"l": "Api simulation service",

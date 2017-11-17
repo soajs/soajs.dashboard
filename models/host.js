@@ -1,12 +1,10 @@
 "use strict";
 
 var hostsColl = "hosts";
-var dockerColl = "docker";
+var controllesColl = "controllers";
 var envColl = "environment";
 var servicesColl = "services";
 var daemonsColl = "daemons";
-var gitColl = "git_accounts";
-var staticColl = "staticContent";
 
 var methods = {
 	"getEnvironment": function (soajs, model, code, cb) {
@@ -106,7 +104,21 @@ var methods = {
 		};
 		
 		model.findEntry(soajs, opts, cb);
-	}
+	},
+	
+	/**
+	 * Controller COLLECTION
+	 */
+	"getControllers": function (soajs, model, env, cb) {
+		var opts = {
+			collection: controllesColl,
+			conditions: {
+				"env": env.toLowerCase()
+			}
+		};
+		
+		model.findEntries(soajs, opts, cb);
+	},
 	
 };
 
