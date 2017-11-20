@@ -34,9 +34,9 @@
     "shelljs": "0.7.5",
     "sinon": "1.17.6",
     "soajs.controller": "1.0.*",
-    "soajs.mongodb.data": "soajs.mongodb.data#develop",
-    "soajs.oauth": "soajs.oauth#develop",
-    "soajs.urac": "soajs.urac#develop"
+    "soajs.mongodb.data": "soajs/soajs.mongodb.data.git#develop",
+    "soajs.oauth": "soajs/soajs.oauth.git#develop",
+    "soajs.urac": "soajs/soajs.urac.git#develop"
   },
   "dependencies": {
     "async": "2.1.4",
@@ -55,7 +55,7 @@
     "request": "2.81.0",
     "rimraf": "2.5.4",
     "shortid": "^2.2.4",
-    "soajs": "RaghebAD/soajs#develop",
+    "soajs": "RaghebAD/soajs.git#develop",
     "unzip2": "0.2.5",
     "yamljs": "0.2.8"
   }
