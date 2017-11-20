@@ -8,7 +8,12 @@ describe("testing daemons.js", function () {
 	var daemon;
 	var req = {
 		soajs: {
-			inputmaskData: {}
+			inputmaskData: {},
+			registry :{
+				coreDB :{
+					provision : {}
+				}
+			}
 		}
 	};
 	var res = {};

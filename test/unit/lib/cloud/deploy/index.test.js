@@ -47,7 +47,8 @@ var mongoStub = {
 	},
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
-	}
+	},
+	switchConnection: function(soajs) {}
 };
 
 var deployer = helper.deployer;
@@ -116,6 +117,11 @@ var envRecord = {
 					}
 				}
 			}
+		}
+	},
+	services: {
+		config: {
+		
 		}
 	}
 };
@@ -244,6 +250,15 @@ describe("testing deploy.js", function () {
 				}
 				return cb(null, envRecord);
 			};
+
+			req.soajs.registry = envRecord;
+			req.soajs.registry.coreDB = {
+                provision: {
+                    "servers": [],
+                    "credentials": {}
+                }
+            };
+
 			req.soajs.inputmaskData = {
 				deployConfig: {
 					replication: {
@@ -259,7 +274,7 @@ describe("testing deploy.js", function () {
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
 
-			deploy.deployService(config, req.soajs, registry, deployer, function (error, body) {
+			deploy.deployService(config, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -388,7 +403,7 @@ describe("testing deploy.js", function () {
 				}
 			};
 
-			deploy.deployService(config, req.soajs, registry, deployer, function (error, body) {
+			deploy.deployService(config, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -401,6 +416,57 @@ describe("testing deploy.js", function () {
 		before("init", function(done) {
 			deployer.manageResources = function(options, cb) {
 				return cb(null, true);
+			};
+
+			var envRecord = {
+	            code: 'DASHBORAD',
+	            deployer: {
+	                "type": "container",
+	                "selected": "container.docker.local",
+	                "container": {
+	                    "docker": {
+	                        "local": {
+	                            "socketPath": "/var/run/docker.sock"
+	                        },
+	                        "remote": {
+	                            "nodes": ""
+	                        }
+	                    },
+	                    "kubernetes": {
+	                        "local": {
+	                            "nginxDeployType": "",
+	                            "namespace": {},
+	                            "auth": {
+	                                "token": ""
+	                            }
+	                        },
+	                        "remote": {
+	                            "nginxDeployType": "",
+	                            "namespace": {},
+	                            "auth": {
+	                                "token": ""
+	                            }
+	                        }
+	                    }
+	                }
+	            },
+	            dbs: {
+	                clusters: {
+	                    oneCluster: {
+	                        servers: {}
+	                    }
+	                },
+	                config: {
+	                    session: {
+	                        cluster: 'oneCluster'
+	                    }
+	                }
+	            },
+	            services: {},
+	            profile: ''
+	        };
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, envRecord);
 			};
 
 			done();

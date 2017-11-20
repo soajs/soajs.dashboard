@@ -10,7 +10,7 @@ module.exports = {
             "locked": { "type": "boolean", "required": false },
             "active": { "type": "boolean", "required": false },
             "type": { "type": "string", "required": true },
-            "subtype": { "type": "string", "required": false, "enum": [ "service", "daemon" ] },
+            "subtype": { "type": "string", "required": false},
             "description": { "type": "string", "required": true },
             "recipe": {
                 "type": "object",
@@ -55,7 +55,8 @@ module.exports = {
                                         "isPublished": { "type": "boolean", "required": false },
                                         "port": { "type": "number", "required": false },
                                         "target": { "type": "number", "required": true },
-                                        "published": { "type": "number", "required": false }
+                                        "published": { "type": "number", "required": false },
+                                        "preserveClientIP": { "type": "boolean", "required": false }
                                     }
                                 }
                             },

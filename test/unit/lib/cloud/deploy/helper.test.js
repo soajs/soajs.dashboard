@@ -19,7 +19,9 @@ var mongoStub = {
     },
     saveEntry: function (soajs, opts, cb) {
         cb(null, true);
-    }
+    },
+	switchConnection: function(soajs) {
+	}
 };
 var deployer = helper.deployer;
 
@@ -114,31 +116,6 @@ describe("testing deploy.js", function () {
             }
         }
     };
-    describe("getAnalyticsEsInfo", function () {
-        beforeEach(() => {
-        });
-        it("Fail getAnalyticsEsInfo", function (done) {
-            helpers.getAnalyticsEsInfo(soajs, context, mongoStub, function (error, body) {
-                done();
-            });
-        });
-
-        it("Success getAnalyticsEsInfo", function (done) {
-            envRecord.dbs.databases = {
-                catalog: {},
-                commerce: {
-                    cluster: 'analy',
-                    useForAnalytics: true
-                }
-            };
-            mongoStub.findEntry = function (soajs, opts, cb) {
-                cb(null, envRecord);
-            };
-            helpers.getAnalyticsEsInfo(soajs, context, mongoStub, function (error, body) {
-                done();
-            });
-        });
-    });
 
     describe("getGitRecord", function () {
         var repo;
@@ -323,7 +300,7 @@ describe("testing deploy.js", function () {
     });
 
     describe("getDashDbInfo", function () {
-        var envRecord = {
+        var registry = {
             code: 'DASHBORAD',
             deployer: {
                 "type": "container",
@@ -355,6 +332,12 @@ describe("testing deploy.js", function () {
                     }
                 }
             },
+            coreDB: {
+                provision: {
+                    "servers": [],
+                    "credentials": {}
+                }
+            },
             dbs: {
                 clusters: {
                     oneCluster: {
@@ -370,12 +353,9 @@ describe("testing deploy.js", function () {
             services: {},
             profile: ''
         };
-        beforeEach(() => {
-            mongoStub.findEntry = function (soajs, opts, cb) {
-                cb(null, envRecord);
-            };
-        });
+
         it("Success getDashDbInfo", function (done) {
+            soajs.registry = registry;
             helpers.getDashDbInfo(soajs, BL, function (error, body) {
                 done();
             });

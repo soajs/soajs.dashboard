@@ -37,8 +37,15 @@ let stubMongo = {
 	},
 	distinctEntries: function (soajs, opts, cb) {
 		cb(null, true);
+	},
+	initConnection: function (soajs) {
+		return true;
+	},
+	closeConnection: function (soajs) {
+		return true;
+	},
+	switchConnection: function(soajs) {
 	}
-	
 };
 var envRecord = {
 	_id: '',
@@ -303,6 +310,11 @@ describe("testing host.js", function () {
 						}
 					}
 				}
+			},
+			services: {
+				config: {
+				
+				}
 			}
 		}];
 		var tenants = [
@@ -339,7 +351,7 @@ describe("testing host.js", function () {
 		
 	});
 	
-	describe("maintenanceOperation", function () {
+	describe("awareness", function () {
 		var envs = [{
 			_id: '',
 			code: 'DEV',
@@ -388,74 +400,14 @@ describe("testing host.js", function () {
 				}
 				return cb(null, tenants);
 			};
-			stubMongo.findEntry = function (soajs, opts, cb) {
-				var service = {};
-				if (opts.collection === 'services') {
-					return cb(null, service);
-				}
-				return cb(null, {});
-			};
 			soajs.inputmaskData = {
-				serviceName: "controller",
-				servicePort: 4000,
 				env: 'dev'
 			};
-			host.maintenanceOperation(config, soajs, function (error, body) {
-				// assert.ok(body);
+			host.awareness(config, soajs, function (error, body) {
+				assert.ok(body);
 				done();
 			});
 		});
-		
-		it("Success maintenanceOperation. service", function (done) {
-			stubMongo.findEntries = function (soajs, opts, cb) {
-				if (opts.collection === 'environment') {
-					return cb(null, envs);
-				}
-				return cb(null, tenants);
-			};
-			stubMongo.findEntry = function (soajs, opts, cb) {
-				var service = {};
-				if (opts.collection === 'services') {
-					return cb(null, service);
-				}
-				return cb(null, {});
-			};
-			soajs.inputmaskData = {
-				serviceName: "urac",
-				servicePort: 4001,
-				env: 'dev'
-			};
-			host.maintenanceOperation(config, soajs, function (error, body) {
-				// assert.ok(body);
-				done();
-			});
-		});
-		
-		it("Success maintenanceOperation. daemon", function (done) {
-			stubMongo.findEntries = function (soajs, opts, cb) {
-				if (opts.collection === 'environment') {
-					return cb(null, envs);
-				}
-				return cb(null, tenants);
-			};
-			stubMongo.findEntry = function (soajs, opts, cb) {
-				var daemon = {};
-				if (opts.collection === 'services') {
-					return cb(null, null);
-				}
-				return cb(null, daemon);
-			};
-			soajs.inputmaskData = {
-				serviceName: "catalog",
-				servicePort: 4011,
-				env: 'dev'
-			};
-			host.maintenanceOperation(config, soajs, function (error, body) {
-				// assert.ok(body);
-				done();
-			});
-		});
-		
 	});
 	
 });

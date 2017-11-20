@@ -74,21 +74,26 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 	var expDateValue = new Date().toISOString();
 	var envId;
 	var productId;
-
+	var qaId;
 	describe("environment tests", function () {
 		before(function (done) {
 			mongo.findOne('environment', {'code': 'DEV'}, function (error, record) {
 				assert.ifError(error);
 				assert.ok(record);
 				envId = record._id.toString();
-				done();
+				mongo.findOne('environment', {'code': 'QA'}, function (error, record) {
+					assert.ifError(error);
+					assert.ok(record);
+					qaId = record._id.toString();
+					done();
+				});
 			});
 		});
 
 		describe("delete environment tests", function () {
 			it("FAIL locked - cant delete environment", function (done) {
 				var params = {
-					qs: {'id': envId}
+					qs: {'id': qaId}
 				};
 				executeMyRequest(params, 'environment/delete', 'delete', function (body) {
 					assert.ok(body);
@@ -595,36 +600,36 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			});
 		});
 
-		it("will get owner key", function (done) {
-			executeMyRequest({
-				'headers': {
-					'key': newKey
-				},
-				"qs": {
-					'access_token': access_token,
-					"main": true
-				}
-			}, 'key/get', 'get', function (body) {
-				assert.equal(body.result, true);
-				assert.ok(body.data);
-				done();
-			});
-		});
-
-		it("will get owner permissions", function (done) {
-			executeMyRequest({
-				"qs": {
-					'access_token': access_token
-				},
-				'headers': {
-					'key': newKey
-				}
-			}, 'permissions/get', 'get', function (body) {
-				assert.equal(body.result, true);
-				assert.ok(body.data);
-				done();
-			});
-		});
+		// it("will get owner key", function (done) {
+		// 	executeMyRequest({
+		// 		'headers': {
+		// 			'key': newKey
+		// 		},
+		// 		"qs": {
+		// 			'access_token': access_token,
+		// 			"main": true
+		// 		}
+		// 	}, 'key/get', 'get', function (body) {
+		// 		assert.equal(body.result, true);
+		// 		assert.ok(body.data);
+		// 		done();
+		// 	});
+		// });
+		//
+		// it("will get owner permissions", function (done) {
+		// 	executeMyRequest({
+		// 		"qs": {
+		// 			'access_token': access_token
+		// 		},
+		// 		'headers': {
+		// 			'key': newKey
+		// 		}
+		// 	}, 'permissions/get', 'get', function (body) {
+		// 		assert.equal(body.result, true);
+		// 		assert.ok(body.data);
+		// 		done();
+		// 	});
+		// });
 
 		it("get tenant acl owner", function (done) {
 			executeMyRequest({
@@ -642,19 +647,19 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			});
 		});
 
-		it("fail - will not get client acl. No user", function (done) {
-			var params = {
-				'qs': {},
-				'headers': {
-					'key': newKey
-				}
-			};
-			executeMyRequest(params, 'permissions/get', 'get', function (body) {
-				assert.equal(body.result, false);
-				assert.ok(body.errors);
-				done();
-			});
-		});
+		// it("fail - will not get client acl. No user", function (done) {
+		// 	var params = {
+		// 		'qs': {},
+		// 		'headers': {
+		// 			'key': newKey
+		// 		}
+		// 	};
+		// 	executeMyRequest(params, 'permissions/get', 'get', function (body) {
+		// 		assert.equal(body.result, false);
+		// 		assert.ok(body.errors);
+		// 		done();
+		// 	});
+		// });
 
 		it("fail - get tenant client extKey. No user", function (done) {
 			executeMyRequest({
@@ -696,20 +701,20 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				});
 			});
 
-			it("will get user permissions", function (done) {
-				executeMyRequest({
-					'qs': {
-						'access_token': access_token2
-					},
-					'headers': {
-						'key': extKey
-					}
-				}, 'permissions/get', 'get', function (body) {
-					assert.equal(body.result, true);
-					assert.ok(body.data);
-					done();
-				});
-			});
+			// it("will get user permissions", function (done) {
+			// 	executeMyRequest({
+			// 		'qs': {
+			// 			'access_token': access_token2
+			// 		},
+			// 		'headers': {
+			// 			'key': extKey
+			// 		}
+			// 	}, 'permissions/get', 'get', function (body) {
+			// 		assert.equal(body.result, true);
+			// 		assert.ok(body.data);
+			// 		done();
+			// 	});
+			// });
 
 		});
 

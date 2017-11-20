@@ -71,6 +71,11 @@ var mongoStub = {
 							}
 						}
 					}
+				},
+				services: {
+					config :{
+					
+					}
 				}
 			};
 		}
@@ -79,6 +84,9 @@ var mongoStub = {
 	},
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
+	},
+	switchConnection: function (soajs) {
+	
 	}
 };
 
@@ -335,49 +343,4 @@ describe("testing autoscale.js", function() {
 		});
 
 	});
-
-	describe("testing checkHeapster", function() {
-
-		before("init", function(done) {
-			deployer.listKubeServices = function(options, cb) {
-				var kubeServices = [
-					{
-						apiVersion: 'v1',
-						kind: 'Service',
-						metadata: {
-							name: 'heapster',
-							namespace: 'kube-system'
-						}
-					}
-				];
-
-				return cb(null, kubeServices);
-			};
-
-			done();
-		});
-
-		it("success - will find heapster service", function(done) {
-			req.soajs.inputmaskData.env = 'dev';
-			autoscale.checkHeapster(config, req.soajs, deployer, function(error, result) {
-				assert.ok(result);
-				assert.equal(result.deployed, true);
-				done();
-			});
-		});
-
-		it("success - will not find heapster service", function(done) {
-			deployer.listKubeServices = function(options, cb) {
-				return cb(null, []);
-			};
-			req.soajs.inputmaskData.env = 'dev';
-			autoscale.checkHeapster(config, req.soajs, deployer, function(error, result) {
-				assert.ok(result);
-				assert.equal(result.deployed, false);
-				done();
-			});
-		});
-
-	});
-
 });

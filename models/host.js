@@ -1,13 +1,10 @@
 "use strict";
 
 var hostsColl = "hosts";
-var dockerColl = "docker";
+var controllesColl = "controllers";
 var envColl = "environment";
 var servicesColl = "services";
 var daemonsColl = "daemons";
-var gitColl = "git_accounts";
-var staticColl = "staticContent";
-var analyticsColl = "analytics";
 
 var methods = {
 	"getEnvironment": function (soajs, model, code, cb) {
@@ -22,17 +19,13 @@ var methods = {
 	/**
 	 * HOSTS COLLECTION
 	 */
-	"getHosts": function (soajs, model, env, type, cb) {
+	"getHosts": function (soajs, model, env, cb) {
 		var opts = {
 			collection: hostsColl,
 			conditions: {
 				"env": env.toLowerCase()
 			}
 		};
-		
-		if (type && type !== '') {
-			opts.conditions["name"] = type;
-		}
 		
 		model.findEntries(soajs, opts, cb);
 	},
@@ -71,43 +64,19 @@ var methods = {
 		model.findEntries(soajs, opts, cb);
 	},
 	
-	"getOneHost": function (soajs, model, env, type, ip, hostname, cb) {
+	/**
+	 * Controller COLLECTION
+	 */
+	"getControllers": function (soajs, model, env, cb) {
 		var opts = {
-			collection: hostsColl,
+			collection: controllesColl,
 			conditions: {
-				"env": env.toLowerCase(),
-				"name": type
+				"env": env.toLowerCase()
 			}
 		};
 		
-		if (ip && ip !== '') {
-			opts.conditions["ip"] = ip;
-		}
-		
-		if (hostname && hostname !== '') {
-			opts.conditions["hostname"] = hostname;
-		}
-		
-		model.findEntry(soajs, opts, cb);
+		model.findEntries(soajs, opts, cb);
 	},
-	
-	"getService": function (soajs, model, condition, cb) {
-		var opts = {
-			collection: servicesColl,
-			conditions: condition
-		};
-		
-		model.findEntry(soajs, opts, cb);
-	},
-	
-	"getDaemon": function (soajs, model, condition, cb) {
-		var opts = {
-			collection: daemonsColl,
-			conditions: condition
-		};
-		
-		model.findEntry(soajs, opts, cb);
-	}
 	
 };
 

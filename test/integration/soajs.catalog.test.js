@@ -3,6 +3,15 @@
 const assert = require('assert');
 var request = require("request");
 
+var utils = require("soajs.core.libs").utils;
+
+var Mongo = require("soajs.core.modules").mongo;
+var dbConfig = require("./db.config.test.js");
+
+var dashboardConfig = dbConfig();
+dashboardConfig.name = "core_provision";
+var mongo = new Mongo(dashboardConfig);
+
 const extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 
 function executeMyRequest(params, apiPath, method, cb) {
@@ -48,8 +57,8 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 let catalog = {
     "name": "testCatalog",
-    "type": "soajs",
-    "subtype": "service",
+    "type": "service",
+    "subtype": "soajs",
     "description": "This is a catalog for testing purposes.",
     "recipe": {
         "deployOptions" : {
@@ -308,4 +317,83 @@ describe("Testing Catalog Functionality", function() {
         });
     });
 
+    describe("Testing Catalog UPGRADE API", function() {
+
+        before("add catalogs that use old schema", function(done) {
+            var oldCatalogTypes = [
+                { type: 'soajs', subtype: 'service' },
+                { type: 'soajs', subtype: 'daemon' },
+                { type: 'soajs', subtype: 'nodejs' },
+                { type: 'soajs', subtype: 'java' },
+                { type: 'database', subtype: 'other' },
+                { type: 'mongo', subtype: 'other' },
+                { type: 'es', subtype: 'other' },
+                { type: 'custom', subtype: 'other' }
+            ];
+            var oldCatalogRecords = [];
+
+            for(var i = 0; i < oldCatalogTypes.length; i++) {
+                oldCatalogRecords.push(cloneCatalog(oldCatalogTypes[i]));
+            }
+
+            function cloneCatalog(options) {
+                var tempCatalog = utils.cloneObj(catalog);
+                tempCatalog.name = 'catalog-' + options.type;
+                tempCatalog.type = options.type;
+
+                if(options.subtype) {
+                    tempCatalog.name += '-' + options.subtype;
+                    tempCatalog.subtype = options.subtype;
+                }
+
+                delete tempCatalog.recipe.deployOptions.labels;
+
+                //testing variables added to record, needed later to verify that the upgrade was successful
+                tempCatalog.testing = true;
+                tempCatalog.testingOldType = tempCatalog.type;
+                if(options.subtype) {
+                    tempCatalog.testingOldSubtype = tempCatalog.subtype;
+                }
+                /////////////////////////
+
+                return tempCatalog;
+            }
+
+            mongo.insert('catalogs', oldCatalogRecords, function(error) {
+                assert.ifError(error);
+                done();
+            });
+        });
+
+        it("success - will upgrade recipes to follow new schema", function(done) {
+            params = {};
+
+            executeMyRequest(params, "catalog/recipes/upgrade", 'get', function (body) {
+                assert.ok(body.result);
+                assert.ok(body.data);
+
+                mongo.find('catalogs', { testing: true }, function(error, catalogs) {
+                    assert.ifError(error);
+                    assert.ok(catalogs);
+
+                    catalogs.forEach(function(oneCatalog) {
+                        if(oneCatalog.testingOldType === 'soajs') {
+                            assert.ok(['service', 'daemon'].indexOf(oneCatalog.type) !== -1);
+                        }
+                        else if(['database', 'mongo', 'es'].indexOf(oneCatalog.testingOldType) !== -1) {
+                            assert.equal(oneCatalog.type, 'cluster');
+                            assert.ok(['mongo', 'elasticsearch'].indexOf(oneCatalog.subtype) !== -1);
+                        }
+                    });
+                    done();
+                });
+            });
+        });
+
+    });
+
+    after(function(done) {
+        mongo.closeDb();
+        done();
+    });
 });

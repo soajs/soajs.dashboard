@@ -22,6 +22,8 @@ var mongoStub = {
 	},
 	countEntries: function (soajs, opts, cb) {
 		cb(null, 0);
+	},
+	switchConnection: function(soajs) {
 	}
 };
 var gitDriver = {
@@ -93,7 +95,13 @@ var configGenerator = {
 
 describe("testing helper git.js", function () {
 	var soajs = {
-		registry: {},
+		registry: {
+			"coreDB": {
+				registryLocation: {
+				
+				}
+			}
+		},
 		log: {
 			debug: function (data) {
 			},

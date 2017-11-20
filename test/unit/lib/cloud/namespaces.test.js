@@ -15,18 +15,18 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-				
 			},
 			error: function (data) {
-				
 			},
 			info: function (data) {
-				
 			}
 		},
-		inputmaskData: {}
+		inputmaskData: {
+			env: 'dev'
+		}
 	}
 };
+
 var mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
@@ -45,6 +45,8 @@ var mongoStub = {
 	},
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
+	},
+	switchConnection: function(soajs) {
 	}
 };
 
@@ -117,7 +119,13 @@ var envRecordKub = {
 				}
 			}
 		}
+	},
+	services: {
+		config: {
+		
+		}
 	}
+	
 };
 
 describe("testing namespaces.js", function () {

@@ -324,8 +324,7 @@ describe("testing hosts deployment", function () {
 			},
 			body: {
 				"ListenAddr": "0.0.0.0:2377",
-				"AdvertiseAddr": "127.0.0.1:2377",
-				"ForceNewCluster": true
+				"AdvertiseAddr": "127.0.0.1:2377"
 			}
 		};
 
@@ -493,6 +492,7 @@ describe("testing hosts deployment", function () {
 	});
 
 	describe("testing service deployment", function () {
+		
 		it("success - deploy 1 core service, global mode", function (done) {
 			var params = {
 				qs: {
@@ -541,52 +541,6 @@ describe("testing hosts deployment", function () {
 			});
 		});
 
-		it("success - deploy 1 gc service", function (done) {
-			mongo.findOne('gc', {}, function (error, gcRecord) {
-				assert.ifError(error);
-				assert.ok(gcRecord);
-
-				var params = {
-					qs: {
-						access_token: access_token
-					},
-					"form": {
-						env: 'dev',
-						custom: {
-							type: 'service',
-							name: 'gc_articles',
-							gc: {
-								gcName: gcRecord.name,
-								gcVersion: gcRecord.v
-							}
-						},
-						recipe: '59034e43c69a1b962fc62213',
-						variables: [
-							'TEST=true'
-						],
-						gitSource: {
-							owner: 'soajs',
-							repo: 'soajs.gcs',
-							branch: 'develop',
-							commit: '67a61db0955803cddf94672b0192be28f47cf280'
-						},
-						deployConfig: {
-							memoryLimit: 209715200,
-							replication: {
-								mode: 'replicated',
-								replicas: 1
-							}
-						}
-					}
-				};
-				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
-					assert.ok(body.result);
-					assert.ok(body.data);
-					done();
-				});
-			});
-		});
-
 		it("fail - trying to deploy to an environment that is configured to be deployed manually", function (done) {
 			mongo.update('environment', { code: 'PROD' }, { $set: { 'deployer.type': 'manual' } }, function (error) {
 				assert.ifError(error);
@@ -623,6 +577,7 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
+		
 	});
 
 	describe("testing daemon deployment", function () {
@@ -855,109 +810,6 @@ describe("testing hosts deployment", function () {
 
 	});
 
-	describe("testing analytics", function () {
-
-		it("get analytics settings", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token,
-					env: 'dashboard'
-				}
-			};
-
-			executeMyRequest(params, "analytics/getSettings", "get", function (body) {
-				assert.ok(body.data);
-				done();
-			});
-		});
-
-		it("success - activate analytics for the first time", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token,
-					env: 'dashboard'
-				}
-			};
-
-			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
-				assert.ok(body.data);
-				done();
-			});
-		});
-
-		it("get analytics settings - analytics deployed", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token,
-					env: 'dashboard'
-				}
-			};
-
-			executeMyRequest(params, "analytics/getSettings", "get", function (body) {
-				assert.ok(body.data);
-				done();
-			});
-		});
-
-		it("deactivate analytics in environment", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token,
-					env: 'dashboard'
-				}
-			};
-
-			executeMyRequest(params, "analytics/deactivateAnalytics", "get", function (body) {
-				assert.ok(body.data);
-				done();
-			});
-		});
-
-		it("success - activate analytics - elasticsearch and kibana deployed - dashboard", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token,
-					env: 'dashboard'
-				}
-			};
-
-			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
-				assert.ok(body.result);
-				assert.ok(body.data);
-				done();
-			});
-		});
-		it("success - activate analytics - elasticsearch and kibana deployed - dashboard", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token,
-					env: 'dashboard'
-				}
-			};
-
-			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
-				assert.ok(body.result);
-				assert.ok(body.data);
-				done();
-			});
-		});
-		it("success - activate analytics - elasticsearch and kibana deployed - dev ", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token,
-					env: 'dev'
-				}
-			};
-
-			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
-				assert.ok(body.result);
-				assert.ok(body.data);
-				done();
-			});
-		});
-
-	});
-
 	describe("delete deployed services", function () {
 		it("fail - missing required params", function (done) {
 			deleteService({ env: 'DEV' }, function (body) {
@@ -967,20 +819,6 @@ describe("testing hosts deployment", function () {
 					"message": "Missing required field: serviceId, mode"
 				});
 				done();
-			});
-		});
-
-		it("success - will delete deployed service", function (done) {
-			getService({ env: 'dev', serviceName: 'gc-myservice' }, function (service) {
-				deleteService({
-					env: 'dev',
-					id: service.id,
-					mode: service.labels['soajs.service.mode']
-				}, function (body) {
-					assert.ok(body.result);
-					assert.ok(body.data);
-					done();
-				});
 			});
 		});
 
@@ -1019,7 +857,8 @@ describe("testing hosts deployment", function () {
 					"qs": {
 						access_token: access_token,
 						"env": "dev",
-						"taskId": taskId
+						"taskId": taskId,
+						"serviceId": ""
 					}
 				};
 				executeMyRequest(params, "cloud/services/instances/logs", "get", function (body) {
@@ -1105,18 +944,134 @@ describe("testing hosts deployment", function () {
 			});
 		});
 
-		it("check heapster", function(done) {
+		it("fail - check resource", function(done) {
 			var params = {
 				qs: {
-					env: 'dashboard'
+					env: 'dev',
+					resource: 'heapster',
+					namespace: 'kube-system'
 				}
 			};
 
-			executeMyRequest(params, "cloud/heapster", "get", function (body) {
+			executeMyRequest(params, "cloud/resource", "get", function (body) {
+				assert.ok(body);
+				done();
+			});
+		});
+		
+		it("fail - scale service", function(done) {
+			var params = {
+				qs: {
+					env: 'dev',
+					resource: 'heapster',
+					namespace: 'kube-system',
+					scale: 2
+				}
+			};
+			
+			executeMyRequest(params, "cloud/services/scale", "get", function (body) {
+				assert.ok(body);
 				done();
 			});
 		});
 
+	});
+	
+	describe("metrics tests", function () {
+		
+		describe("get service metrics", function () {
+			it("success - get service metrics", function (done) {
+				var params = {
+					qs: {
+						"env": "DEV"
+					}
+				};
+				executeMyRequest(params, 'cloud/metrics/services', 'get', function (body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+		});
+		describe("fail - get node metrics", function () {
+			it("success - get nodes metrics nodes", function (done) {
+				var params = {
+					qs: {
+						"env": "DEV"
+					}
+				};
+				executeMyRequest(params, 'cloud/metrics/nodes', 'get', function (body) {
+					assert.ok(body);
+					done();
+				});
+			});
+		});
+		
+	});
+	
+	describe("testing plugin deployment", function () {
+		
+		it("fail - deploying heapster", function (done) {
+			var params = {
+				form: {
+					env: 'dev',
+					plugin: "heapster"
+				}
+			};
+			executeMyRequest(params, "cloud/plugins/deploy", "post", function (body) {
+				assert.ok(body);
+				done();
+			});
+		});
+		
+	});
+	
+	describe("testing service maintence deployment", function () {
+		
+		it("fail - deploying heapster", function (done) {
+			var params = {
+				form: {
+					env: 'dev',
+					serviceId: "heapster",
+					serviceName: "heapster",
+					type: "type",
+					operation: "heartbeat"
+		}
+			};
+			executeMyRequest(params, "cloud/services/maintenance", "post", function (body) {
+				assert.ok(body);
+				done();
+			});
+		});
+		
+	});
+	
+	describe("testing namespace list services ", function () {
+		
+		it("fail - list namespaces", function (done) {
+			var params = {
+				qs: {
+					env: 'dev'
+				}
+			};
+			executeMyRequest(params, "cloud/namespaces/list", "get", function (body) {
+				assert.ok(body);
+				done();
+			});
+		});
+		
+		it("fail - delete namespaces", function (done) {
+			var params = {
+				qs: {
+					env: 'dev',
+					namespaceId: "soajs"
+				}
+			};
+			executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
+				assert.ok(body);
+				done();
+			});
+		});
+		
 	});
 
 });

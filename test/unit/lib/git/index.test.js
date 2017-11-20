@@ -41,6 +41,14 @@ var mongoStub = {
 	},
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
+	},
+	initConnection: function (soajs) {
+		return true;
+	},
+	closeConnection: function (soajs) {
+		return true;
+	},
+	switchConnection: function(soajs) {
 	}
 };
 
@@ -365,6 +373,11 @@ describe("testing git.js", function () {
 									}
 								}
 							}
+						}
+					},
+					services: {
+						config: {
+						
 						}
 					}
 				};

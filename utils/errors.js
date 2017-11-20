@@ -9,7 +9,7 @@ var errors = {
 	"405": "Invalid environment id provided",
 	"406": "Unable to update tenant key security information",
 	"407": "Invalid or no Platform Driver configuration provided!",
-
+	"408": "You have requested to use the SOAJS Framework in this environment. Make sure that cookie secret, session name and session secret are provided.",
 	"409": "Invalid product id provided",
 	"410": "Unable to add the product record",
 	"411": "Unable to update the product record",
@@ -66,6 +66,8 @@ var errors = {
 	"455": "Tenant Key already exists",
 	"456": "Error adding Tenant Key",
 
+	"457": "You are not allowed to create an environment named PORTAL or DASHBOARD",
+
 	"460": "Unable to find product",
 	"461": "Unable to find package",
 
@@ -76,15 +78,18 @@ var errors = {
 	"466": "You are not allowed to remove the product you are currently logged in with",
 	"467": "You are not allowed to remove the package you are currently logged in with",
 
+	"468": "Invalid product code provided",
+	"470": "Missing required field: either id or code",
+
 	"500": "This record is locked. You cannot delete it",
 	"501": "This record is locked. You cannot modify or delete it",
-	"502": "Invalid cluster name provided",
+	"502": "Invalid resource name/id provided",
 	"503": "Error adding new environment database",
-	"504": "Environment cluster already exists",
-	"505": "Error adding environment cluster",
-	"506": "Error updating environment cluster",
+	"504": "A resource with the same name, type, and category already exists",
+	"505": "Modifying a resource is only allowed in the environment where it was created",
+	"506": "You are not allowed to modify this resource",
 	"507": "Invalid db Information provided for session database",
-	"508": "cluster not found",
+	"508": "Resource not found",
 	"509": "environment database already exist",
 	"510": "environment session database already exist",
 	"511": "environment session database does not exist",
@@ -223,7 +228,6 @@ var errors = {
  	"813": "Unable to delete service, make sure the deployer is configured properly",
  	"814": "Unable to remove container records. However, the service was deleted successfully",
  	"815": "Unable to remove host records. However, the service was deleted successfully",
- 	"816": "Unable to get analytics configuration for this environment",
  	"817": "Unable to list nodes",
  	"818": "This operation is only permitted in the dashboard environment",
  	"819": "Unable to update environments' deployer. However, the node was added successfully",
@@ -265,8 +269,6 @@ var errors = {
 	"955": "No CI configuration found",
 	"956": "Authentication failed. The deploy token provided is not valid.",
 
-	"960": "Elasticsearch analytics cluster not found, resetting configuration. Please try deploying Analytics again.",
-
 	"967": "Continuous Integration recipe name already exists for this provider.",
 	"968": "This Account already has a Continuous Integration configured with the selected provider.",
     "969": "The chosen Continuous Integration Service does not exist",
@@ -295,7 +297,18 @@ var errors = {
 	"986": "Validation for output config.js file failed",
 
 	"987": "Autoscaling is only supported in kubernetes mode",
-	"988": "Unable to detect Heapster componenets"
+	"988": "Unable to detect Heapster componenets",
+
+	"989": "The dashboard cluster is a sensitive resource that cannot be added or deleted. Only it's driver configuration can be updated.",
+
+	"990": "Invalid custom registry entry name/id provided",
+	"991": "Custom registry entry not found",
+	"992": "A plugged custom registry entry with the same name exists in this environment or is shared with other environments",
+	"993": "Custom registry entry not found",
+	"994": "You are not allowed to modify or delete this custom registry entry",
+	"995": "Modifying a custom registry entry is only allowed in the environment where it was created",
+
+	"996": "At least one of the deployment's exposed ports conflicts with existing deployments"
 };
 
 

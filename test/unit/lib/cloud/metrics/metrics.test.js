@@ -1,13 +1,16 @@
 "use strict";
 var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/cloud/nodes/index.js');
-var nodes;
+var helper = require("../../../../helper.js");
+var utils = helper.requireModule('./lib/cloud/metrics/index.js');
+var metrics;
 var config = {
 	errors: {}
 };
 var req = {
 	soajs: {
+		servicesConfig: {
+			dashboard: {}
+		},
 		registry: {
 			coreDB: {
 				provision: {}
@@ -15,16 +18,18 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-				
+			
 			},
 			error: function (data) {
-				
+			
 			},
 			info: function (data) {
-				
+			
 			}
 		},
-		inputmaskData: {}
+		inputmaskData: {
+			"env": "DEV"
+		}
 	}
 };
 var mongoStub = {
@@ -85,14 +90,16 @@ var envRecord = {
 	},
 	services: {
 		config: {
-		
+			ports: {
+				maintenanceInc: 5
+			}
 		}
 	}
 };
 
 var deployer = helper.deployer;
 
-describe("testing nodes.js", function () {
+describe("testing metrics.js", function () {
 	
 	describe("testing init", function () {
 		
@@ -104,6 +111,7 @@ describe("testing nodes.js", function () {
 		});
 		
 		it("Model Name not found", function (done) {
+			
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
@@ -111,74 +119,41 @@ describe("testing nodes.js", function () {
 		});
 		
 		it("Init", function (done) {
+			
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
-				nodes = body;
-				nodes.model = mongoStub;
+				metrics = body;
+				metrics.model = mongoStub;
 				done();
 			});
 		});
 		
 	});
 	
-	describe("listNodes", function () {
+	describe("metrics", function () {
 		
-		it("success", function (done) {
+		
+		it("get service metrics", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				cb(null, envRecord);
+				return cb(null, envRecord);
 			};
-			req.soajs.inputmaskData.env = 'dev';
-			nodes.listNodes(config, req.soajs, deployer, function (error, body) {
-				// assert.ok(error);
+			
+			metrics.getServicesMetrics(config, req.soajs, deployer, function (error, body) {
+				assert.ok(body);
 				done();
 			});
 		});
 		
-	});
-	
-	describe("removeNode", function () {
-		
-		it("success", function (done) {
+		it("get node metrics", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				cb(null, envRecord);
+				return cb(null, envRecord);
 			};
-			req.soajs.inputmaskData.env = 'dashboard';
-			nodes.removeNode(config, req.soajs, deployer, function (error, body) {
-				// assert.ok(error);
+			
+			metrics.getNodesMetrics(config, req.soajs, deployer, function (error, body) {
+				assert.ok(body);
 				done();
 			});
 		});
 		
 	});
-	
-	describe("updateNode", function () {
-		
-		it("success", function (done) {
-			mongoStub.findEntry = function (soajs, opts, cb) {
-				cb(null, envRecord);
-			};
-			req.soajs.inputmaskData.env = 'dashboard';
-			nodes.updateNode(config, req.soajs, deployer, function (error, body) {
-				// assert.ok(error);
-				done();
-			});
-		});
-		
-	});
-	
-	describe("addNode", function () {
-		
-		it("success", function (done) {
-			mongoStub.findEntry = function (soajs, opts, cb) {
-				cb(null, envRecord);
-			};
-			req.soajs.inputmaskData.env = 'dashboard';
-			nodes.addNode(config, req.soajs, deployer, function (error, body) {
-				// assert.ok(error);
-				done();
-			});
-		});
-		
-	});
-	
 });
