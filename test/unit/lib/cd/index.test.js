@@ -153,7 +153,7 @@ var helpers = {
 		];
 		return cb(null, services);
 	},
-	callDeployer: function (config, req, registry, deployer, opName, cb) {
+	callDeployer: function (config, req, deployer, opName, cb) {
 		return cb(null, true);
 	},
 	processUndeployedServices: function(req, deployedServices, allServices, cdRecordWithEnvRecords, cb){
@@ -204,7 +204,7 @@ describe("testing services.js", function () {
 					serviceVersion: 1
 				}
 			};
-			cd.cdAction(config, registry, req, deployer, helpers, function (error, body) {
+			cd.cdAction(config, req, deployer, helpers, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -221,7 +221,7 @@ describe("testing services.js", function () {
 					serviceVersion: 1
 				}
 			};
-			cd.cdAction(config, registry, req, deployer, helpers, function (error, body) {
+			cd.cdAction(config, req, deployer, helpers, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -237,7 +237,7 @@ describe("testing services.js", function () {
 					serviceName: 'dev-urac-v1'
 				}
 			};
-			cd.cdAction(config, registry, req, deployer, helpers, function (error, body) {
+			cd.cdAction(config, req, deployer, helpers, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -370,7 +370,6 @@ describe("testing services.js", function () {
 				deploy_token: "aaaabbbb"
 			};
 			cd.cdDeploy(config, req, registry, deployer, helpers, function (error, body) {
-				console.log(error ,body);
 				assert.ok(body);
 				done();
 			});

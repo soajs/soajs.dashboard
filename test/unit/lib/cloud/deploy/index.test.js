@@ -47,7 +47,8 @@ var mongoStub = {
 	},
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
-	}
+	},
+	switchConnection: function(soajs) {}
 };
 
 var deployer = helper.deployer;
@@ -116,6 +117,11 @@ var envRecord = {
 					}
 				}
 			}
+		}
+	},
+	services: {
+		config: {
+		
 		}
 	}
 };
@@ -268,7 +274,7 @@ describe("testing deploy.js", function () {
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
 
-			deploy.deployService(config, req.soajs, registry, deployer, function (error, body) {
+			deploy.deployService(config, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -397,7 +403,7 @@ describe("testing deploy.js", function () {
 				}
 			};
 
-			deploy.deployService(config, req.soajs, registry, deployer, function (error, body) {
+			deploy.deployService(config, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});

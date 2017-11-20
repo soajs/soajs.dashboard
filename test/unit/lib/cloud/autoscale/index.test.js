@@ -71,6 +71,11 @@ var mongoStub = {
 							}
 						}
 					}
+				},
+				services: {
+					config :{
+					
+					}
 				}
 			};
 		}
@@ -79,6 +84,9 @@ var mongoStub = {
 	},
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
+	},
+	switchConnection: function (soajs) {
+	
 	}
 };
 

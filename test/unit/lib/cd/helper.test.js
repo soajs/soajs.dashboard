@@ -27,6 +27,9 @@ var mongoStub = {
 	},
 	insertEntry: function (soajs, opts, cb) {
 		cb(null, true);
+	},
+	switchConnection: function(soajs){
+		return true;
 	}
 };
 var deployer = {
@@ -423,7 +426,7 @@ describe("testing helper soajs.cd.js", function () {
 		it("success - commit error, service is deployed", function (done) {
 			oneService.commitError = true;
 			// req, BL, oneService, registry, deployer, options, callback
-			helpers.processOneService(req, BL, oneService, registry, deployer, options, function (error, body) {
+			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
 				oneService.commitError = false;
 				done();
 			});
@@ -439,7 +442,7 @@ describe("testing helper soajs.cd.js", function () {
 					}
 				}
 			};
-			helpers.processOneService(req, BL, oneService, registry, deployer, options, function (error, body) {
+			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
 				oneService.commitError = false;
 				oneService.service.labels = {};
 				oneService.options = {};
@@ -450,14 +453,14 @@ describe("testing helper soajs.cd.js", function () {
 		it("Success update", function (done) {
 			//NOTE: mocking environment variables for service to include daemon group config variable
 			oneService.service.env = ['SOAJS_DAEMON_GRP_CONF=testGroup'];
-			helpers.processOneService(req, BL, oneService, registry, deployer, options, function (error, body) {
+			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
 				done();
 			});
 		});
 
 		it("Success notify, service is deployed", function (done) {
 			oneService.pause = true;
-			helpers.processOneService(req, BL, oneService, registry, deployer, options, function (error, body) {
+			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
 				oneService.pause = false;
 				done();
 			});
@@ -473,7 +476,7 @@ describe("testing helper soajs.cd.js", function () {
 					}
 				}
 			};
-			helpers.processOneService(req, BL, oneService, registry, deployer, options, function (error, body) {
+			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
 				oneService.pause = false;
 				oneService.service.labels = {};
 				oneService.options = {};
@@ -491,7 +494,7 @@ describe("testing helper soajs.cd.js", function () {
 					}
 				}
 			};
-			helpers.processOneService(req, BL, oneService, registry, deployer, options, function (error, body) {
+			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
 				done();
 			});
 		});
@@ -1026,7 +1029,10 @@ describe("testing helper soajs.cd.js", function () {
 				}];
 				return cb(null, services);
 			};
-			helpers.getEnvsServices(envs, req, registry, deployer, BL, function (error, body) {
+			BL.model.findEntry = function (soajs, opts, cb) {
+				cb(null, envRecord);
+			};
+			helpers.getEnvsServices(envs, req, deployer, BL, function (error, body) {
 				done();
 			});
 		});
@@ -1259,7 +1265,7 @@ describe("testing helper soajs.cd.js", function () {
 		var cloudServices = {
 			init: function (modelName, cb) {
 				var BL = {
-					listServices: function (config, soajs,registry, deployer, cb) {
+					listServices: function (config, soajs, deployer, cb) {
 						return cb(null, []);
 					}
 				};
@@ -1271,7 +1277,7 @@ describe("testing helper soajs.cd.js", function () {
 				env: "dev"
 			};
 			// getServices: function (config, req, registry, deployer, cloudServices, cb)
-			helpers.getServices(config, req, registry, deployer, cloudServices, function (error, body) {
+			helpers.getServices(config, req, deployer, cloudServices, function (error, body) {
 				done();
 			});
 		});

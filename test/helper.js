@@ -72,6 +72,12 @@ module.exports = {
 		},
 		deleteAutoscaler: function(options, cb) {
 			return cb(null, true);
+		},
+		getServicesMetrics: function(options, cb) {
+			return cb(null, true);
+		},
+		getNodesMetrics: function(options, cb) {
+			return cb(null, true);
 		}
 	},
 	requireModule: function (path) {

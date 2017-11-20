@@ -74,21 +74,26 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 	var expDateValue = new Date().toISOString();
 	var envId;
 	var productId;
-
+	var qaId;
 	describe("environment tests", function () {
 		before(function (done) {
 			mongo.findOne('environment', {'code': 'DEV'}, function (error, record) {
 				assert.ifError(error);
 				assert.ok(record);
 				envId = record._id.toString();
-				done();
+				mongo.findOne('environment', {'code': 'QA'}, function (error, record) {
+					assert.ifError(error);
+					assert.ok(record);
+					qaId = record._id.toString();
+					done();
+				});
 			});
 		});
 
 		describe("delete environment tests", function () {
 			it("FAIL locked - cant delete environment", function (done) {
 				var params = {
-					qs: {'id': envId}
+					qs: {'id': qaId}
 				};
 				executeMyRequest(params, 'environment/delete', 'delete', function (body) {
 					assert.ok(body);

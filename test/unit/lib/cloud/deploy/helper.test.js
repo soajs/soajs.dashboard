@@ -19,7 +19,9 @@ var mongoStub = {
     },
     saveEntry: function (soajs, opts, cb) {
         cb(null, true);
-    }
+    },
+	switchConnection: function(soajs) {
+	}
 };
 var deployer = helper.deployer;
 
@@ -354,7 +356,7 @@ describe("testing deploy.js", function () {
 
         it("Success getDashDbInfo", function (done) {
             soajs.registry = registry;
-            helpers.getDashDbInfo(soajs, function (error, body) {
+            helpers.getDashDbInfo(soajs, BL, function (error, body) {
                 done();
             });
         });

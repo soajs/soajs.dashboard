@@ -19,17 +19,13 @@ var methods = {
 	/**
 	 * HOSTS COLLECTION
 	 */
-	"getHosts": function (soajs, model, env, type, cb) {
+	"getHosts": function (soajs, model, env, cb) {
 		var opts = {
 			collection: hostsColl,
 			conditions: {
 				"env": env.toLowerCase()
 			}
 		};
-		
-		if (type && type !== '') {
-			opts.conditions["name"] = type;
-		}
 		
 		model.findEntries(soajs, opts, cb);
 	},
@@ -66,44 +62,6 @@ var methods = {
 		};
 		
 		model.findEntries(soajs, opts, cb);
-	},
-	
-	"getOneHost": function (soajs, model, env, type, ip, hostname, cb) {
-		var opts = {
-			collection: hostsColl,
-			conditions: {
-				"env": env.toLowerCase(),
-				"name": type
-			}
-		};
-		
-		if (ip && ip !== '') {
-			opts.conditions["ip"] = ip;
-		}
-		
-		if (hostname && hostname !== '') {
-			opts.conditions["hostname"] = hostname;
-		}
-		
-		model.findEntry(soajs, opts, cb);
-	},
-	
-	"getService": function (soajs, model, condition, cb) {
-		var opts = {
-			collection: servicesColl,
-			conditions: condition
-		};
-		
-		model.findEntry(soajs, opts, cb);
-	},
-	
-	"getDaemon": function (soajs, model, condition, cb) {
-		var opts = {
-			collection: daemonsColl,
-			conditions: condition
-		};
-		
-		model.findEntry(soajs, opts, cb);
 	},
 	
 	/**
