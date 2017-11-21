@@ -4,7 +4,6 @@ var helper = require("../../../../../helper.js");
 var driver = helper.requireModule('./utils/drivers/git/bitbucket/index.js');
 var driverHelper = helper.requireModule('./utils/drivers/git/bitbucket/helper.js');
 driver.helper = driverHelper;
-
 describe("testing git/bitbucket index.js", function () {
 	var soajs = {};
 	var data = {
@@ -32,7 +31,7 @@ describe("testing git/bitbucket index.js", function () {
 	};
 
 	describe("testing login", function () {
-		it("Success", function (done) {
+		it("Success private", function (done) {
 			driverHelper.createAuthToken = function (options, cb) {
 				return cb(null, {
 					access_token: "123456",
@@ -47,6 +46,27 @@ describe("testing git/bitbucket index.js", function () {
 				});
 			};
 			options.access = 'private';
+			driver.login(soajs, data, model, options, function (error, body) {
+				// assert.ok(error);
+				done();
+			});
+		});
+		
+		it("Success", function (done) {
+			driverHelper.createAuthToken = function (options, cb) {
+				return cb(null, {
+					access_token: "123456",
+					expires_in: 2000
+				});
+			};
+			driverHelper.checkUserRecord = function (options, cb) {
+				return cb(null, {
+					user: {
+						username: "john"
+					}
+				});
+			};
+			options.access = 'public';
 			driver.login(soajs, data, model, options, function (error, body) {
 				// assert.ok(error);
 				done();
@@ -76,7 +96,19 @@ describe("testing git/bitbucket index.js", function () {
 	describe("testing getRepos", function () {
 		it("Success", function (done) {
 			driverHelper.getAllRepos = function (options, cb) {
-				return cb(null);
+				return cb(null, true, {});
+			};
+			driverHelper.buildReposArray = function (options) {
+				return true;
+			};
+			data.getAccount = function (soajs, model, options, cb) {
+				return cb(null, {token: "123"});
+			};
+			driverHelper.checkAuthToken = function (soajs, options, model, accountRecord, cb) {
+				return cb(null, true, {
+					token: "123",
+					tokenInfo: {}
+				});
 			};
 			driver.getRepos(soajs, data, model, options, function (error, body) {
 				// assert.ok(body);
