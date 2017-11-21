@@ -33,10 +33,10 @@
     "nock": "9.0.13",
     "shelljs": "0.7.5",
     "sinon": "1.17.6",
-    "soajs.controller": "1.0.*",
-    "soajs.mongodb.data": "1.0.*",
-    "soajs.oauth": "1.0.*",
-    "soajs.urac": "1.0.*"
+    "soajs.controller": "2.0.*",
+    "soajs.mongodb.data": "2.0.*",
+    "soajs.oauth": "2.0.*",
+    "soajs.urac": "2.0.*"
   },
   "dependencies": {
     "async": "2.1.4",
@@ -55,7 +55,7 @@
     "request": "2.81.0",
     "rimraf": "2.5.4",
     "shortid": "^2.2.4",
-    "soajs": "1.0.*",
+    "soajs": "2.0.0",
     "unzip2": "0.2.5",
     "yamljs": "0.2.8"
   }
