@@ -3144,17 +3144,7 @@ module.exports = {
 					"source": ['body.config'],
 					"required": true,
 					"validation": {
-						"type": "object",
-						"properties": {
-							"namespace": {
-								"type": "object",
-								"required": true,
-								"properties": {
-									"default": { "type": "string", "required": true },
-									"perService": { "type": "boolean", "required": true }
-								}
-							}
-						}
+						"type": "object"
 					}
 				}
 			},
