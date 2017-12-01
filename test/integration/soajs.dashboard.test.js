@@ -102,7 +102,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			"profile": "single",
 			"deployer": {
 				"type": "manual",
-				"selected": "container.docker.local",
+				"selected": "manual",
 				"container": {
 					"docker": {
 						"local": {
