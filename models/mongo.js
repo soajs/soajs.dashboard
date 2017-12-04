@@ -17,6 +17,7 @@ var tenantCollectionName = 'tenants';
 var productsCollectionName = 'products';
 var hostsCollectionName = 'hosts';
 var oauthUracCollectionName = 'oauth_urac';
+var oauthTokenCollectionName = 'oauth_token';
 var gitAccountsCollectionName = 'git_accounts';
 var gcCollectionName = 'gc';
 var resourcesCollection = 'resources';
@@ -113,6 +114,7 @@ var lib = {
 			//oauth_urac
 			soajs.mongoDb.createIndex(oauthUracCollectionName, {tId: 1, _id: 1}, errorLogger);
 			soajs.mongoDb.createIndex(oauthUracCollectionName, {tId: 1, userId: 1, _id: 1}, errorLogger);
+			soajs.mongoDb.createIndex(oauthTokenCollectionName, {expires: 1},{expireAfterSeconds: 0}, errorLogger);
 			
 			//git_accounts
 			soajs.mongoDb.createIndex(gitAccountsCollectionName, {_id: 1, 'repos.name': 1}, errorLogger);
