@@ -25,7 +25,7 @@ module.exports = {
 	"awareness": true,
 	"awarenessEnv": true,
 	"oauth": true,
-	"session": true,
+	"session": false,
 	"uracDriver": true,
 	"urac_Profile": true,
 	"urac_ACL": true,
