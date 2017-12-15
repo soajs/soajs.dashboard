@@ -1434,12 +1434,16 @@ describe("mongo check db", function () {
             delete record._id;
             delete record.deployer;
             delete record.profile;
+            if(record.services && record.services.config && record.services.config.session) {
+                delete record.services.config.session.proxy;
+            }
+            
             assert.deepEqual(record, {
                 "code": "DEV",
                 "domain": "api.myDomain.com",
                 "apiPrefix": "api",
                 "sitePrefix": "site",
-                "description": "this is a dummy updated description",
+                "description": "this is a dummy description",
                 "dbs": {
                     "config": {
                         "prefix": ""
