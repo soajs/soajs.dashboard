@@ -43,14 +43,15 @@ var lib = {
 		};
 		
 		var switchedConnection = lib.switchConnection(soajs);
-		if (switchedConnection) {
-			if (typeof  switchedConnection === 'object' && Object.keys(switchedConnection).length > 0) {
-				provision = switchedConnection;
-				if (soajs.log) {
-					soajs.log.debug('Switching to connection of', soajs.inputmaskData.project);
-				}
+		if (switchedConnection && typeof  switchedConnection === 'object' && Object.keys(switchedConnection).length > 0) {
+			provision = switchedConnection;
+			if (soajs.log) {
+				soajs.log.debug('Switching to connection of', soajs.inputmaskData.project);
 			}
 		} else {
+			if(soajs.log){
+				soajs.log.error("Connection refused, project provided in input does not belong to tenant!");
+			}
 			//error
 			return false;
 		}
@@ -253,6 +254,8 @@ var lib = {
 	
 	"switchConnection" : function (soajs) {
 		var provision = true;
+		soajs.log(soajs.servicesConfig);
+		soajs.log(soajs.inputmaskData);
 		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.dashboard && soajs.servicesConfig.dashboard.SOAJS_COMPANY) {
 			if (soajs.inputmaskData.project && soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project]) {
 				if(soajs.registry.resources.cluster[soajs.inputmaskData.project]){
