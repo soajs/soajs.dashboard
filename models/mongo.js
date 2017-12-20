@@ -46,14 +46,19 @@ var lib = {
 		if (switchedConnection && typeof  switchedConnection === 'object' && Object.keys(switchedConnection).length > 0) {
 			provision = switchedConnection;
 			if (soajs.log) {
-				soajs.log.debug('Switching to connection of', soajs.inputmaskData.project);
+				soajs.log.debug('Switching to connection to project: ', soajs.inputmaskData.project);
 			}
-		} else {
+		} else if(switchedConnection === false){
 			if(soajs.log){
 				soajs.log.error("Connection refused, project provided in input does not belong to tenant!");
 			}
 			//error
 			return false;
+		}
+		else{
+			if(soajs.log){
+				soajs.log.debug("Connecting to core project");
+			}
 		}
 		
 		soajs.mongoDb = new Mongo(provision);
