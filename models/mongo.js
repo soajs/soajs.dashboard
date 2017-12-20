@@ -259,8 +259,6 @@ var lib = {
 	
 	"switchConnection" : function (soajs) {
 		var provision = true;
-		console.log(soajs.servicesConfig);
-		console.log(soajs.inputmaskData);
 		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.dashboard && soajs.servicesConfig.dashboard.SOAJS_COMPANY) {
 			if (soajs.inputmaskData.project && soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.project]) {
 				if(soajs.registry.resources.cluster[soajs.inputmaskData.project]){
@@ -273,7 +271,6 @@ var lib = {
 				return false;
 			}
 		}
-		console.log(provision);
 		return provision
 	}
 };
