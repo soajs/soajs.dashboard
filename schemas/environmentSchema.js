@@ -11,7 +11,7 @@ var environment = {
 		"type": "string"
 	},
 	"domain": {
-		"required": true,
+		"required": false,
 		"type": "string",
 		"format": "hostname"
 	},
