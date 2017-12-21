@@ -2871,6 +2871,13 @@ module.exports = {
 						"format": "hostname"
 					}
 				},
+				"machineip": {
+					"source": ['body.machineip'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
 				"apiPrefix": {
 					"source": ['body.apiPrefix'],
 					"required": false,
