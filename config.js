@@ -2865,7 +2865,7 @@ module.exports = {
 				"commonFields": ['id', 'description', 'services', 'project'],
 				"domain": {
 					"source": ['body.domain'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string",
 						"format": "hostname"
