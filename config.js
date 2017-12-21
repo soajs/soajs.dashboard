@@ -2867,8 +2867,14 @@ module.exports = {
 					"source": ['body.domain'],
 					"required": false,
 					"validation": {
-						"type": "string",
-						"format": "hostname"
+						"type": "string"
+					}
+				},
+				"deployer": {
+					"source": ['body.deployer'],
+					"required": true,
+					"validation": {
+						"type": "object"
 					}
 				},
 				"machineip": {
