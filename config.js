@@ -2879,7 +2879,7 @@ module.exports = {
 				},
 				"machineip": {
 					"source": ['body.machineip'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string"
 					}
