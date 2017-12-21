@@ -849,15 +849,7 @@ module.exports = {
 					}
 				}
 			},
-
-			"/key/get": {
-				_apiInfo: {
-					"l": "Get the user dashboard key",
-					"group": "Tenant"
-				},
-				"commonFields": ['project']
-			},
-
+			
 			"/tenant/list": {
 				_apiInfo: {
 					"l": "List Tenants",
