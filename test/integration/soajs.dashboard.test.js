@@ -604,7 +604,6 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						data: {
-							"code": "DEV",
 							"description": 'this is a dummy description'
 						}
 					}
@@ -664,7 +663,33 @@ describe("DASHBOARD Integration Tests:", function () {
 						"port": data2.port,
 						"description": 'this is a dummy updated description',
 						"services": data2.services,
-						"sensitive": true
+						"sensitive": true,
+						"deployer": {
+							"type" : "manual",
+							"selected" : "manual",
+							"container" : {
+								"docker" : {
+									"local" : {
+										"socketPath" : "/var/run/docker.sock"
+									},
+									"remote" : {
+										"nodes" : [
+
+										]
+									}
+								},
+								"kubernetes" : {
+									"local" : {
+
+									},
+									"remote" : {
+										"nodes" : [
+
+										]
+									}
+								}
+							}
+						}
 					}
 				};
 				executeMyRequest(params, 'environment/update', 'put', function (body) {
@@ -684,7 +709,33 @@ describe("DASHBOARD Integration Tests:", function () {
 						"port": data2.port,
 						"description": 'this is a dummy updated description',
 						"services": data2.services,
-						"sensitive": true
+						"sensitive": true,
+						"deployer": {
+							"type" : "manual",
+							"selected" : "manual",
+							"container" : {
+								"docker" : {
+									"local" : {
+										"socketPath" : "/var/run/docker.sock"
+									},
+									"remote" : {
+										"nodes" : [
+
+										]
+									}
+								},
+								"kubernetes" : {
+									"local" : {
+
+									},
+									"remote" : {
+										"nodes" : [
+
+										]
+									}
+								}
+							}
+						}
 					}
 				};
 				executeMyRequest(params, 'environment/update', 'put', function (body) {
@@ -701,7 +752,33 @@ describe("DASHBOARD Integration Tests:", function () {
 						"profile": validEnvRecord.profile,
 						"description": 'this is a dummy updated description',
 						"services": validEnvRecord.services,
-						"sensitive": true
+						"sensitive": true,
+						"deployer": {
+							"type" : "manual",
+							"selected" : "manual",
+							"container" : {
+								"docker" : {
+									"local" : {
+										"socketPath" : "/var/run/docker.sock"
+									},
+									"remote" : {
+										"nodes" : [
+
+										]
+									}
+								},
+								"kubernetes" : {
+									"local" : {
+
+									},
+									"remote" : {
+										"nodes" : [
+
+										]
+									}
+								}
+							}
+						}
 					}
 				};
 				executeMyRequest(params, 'environment/update', 'put', function (body) {
@@ -721,7 +798,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				executeMyRequest(params, 'environment/update', 'put', function (body) {
 					assert.deepEqual(body.errors.details[0], {
 						"code": 172,
-						"message": "Missing required field: domain, services"
+						"message": "Missing required field: deployer, services"
 					});
 					done();
 				});
@@ -735,7 +812,33 @@ describe("DASHBOARD Integration Tests:", function () {
 						"profile": validEnvRecord.profile,
 						"description": 'this is a dummy description',
 						"services": validEnvRecord.services,
-						"sensitive": true
+						"sensitive": true,
+						"deployer": {
+							"type" : "manual",
+							"selected" : "manual",
+							"container" : {
+								"docker" : {
+									"local" : {
+										"socketPath" : "/var/run/docker.sock"
+									},
+									"remote" : {
+										"nodes" : [
+
+										]
+									}
+								},
+								"kubernetes" : {
+									"local" : {
+
+									},
+									"remote" : {
+										"nodes" : [
+
+										]
+									}
+								}
+							}
+						}
 					}
 				};
 				executeMyRequest(params, 'environment/update', 'put', function (body) {
