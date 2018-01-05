@@ -635,6 +635,28 @@ module.exports = {
 					}
 				}
 			},
+			
+			"/environment/status": {
+				_apiInfo: {
+					"l": "Get Environment Deployment Status",
+					"group": "Environment"
+				},
+				"commonFields": ['project'],
+				"id": {
+					"required": false,
+					"source": ["query.id"],
+					"validation": {
+						"type": "string"
+					}
+				},
+				"code": {
+					"required": false,
+					"source": ["query.code"],
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
 
 			"/environment/list": {
 				_apiInfo: {
@@ -1573,6 +1595,13 @@ module.exports = {
 					"validation": {
 						"type": "object",
 						"properties": environmentSchema
+					}
+				},
+				"template": {
+					"source": ['body.template'],
+					"required": true,
+					"validation": {
+						"type": "object"
 					}
 				}
 			},

@@ -199,6 +199,22 @@ service.init(function () {
 	});
 	
 	/**
+	 * Get a specific environment Deployment Status
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/environment/status", function (req, res) {
+		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.getStatus(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
 	 * Update environment tenant security key
 	 * @param {String} API route
 	 * @param {Function} API middleware
