@@ -642,13 +642,6 @@ module.exports = {
 					"group": "Environment"
 				},
 				"commonFields": ['project'],
-				"id": {
-					"required": false,
-					"source": ["query.id"],
-					"validation": {
-						"type": "string"
-					}
-				},
 				"code": {
 					"required": false,
 					"source": ["query.code"],
