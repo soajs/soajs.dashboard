@@ -648,6 +648,13 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				'rollback': {
+					"required": false,
+					"source": ["query.rollback"],
+					"validation": {
+						"type": "boolean"
+					}
 				}
 			},
 
