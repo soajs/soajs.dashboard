@@ -638,7 +638,7 @@ module.exports = {
 			
 			"/environment/status": {
 				_apiInfo: {
-					"l": "Get Environment Deployment Status",
+					"l": "Get/Set Environment Deployment Status",
 					"group": "Environment"
 				},
 				"commonFields": ['project'],
@@ -652,6 +652,13 @@ module.exports = {
 				'rollback': {
 					"required": false,
 					"source": ["query.rollback"],
+					"validation": {
+						"type": "boolean"
+					}
+				},
+				'activate': {
+					"required": false,
+					"source": ["query.activate"],
 					"validation": {
 						"type": "boolean"
 					}
