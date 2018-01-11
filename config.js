@@ -653,7 +653,7 @@ module.exports = {
 					"required": false,
 					"source": ["query.rollback"],
 					"validation": {
-						"type": "boolean"
+						"type": "number"
 					}
 				},
 				'activate': {
