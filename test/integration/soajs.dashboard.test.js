@@ -466,6 +466,11 @@ describe("DASHBOARD Integration Tests:", function () {
 				delete data2._id;
 				var params = {
 					form: {
+						template: {
+							deploy: {
+								selectedDriver : 'docker'
+							}
+						},
 						data: data2
 					}
 				};
@@ -481,6 +486,11 @@ describe("DASHBOARD Integration Tests:", function () {
 				data3.services.config.session.proxy = "false";
 				var params = {
 					form: {
+						template: {
+							deploy: {
+								selectedDriver : 'docker'
+							}
+						},
 						data: data3
 					}
 				};
@@ -506,6 +516,11 @@ describe("DASHBOARD Integration Tests:", function () {
 				delete data4._id;
 				var params = {
 					form: {
+						template: {
+							deploy: {
+								selectedDriver : 'kubernetes'
+							}
+						},
 						data: data4
 					}
 				};
@@ -535,6 +550,11 @@ describe("DASHBOARD Integration Tests:", function () {
 				delete data5._id;
 				var params = {
 					form: {
+						template: {
+							deploy: {
+								selectedDriver : 'kubernetes'
+							}
+						},
 						data: data5
 					}
 				};
@@ -560,6 +580,11 @@ describe("DASHBOARD Integration Tests:", function () {
 				delete data6._id;
 				var params = {
 					form: {
+						template: {
+							deploy: {
+								selectedDriver : 'docker'
+							}
+						},
 						data: data6
 					}
 				};
@@ -591,6 +616,11 @@ describe("DASHBOARD Integration Tests:", function () {
 				delete data7._id;
 				var params = {
 					form: {
+						template: {
+							deploy: {
+								selectedDriver : 'docker'
+							}
+						},
 						data: data7
 					}
 				};
@@ -603,6 +633,11 @@ describe("DASHBOARD Integration Tests:", function () {
 			it('fail - missing params', function (done) {
 				var params = {
 					form: {
+						template: {
+							deploy: {
+								selectedDriver : 'docker'
+							}
+						},
 						data: {
 							"description": 'this is a dummy description'
 						}
@@ -617,6 +652,11 @@ describe("DASHBOARD Integration Tests:", function () {
 			it('fail - environment exists', function (done) {
 				var params = {
 					form: {
+						template: {
+							deploy: {
+								selectedDriver : 'docker'
+							}
+						},
 						data: validEnvRecord
 					}
 				};

@@ -28,7 +28,7 @@ module.exports = {
 			}
 			
 			let msg = data.config.errors[data.code];
-			if(data.error.message){
+			if(data.error.message && typeof data.error.message === 'string'){
 				msg = data.error.message;
 			}
 			return mainCb({ "code": data.code, "msg": msg });
