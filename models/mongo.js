@@ -19,7 +19,7 @@ var hostsCollectionName = 'hosts';
 var oauthUracCollectionName = 'oauth_urac';
 var oauthTokenCollectionName = 'oauth_token';
 var gitAccountsCollectionName = 'git_accounts';
-var gcCollectionName = 'gc';
+var templatesCollectionName = 'templates';
 var resourcesCollection = 'resources';
 var customRegCollection = 'custom_registry';
 
@@ -127,9 +127,9 @@ var lib = {
 			soajs.mongoDb.createIndex(gitAccountsCollectionName, {'repos.name': 1}, errorLogger);
 			soajs.mongoDb.createIndex(gitAccountsCollectionName, {owner: 1, provider: 1}, errorLogger);
 			
-			//gc
-			soajs.mongoDb.createIndex(gcCollectionName, {name: 1}, errorLogger);
-			soajs.mongoDb.createIndex(gcCollectionName, {_id: 1, refId: 1, v: 1}, errorLogger);
+			//templates
+			soajs.mongoDb.createIndex(templatesCollectionName, {code: 1}, errorLogger);
+			soajs.mongoDb.createIndex(templatesCollectionName, {type: 1}, errorLogger);
 			
 			//resources
 			soajs.mongoDb.createIndex(customRegCollection, {name: 1, type: 1, category: 1}, errorLogger); //compound index, includes {name: 1}, {name: 1, type: 1}
