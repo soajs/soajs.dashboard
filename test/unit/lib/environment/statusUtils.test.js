@@ -1,138 +1,241 @@
 "use strict";
 var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/environment/status.js');
-var statusUtils = helper.requireModule("./lib/environment/statusUtils");
-var statusRollback = helper.requireModule("./lib/environment/statusRollback");
 var sinon = require('sinon');
-
-//mock statusUtils
-sinon
-	.stub(statusUtils, 'getAPIInfo')
-    .withArgs(sinon.match.string).returns('http://test.local');
-sinon
-	.stub(statusUtils, 'uploadCertificates')
-	.yields(null, true);
-sinon
-	.stub(statusUtils, 'redirectTo3rdPartyDeploy')
-	.yields(null, true);
-sinon
-	.stub(statusUtils, 'handleClusters')
-	.yields(null, true);
-sinon
-	.stub(statusUtils, 'deployController')
-	.yields(null, true);
-sinon
-	.stub(statusUtils, 'deployUrac')
-	.yields(null, true);
-sinon
-	.stub(statusUtils, 'deployOauth')
-	.yields(null);
-sinon
-	.stub(statusUtils, 'deployNginx')
-	.yields(null, true);
-sinon
-	.stub(statusUtils, 'createNginxRecipe')
-	.yields(null, true);
-sinon
-	.stub(statusUtils, 'createUserAndGroup')
-	.yields(null, true);
-
-//mock statusRollback
-sinon
-	.stub(statusRollback, 'redirectTo3rdParty')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeProduct')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeCluster')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeController')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeUrac')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeOauth')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeNginx')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeCatalog')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeCertificates')
-	.yields(null, true);
-
-var req = {
-	soajs: {
-		registry: {
-			coreDB: {
-				provision: {
-					name: 'core_provision',
-					prefix: '',
-					servers: [
-						{host: '127.0.0.1', port: 27017}
-					],
-					credentials: null,
-					streaming: {
-						batchSize: 10000,
-						colName: {
-							batchSize: 10000
-						}
-					},
-					URLParam: {
-						maxPoolSize: 2, bufferMaxEntries: 0
-					},
-					registryLocation: {
-						l1: 'coreDB',
-						l2: 'provision',
-						env: 'dev'
-					},
-					timeConnected: 1491861560912
+var nock = require("nock");
+var helper = require("../../../helper.js");
+var statusUtils = helper.requireModule("./lib/environment/statusUtils.js");
+var config = {};
+var environmentRecord = {
+	_id: '5a58d942ace01a5325fa3e4c',
+	code: 'PORTAL',
+	deployer: {
+		"type": "container",
+		"selected": "container.docker.local",
+		"container": {
+			"docker": {
+				"local": {
+					"socketPath": "/var/run/docker.sock"
+				},
+				"remote": {
+					"nodes": ""
+				}
+			},
+			"kubernetes": {
+				"local": {
+					"nginxDeployType": "",
+					"namespace": {},
+					"auth": {
+						"token": ""
+					}
+				},
+				"remote": {
+					"nginxDeployType": "",
+					"namespace": {},
+					"auth": {
+						"token": ""
+					}
 				}
 			}
-		},
-		log: {
-			debug: function (data) {
-			
-			},
-			error: function (data) {
-			
-			},
-			info: function (data) {
-			
+		}
+	},
+	dbs: {
+		clusters: {
+			oneCluster: {
+				servers: {}
 			}
 		},
-		inputmaskData: {}
-	}
+		config: {
+			session: {
+				cluster: 'oneCluster'
+			}
+		}
+	},
+	services: {},
+	profile: ''
+};
+var portalTenant = {
+	"_id":"5a1ef39a6b4472002538edd5",
+	"type": "client",
+	"code": "PRTL",
+	"name": "Portal Tenant",
+	"description": "Portal Tenant that uses the portal product and its packages",
+	"oauth": {
+		"secret": "soajs beaver",
+		"redirectURI": null,
+		"grants": [
+			"password",
+			"refresh_token"
+		]
+	},
+	"applications": [
+		{
+			"product": "PRTAL",
+			"package": "PRTAL_MAIN",
+			"appId": '5a3a38da80334fde7cd9116a',
+			"description": "Portal main application",
+			"_TTL": 604800000,
+			"keys": [
+				{
+					"key": "2d3d09b8ae1c1093bc85704b8efa97cd",
+					"extKeys": [
+						{
+							"extKey": "506407523000d55bad57fdf257416bcab922c40fb2d83ee90db014d21afa1ede683ca36a44d59f4ae53caf579badd9fef6d2621ba25e7d8dee1eb414cfe833710254812efe5d74dbc74ab89f4f8b955dafe05a196e1e0c6cd17c4bace076001d",
+							"device": null,
+							"geo": null,
+							"env": "PORTAL",
+							"dashboardAccess": false,
+							"expDate": null
+						}
+					],
+					"config": {
+						"portal": {
+							"oauth": {
+								"loginMode": "urac"
+							},
+							"commonFields": {
+								"mail": {
+									"from": "me@localhost.com",
+									"transport": {
+										"type": "sendmail",
+										"options": {}
+									}
+								}
+							},
+							"urac": {
+								"hashIterations": 1024,
+								"seedLength": 32,
+								"link": {
+									"addUser": "http://portal.soajs.org:80/#/setNewPassword",
+									"changeEmail": "http://portal.soajs.org:80/#/changeEmail/validate",
+									"forgotPassword": "http://portal.soajs.org:80/#/resetPassword",
+									"join": "http://portal.soajs.org:80/#/join/validate"
+								},
+								"tokenExpiryTTL": 172800000,
+								"validateJoin": true,
+								"mail": {
+									"join": {
+										"subject": "Welcome to SOAJS",
+										"path": "/opt/soajs/node_modules/soajs.urac/mail/urac/join.tmpl"
+									},
+									"forgotPassword": {
+										"subject": "Reset Your Password at SOAJS",
+										"path": "/opt/soajs/node_modules/soajs.urac/mail/urac/forgotPassword.tmpl"
+									},
+									"addUser": {
+										"subject": "Account Created at SOAJS",
+										"path": "/opt/soajs/node_modules/soajs.urac/mail/urac/addUser.tmpl"
+									},
+									"changeUserStatus": {
+										"subject": "Account Status changed at SOAJS",
+										"path": "/opt/soajs/node_modules/soajs.urac/mail/urac/changeUserStatus.tmpl"
+									},
+									"changeEmail": {
+										"subject": "Change Account Email at SOAJS",
+										"path": "/opt/soajs/node_modules/soajs.urac/mail/urac/changeEmail.tmpl"
+									}
+								}
+							}
+						}
+					}
+				}
+			]
+		},
+		{
+			"product": "PRTAL",
+			"package": "PRTAL_USER",
+			"appId": '5a3a38da80334fde7cd9116b',
+			"description": "Portal user application",
+			"_TTL": 604800000,
+			"keys": [
+				{
+					"key": "2f59e80a3b3a58e86fb8acda493dcfaa",
+					"extKeys": [
+						{
+							"extKey": "506407523000d55bad57fdf257416bca07b508b32df58119f4cfc46f93dc2b0e91a9002c97de9cfef71c2ca5705f018cb54d025c61b399e725fd9e7ae1a21e1592e0d79a3d840d0a67c16ab10b198fc6ee8d709ed5e91fabc105c3d4291aac3a",
+							"device": null,
+							"geo": null,
+							"env": "PORTAL",
+							"dashboardAccess": true,
+							"expDate": null
+						},
+						{
+							"extKey": "2861f21e23e890e12257e20ad18562065d10a3a803ee4a91c820e2ef584983388be54ec484e3622dac029361bc6e35b6be7f2c92e2e85f9e851947312f2b34fb3a3309364215f17e0b2eb277e6b8ce6fd16a7cd3f7aed9e62fd19677d7c3f079",
+							"device": {},
+							"geo": {},
+							"env": "DEV",
+							"dashboardAccess": true,
+							"expDate": null
+						}
+					],
+					"config": {
+						"portal": {
+							"oauth": {
+								"loginMode": "urac"
+							},
+							"commonFields": {
+								"mail": {
+									"from": "me@localhost.com",
+									"transport": {
+										"type": "sendmail",
+										"options": {}
+									}
+								}
+							},
+							"urac": {
+								"hashIterations": 1024,
+								"seedLength": 32,
+								"link": {
+									"addUser": "http://portal.soajs.org:80/#/setNewPassword",
+									"changeEmail": "http://portal.soajs.org:80/#/changeEmail/validate",
+									"forgotPassword": "http://portal.soajs.org:80/#/resetPassword",
+									"join": "http://portal.soajs.org:80/#/join/validate"
+								},
+								"tokenExpiryTTL": 172800000,
+								"validateJoin": true,
+								"mail": {
+									"join": {
+										"subject": "Welcome to SOAJS",
+										"path": "/opt/soajs/node_modules/soajs.urac/mail/urac/join.tmpl"
+									},
+									"forgotPassword": {
+										"subject": "Reset Your Password at SOAJS",
+										"path": "/opt/soajs/node_modules/soajs.urac/mail/urac/forgotPassword.tmpl"
+									},
+									"addUser": {
+										"subject": "Account Created at SOAJS",
+										"path": "/opt/soajs/node_modules/soajs.urac/mail/urac/addUser.tmpl"
+									},
+									"changeUserStatus": {
+										"subject": "Account Status changed at SOAJS",
+										"path": "/opt/soajs/node_modules/soajs.urac/mail/urac/changeUserStatus.tmpl"
+									},
+									"changeEmail": {
+										"subject": "Change Account Email at SOAJS",
+										"path": "/opt/soajs/node_modules/soajs.urac/mail/urac/changeEmail.tmpl"
+									}
+								}
+							}
+						}
+					}
+				}
+			]
+		}
+	],
+	"tag": "portal"
 };
 var mongoStub = {
 	findEntry: function (soajs, opts, cb) {
-		cb(null, {
-			"productize": {},
-			"cluster": {},
-			"controller": {},
-			"urac": {},
-			"oauth": {},
-			"nginx": {},
-			"user": {}
-		});
+		cb(null, portalTenant);
 	},
-	updateEntry: function (soajs, opts, cb) {
-		cb(null, true);
+	getDb: function (soajs) {
+		return {
+			getMongoDB: function (cb) {
+				cb(null, 'core_provision')
+			}
+		}
 	},
-	saveEntry: function (soajs, opts, cb) {
-		cb(null, true);
-	}
 };
-var BL = {
-	model: mongoStub
-};
-var config = {};
+
 var template = {
 	"code": "DASHBOARD",
 	"ready": false,
@@ -152,7 +255,27 @@ var template = {
 		"deployPortal" : true
 	},
 	"deploy" : {
-		"certificates": [],
+		"certificates": [
+			{
+				"_id" : "5a1ef39a6b4472002538edd5",
+				"filename" : "ca.pem",
+				"contentType" : "binary/octet-stream",
+				"length" : 1789,
+				"chunkSize" : 261120,
+				"uploadDate" : "2017-11-29T17:51:23.010+0000",
+				"aliases" : null,
+				"metadata" : {
+					"platform" : "docker",
+					"certType" : "ca",
+					"env" : {
+						"DASHBOARD" : [
+							"docker.remote"
+						]
+					}
+				},
+				"md5" : "5a1b6d7a70fd47f44c4de0096203d719"
+			}
+		],
 		"deployment" : {
 			"docker" : {
 				"dockerremote" : true,
@@ -176,9 +299,11 @@ var template = {
 			},
 			"name" : "portaldemo"
 		},
-		"type" : "local"
+		"type" : "local",
+		"serviceId" : "serviceId"
 	},
 	"controller" : {
+		"_id": "1",
 		"deploy" : true,
 		"mode" : "deployment",
 		"number" : 1,
@@ -244,7 +369,8 @@ var template = {
 					"readOnly" : true
 				}
 			}
-		}
+		},
+		"recipe": "recipe"
 	},
 	"productize" : {
 		"_id" : "5a5c6c7ce099c64ba5ced784",
@@ -359,6 +485,9 @@ var template = {
 						"envCode" : "PORTAL",
 						"force" : true
 					}
+				},
+				"params": {
+					"project": "demo"
 				}
 			},
 			"status" : {
@@ -690,84 +819,235 @@ var template = {
 		}
 	}
 };
-var environmentRecord = {
-	_id: '5a58d942ace01a5325fa3e4c',
-	code: 'DASHBORAD',
-	deployer: {
-		"type": "container",
-		"selected": "container.docker.local",
-		"container": {
-			"docker": {
-				"local": {
-					"socketPath": "/var/run/docker.sock"
-				},
-				"remote": {
-					"nodes": ""
+var req = {
+	headers : {
+		soajsauth : "soajsauth",
+		key: "key"
+	},
+	query: {
+		access_token: "access_token"
+	},
+	soajs: {
+		registry: {
+			coreDB: {
+				provision: {
+					name: 'core_provision',
+					prefix: '',
+					servers: [
+						{host: '127.0.0.1', port: 27017}
+					],
+					credentials: null,
+					streaming: {
+						batchSize: 10000,
+						colName: {
+							batchSize: 10000
+						}
+					},
+					URLParam: {
+						maxPoolSize: 2, bufferMaxEntries: 0
+					},
+					registryLocation: {
+						l1: 'coreDB',
+						l2: 'provision',
+						env: 'dev'
+					},
+					timeConnected: 1491861560912
 				}
 			},
-			"kubernetes": {
-				"local": {
-					"nginxDeployType": "",
-					"namespace": {},
-					"auth": {
-						"token": ""
-					}
-				},
-				"remote": {
-					"nginxDeployType": "",
-					"namespace": {},
-					"auth": {
-						"token": ""
-					}
+			services: {
+				controller: {
+					port: 4000
 				}
 			}
-		}
-	},
-	dbs: {
-		clusters: {
-			oneCluster: {
-				servers: {}
+		},
+		log: {
+			debug: function (data) {
+			
+			},
+			error: function (data) {
+			
+			},
+			info: function (data) {
+			
 			}
 		},
-		config: {
-			session: {
-				cluster: 'oneCluster'
+		inputmaskData: {},
+		awareness: {
+			getHost: function (service, cb){
+				cb("soajs.dashboard");
 			}
+		},
+		mongoDb:{
+			mongodb:{}
 		}
+	}
+};
+var BL = {
+	model: mongoStub,
+	removeCert: function (context, req, {}, cb) {
+		cb(null, true);
 	},
-	services: {},
-	profile: ''
+	addDb: function (context, req, {}, cb) {
+		cb(null);
+	}
+	
 };
 var context = {
 	BL: BL,
 	template: template,
-	schemaOptions: ['productize','cluster','controller','urac','oauth','nginx','user'],
-	environmentRecord: environmentRecord
+	environmentRecord: environmentRecord,
+	config: config
 };
-describe("testing status.js", function () {
-	after(function() {
+
+function stubStatusUtils() {
+	sinon
+		.stub(statusUtils, 'initBLModel')
+		.yields(null, {
+			add: function (context, req, {}, cb) {
+				cb(null, {id: '5a5879533c5415080690b7f4'});
+			},
+			addPackage: function (context, req, {}, cb) {
+				cb(null, true);
+			},
+			addApplication: function (context, req, {}, cb) {
+				cb(null, {appId: '5a5879533c5415080690b7f4'});
+			},
+			addApplicationExtKeys: function (context, provision, req, {}, cb) {
+				cb(null, {extKey: '506407523000d55bad57fdf257416bcab922c40fb2d83ee90db014d21afa1ede683ca36a44d59f4ae53caf579badd9fef6d2621ba25e7d8dee1eb414cfe833710254812efe5d74dbc74ab89f4f8b955dafe05a196e1e0c6cd17c4bace076001d'});
+			},
+			updateApplicationConfig: function (context, req, {}, cb) {
+				cb(null, true);
+			},
+			addResource: function (context, req, {}, cb) {
+				cb(null, {_id: '5a5879533c5415080690b7f4'});
+			},
+			saveOAuth: function (context, code, msg, req, obj, cb) {
+				cb(null);
+			},
+			saveConfig: function (context, req, helper, cb) {
+				cb(null);
+			},
+			deployService: function (context, soajs, deployer, cb) {
+				cb(null, {id: '5a5879533c5415080690b7f4'});
+			}
+		});
+}
+
+describe("testing statusUtils.js", function () {
+	before(function () {
+		nock('http://soajs.dashboard:4000')
+			.post('/bridge/executeDriver?access_token=access_token',
+				{ type: 'infra',
+					name: 'google',
+					driver: 'google',
+					command: 'getDeployClusterStatus',
+					options: { envCode: 'PORTAL' } })
+			.reply(200, {
+				result: true,
+				data: {
+					type: "string",
+					id: "string"
+				}
+			});
+		stubStatusUtils();
+	});
+	
+	after(function () {
 		sinon.restore(statusUtils);
-		sinon.restore(statusRollback);
 	});
-	it("Success startDeployment", function (done) {
-		utils.startDeployment(req,BL,config, environmentRecord,template,  function (err, body) {
-			assert.ok(body);
+	it("Success uploadCertificates", function (done) {
+		statusUtils.uploadCertificates(req, context, function (err) {
 			done();
 		})
 	});
 	
-	it("Success checkProgress", function (done) {
-		utils.checkProgress(req,BL,config, environmentRecord,template,  function (err, body) {
-			assert.ok(body);
+	it("Success productize", function (done) {
+		statusUtils.productize(req, context, function (err) {
 			done();
 		})
 	});
 	
-	it("Success rollbackDeployment", function (done) {
-		req.soajs.inputmaskData.rollback = 1;
-		utils.rollbackDeployment(req, context, function (err, body) {
-			assert.ok(body);
+	it("Success handleClusters", function (done) {
+		statusUtils.handleClusters(req, context, function (err) {
 			done();
 		})
 	});
+	
+	it("Success deployservice", function (done) {
+		statusUtils.deployservice(req, context, "nginx", 1, function (err) {
+			done();
+		})
+	});
+	
+	it("Success deployController", function (done) {
+		statusUtils.deployController(req, context, function (err) {
+			done();
+		})
+	});
+	
+	it("Success deployUrac", function (done) {
+		statusUtils.deployUrac(req, context, function (err) {
+			done();
+		})
+	});
+	
+	it("Success deployOauth", function (done) {
+		statusUtils.deployOauth(req, context, function (err) {
+			done();
+		})
+	});
+	
+	it("Success createNginxRecipe", function (done) {
+		sinon.restore(statusUtils);
+		sinon
+			.stub(statusUtils, 'initBLModel')
+			.yields(null, {
+				add: function (context, req, cb) {
+					cb(null, '5a5879533c5415080690b7f4');
+				}
+			});
+		
+		statusUtils.createNginxRecipe(req, context, function (err) {
+			sinon.restore(statusUtils);
+			stubStatusUtils();
+			done();
+		});
+	});
+	
+	it("Success deployNginx", function (done) {
+		statusUtils.deployNginx(req, context, function (err) {
+			done();
+		})
+	});
+	
+	it("Success createUserAndGroup", function (done) {
+		statusUtils.createUserAndGroup(req, context, function (err) {
+			done();
+		})
+	});
+	
+	it("Success redirectTo3rdPartyDeploy", function (done) {
+		statusUtils.redirectTo3rdPartyDeploy(req, context,'infra', function (err) {
+			done();
+		})
+	});
+	
+	it("Success redirectTo3rdPartyStatus", function (done) {
+		statusUtils.redirectTo3rdPartyStatus(req, context,'infra', function (err) {
+			done();
+		})
+	});
+	
+	it("Success initBLModel", function (done) {
+		sinon.restore(statusUtils);
+		let BLModule = {
+			init: function (model, cb) {
+				cb(null, true)
+			}
+		};
+		statusUtils.initBLModel(BLModule, "mongo", function (err) {
+			done();
+		});
+	});
+	
 });
