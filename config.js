@@ -635,7 +635,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/status": {
 				_apiInfo: {
 					"l": "Get/Set Environment Deployment Status",
@@ -680,7 +680,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/profile": {
 				_apiInfo: {
 					"l": "Get Profile",
@@ -878,7 +878,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/tenant/list": {
 				_apiInfo: {
 					"l": "List Tenants",
@@ -1128,6 +1128,13 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				},
+				"follow": {
+					"source": ['query.follow'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
 					}
 				}
 			},
@@ -1509,7 +1516,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			/*
 			 * this API will get the content and the url of any file located on a specific
 			 * github/bitbucket account for a certain repo.
@@ -2551,7 +2558,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/swagger/simulate": {
 				"_apiInfo": {
 					"l": "Api simulation service",
