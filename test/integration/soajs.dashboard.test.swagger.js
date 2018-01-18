@@ -116,33 +116,6 @@ describe("Swagger", function () {
 			});
 		});
 		
-		describe.skip("Testing simulation api", function () {
-			it("success - will check input", function (done) {
-				var params = {
-					"form": {
-						"data": {
-							"input": {
-								"number": 10
-							},
-							"imfv": {
-								"number": {
-									"source": ["body.number"],
-									"required": true,
-									"validation": {
-										"type": "number"
-									}
-								}
-							}
-						}
-					}
-				};
-				executeMyRequest(params, "swagger/simulate", 'post', function (result) {
-					assert.ok(result.data);
-					done();
-				});
-			});
-		});
-		
 		describe("Testing complex simulation api", function () {
 			it("success - will check input", function (done) {
 				var params = {

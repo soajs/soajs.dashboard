@@ -17,8 +17,9 @@ var tenantCollectionName = 'tenants';
 var productsCollectionName = 'products';
 var hostsCollectionName = 'hosts';
 var oauthUracCollectionName = 'oauth_urac';
+var oauthTokenCollectionName = 'oauth_token';
 var gitAccountsCollectionName = 'git_accounts';
-var gcCollectionName = 'gc';
+var templatesCollectionName = 'templates';
 var resourcesCollection = 'resources';
 var customRegCollection = 'custom_registry';
 
@@ -42,16 +43,22 @@ var lib = {
 		};
 		
 		var switchedConnection = lib.switchConnection(soajs);
-		if (switchedConnection) {
-			if (typeof  switchedConnection === 'object' && Object.keys(switchedConnection).length > 0) {
-				provision = switchedConnection;
-				if (soajs.log) {
-					soajs.log.debug('Switching to connection of', soajs.inputmaskData.project);
-				}
+		if (switchedConnection && typeof  switchedConnection === 'object' && Object.keys(switchedConnection).length > 0) {
+			provision = switchedConnection;
+			if (soajs.log) {
+				soajs.log.debug('Switching to connection to project: ', soajs.inputmaskData.project);
 			}
-		} else {
+		} else if(switchedConnection === false){
+			if(soajs.log){
+				soajs.log.error("Connection refused, project provided in input does not belong to tenant!");
+			}
 			//error
 			return false;
+		}
+		else{
+			if(soajs.log){
+				soajs.log.debug("Connecting to core project");
+			}
 		}
 		
 		soajs.mongoDb = new Mongo(provision);
@@ -113,15 +120,16 @@ var lib = {
 			//oauth_urac
 			soajs.mongoDb.createIndex(oauthUracCollectionName, {tId: 1, _id: 1}, errorLogger);
 			soajs.mongoDb.createIndex(oauthUracCollectionName, {tId: 1, userId: 1, _id: 1}, errorLogger);
+			soajs.mongoDb.createIndex(oauthTokenCollectionName, {expires: 1},{expireAfterSeconds: 0}, errorLogger);
 			
 			//git_accounts
 			soajs.mongoDb.createIndex(gitAccountsCollectionName, {_id: 1, 'repos.name': 1}, errorLogger);
 			soajs.mongoDb.createIndex(gitAccountsCollectionName, {'repos.name': 1}, errorLogger);
 			soajs.mongoDb.createIndex(gitAccountsCollectionName, {owner: 1, provider: 1}, errorLogger);
 			
-			//gc
-			soajs.mongoDb.createIndex(gcCollectionName, {name: 1}, errorLogger);
-			soajs.mongoDb.createIndex(gcCollectionName, {_id: 1, refId: 1, v: 1}, errorLogger);
+			//templates
+			soajs.mongoDb.createIndex(templatesCollectionName, {code: 1}, errorLogger);
+			soajs.mongoDb.createIndex(templatesCollectionName, {type: 1}, errorLogger);
 			
 			//resources
 			soajs.mongoDb.createIndex(customRegCollection, {name: 1, type: 1, category: 1}, errorLogger); //compound index, includes {name: 1}, {name: 1, type: 1}

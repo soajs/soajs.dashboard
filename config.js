@@ -25,7 +25,7 @@ module.exports = {
 	"awareness": true,
 	"awarenessEnv": true,
 	"oauth": true,
-	"session": true,
+	"session": false,
 	"uracDriver": true,
 	"urac_Profile": true,
 	"urac_ACL": true,
@@ -635,6 +635,35 @@ module.exports = {
 					}
 				}
 			},
+			
+			"/environment/status": {
+				_apiInfo: {
+					"l": "Get/Set Environment Deployment Status",
+					"group": "Environment"
+				},
+				"commonFields": ['project'],
+				"code": {
+					"required": false,
+					"source": ["query.code"],
+					"validation": {
+						"type": "string"
+					}
+				},
+				'rollback': {
+					"required": false,
+					"source": ["query.rollback"],
+					"validation": {
+						"type": "number"
+					}
+				},
+				'activate': {
+					"required": false,
+					"source": ["query.activate"],
+					"validation": {
+						"type": "boolean"
+					}
+				}
+			},
 
 			"/environment/list": {
 				_apiInfo: {
@@ -849,15 +878,7 @@ module.exports = {
 					}
 				}
 			},
-
-			"/key/get": {
-				_apiInfo: {
-					"l": "Get the user dashboard key",
-					"group": "Tenant"
-				},
-				"commonFields": ['project']
-			},
-
+			
 			"/tenant/list": {
 				_apiInfo: {
 					"l": "List Tenants",
@@ -1581,6 +1602,13 @@ module.exports = {
 					"validation": {
 						"type": "object",
 						"properties": environmentSchema
+					}
+				},
+				"template": {
+					"source": ['body.template'],
+					"required": true,
+					"validation": {
+						"type": "object"
 					}
 				}
 			},
@@ -2865,10 +2893,23 @@ module.exports = {
 				"commonFields": ['id', 'description', 'services', 'project'],
 				"domain": {
 					"source": ['body.domain'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"deployer": {
+					"source": ['body.deployer'],
 					"required": true,
 					"validation": {
-						"type": "string",
-						"format": "hostname"
+						"type": "object"
+					}
+				},
+				"machineip": {
+					"source": ['body.machineip'],
+					"required": false,
+					"validation": {
+						"type": "string"
 					}
 				},
 				"apiPrefix": {
@@ -3144,17 +3185,7 @@ module.exports = {
 					"source": ['body.config'],
 					"required": true,
 					"validation": {
-						"type": "object",
-						"properties": {
-							"namespace": {
-								"type": "object",
-								"required": true,
-								"properties": {
-									"default": { "type": "string", "required": true },
-									"perService": { "type": "boolean", "required": true }
-								}
-							}
-						}
+						"type": "object"
 					}
 				}
 			},

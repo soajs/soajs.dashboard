@@ -2,7 +2,7 @@
 var assert = require("assert");
 var helper = require("../../../../../helper.js");
 var driverHelper = helper.requireModule('./utils/drivers/git/bitbucket/helper.js');
-
+var nock = require("nock");
 describe("testing git/bitbucket helper.js", function () {
 	var soajs = {};
 	var model = {};
@@ -12,16 +12,10 @@ describe("testing git/bitbucket helper.js", function () {
 	
 	before(function(done){
 		// TODO - under construction
-		var nock = require("nock");
 		nock('https://api.bitbucket.org')
 			.get('/1.0/users/')
 			.query(true)
 			.reply(200, {"result": true, "data": {}});
-		
-		nock('https://bitbucket.org')
-			.post('/site/oauth2/access_token',"*")
-			.query(true)
-			.reply(200, {"result": true, "data": {"basePrice": 333, "discountedPrice": 333}});
 		done();
 	});
 	
@@ -110,10 +104,25 @@ describe("testing git/bitbucket helper.js", function () {
 			options.tokenInfo = {
 				refresh_token : '1234',
 				created: 700000,
-				expires_in: 1234522
+				expires_in: 1234522,
+				oauthKey: "!23",
+				oauthSecret: "erere"
+			};
+			nock('https://bitbucket.org')
+				.filteringRequestBody(/[\s\S]+/, '*')
+				.post('/site/oauth2/access_token', '*')
+				.reply(200, {
+						access_token: 123,
+						refresh_token: 3434,
+						expires_in: 3434
+					});
+			model.saveEntry = function(options, opts, cb){
+				return cb(null, true);
 			};
 			
-			driverHelper.checkAuthToken(soajs, options, model, accountRecord, function (error, body) {
+			driverHelper.checkAuthToken(soajs, options, model, {
+				tokenInfo :{}
+			}, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -198,16 +207,23 @@ describe("testing git/bitbucket helper.js", function () {
 			});
 		});
 	});
-
-	// describe("testing writeFile", function () {
-	// 	it("Success writeFile", function (done) {
-	// 		var options = {
-	// 			configDirPath: './test/uploads/name1.js',
-	// 			configFile: ""
-	// 		};
-	// 		driverHelper.writeFile(options, function (error, body) {
-	// 			done();
-	// 		});
-	// 	});
-	// });
+	
+	describe("testing writeFile", function () {
+		it("Success - doesnt exist", function (done) {
+			options.configDirPath = '/wrongpath';
+			driverHelper.writeFile(options, function (error, body) {
+				// assert.ok(body);
+				done();
+			});
+		});
+	});
+	describe("testing clearDir", function () {
+		it("Success", function (done) {
+			options.repoConfigsFolder = 'name/name';
+			driverHelper.clearDir(options, function (error, body) {
+				// assert.ok(body);
+				done();
+			});
+		});
+	});
 });

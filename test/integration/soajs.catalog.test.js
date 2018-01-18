@@ -167,10 +167,7 @@ describe("Testing Catalog Functionality", function() {
 
             executeMyRequest(params, "catalog/recipes/update", 'put', function (result) {
                 assert.ok(result.errors);
-                assert.deepEqual(result.errors.details[0], {
-                    "code": 701,
-                    "message": "Invalid Id provided"
-                });
+                assert.deepEqual(result.errors.details[0].code, 701);
                 done();
             });
         });
@@ -241,10 +238,7 @@ describe("Testing Catalog Functionality", function() {
 
 			executeMyRequest(params, "catalog/recipes/get", 'get', function (result) {
 				assert.ok(result.errors);
-				assert.deepEqual(result.errors.details[0], {
-					"code": 701,
-					"message": "Invalid Id provided"
-				});
+				assert.deepEqual(result.errors.details[0].code, 701);
 				done();
 			});
 		});
@@ -274,11 +268,8 @@ describe("Testing Catalog Functionality", function() {
 
             executeMyRequest(params, "catalog/recipes/delete", 'delete', function (result) {
                 assert.ok(result.errors);
-                assert.deepEqual(result.errors.details[0], {
-                    "code": 701,
-                    "message": "Invalid Id provided"
-                });
-                done();
+	            assert.deepEqual(result.errors.details[0].code, 701);
+	            done();
             });
         });
 

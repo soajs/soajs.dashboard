@@ -600,37 +600,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			});
 		});
 
-		// it("will get owner key", function (done) {
-		// 	executeMyRequest({
-		// 		'headers': {
-		// 			'key': newKey
-		// 		},
-		// 		"qs": {
-		// 			'access_token': access_token,
-		// 			"main": true
-		// 		}
-		// 	}, 'key/get', 'get', function (body) {
-		// 		assert.equal(body.result, true);
-		// 		assert.ok(body.data);
-		// 		done();
-		// 	});
-		// });
-		//
-		// it("will get owner permissions", function (done) {
-		// 	executeMyRequest({
-		// 		"qs": {
-		// 			'access_token': access_token
-		// 		},
-		// 		'headers': {
-		// 			'key': newKey
-		// 		}
-		// 	}, 'permissions/get', 'get', function (body) {
-		// 		assert.equal(body.result, true);
-		// 		assert.ok(body.data);
-		// 		done();
-		// 	});
-		// });
-
 		it("get tenant acl owner", function (done) {
 			executeMyRequest({
 				'headers': {
@@ -646,34 +615,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				done();
 			});
 		});
-
-		// it("fail - will not get client acl. No user", function (done) {
-		// 	var params = {
-		// 		'qs': {},
-		// 		'headers': {
-		// 			'key': newKey
-		// 		}
-		// 	};
-		// 	executeMyRequest(params, 'permissions/get', 'get', function (body) {
-		// 		assert.equal(body.result, false);
-		// 		assert.ok(body.errors);
-		// 		done();
-		// 	});
-		// });
-
-		it("fail - get tenant client extKey. No user", function (done) {
-			executeMyRequest({
-				'qs': {},
-				'headers': {
-					'key': extKey
-				}
-			}, 'key/get', 'get', function (body) {
-				assert.equal(body.result, false);
-				assert.ok(body.errors);
-				done();
-			});
-		});
-
+		
 		describe("test with user 1", function () {
 			var access_token2;
 
@@ -741,21 +683,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					assert.ifError(error);
 					assert.ok(body);
 					access_token2 = body.access_token;
-					done();
-				});
-			});
-
-			it("fail - get tenant client extKey. Tenant does not exist", function (done) {
-				executeMyRequest({
-					'qs': {
-						'access_token': access_token2
-					},
-					'headers': {
-						'key': extKey
-					}
-				}, 'key/get', 'get', function (body) {
-					assert.equal(body.result, false);
-					assert.ok(body.errors);
 					done();
 				});
 			});

@@ -18,12 +18,20 @@ module.exports = {
 			if (typeof (data.error) === 'object') {
 				soajs.log.error(data.error);
 			}
-
+			
 			if (data.error.source === 'driver') {
+				
+				if(data.error.value && data.error.value.json && data.error.value.json.message){
+					data.error.msg = data.error.value.json.message;
+				}
 				return mainCb({ "code": data.error.code, "msg": data.error.msg });
 			}
-
-			return mainCb({ "code": data.code, "msg": data.config.errors[data.code] });
+			
+			let msg = data.config.errors[data.code];
+			if(data.error.message && typeof data.error.message === 'string'){
+				msg = data.error.message;
+			}
+			return mainCb({ "code": data.code, "msg": msg });
 		} else {
 			if (cb) {
 				return cb();

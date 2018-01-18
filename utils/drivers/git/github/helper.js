@@ -222,7 +222,14 @@ var lib = {
 						code: 776,
 						message: 'API rate limit exceeded for this IP'
 					}, cb, function () {
-						return cb(error, (body) ? JSON.parse(body) : []);
+						var res;
+						try {
+							res = JSON.parse(body);
+						}
+						catch (e) {
+							res = []
+						}
+						return cb(error, res);
 					});
 				});
 			}

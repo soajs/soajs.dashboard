@@ -432,23 +432,23 @@ describe("testing helper soajs.cd.js", function () {
 			});
 		});
 
-		it.skip("success - commit error, service is not deployed", function (done) {
-			oneService.commitError = true;
-			delete oneService.service.labels;
-			oneService.options = {
-				deployConfig: {
-					replication: {
-						mode: 'replicated'
-					}
-				}
-			};
-			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
-				oneService.commitError = false;
-				oneService.service.labels = {};
-				oneService.options = {};
-				done();
-			});
-		});
+		// it.skip("success - commit error, service is not deployed", function (done) {
+		// 	oneService.commitError = true;
+		// 	delete oneService.service.labels;
+		// 	oneService.options = {
+		// 		deployConfig: {
+		// 			replication: {
+		// 				mode: 'replicated'
+		// 			}
+		// 		}
+		// 	};
+		// 	helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
+		// 		oneService.commitError = false;
+		// 		oneService.service.labels = {};
+		// 		oneService.options = {};
+		// 		done();
+		// 	});
+		// });
 
 		it("Success update", function (done) {
 			//NOTE: mocking environment variables for service to include daemon group config variable
@@ -484,20 +484,20 @@ describe("testing helper soajs.cd.js", function () {
 			});
 		});
 
-		it.skip("success - deploy", function (done) {
-			delete oneService.service.labels;
-			oneService.deploy = true;
-			oneService.options = {
-				deployConfig: {
-					replication: {
-						mode: 'replicated'
-					}
-				}
-			};
-			helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
-				done();
-			});
-		});
+		// it.skip("success - deploy", function (done) {
+		// 	delete oneService.service.labels;
+		// 	oneService.deploy = true;
+		// 	oneService.options = {
+		// 		deployConfig: {
+		// 			replication: {
+		// 				mode: 'replicated'
+		// 			}
+		// 		}
+		// 	};
+		// 	helpers.processOneService(req, BL, oneService, deployer, options, function (error, body) {
+		// 		done();
+		// 	});
+		// });
 
 	});
 
