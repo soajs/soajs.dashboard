@@ -5,7 +5,11 @@ var nock = require("nock");
 var helper = require("../../../helper.js");
 var statusUtils = helper.requireModule("./lib/environment/statusUtils.js");
 var fs = require("fs");
-var config = {};
+var config = {
+	errors : {
+		458: "test"
+	}
+};
 var environmentRecord = {
 	_id: '5a58d942ace01a5325fa3e4c',
 	code: 'PORTAL',
@@ -497,7 +501,174 @@ var template = {
 				}
 			}
 		},
-		"recipe": "recipe"
+		"recipe": {
+			"name": "Dashboard Nginx Recipe",
+			"type": "server",
+			"subtype": "nginx",
+			"description": "This is the nginx catalog recipe used to deploy the nginx in the dashboard environment.",
+			"recipe": {
+				"deployOptions": {
+					"image": {
+						"prefix": "mikehajj",
+						"name": "nginx",
+						"tag": "latest",
+						"pullPolicy": "IfNotPresent",
+						"override": false
+					},
+					"specifyGitConfiguration": false,
+					"readinessProbe": {
+						"httpGet": {
+							"path": "/",
+							"port": "http"
+						},
+						"initialDelaySeconds": 5,
+						"timeoutSeconds": 2,
+						"periodSeconds": 5,
+						"successThreshold": 1,
+						"failureThreshold": 3
+					},
+					"ports": [
+						{
+							"name": "http",
+							"target": 80,
+							"isPublished": true,
+							"published": 30080,
+							"preserveClientIP": true
+						},
+						{
+							"name": "https",
+							"target": 443,
+							"isPublished": true,
+							"published": 30443,
+							"preserveClientIP": true
+						}
+					],
+					"voluming": {
+						"volumes": [
+							{
+								"name": "soajs-log-volume",
+								"hostPath": {
+									"path": "/var/log/soajs/"
+								}
+							}
+						],
+						"volumeMounts": [
+							{
+								"mountPath": "/var/log/soajs/",
+								"name": "soajs-log-volume"
+							}
+						]
+					},
+					"restartPolicy": {},
+					"container": {
+						"network": "",
+						"workingDir": "/opt/soajs/deployer/"
+					}
+				},
+				"buildOptions": {
+					"env": {
+						"SOAJS_ENV": {
+							"type": "computed",
+							"value": "$SOAJS_ENV"
+						},
+						"SOAJS_EXTKEY": {
+							"type": "computed",
+							"value": "$SOAJS_EXTKEY"
+						},
+						"SOAJS_NX_DOMAIN": {
+							"type": "computed",
+							"value": "$SOAJS_NX_DOMAIN"
+						},
+						"SOAJS_NX_API_DOMAIN": {
+							"type": "computed",
+							"value": "$SOAJS_NX_API_DOMAIN"
+						},
+						"SOAJS_NX_SITE_DOMAIN": {
+							"type": "computed",
+							"value": "$SOAJS_NX_SITE_DOMAIN"
+						},
+						"SOAJS_NX_CONTROLLER_NB": {
+							"type": "computed",
+							"value": "$SOAJS_NX_CONTROLLER_NB"
+						},
+						"SOAJS_NX_CONTROLLER_IP": {
+							"type": "computed",
+							"value": "$SOAJS_NX_CONTROLLER_IP_N"
+						},
+						"SOAJS_NX_CONTROLLER_PORT": {
+							"type": "computed",
+							"value": "$SOAJS_NX_CONTROLLER_PORT"
+						},
+						"SOAJS_NX_REAL_IP": {
+							"type": "static",
+							"value": "true"
+						},
+						"SOAJS_DEPLOY_HA": {
+							"type": "computed",
+							"value": "$SOAJS_DEPLOY_HA"
+						},
+						"SOAJS_HA_NAME": {
+							"type": "computed",
+							"value": "$SOAJS_HA_NAME"
+						},
+						"SOAJS_GIT_DASHBOARD_BRANCH": {
+							"type": "static",
+							"value": "develop"
+						},
+						"SOAJS_NX_API_HTTPS":{
+							"type": "static",
+							"value": "1"
+						}
+					},
+					"settings": {
+						"accelerateDeployment": false
+					},
+					"cmd": {
+						"deploy": {
+							"command": [
+								"bash"
+							],
+							"args": [
+								"-c",
+								"node index.js -T nginx"
+							]
+						}
+					}
+				}
+			},
+			"v": 2,
+			"ts": 1516016340210
+		},
+		"imageName": "image",
+		"imagePrefix": "pre",
+		"imageTag": "1.1",
+		"custom": {
+			"PORTAL": {
+				"value": "1"
+			}
+		},
+		"certs": true,
+		"certsGit": {
+			branch: "1",
+			owner: "1",
+			repo: "1",
+			token: "1",
+			provider: "1",
+			domain: "1"
+		},
+		"customUi": {
+			source: "1",
+			provider: "1",
+			owner: "1",
+			branch: "1",
+			repo: "1"
+		},
+		"publishPorts":{
+			routeName: "/test",
+			body: {
+			},
+			method: "post"
+		}
 	},
 	"productize" : {
 		"_id" : "5a5c6c7ce099c64ba5ced784",
@@ -507,7 +678,8 @@ var template = {
 	"user": {
 		"wf": {
 			"rollback": 1
-		}
+		},
+		count : 20
 	},
 	"infra" : {
 		"position" : 2,
@@ -516,7 +688,7 @@ var template = {
 			"deploy" : [
 				{
 					"method" : "post",
-					"routeName" : "/bridge/executeDriver",
+					"routeName" : "/test/execute",
 					"data" : {
 						"type" : "infra",
 						"name" : "google",
@@ -525,8 +697,8 @@ var template = {
 						"options" : {
 							"region" : "asia-east1-c",
 							"workernumber" : 1,
-							"workerflavor" : "n1-standard-2",
-							"regionLabel" : "asia-east1-c",
+							"workerflavor" : "23423423",
+							"regionLabel" : "2342342",
 							"technology" : "kubernetes",
 							"envCode" : "PORTAL",
 							"nginx" : {
@@ -538,8 +710,8 @@ var template = {
 								"ssl" : true,
 								"https" : 443,
 								"remoteCertificates" : {
-									"chain" : "-----BEGIN CERTIFICATE-----\nMIIE/zCCAuegAwIBAgIJAMSgo+snQNfc1powVRZTr+mvKkGE1PrLtVZwI9H9j3L36hRLe1QktT8=\n-----END CERTIFICATE-----\n",
-									"privateKey" : "-----BEGIN RSA PRIVATE KEY-----\nMIIJKAIBAAKCAgEAt+b1CydxWirSH4WqAz6/xngWKHFKpcFr8NdFF1PuDtYxcUO3KBPz0QTzx2qek=\n-----END RSA PRIVATE KEY-----\n"
+									"chain" : "-----BEGIN CERTIFICATE-----\nM342342\n-----END CERTIFICATE-----\n",
+									"privateKey" : "-----BEGIN RSA PRIVATE KEY-----\n34234=\n-----END RSA PRIVATE KEY-----\n"
 								},
 								"customSSL" : {
 									"secret" : {
@@ -588,12 +760,12 @@ var template = {
 						}
 					},
 					"method" : "post",
-					"routeName" : "/bridge/executeDriver",
+					"routeName" : "/test/execute",
 					"data" : {
 						"type" : "infra",
 						"name" : "google",
 						"driver" : "google",
-						"command" : "getDeployClusterStatus",
+						"command" : "test",
 						"options" : {
 							"envCode" : "PORTAL"
 						}
@@ -602,7 +774,7 @@ var template = {
 			],
 			"rollback" : {
 				"method" : "post",
-				"routeName" : "/bridge/executeDriver",
+				"routeName" : "/test/execute",
 				"data" : {
 					"type" : "infra",
 					"name" : "google",
@@ -614,7 +786,7 @@ var template = {
 					}
 				},
 				"params": {
-					"project": "demo"
+					"test": "demo"
 				}
 			},
 			"status" : {
@@ -635,12 +807,12 @@ var template = {
 					}
 				},
 				"method" : "post",
-				"routeName" : "/bridge/executeDriver",
+				"routeName" : "/test/execute",
 				"data" : {
 					"type" : "infra",
 					"name" : "google",
 					"driver" : "google",
-					"command" : "getDeployClusterStatus",
+					"command" : "test",
 					"options" : {
 						"envCode" : "PORTAL"
 					}
@@ -684,12 +856,12 @@ var template = {
 			"account" : {
 				"entries" : [
 					{
-						"name" : "project",
-						"label" : "Project Id",
+						"name" : "test",
+						"label" : "test Id",
 						"type" : "string",
 						"value" : "",
-						"tooltip" : "Enter your Google Project Id",
-						"fieldMsg" : "Google Cloud allows deployment within already created projects only. Enter the Google Project Name you which to use for your deployments.",
+						"tooltip" : "Enter your Google test Id",
+						"fieldMsg" : "Google Cloud allows deployment within already created tests only. Enter the Google test Name you which to use for your deployments.",
 						"required" : true
 					},
 					{
@@ -698,7 +870,7 @@ var template = {
 						"type" : "jsoneditor",
 						"height" : "200px",
 						"value" : "",
-						"tooltip" : "Enter the token associated with this project",
+						"tooltip" : "Enter the token associated with this test",
 						"fieldMsg" : "Tokens allow you to communicate with Google Cloud APIs to manage your deployments. Generate a Key Token in Google Cloud IAM / Service Accounts section and copy it here.",
 						"required" : true
 					}
@@ -932,7 +1104,7 @@ var template = {
 					}
 				},
 				"method" : "post",
-				"routeName" : "/bridge/executeDriver",
+				"routeName" : "/test/execute",
 				"data" : {
 					"type" : "infra",
 					"name" : "google",
@@ -1073,11 +1245,11 @@ function stubGridFS() {
 describe("testing statusUtils.js", function () {
 	before(function () {
 		nock('http://soajs.dashboard:4000')
-			.post('/bridge/executeDriver?access_token=access_token',
+			.post('/test/execute?access_token=access_token',
 				{ type: 'infra',
 					name: 'google',
 					driver: 'google',
-					command: 'getDeployClusterStatus',
+					command: 'test',
 					options: { envCode: 'PORTAL' } })
 			.reply(200, {
 				result: true,
@@ -1205,7 +1377,13 @@ describe("testing statusUtils.js", function () {
 		});
 	});
 	
-	it("Success deployservice", function (done) {
+	it("Success deployservice case  1", function (done) {
+		statusUtils.deployservice(req, context, "notServiceName", 1, function (err) {
+			done();
+		});
+	});
+	
+	it("Success deployservice case 2", function (done) {
 		statusUtils.deployservice(req, context, "nginx", 1, function (err) {
 			done();
 		});
@@ -1229,7 +1407,16 @@ describe("testing statusUtils.js", function () {
 		});
 	});
 	
-	it("Success createNginxRecipe", function (done) {
+	it("Success createNginxRecipe case 1", function (done) {
+		context.template = {};
+		statusUtils.createNginxRecipe(req, context, function (err) {
+			done();
+		});
+	});
+	
+	it("Success createNginxRecipe case 2", function (done) {
+		context.template = template;
+		context.template.deploy.selectedDriver = 'docker';
 		sinon.restore(statusUtils);
 		sinon
 			.stub(statusUtils, 'initBLModel')
@@ -1246,25 +1433,408 @@ describe("testing statusUtils.js", function () {
 		});
 	});
 	
-	it("Success deployNginx", function (done) {
+	it("Success createNginxRecipe case 3", function (done) {
+		context.template.deploy.selectedDriver = 'kubernetes';
+		sinon.restore(statusUtils);
+		sinon
+			.stub(statusUtils, 'initBLModel')
+			.yields(null, {
+				add: function (context, req, cb) {
+					cb(null, '5a5879533c5415080690b7f4');
+				}
+			});
+		
+		statusUtils.createNginxRecipe(req, context, function (err) {
+			sinon.restore(statusUtils);
+			stubStatusUtils();
+			done();
+		});
+	});
+	
+	it("Success deployNgin case 1", function (done) {
+		context.template = {};
 		statusUtils.deployNginx(req, context, function (err) {
 			done();
 		});
 	});
 	
-	it("Success createUserAndGroup", function (done) {
+	it("Success deployNgin case 2", function (done) {
+		context.template = template;
+		statusUtils.deployNginx(req, context, function (err) {
+			done();
+		});
+	});
+	
+	it("Success deployNgin case 3", function (done) {
+		nock('http://soajs.dashboard:4000')
+			.post('/test?access_token=access_token',
+				{
+					"serviceId": "5a5879533c5415080690b7f4",
+					"recipe": "5a5879533c5415080690b7f4"
+				})
+			.reply(200, {
+				result: true
+			});
+		context.template = template;
+		statusUtils.deployNginx(req, context, function (err) {
+			done();
+		});
+	});
+	
+	it("Success createUserAndGroup case 1", function (done) {
+		context.environmentRecord.code = 'DASHBOARD';
 		statusUtils.createUserAndGroup(req, context, function (err) {
 			done();
 		});
 	});
 	
-	it("Success redirectTo3rdPartyDeploy", function (done) {
+	it("Success createUserAndGroup case 2", function (done) {
+		nock('https://portal-api.soajs.local:30443')
+			.post('/urac/join?access_token=access_token',
+				{
+					"username": "portal",
+					"firstName": "PORTAL",
+					"lastName": "OWNER",
+					"email": "portal@me.local",
+					"password": "password"
+				})
+			.reply(200, {
+				result: true,
+				data: {}
+			});
+		context.environmentRecord.code = 'PORTAL';
+		statusUtils.createUserAndGroup(req, context, function (err) {
+			done();
+		});
+	});
+	
+	it("Success createUserAndGroup case 3", function (done) {
+		nock('https://portal-api.soajs.local:30443')
+			.post('/urac/join?access_token=access_token',
+				{
+					"username": "portal",
+					"firstName": "PORTAL",
+					"lastName": "OWNER",
+					"email": "portal@me.local",
+					"password": "password"
+				})
+			.reply(200, {
+				errors: {
+					codes: [402]
+				}
+			});
+		context.environmentRecord.code = 'PORTAL';
+		statusUtils.createUserAndGroup(req, context, function (err) {
+			done();
+		});
+	});
+	it("Success createUserAndGroup case 4", function (done) {
+		nock('https://portal-api.soajs.local:30443')
+			.post('/urac/join?access_token=access_token',
+				{
+					"username": "portal",
+					"firstName": "PORTAL",
+					"lastName": "OWNER",
+					"email": "portal@me.local",
+					"password": "password"
+				})
+			.reply(200, {
+				errors: {
+					codes: [400]
+				}
+			});
+		context.environmentRecord.code = 'PORTAL';
+		statusUtils.createUserAndGroup(req, context, function (err) {
+			done();
+		});
+	});
+	it("Success createUserAndGroup case 5", function (done) {
+		nock('https://portal-api.soajs.local:30443')
+			.post('/urac/join',
+				{
+					"username": "portal",
+					"firstName": "PORTAL",
+					"lastName": "OWNER",
+					"email": "portal@me.local",
+					"password": "password"
+				})
+			.reply(200, {
+				errors: {
+					codes: [400]
+				}
+			});
+		context.environmentRecord.code = 'PORTAL';
+		statusUtils.createUserAndGroup(req, context, function (err) {
+			done();
+		});
+	});
+	it("Success createUserAndGroup case 6", function (done) {
+		delete context.template.user.count;
+		nock('https://portal-api.soajs.local:30443')
+			.post('/urac/join?access_token=access_token',
+				{
+					"username": "portal",
+					"firstName": "PORTAL",
+					"lastName": "OWNER",
+					"email": "portal@me.local",
+					"password": "password"
+				})
+			.reply(200, {
+				errors: {
+					codes: [400]
+				}
+			});
+		delete context.template.user;
+		context.environmentRecord.code = 'PORTAL';
+		statusUtils.createUserAndGroup(req, context, function (err) {
+			done();
+		});
+	});
+	
+	it("Success createUserAndGroup case 7", function (done) {
+		delete context.template.user;
+		nock('https://portal-api.soajs.local:30443')
+			.post('/urac/join?access_token=access_token',
+				{
+					"username": "portal",
+					"firstName": "PORTAL",
+					"lastName": "OWNER",
+					"email": "portal@me.local",
+					"password": "password"
+				})
+			.reply(200, {
+				errors: {
+					codes: [400]
+				}
+			});
+		delete context.template.user;
+		context.environmentRecord.code = 'PORTAL';
+		statusUtils.createUserAndGroup(req, context, function (err) {
+			done();
+		});
+	});
+	it("Success createUserAndGroup case 7", function (done) {
+		delete context.template.user;
+		nock('https://portal-api.soajs.local:30443')
+			.post('/urac/join?access_token=access_token',
+				{
+					"username": "portal",
+					"firstName": "PORTAL",
+					"lastName": "OWNER",
+					"email": "portal@me.local",
+					"password": "password"
+				})
+			.reply(200, {
+				data: {
+				}
+			});
+		delete context.template.user;
+		context.environmentRecord.code = 'PORTAL';
+		statusUtils.createUserAndGroup(req, context, function (err) {
+			done();
+		});
+	});
+	
+	it("Success redirectTo3rdPartyDeploy case 1", function (done) {
 		statusUtils.redirectTo3rdPartyDeploy(req, context,'infra', function (err) {
 			done();
 		});
 	});
 	
-	it("Success redirectTo3rdPartyStatus", function (done) {
+	it("Success redirectTo3rdPartyDeploy case 2", function (done) {
+		context.template["infra"].wf.deploy  = {};
+		statusUtils.redirectTo3rdPartyDeploy(req, context,'infra', function (err) {
+			done();
+		});
+	});
+	it("Success redirectTo3rdPartyDeploy case 3", function (done) {
+		context.template["infra"].wf.deploy  = "1";
+		statusUtils.redirectTo3rdPartyDeploy(req, context,'infra', function (err) {
+			done();
+		});
+	});
+	
+	it("Success redirectTo3rdPartyDeploy case 4", function (done) {
+		context.template["infra"].wf.deploy = [{
+			"recursive" : {
+				"id" : {
+					"type" : "string"
+				},
+				"ip" : {
+					"type" : "string"
+				}
+			},
+			"check" : {
+				"id" : {
+					"type" : "string"
+				},
+				"ip" : {
+					"type" : "string"
+				}
+			},
+			"method" : "post",
+			"routeName" : "/test/execute",
+			"data" : {
+				"type" : "infra",
+				"name" : "google",
+				"driver" : "google",
+				"command" : "test",
+				"options" : {
+					"envCode" : "PORTAL"
+				}
+			},
+			"params": {
+				"test": "test"
+			}
+		}];
+		statusUtils.redirectTo3rdPartyDeploy(req, context,'infra', function (err) {
+			done();
+		});
+	});
+	
+	it("Success redirectTo3rdPartyDeploy case 5", function (done) {
+		nock('https://portal-api.soajs.local:30443')
+			.post('/urac/join?access_token=access_token',
+				{
+					"username": "portal",
+					"firstName": "PORTAL",
+					"lastName": "OWNER",
+					"email": "portal@me.local",
+					"password": "password"
+				})
+			.reply(200, {
+				data: {
+				}
+			});
+		nock('http://soajs.dashboard:4000')
+			.post('/test/execute?access_token=access_token&test=test',
+				{
+					"type": "infra",
+					"name": "google",
+					"driver": "google",
+					"command": "test",
+					"options": {
+						"envCode": "PORTAL"
+					}
+				})
+			.reply(200, {
+				data: {
+					"1": "test"
+				},
+				result: true
+			});
+		context.template["infra"]._id = {
+		};
+		statusUtils.redirectTo3rdPartyDeploy(req, context,'infra', function (err) {
+			done();
+		});
+	});
+	
+	it("Success redirectTo3rdPartyDeploy case 6", function (done) {
+		nock('https://portal-api.soajs.local:30443')
+			.post('/urac/join?access_token=access_token',
+				{
+					"username": "portal",
+					"firstName": "PORTAL",
+					"lastName": "OWNER",
+					"email": "portal@me.local",
+					"password": "password"
+				})
+			.reply(200, {
+				data: {
+				}
+			});
+		nock('http://soajs.dashboard:4000')
+			.post('/test/execute?access_token=access_token&test=test',
+				{
+					"type": "infra",
+					"name": "google",
+					"driver": "google",
+					"command": "test",
+					"options": {
+						"envCode": "PORTAL"
+					}
+				})
+			.reply(200, {
+				data: {
+				},
+				result: true
+			});
+		
+		delete context.template["infra"]._id;
+		statusUtils.redirectTo3rdPartyDeploy(req, context,'infra', function (err) {
+			done();
+		});
+	});
+	
+	it("Success redirectTo3rdPartyStatus case 1", function (done) {
+		statusUtils.redirectTo3rdPartyStatus(req, context,'infra', function (err) {
+			done();
+		});
+	});
+	it("Success redirectTo3rdPartyStatus case 2", function (done) {
+		delete context.template["infra"].info;
+		statusUtils.redirectTo3rdPartyStatus(req, context,'infra', function (err) {
+			done();
+		});
+	});
+	
+	it("Success redirectTo3rdPartyStatus case 3", function (done) {
+		context.template["infra"].wf.status = [{
+			"recursive" : {
+				"id" : {
+					"type" : "string"
+				},
+				"ip" : {
+					"type" : "string"
+				}
+			},
+			"check" : {
+				"id" : {
+					"type" : "string"
+				},
+				"ip" : {
+					"type" : "string"
+				}
+			},
+			"method" : "post",
+			"routeName" : "/test/execute",
+			"data" : {
+				"type" : "infra",
+				"name" : "google",
+				"driver" : "google",
+				"command" : "test",
+				"options" : {
+					"envCode" : "PORTAL"
+				}
+			},
+			"params": {
+				"test": "test"
+			}
+		}];
+		nock('http://soajs.dashboard:4000')
+			.post('/test/execute?access_token=access_token&test=test',
+				{
+					"type": "infra",
+					"name": "google",
+					"driver": "google",
+					"command": "test",
+					"options": {
+						"envCode": "PORTAL"
+					}
+				})
+			.reply(200, {
+				data: {
+					"1": 2
+				},
+				result: true
+			});
+		statusUtils.redirectTo3rdPartyStatus(req, context,'infra', function (err) {
+			done();
+		});
+	});
+	it("Success redirectTo3rdPartyStatus case 5", function (done) {
+		context.template["infra"].wf.status =  "0";
 		statusUtils.redirectTo3rdPartyStatus(req, context,'infra', function (err) {
 			done();
 		});

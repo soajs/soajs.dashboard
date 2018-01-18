@@ -269,7 +269,7 @@ var template = {
 			"deploy" : [
 				{
 					"method" : "post",
-					"routeName" : "/bridge/executeDriver",
+					"routeName" : "/test/test",
 					"data" : {
 						"type" : "infra",
 						"name" : "google",
@@ -341,7 +341,7 @@ var template = {
 						}
 					},
 					"method" : "post",
-					"routeName" : "/bridge/executeDriver",
+					"routeName" : "/test/test",
 					"data" : {
 						"type" : "infra",
 						"name" : "google",
@@ -355,7 +355,7 @@ var template = {
 			],
 			"rollback" : {
 				"method" : "post",
-				"routeName" : "/bridge/executeDriver",
+				"routeName" : "/test/test",
 				"data" : {
 					"type" : "infra",
 					"name" : "google",
@@ -367,7 +367,7 @@ var template = {
 					}
 				},
 				"params": {
-					"project": "demo"
+					"test": "demo"
 				}
 			},
 			"status" : {
@@ -388,7 +388,7 @@ var template = {
 					}
 				},
 				"method" : "post",
-				"routeName" : "/bridge/executeDriver",
+				"routeName" : "/test/test",
 				"data" : {
 					"type" : "infra",
 					"name" : "google",
@@ -437,12 +437,12 @@ var template = {
 			"account" : {
 				"entries" : [
 					{
-						"name" : "project",
-						"label" : "Project Id",
+						"name" : "test",
+						"label" : "test Id",
 						"type" : "string",
 						"value" : "",
-						"tooltip" : "Enter your Google Project Id",
-						"fieldMsg" : "Google Cloud allows deployment within already created projects only. Enter the Google Project Name you which to use for your deployments.",
+						"tooltip" : "Enter your Google test Id",
+						"fieldMsg" : "Google Cloud allows deployment within already created tests only. Enter the Google test Name you which to use for your deployments.",
 						"required" : true
 					},
 					{
@@ -451,7 +451,7 @@ var template = {
 						"type" : "jsoneditor",
 						"height" : "200px",
 						"value" : "",
-						"tooltip" : "Enter the token associated with this project",
+						"tooltip" : "Enter the token associated with this test",
 						"fieldMsg" : "Tokens allow you to communicate with Google Cloud APIs to manage your deployments. Generate a Key Token in Google Cloud IAM / Service Accounts section and copy it here.",
 						"required" : true
 					}
@@ -685,7 +685,7 @@ var template = {
 					}
 				},
 				"method" : "post",
-				"routeName" : "/bridge/executeDriver",
+				"routeName" : "/test/test",
 				"data" : {
 					"type" : "infra",
 					"name" : "google",
@@ -936,7 +936,7 @@ describe("testing statusRollback.js", function () {
 	
 	it("Success redirectTo3rdParty user ", function (done) {
 		nock('http://soajs.dashboard:4000')
-			.post('/bridge/executeDriver?access_token=access_token&project=demo',
+			.post('/test/test?access_token=access_token&test=demo',
 				{ type: 'infra',
 				name: 'google',
 				driver: 'google',
@@ -951,10 +951,10 @@ describe("testing statusRollback.js", function () {
 		})
 	});
 	
-	it("fail redirectTo3rdParty no project ", function (done) {
+	it("fail redirectTo3rdParty no test ", function (done) {
 		delete context.template["infra"].wf.rollback.params;
 		nock('http://soajs.dashboard:4000')
-			.post('/bridge/executeDriver?access_token=access_token&project=demo',
+			.post('/test/test?access_token=access_token&test=demo',
 				{ type: 'infra',
 					name: 'google',
 					driver: 'google',
@@ -975,7 +975,7 @@ describe("testing statusRollback.js", function () {
 	
 	it("Success redirectTo3rdParty user recursive ", function (done) {
 		nock('http://soajs.dashboard:4000')
-			.post('/bridge/executeDriver?access_token=access_token&project=demo',
+			.post('/test/test?access_token=access_token&test=demo',
 				{ type: 'infra',
 					name: 'google',
 					driver: 'google',
@@ -1006,7 +1006,7 @@ describe("testing statusRollback.js", function () {
 				}
 			},
 			"method" : "post",
-			"routeName" : "/bridge/executeDriver",
+			"routeName" : "/test/test",
 			"data" : {
 				"type" : "infra",
 				"name" : "google",
@@ -1017,7 +1017,7 @@ describe("testing statusRollback.js", function () {
 				}
 			},
 			"params": {
-				"project": "demo"
+				"test": "demo"
 			}
 		}];
 		
@@ -1028,7 +1028,7 @@ describe("testing statusRollback.js", function () {
 	
 	it("Success redirectTo3rdParty user recursive no id", function (done) {
 		nock('http://soajs.dashboard:4000')
-			.post('/bridge/executeDriver?access_token=access_token&project=demo',
+			.post('/test/test?access_token=access_token&test=demo',
 				{ type: 'infra',
 					name: 'google',
 					driver: 'google',
@@ -1058,7 +1058,7 @@ describe("testing statusRollback.js", function () {
 				}
 			},
 			"method" : "post",
-			"routeName" : "/bridge/executeDriver",
+			"routeName" : "/test/test",
 			"data" : {
 				"type" : "infra",
 				"name" : "google",
@@ -1069,7 +1069,7 @@ describe("testing statusRollback.js", function () {
 				}
 			},
 			"params": {
-				"project": "demo"
+				"test": "demo"
 			}
 		}];
 		
@@ -1081,7 +1081,7 @@ describe("testing statusRollback.js", function () {
 	it("fail redirectTo3rdParty no options ", function (done) {
 		context.template["infra"].wf.rollback = {};
 		nock('http://soajs.dashboard:4000')
-			.post('/bridge/executeDriver?access_token=access_token&project=demo',
+			.post('/test/test?access_token=access_token&test=demo',
 				{ type: 'infra',
 					name: 'google',
 					driver: 'google',
