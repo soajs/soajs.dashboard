@@ -928,7 +928,6 @@ describe("testing statusRollback.js", function () {
 		})
 	});
 	
-	
 	it("Success redirectTo3rdParty user no roll back", function (done) {
 		statusRollback.redirectTo3rdParty(req, context, "user", function (err) {
 			done();
@@ -1100,6 +1099,7 @@ describe("testing statusRollback.js", function () {
 			done();
 		})
 	});
+	
 	describe("initBLModel", function () {
 		before(function () {
 			sinon.restore(statusRollback);
@@ -1115,5 +1115,4 @@ describe("testing statusRollback.js", function () {
 			});
 		});
 	});
-	
 });

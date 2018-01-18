@@ -6,67 +6,96 @@ var statusUtils = helper.requireModule("./lib/environment/statusUtils");
 var statusRollback = helper.requireModule("./lib/environment/statusRollback");
 var sinon = require('sinon');
 
-//mock statusUtils
-sinon
-	.stub(statusUtils, 'getAPIInfo')
-    .withArgs(sinon.match.string).returns('http://test.local');
-sinon
-	.stub(statusUtils, 'uploadCertificates')
-	.yields(null, true);
-sinon
-	.stub(statusUtils, 'redirectTo3rdPartyDeploy')
-	.yields(null, true);
-sinon
-	.stub(statusUtils, 'handleClusters')
-	.yields(null, true);
-sinon
-	.stub(statusUtils, 'deployController')
-	.yields(null, true);
-sinon
-	.stub(statusUtils, 'deployUrac')
-	.yields(null, true);
-sinon
-	.stub(statusUtils, 'deployOauth')
-	.yields(null);
-sinon
-	.stub(statusUtils, 'deployNginx')
-	.yields(null, true);
-sinon
-	.stub(statusUtils, 'createNginxRecipe')
-	.yields(null, true);
-sinon
-	.stub(statusUtils, 'createUserAndGroup')
-	.yields(null, true);
-
+var timer = 10000;
+function stubStatusUtils() {
+	
+	sinon
+		.stub(statusUtils, 'getAPIInfo')
+		.withArgs(sinon.match.string).returns('http://test.local');
+	sinon
+		.stub(statusUtils, 'uploadCertificates')
+		.yields(null, true);
+	sinon
+		.stub(statusUtils, 'productize')
+		.yields(null, true);
+	sinon
+		.stub(statusUtils, 'deployClusterResource')
+		.yields(null, true);
+	sinon
+		.stub(statusUtils, 'handleClusters')
+		.yields(null, true);
+	sinon
+		.stub(statusUtils, 'deployservice')
+		.yields(null, true);
+	sinon
+		.stub(statusUtils, 'deployController')
+		.yields(null);
+	sinon
+		.stub(statusUtils, 'deployUrac')
+		.yields(null, true);
+	sinon
+		.stub(statusUtils, 'deployOauth')
+		.yields(null, true);
+	sinon
+		.stub(statusUtils, 'createNginxRecipe')
+		.yields(null, true);
+	sinon
+		.stub(statusUtils, 'deployNginx')
+		.yields(null, true);
+	sinon
+		.stub(statusUtils, 'createUserAndGroup')
+		.yields(null, true);
+	sinon
+		.stub(statusUtils, 'redirectTo3rdPartyDeploy')
+		.yields(null, true);
+	sinon
+		.stub(statusUtils, 'redirectTo3rdPartyStatus')
+		.yields(null, true);
+	sinon
+		.stub(statusUtils, 'repeatCheckCall')
+		.yields(null, true);
+	sinon
+		.stub(statusUtils, 'generateAndRunRequest')
+		.yields(null, true);
+	
 //mock statusRollback
-sinon
-	.stub(statusRollback, 'redirectTo3rdParty')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeProduct')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeCluster')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeController')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeUrac')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeOauth')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeNginx')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeCatalog')
-	.yields(null, true);
-sinon
-	.stub(statusRollback, 'removeCertificates')
-	.yields(null, true);
-
+	sinon
+		.stub(statusRollback, 'removeCertificates')
+		.yields(null, true);
+	sinon
+		.stub(statusRollback, 'removeProduct')
+		.yields(null, true);
+	sinon
+		.stub(statusRollback, 'removeController')
+		.yields(null, true);
+	sinon
+		.stub(statusRollback, 'removeUrac')
+		.yields(null, true);
+	sinon
+		.stub(statusRollback, 'removeOauth')
+		.yields(null, true);
+	sinon
+		.stub(statusRollback, 'removeNginx')
+		.yields(null, true);
+	sinon
+		.stub(statusRollback, 'removeCatalog')
+		.yields(null, true);
+	sinon
+		.stub(statusRollback, 'removeCluster')
+		.yields(null, true);
+	sinon
+		.stub(statusRollback, 'deleteResource')
+		.yields(null, true);
+	sinon
+		.stub(statusRollback, 'redirectTo3rdParty')
+		.yields(null, true);
+	sinon
+		.stub(statusRollback, 'repeatCheckCall')
+		.yields(null, true);
+	sinon
+		.stub(statusRollback, 'generateAndRunRequest')
+		.yields(null, true);
+}
 var req = {
 	soajs: {
 		registry: {
@@ -113,7 +142,9 @@ var req = {
 var mongoStub = {
 	findEntry: function (soajs, opts, cb) {
 		cb(null, {
-			"productize": {},
+			"productize": {
+				"modifyTemplateStatus": true
+			},
 			"cluster": {},
 			"controller": {},
 			"urac": {},
@@ -745,29 +776,130 @@ var context = {
 	environmentRecord: environmentRecord
 };
 describe("testing status.js", function () {
-	after(function() {
-		sinon.restore(statusUtils);
-		sinon.restore(statusRollback);
-	});
-	it("Success startDeployment", function (done) {
+	it("Success startDeployment case 1", function (done) {
+		stubStatusUtils();
 		utils.startDeployment(req,BL,config, environmentRecord,template,  function (err, body) {
-			assert.ok(body);
-			done();
+			setTimeout(() => {
+				assert.ok(body);
+				sinon.restore(statusUtils);
+				sinon.restore(statusRollback);
+				done();
+			}, timer);
+			
 		})
 	});
 	
-	it("Success checkProgress", function (done) {
+	it("Success startDeployment case 2", function (done) {
+		template.infra.position = 0;
+		stubStatusUtils();
+		utils.startDeployment(req,BL,config, environmentRecord,template,  function (err, body) {
+			setTimeout(() => {
+				assert.ok(body);
+				sinon.restore(statusUtils);
+				sinon.restore(statusRollback);
+				done();
+			}, timer);
+		});
+	});
+	
+	it("Success startDeployment case 3", function (done) {
+		context.template.nginx.catalog = {};
+		stubStatusUtils();
+		utils.startDeployment(req,BL,config, environmentRecord,template,  function (err, body) {
+			setTimeout(() => {
+				assert.ok(body);
+				sinon.restore(statusUtils);
+				sinon.restore(statusRollback);
+				done();
+			}, timer);
+		});
+	});
+	it("Success startDeployment case 4", function (done) {
+		stubStatusUtils();
+		context.BL.model.saveEntry = function (soajs, opts, cb) {
+			cb(true);
+		};
+		utils.startDeployment(req,BL,config, environmentRecord,template,  function (err, body) {
+			setTimeout(() => {
+				assert.ok(body);
+				sinon.restore(statusUtils);
+				sinon.restore(statusRollback);
+				context.BL.model.saveEntry = function (soajs, opts, cb) {
+					cb(null, true);
+				};
+				done();
+			}, timer);
+		});
+	});
+	
+	it("Success checkProgress case 1", function (done) {
+		stubStatusUtils();
 		utils.checkProgress(req,BL,config, environmentRecord,template,  function (err, body) {
-			assert.ok(body);
-			done();
+			setTimeout(() => {
+				assert.ok(body);
+				sinon.restore(statusUtils);
+				sinon.restore(statusRollback);
+				done();
+			}, timer);
 		})
 	});
 	
-	it("Success rollbackDeployment", function (done) {
+	it("Success checkProgress  case 2", function (done) {
+		stubStatusUtils();
+		context.BL.model.updateEntry = function (soajs, opts, cb) {
+			cb(true);
+		};
+		utils.checkProgress(req,BL,config, environmentRecord,template,  function (err, body) {
+			setTimeout(() => {
+				assert.ok(body);
+				sinon.restore(statusUtils);
+				sinon.restore(statusRollback);
+				context.BL.model.updateEntry = function (soajs, opts, cb) {
+					cb(null, true);
+				};
+				done();
+			}, timer);
+		})
+	});
+	
+	it("Success rollbackDeployment case 1", function (done) {
+		stubStatusUtils();
 		req.soajs.inputmaskData.rollback = 1;
 		utils.rollbackDeployment(req, context, function (err, body) {
-			assert.ok(body);
-			done();
+			setTimeout(() => {
+				assert.ok(body);
+				sinon.restore(statusUtils);
+				sinon.restore(statusRollback);
+				done();
+			}, timer);
+		})
+	});
+	it("Success rollbackDeployment case 2", function (done) {
+		stubStatusUtils();
+		req.soajs.inputmaskData.rollback = 1;
+		template.infra.position = 2;
+		utils.rollbackDeployment(req, context, function (err, body) {
+			setTimeout(() => {
+				assert.ok(body);
+				sinon.restore(statusUtils);
+				sinon.restore(statusRollback);
+				done();
+			}, timer);
+		})
+	});
+	it("Success rollbackDeployment case 3", function (done) {
+		stubStatusUtils();
+		req.soajs.inputmaskData.rollback = 0;
+		delete template.user;
+		delete template.infra;
+		delete template.dns;
+		utils.rollbackDeployment(req, context, function (err, body) {
+			setTimeout(() => {
+				assert.ok(body);
+				sinon.restore(statusUtils);
+				sinon.restore(statusRollback);
+				done();
+			}, timer);
 		})
 	});
 });

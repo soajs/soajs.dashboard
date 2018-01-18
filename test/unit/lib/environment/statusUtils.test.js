@@ -4,6 +4,7 @@ var sinon = require('sinon');
 var nock = require("nock");
 var helper = require("../../../helper.js");
 var statusUtils = helper.requireModule("./lib/environment/statusUtils.js");
+var fs = require("fs");
 var config = {};
 var environmentRecord = {
 	_id: '5a58d942ace01a5325fa3e4c',
@@ -223,9 +224,92 @@ var portalTenant = {
 	],
 	"tag": "portal"
 };
+var productTenant = {
+	"_id": "5a395453ff55c80032b902a6",
+	"code": "PRTAL",
+	"name": "Portal",
+	"description": "Portal",
+	"packages": [{"code": "PRTAL_MAIN", "name": "Basic Techop", "description": null, "acl": {}, "_TTL": 252000000}]
+};
+var mongoRecipe = {
+	"_id": '5a5c920a30a3fe5439b0e4e4',
+	"name": "Mongo Recipe - Kubernetes",
+	"type": "cluster",
+	"subtype": "mongo",
+	"description": "This recipe allows you to deploy a mongo server in kubernetes",
+	"locked": true,
+	"recipe": {
+		"deployOptions": {
+			"image": {
+				"prefix": "",
+				"name": "mongo",
+				"tag": "3.4.10",
+				"pullPolicy": "IfNotPresent"
+			},
+			"readinessProbe": {
+				"httpGet": {
+					"path": "/",
+					"port": 27017
+				},
+				"initialDelaySeconds": 5,
+				"timeoutSeconds": 2,
+				"periodSeconds": 5,
+				"successThreshold": 1,
+				"failureThreshold": 3
+			},
+			"restartPolicy": {},
+			"container": {
+				"network": "",
+				"workingDir": ""
+			},
+			"voluming": {
+				"volumes": [
+					{
+						"name": "custom-mongo-volume",
+						"hostPath": {
+							"path": "/data/custom/db/"
+						}
+					}
+				],
+				"volumeMounts": [
+					{
+						"mountPath": "/data/db/",
+						"name": "custom-mongo-volume"
+					}
+				]
+			},
+			"ports": [
+				{
+					"name": "mongo",
+					"target": 27017,
+					"isPublished": true
+				}
+			]
+		},
+		"buildOptions": {
+			"env": {},
+			"cmd": {
+				"deploy": {
+					"command": [
+						"mongod"
+					],
+					"args": [
+						"--smallfiles"
+					]
+				}
+			}
+		}
+	}
+};
 var mongoStub = {
 	findEntry: function (soajs, opts, cb) {
-		cb(null, portalTenant);
+		if (opts.collection === 'tenants'){
+			cb(null, portalTenant);
+		}
+		else {
+			cb(null, productTenant);
+		}
+		
 	},
 	getDb: function (soajs) {
 		return {
@@ -280,19 +364,45 @@ var template = {
 			"docker" : {
 				"dockerremote" : true,
 				"nodes" : "192.168.99.100",
-				"apiPort" : "2376"
+				"apiPort" : "2376",
+				"certificates": {
+					"docker" :{
+						"_id" : "5a1ef39a6b4472002538edd5",
+						"filename" : "ca.pem",
+						"contentType" : "binary/octet-stream",
+						"length" : 1789,
+						"chunkSize" : 261120,
+						"uploadDate" : "2017-11-29T17:51:23.010+0000",
+						"aliases" : null,
+						"metadata" : {
+							"platform" : "docker",
+							"certType" : "ca",
+							"env" : {
+								"DASHBOARD" : [
+									"docker.remote"
+								]
+							}
+						},
+						"md5" : "5a1b6d7a70fd47f44c4de0096203d719"
+					}
+				}
 			}
 		},
 		"selectedDriver" : "docker"
 	},
 	"cluster" : {
 		"local" : {
+			"prefix": "pre_",
 			"servers" : [
 				{
 					"host" : "portaldemo",
 					"port" : 27017
 				}
 			],
+			"credentials": {
+				"username": "ragheb",
+				"password": "random"
+			},
 			"URLParam" : {
 				"bufferMaxEntries" : 0,
 				"maxPoolSize" : 5
@@ -915,6 +1025,9 @@ function stubStatusUtils() {
 			addApplicationExtKeys: function (context, provision, req, {}, cb) {
 				cb(null, {extKey: '506407523000d55bad57fdf257416bcab922c40fb2d83ee90db014d21afa1ede683ca36a44d59f4ae53caf579badd9fef6d2621ba25e7d8dee1eb414cfe833710254812efe5d74dbc74ab89f4f8b955dafe05a196e1e0c6cd17c4bace076001d'});
 			},
+			createApplicationKey: function (context, provision, req, {}, cb) {
+				cb(null, {key: '506407523000d55bad57fdf257416bcab922c40fb2d83ee90db014d21afa1ede683ca36a44d59f4ae53caf579badd9fef6d2621ba25e7d8dee1eb414cfe833710254812efe5d74dbc74ab89f4f8b955dafe05a196e1e0c6cd17c4bace076001d'});
+			},
 			updateApplicationConfig: function (context, req, {}, cb) {
 				cb(null, true);
 			},
@@ -931,6 +1044,13 @@ function stubStatusUtils() {
 				cb(null, {id: '5a5879533c5415080690b7f4'});
 			}
 		});
+}
+
+function stubGridFS() {
+	
+	sinon
+		.stub(fs, 'writeFile')
+		.yields(true);
 }
 
 describe("testing statusUtils.js", function () {
@@ -955,46 +1075,140 @@ describe("testing statusUtils.js", function () {
 	after(function () {
 		sinon.restore(statusUtils);
 	});
-	it("Success uploadCertificates", function (done) {
+	it("Success uploadCertificates case 1", function (done) {
+		stubGridFS();
+		statusUtils.uploadCertificates(req, context, function (err) {
+			sinon.restore(fs);
+			done();
+		});
+	});
+	
+	it("Success uploadCertificates case 2", function (done) {
+		delete context.template.deploy.deployment.docker.certificates;
 		statusUtils.uploadCertificates(req, context, function (err) {
 			done();
-		})
+		});
 	});
 	
-	it("Success productize", function (done) {
+	it("Success uploadCertificates case 3", function (done) {
+		context.template.deploy.selectedDriver = "kuberentes;"
+		statusUtils.uploadCertificates(req, context, function (err) {
+			delete context.template.deploy.deployment.docker.certificates;
+			done();
+		});
+	});
+	
+	it("Success productize case 1", function (done) {
 		statusUtils.productize(req, context, function (err) {
 			done();
-		})
+		});
+	});
+	it("Success productize case 2", function (done) {
+		context.BL.model.findEntry = function (soajs, opts, cb) {
+			if (opts.collection === 'products'){
+				cb(null, productTenant);
+			}
+			else {
+				cb(null, null);
+			}
+		};
+		statusUtils.productize(req, context, function (err) {
+			done();
+		});
 	});
 	
-	it("Success handleClusters", function (done) {
+	it("Success productize case 3", function (done) {
+		context.BL.model.findEntry = function (soajs, opts, cb) {
+			if (opts.collection === 'products'){
+				cb(null, null);
+			}
+			else {
+				cb(null, portalTenant);
+			}
+		};
+		
+		statusUtils.productize(req, context, function (err) {
+			done();
+		});
+	});
+	
+	it("Success productize case 4", function (done) {
+		context.BL.model.findEntry = function (soajs, opts, cb) {
+			if (opts.collection === 'products'){
+				cb(null, {
+					"_id": "5a395453ff55c80032b902a6",
+					"code": "PRTAL",
+					"name": "Portal",
+					"description": "Portal",
+					"packages": [{"code": "PRTAL_USER", "name": "Basic Techop", "description": null, "acl": {}, "_TTL": 252000000}]
+				});
+			}
+			else {
+				cb(null, portalTenant);
+			}
+		};
+		
+		statusUtils.productize(req, context, function (err) {
+			done();
+		});
+	});
+	
+	it("Success deployClusterResource case 1", function (done) {
+		context.BL.model.findEntry = function (soajs, opts, cb) {
+			cb(null, mongoRecipe);
+		};
+		statusUtils.deployClusterResource(req, context, function (err) {
+			done();
+		});
+	});
+	
+	it("Success deployClusterResource case 2", function (done) {
+		context.template.cluster.external = context.template.cluster.local;
+		delete context.template.cluster.local;
+		statusUtils.deployClusterResource(req, context, function (err) {
+			done();
+		});
+	});
+	
+	it("Success deployClusterResource case 3", function (done) {
+		context.template.cluster.share = {
+			name: "test"
+		};
+		delete context.template.cluster.external;
+		statusUtils.deployClusterResource(req, context, function (err) {
+			done();
+		});
+	});
+	
+	it("Success handleClusters case 1", function (done) {
+		context.environmentRecord.code = "PORTAL";
 		statusUtils.handleClusters(req, context, function (err) {
 			done();
-		})
+		});
 	});
 	
 	it("Success deployservice", function (done) {
 		statusUtils.deployservice(req, context, "nginx", 1, function (err) {
 			done();
-		})
+		});
 	});
 	
 	it("Success deployController", function (done) {
 		statusUtils.deployController(req, context, function (err) {
 			done();
-		})
+		});
 	});
 	
 	it("Success deployUrac", function (done) {
 		statusUtils.deployUrac(req, context, function (err) {
 			done();
-		})
+		});
 	});
 	
 	it("Success deployOauth", function (done) {
 		statusUtils.deployOauth(req, context, function (err) {
 			done();
-		})
+		});
 	});
 	
 	it("Success createNginxRecipe", function (done) {
@@ -1017,25 +1231,25 @@ describe("testing statusUtils.js", function () {
 	it("Success deployNginx", function (done) {
 		statusUtils.deployNginx(req, context, function (err) {
 			done();
-		})
+		});
 	});
 	
 	it("Success createUserAndGroup", function (done) {
 		statusUtils.createUserAndGroup(req, context, function (err) {
 			done();
-		})
+		});
 	});
 	
 	it("Success redirectTo3rdPartyDeploy", function (done) {
 		statusUtils.redirectTo3rdPartyDeploy(req, context,'infra', function (err) {
 			done();
-		})
+		});
 	});
 	
 	it("Success redirectTo3rdPartyStatus", function (done) {
 		statusUtils.redirectTo3rdPartyStatus(req, context,'infra', function (err) {
 			done();
-		})
+		});
 	});
 	
 	it("Success initBLModel", function (done) {
