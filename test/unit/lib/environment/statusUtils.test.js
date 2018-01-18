@@ -319,7 +319,24 @@ var mongoStub = {
 		}
 	},
 };
-
+var cluster = {
+	"prefix": "pre_",
+	"servers" : [
+		{
+			"host" : "portaldemo",
+			"port" : 27017
+		}
+	],
+	"credentials": {
+		"username": "ragheb",
+		"password": "random"
+	},
+	"URLParam" : {
+		"bufferMaxEntries" : 0,
+		"maxPoolSize" : 5
+	},
+	"name" : "portaldemo"
+};
 var template = {
 	"code": "DASHBOARD",
 	"ready": false,
@@ -1180,7 +1197,8 @@ describe("testing statusUtils.js", function () {
 		});
 	});
 	
-	it("Success handleClusters case 1", function (done) {
+	it("Success handleClusters", function (done) {
+		context.template.cluster.local = cluster;
 		context.environmentRecord.code = "PORTAL";
 		statusUtils.handleClusters(req, context, function (err) {
 			done();
