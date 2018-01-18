@@ -294,7 +294,7 @@ var template = {
 			"deploy" : [
 				{
 					"method" : "post",
-					"routeName" : "/bridge/executeDriver",
+					"routeName" : "/test/test",
 					"data" : {
 						"type" : "infra",
 						"name" : "google",
@@ -366,7 +366,7 @@ var template = {
 						}
 					},
 					"method" : "post",
-					"routeName" : "/bridge/executeDriver",
+					"routeName" : "/test/test",
 					"data" : {
 						"type" : "infra",
 						"name" : "google",
@@ -380,7 +380,7 @@ var template = {
 			],
 			"rollback" : {
 				"method" : "post",
-				"routeName" : "/bridge/executeDriver",
+				"routeName" : "/test/test",
 				"data" : {
 					"type" : "infra",
 					"name" : "google",
@@ -410,7 +410,7 @@ var template = {
 					}
 				},
 				"method" : "post",
-				"routeName" : "/bridge/executeDriver",
+				"routeName" : "/test/test",
 				"data" : {
 					"type" : "infra",
 					"name" : "google",
@@ -459,12 +459,12 @@ var template = {
 			"account" : {
 				"entries" : [
 					{
-						"name" : "project",
-						"label" : "Project Id",
+						"name" : "test",
+						"label" : "test Id",
 						"type" : "string",
 						"value" : "",
-						"tooltip" : "Enter your Google Project Id",
-						"fieldMsg" : "Google Cloud allows deployment within already created projects only. Enter the Google Project Name you which to use for your deployments.",
+						"tooltip" : "Enter your Google test Id",
+						"fieldMsg" : "Google Cloud allows deployment within already created tests only. Enter the Google test Name you which to use for your deployments.",
 						"required" : true
 					},
 					{
@@ -473,7 +473,7 @@ var template = {
 						"type" : "jsoneditor",
 						"height" : "200px",
 						"value" : "",
-						"tooltip" : "Enter the token associated with this project",
+						"tooltip" : "Enter the token associated with this test",
 						"fieldMsg" : "Tokens allow you to communicate with Google Cloud APIs to manage your deployments. Generate a Key Token in Google Cloud IAM / Service Accounts section and copy it here.",
 						"required" : true
 					}
@@ -707,7 +707,7 @@ var template = {
 					}
 				},
 				"method" : "post",
-				"routeName" : "/bridge/executeDriver",
+				"routeName" : "/test/test",
 				"data" : {
 					"type" : "infra",
 					"name" : "google",
