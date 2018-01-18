@@ -457,7 +457,16 @@ describe("DASHBOARD Integration Tests:", function () {
 				});
 			});
 		});
-
+		
+		describe("listing environments to initiate templates", function (){
+			it("success - will get environments", function (done) {
+				executeMyRequest({}, 'environment/list', 'get', function (body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+		});
+		
 		describe("add environment tests", function () {
 			it("success - will add STG environment", function (done) {
 				var data2 = util.cloneObj(validEnvRecord);
