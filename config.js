@@ -2775,9 +2775,17 @@ module.exports = {
 					"required": true,
 					"validation": {"type": "number"}
 				},
+				"epType": {
+					"source": ['query.epType', 'body.epType'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["soap", "rest"]
+					}
+				},
 				"swaggerInput": {
 					"source": ['query.swaggerInput', 'body.swaggerInput'],
-					"required": true,
+					"required": false,
 					"validation": {"type": "string"}
 				},
 				"authentications": {
@@ -4083,9 +4091,17 @@ module.exports = {
 					"required": true,
 					"validation": {"type": "number"}
 				},
+				"epType": {
+					"source": ['query.epType', 'body.epType'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["soap", "rest"]
+					}
+				},
 				"swaggerInput": {
 					"source": ['query.swaggerInput', 'body.swaggerInput'],
-					"required": true,
+					"required": false,
 					"validation": {"type": "string"}
 				},
 				"authentications": {
