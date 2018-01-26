@@ -27,6 +27,9 @@ var dashboardBL = {
 	swagger: {
 		module: require("./lib/swagger/index.js")
 	},
+	apiBuilder: {
+		module: require("./lib/apiBuilder/index.js")
+	},
 	hosts: {
 		module: require("./lib/hosts/index.js"),
 		helper: require("./lib/hosts/helper.js")
@@ -2860,6 +2863,132 @@ service.init(function () {
 			});
 		});
 	});
+	
+	/**
+	 * api builder apis
+	 */
+	
+	service.get("/apiBuilder/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.list(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.get("/apiBuilder/get", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.get(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.get("/apiBuilder/getResources", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.getResources(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.post("/apiBuilder/add", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.add(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.post("/apiBuilder/authentication/update", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.authenticationUpdate(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.post("/apiBuilder/convertSwaggerToImfv", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.convertSwaggerToImfv(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.post("/apiBuilder/convertImfvToSwagger", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.convertImfvToSwagger(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.put("/apiBuilder/edit", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.edit(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.put("/apiBuilder/updateImfv", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.updateImfv(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.put("/apiBuilder/updateSchemas", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.updateSchemas(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.delete("/apiBuilder/delete", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.delete(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
 	
 	/**
 	 * Service Start

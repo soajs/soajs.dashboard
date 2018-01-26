@@ -7,7 +7,7 @@ module.exports = {
         "additionalProperties": false,
         "properties": {
             "name": { "type": "string", "required": true },
-            "type": { "type": "string", "required": true, "enum": [ 'cluster', 'server', 'cdn', 'system', 'other' ] },
+            "type": { "type": "string", "required": true, "enum": [ 'cluster', 'server', 'cdn', 'system', 'authorization', 'other' ] },
             "category": { "type": "string", "required": true },
             "locked": { "type": "boolean", "required": false },
             "plugged": { "type": "boolean", "required": true },
