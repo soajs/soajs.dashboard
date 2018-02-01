@@ -606,7 +606,7 @@ let lib = {
 											"finished_at": oneBuild.finished_at,
 											"duration": oneBuild.finished_at - oneBuild.started_at,
 											"state": (oneBuild.status === 'success') ? 'finished' : oneBuild.status,
-											"buildHistory": "",
+											"buildHistory": opts.settings.domain + "/" + opts.params.repo,
 											"job_id": "",
 											"logs": "",
 											"result": ""
