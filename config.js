@@ -1427,6 +1427,35 @@ module.exports = {
 					}
 				}
 			},
+			
+			"/ci/repo/builds": {
+				"_apiInfo": {
+					"l": "Get the CI Latest Repository Build Per Branch",
+					"group": "Continuous Integration"
+				},
+				'commonFields': ['project'],
+				"provider": {
+					"source": ['query.provider'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"repo": {
+					"source": ['query.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"owner": {
+					"source": ['query.owner'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
 
 			"/gitAccounts/accounts/list": {
 				"_apiInfo": {

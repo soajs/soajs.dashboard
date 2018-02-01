@@ -2093,6 +2093,22 @@ service.init(function () {
 	});
 	
 	/**
+	 * get the latest build of a repo per branch from a ci provider
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/ci/repo/builds", function(req, res) {
+		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.getRepoBuilds(config, req, dashboardBL.ci.driver, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.jsonp(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
 	 * Git App features gitAccountsBL
 	 */
 	

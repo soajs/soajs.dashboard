@@ -13,7 +13,10 @@ module.exports = {
 				"setHook": "/hooks/",
 				"listSettings": "/repos/#REPO_ID#/settings",
 				"updateSettings": "/repos/#REPO_ID#/settings",
-				"listRepoBranches": "/repos/#REPO_ID#/branches"
+				"listRepoBranches": "/repos/#REPO_ID#/branches",
+				"listRepoBuilds": "/repos/#REPO_ID#/builds",
+				"getJob": "/jobs/#JOB_ID#",
+				"jobLogs": "/jobs/#JOB_ID#/log"
 			},
 		},
 		"userAgent": "Travis/1.0.0",

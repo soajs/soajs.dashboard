@@ -158,10 +158,30 @@ module.exports = {
 		});
 	},
 	
+	/**
+	 * Get File
+	 * @param  {Object}   options
+	 * @param  {Function} cb
+	 *
+	 */
 	getFileName(options, cb){
 		getStrategy(options, (error, strategy) => {
 			checkError(error, 969, cb, () => {
 				strategy.getFileName(cb);
+			});
+		});
+	},
+	
+	/**
+	 * Return Build Logs of a Repo
+	 * @param  {Object}   options
+	 * @param  {Function} cb
+	 *
+	 */
+	getRepoBuilds(options, cb){
+		getStrategy(options, (error, strategy) => {
+			checkError(error, 969, cb, () => {
+				strategy.getRepoBuilds(options, cb);
 			});
 		});
 	}
