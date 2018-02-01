@@ -11,7 +11,9 @@ module.exports = {
       deleteEnvVar: '/api/repos/#OWNER#/#REPO#/secrets/#SECRET_NAME#',	// DELETE
       setHook: '/api/repos/#OWNER#/#REPO#',	// PATCH
 	  listSettings: '/api/repos/#OWNER#/#REPO#',
-	  updateSettings: '/api/repos/#OWNER#/#REPO#'
+	  updateSettings: '/api/repos/#OWNER#/#REPO#',
+	  repoBuild: '/api/repos/#OWNER#/#REPO#/builds/#BUILD_NUMBER#',
+	  jobLogs: '/api/repos/#OWNER#/#REPO#/logs/#BUILD_NUMBER#/#JOB_ID#'
     },
   },
   headers: {
