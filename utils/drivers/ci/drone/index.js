@@ -543,6 +543,145 @@ let lib = {
 				});
 			});
 		}
+	},
+	
+	
+	/**
+	 * Function that returns the builds of a repo per branch
+	 * @param  {Object}   opts
+	 * @param  {Function} cb
+	 *
+	 */
+	getRepoBuilds(opts, cb){
+		let params = {};
+		//check if an access token is provided
+		utils.checkError(!opts.settings.ciToken, { code: 974 }, cb, () => {
+			//check if the repositories owner name is provided
+			utils.checkError(!opts.settings && !opts.settings.owner, { code: 975 }, cb, () => {
+				
+				params = {
+					uri: utils.getDomain(opts.settings.domain + config.api.url.listRepoBuilds)
+						.replace('#OWNER#', opts.settings.owner)
+						.replace('#REPO#', opts.params.repo.split("/")[1]),
+					headers: config.headers,
+					json: true
+				};
+				params.headers['Authorization'] = opts.settings.ciToken;
+				if (opts.settings.domain) {
+					params.headers['Host'] = opts.settings.domain.replace(/https?:\/\//, "");
+				}
+				
+				opts.log.debug(params);
+				//send the request to obtain the repository variables
+				request.get(params, function (error, response, body) {
+					// standardize response
+					utils.checkError(error, {code: 971}, cb, () => {
+						let response = {};
+						async.series({
+							"aggBranches": (vCb) => {
+								async.each(body, (oneBuild, mCb) => {
+									if(!response[oneBuild.branch]){
+										response[oneBuild.branch] = {
+											number: 0
+										};
+									}
+									if(oneBuild.number > response[oneBuild.branch].number){
+										response[oneBuild.branch].number = oneBuild.number;
+									}
+									return mCb();
+								} , vCb);
+							},
+							"buildInfo": (vCb) => {
+								async.each(body, (oneBuild, mCb) => {
+									if(response[oneBuild.branch] &&  response[oneBuild.branch].number === oneBuild.number){
+										response[oneBuild.branch] = {
+											"id": oneBuild.id,
+											"commit_id": oneBuild.commit,
+											"commit": oneBuild.commit,
+											"commitLink" : oneBuild.link_url,
+											"message": oneBuild.message,
+											"committer_name": oneBuild.sender,
+											"number": oneBuild.number,
+											"started_at": oneBuild.started_at,
+											"finished_at": oneBuild.finished_at,
+											"duration": oneBuild.finished_at - oneBuild.started_at,
+											"state": (oneBuild.status === 'success') ? 'finished' : oneBuild.status,
+											"buildHistory": opts.settings.domain + "/" + opts.params.repo,
+											"job_id": "",
+											"logs": "",
+											"result": ""
+										};
+									}
+									return mCb();
+								}, vCb);
+							},
+						}, () => {
+							async.each(response, (oneBranch, vCb) => {
+								let jobIds = [];
+								async.series({
+									"getOneBuildInfo": (mCb) => {
+										// repoBuild: '/api/repos/#OWNER#/#REPO#/builds/#BUILD_NUMBER#',
+										params = {
+											uri: utils.getDomain(opts.settings.domain + config.api.url.repoBuild).replace("#BUILD_NUMBER#", oneBranch.number).replace("#OWNER#", opts.settings.owner).replace("#REPO#", opts.params.repo.split("/")[1]),
+											headers: config.headers,
+											json: true
+										};
+										params.headers['Authorization'] = opts.settings.ciToken;
+										if (opts.settings.domain) {
+											params.headers['Host'] = opts.settings.domain.replace(/https?:\/\//, "");
+										}
+										opts.log.debug(params);
+										request.get(params, (error, resp, body) => {
+											if (body && body.error) {
+												opts.log.error(body);
+											}
+											
+											utils.checkError(error, { code: 997 }, cb, () => {
+												oneBranch.job_id = body.procs[0].children[0].pid;
+												oneBranch.result = body.procs[0].children[0].exit_code;
+												
+												body.procs[0].children.forEach((oneJob) => {
+													jobIds.push(oneJob.pid);
+												});
+												return mCb();
+											});
+										});
+									},
+									"getBuildLogs": (mCb) => {
+										// jobLogs: '/api/repos/#OWNER#/#REPO#/logs/#BUILD_NUMBER#/#JOB_ID#'
+										async.eachSeries(jobIds, (oneJobId, fCb) => {
+											params = {
+												uri: utils.getDomain(opts.settings.domain + config.api.url.jobLogs).replace('#JOB_ID#', oneJobId).replace("#BUILD_NUMBER#", oneBranch.number).replace("#OWNER#", opts.settings.owner).replace("#REPO#", opts.params.repo.split("/")[1]),
+												headers: config.headers,
+												json: true
+											};
+											params.headers['Authorization'] = opts.settings.ciToken;
+											if (opts.settings.domain) {
+												params.headers['Host'] = opts.settings.domain.replace(/https?:\/\//, "");
+											}
+											opts.log.debug(params);
+											request.get(params, (error, resp, body) => {
+												if (body && body.error) {
+													opts.log.error(body);
+												}
+												utils.checkError(error, { code: 997 }, cb, () => {
+													body.forEach((oneProc) => {
+														oneBranch.logs += oneProc.out;
+													});
+													return fCb();
+												});
+											});
+										}, mCb);
+									}
+								}, vCb);
+							}, () => {
+								return cb(null, response);
+							});
+						});
+					});
+				});
+			});
+		});
 	}
 };
 

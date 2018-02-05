@@ -35,34 +35,34 @@ module.exports = {
 		"hashIterations": 1024,
 		"seedLength": 32
 	},
-	
+
 	"expDateTTL": 86400000,
 	"ncpLimit": 16,
-	
+
 	"profileLocation": process.env.SOAJS_PROFILE_LOC || "/opt/soajs/FILES/profiles/",
-	
+
 	"images": {
 		"nginx": 'nginx',
 		"services": "soajs"
 	},
-	
+
 	"templates": {
 		"path": __dirname + '/templates/'
 	},
-	
+
 	"network": 'soajsnet',
-	
+
 	"imagesDir": "/opt/soajs/deployer/",
-	
+
 	"kubeNginx": {
 		"minPort": 0,
 		"maxPort": 2767
 	},
-	
+
 	"certificates": {
 		types: ['ca', 'cert', 'key']
 	},
-	
+
 	"docker": {
 		"url": "https://hub.docker.com/v2/repositories/%organization%/%imagename%/tags/"
 	},
@@ -71,15 +71,15 @@ module.exports = {
 		"dynamicCatalogVariables": ['$SOAJS_NX_CONTROLLER_IP_N', '$SOAJS_MONGO_IP_N', '$SOAJS_MONGO_PORT_N'],
 		"clustersList": ['mysql', 'sql', "mongo", 'mongodb', "es", 'elasticsearch']
 	},
-	
+
 	"tokens": {
 		"dotValue": ".",
 		"dotToken": "__dot__",
 		"dotRegexString": "\\."
 	},
-	
+
 	"dashboardClusterResourceName": "dash_cluster",
-	
+
 	"gitAccounts": {
 		"bitbucket": {
 			apiDomain: 'https://api.bitbucket.org/1.0',
@@ -138,9 +138,9 @@ module.exports = {
 			"repoConfigsFolder": __dirname + '/repoConfigs'
 		}
 	},
-	
+
 	"errors": require("./utils/errors"),
-	
+
 	"schema": {
 		"commonFields": {
 			"project": {
@@ -200,16 +200,16 @@ module.exports = {
 				"validation": {
 					"type": "object",
 					"properties": {
-						"clusterType": {"type": "string"},
-						"URLParam": {"type": "object", "properties": {}},
-						"servers": {"type": "array", "items": {"type": "object", "required": true}},
-						"extraParam": {"type": "object", "properties": {}},
-						"streaming": {"type": "object", "properties": {}},
+						"clusterType": { "type": "string" },
+						"URLParam": { "type": "object", "properties": {} },
+						"servers": { "type": "array", "items": { "type": "object", "required": true } },
+						"extraParam": { "type": "object", "properties": {} },
+						"streaming": { "type": "object", "properties": {} },
 						"credentials": {
 							"type": "object",
 							"properties": {
-								"username": {"type": "string"},
-								"password": {"type": "string"}
+								"username": { "type": "string" },
+								"password": { "type": "string" }
 							}
 						}
 					}
@@ -225,10 +225,10 @@ module.exports = {
 							"required": true,
 							"type": "object",
 							"properties": {
-								"maxPoolSize": {"type": "integer", "required": true},
-								"authorization": {"type": "boolean", "required": true},
-								"requestTimeout": {"type": "integer", "required": true, "min": 20, "max": 60},
-								"requestTimeoutRenewal": {"type": "integer", "required": true, "min": 0}
+								"maxPoolSize": { "type": "integer", "required": true },
+								"authorization": { "type": "boolean", "required": true },
+								"requestTimeout": { "type": "integer", "required": true, "min": 20, "max": 60 },
+								"requestTimeoutRenewal": { "type": "integer", "required": true, "min": 0 }
 							}
 						},
 						"config": serviceConfig
@@ -343,13 +343,13 @@ module.exports = {
 				"validation": {
 					"type": "object",
 					"properties": {
-						"type": {"required": true, "type": "string", "enum": ['manual', 'container']},
-						"selected": {"type": "string", "required": false},
+						"type": { "required": true, "type": "string", "enum": ['manual', 'container'] },
+						"selected": { "type": "string", "required": false },
 						"docker": {
 							"type": "object",
 							"required": false,
 							"properties": {
-								"selected": {"type": "string", "required": false},
+								"selected": { "type": "string", "required": false },
 								"boot2docker": {
 									"type": "object",
 									"required": false
@@ -371,13 +371,13 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"extKeyRequired": {
 				"source": ['body.extKeyRequired'],
 				"required": true,
-				"validation": {"type": "boolean"}
+				"validation": { "type": "boolean" }
 			},
-			
+
 			"urac": {
 				"required": true,
 				"source": ["body.urac"],
@@ -1362,7 +1362,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/ci/settings": {
 				"_apiInfo": {
 					"l": "Get CI Repository Settings & Environment Variables",
@@ -1428,6 +1428,35 @@ module.exports = {
 				}
 			},
 			
+			"/ci/repo/builds": {
+				"_apiInfo": {
+					"l": "Get the CI Latest Repository Build Per Branch",
+					"group": "Continuous Integration"
+				},
+				'commonFields': ['project'],
+				"provider": {
+					"source": ['query.provider'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"repo": {
+					"source": ['query.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"owner": {
+					"source": ['query.owner'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
 			"/gitAccounts/accounts/list": {
 				"_apiInfo": {
 					"l": "List Git Accounts",
@@ -1435,7 +1464,7 @@ module.exports = {
 				},
 				'commonFields': ['project']
 			},
-			
+
 			"/gitAccounts/getRepos": {
 				"_apiInfo": {
 					"l": "Get Repositories",

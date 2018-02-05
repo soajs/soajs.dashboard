@@ -556,6 +556,153 @@ var lib = {
 				});
 			});
 		});
+	},
+	
+	/**
+	 * Function that returns the builds of a repo per branch
+	 * @param  {Object}   opts
+	 * @param  {Function} cb
+	 *
+	 */
+	getRepoBuilds(opts, cb){
+		
+		let params = {};
+		//check if an access token is provided
+		utils.checkError(!opts.settings.ciToken, { code: 974 }, cb, () => {
+			//check if the repositories owner name is provided
+			utils.checkError(!opts.settings && !opts.settings.owner, { code: 975 }, cb, () => {
+				let finalUrl = config.headers.api.url.listRepoBranches.replace('#REPO_ID#', opts.params.repo);
+
+				if (opts.settings.ciToken) {
+					finalUrl += "?access_token=" + opts.settings.ciToken;
+				}
+
+				params.uri = "https://" + opts.settings.domain + finalUrl;
+
+				params.headers = {
+					"User-Agent": config.headers.userAgent,
+					"Accept": config.headers.accept,
+					"Content-Type": config.headers.contentType,
+					"Host": opts.settings.domain
+				};
+				params.json = true;
+				
+				opts.log.debug(params);
+				request.get(params, (error, response, body) => {
+					if (body && body.error) {
+						opts.log.error(body);
+					}
+					utils.checkError(error, { code: 997 }, cb, () => {
+						utils.checkError(body === "no access token supplied" || body === "access denied", { code: 974 }, cb, () => {
+							let response = {};
+							async.series({
+								"prepareBranches": (vCb) => {
+									async.each(body.commits, (oneCommit, mCb) => {
+										response[oneCommit.branch] = {
+											"commit_id": oneCommit.id,
+											"commit": oneCommit.sha,
+											"commitLink" : "https://" + opts.params.gitDomain +"/" + opts.params.repo + "/commit/" + oneCommit.sha,
+											"message": oneCommit.message,
+											"committer_name": oneCommit.committer_name,
+											"compare": {
+												"url": oneCommit.compare_url,
+												"label": ""
+											}
+										};
+										
+										let label = oneCommit.compare_url.split("/");
+										label = label[label.length -1];
+										label = label.substring(0, 12);
+										response[oneCommit.branch].compare.label = label;
+										return mCb();
+									} , vCb);
+								},
+								"buildInfo": (vCb) => {
+									async.each(body.branches, (oneBranch, mCb) => {
+										for(let branch in response){
+											if(response[branch].commit_id === oneBranch.commit_id){
+												response[branch].id = oneBranch.id;
+												response[branch].number = oneBranch.number;
+												response[branch].config = oneBranch.config;
+												response[branch].started_at = oneBranch.started_at;
+												response[branch].finished_at  = oneBranch.finished_at;
+												response[branch].duration  = oneBranch.duration;
+												response[branch].buildHistory = "https://" + opts.settings.domain + config.headers.api.url.listRepoBuilds.replace('#REPO_ID#', opts.params.repo);
+												response[branch].job_id = oneBranch.job_ids[0];
+												response[branch].logs = ""; //job log
+												response[branch].result = ""; //job details
+												response[branch].state = ""; //job details
+											}
+										}
+										return mCb();
+									}, vCb);
+								}
+							}, () => {
+								async.each(response, (oneBranch, vCb) => {
+									async.parallel({
+										"jobInfo": (mCb) => {
+											let finalUrl = config.headers.api.url.getJob.replace('#JOB_ID#', oneBranch.job_id);
+											if (opts.settings.ciToken) {
+												finalUrl += "?access_token=" + opts.settings.ciToken;
+											}
+											let params = {};
+											params.uri = "https://" + opts.settings.domain + finalUrl;
+											
+											params.headers = {
+												"User-Agent": config.headers.userAgent,
+												//"Accept": config.headers.accept,
+												"Content-Type": config.headers.contentType,
+												"Host": opts.settings.domain
+											};
+											params.json = true;
+											
+											opts.log.debug(params);
+											request.get(params, (error, resp, body) => {
+												if (body && body.error) {
+													opts.log.error(body);
+												}
+												utils.checkError(error, { code: 997 }, cb, () => {
+													oneBranch.state = body.state;
+													oneBranch.result = body.result;
+													return mCb();
+												});
+											});
+										},
+										"LogInfo": (mCb) => {
+											let finalUrl = config.headers.api.url.jobLogs.replace('#JOB_ID#', oneBranch.job_id);
+											if (opts.settings.ciToken) {
+												finalUrl += "?access_token=" + opts.settings.ciToken;
+											}
+											let params = {};
+											params.uri = "https://" + opts.settings.domain + finalUrl;
+											
+											params.headers = {
+												"User-Agent": config.headers.userAgent,
+												"Content-Type": config.headers.contentType,
+											};
+											params.json = true;
+											
+											opts.log.debug(params);
+											request.get(params, (error, resp, body) => {
+												if (body && body.error) {
+													opts.log.error(body);
+												}
+												utils.checkError(error, { code: 997 }, cb, () => {
+													oneBranch.logs = body;
+													return mCb();
+												});
+											});
+										}
+									}, vCb);
+								}, () => {
+									return cb(null, response);
+								});
+							});
+						});
+					});
+				});
+			});
+		});
 	}
 };
 
