@@ -2099,10 +2099,14 @@ service.init(function () {
 	 */
 	service.get("/ci/repo/builds", function(req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.getRepoBuilds(config, req, dashboardBL.ci.driver, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.jsonp(req.soajs.buildResponse(error, data));
+			initBLModel(req, res, dashboardBL.git.module, dbModel, function (gitBL) {
+				checkConnection(BL, req, res, function () {
+					checkConnection(gitBL, req, res, function () {
+						BL.getRepoBuilds(config, req, dashboardBL.ci.driver, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, gitBL, function (error, data) {
+							BL.model.closeConnection(req.soajs);
+							return res.jsonp(req.soajs.buildResponse(error, data));
+						});
+					});
 				});
 			});
 		});
