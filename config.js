@@ -2877,6 +2877,11 @@ module.exports = {
 					"l": "Convert Swagger String To an IMFV Soajs Object",
 					"group": "ep"
 				},
+				"endpointId": {
+					"source": ['query.endpointId', 'body.endpointId'],
+					"required": true,
+					"validation": {"type": "string"}
+				},
 				"swagger": {
 					"source": ['query.swagger', 'body.swagger'],
 					"required": true,
@@ -2889,6 +2894,11 @@ module.exports = {
 				"_apiInfo": {
 					"l": "Convert IMFV Soajs Object to a Swagger String",
 					"group": "ep"
+				},
+				"endpointId": {
+					"source": ['query.endpointId', 'body.endpointId'],
+					"required": true,
+					"validation": {"type": "string"}
 				},
 				"schema": {
 					"source": ['query.schema', 'body.schema'],
