@@ -58,6 +58,8 @@
     "shortid": "^2.2.4",
     "soajs": "2.0.3",
     "unzip2": "0.2.5",
-    "yamljs": "0.2.8"
+    "yamljs": "0.2.8",
+    "json2yaml": "1.1.0",
+    "swagger-diff": "0.6.0"
   }
 }

@@ -2804,6 +2804,11 @@ module.exports = {
 					"required": true,
 					"validation": {"type": "number"}
 				},
+				"defaultAuthentication": {
+					"source": ['query.defaultAuthentication', 'body.defaultAuthentication'],
+					"required": false,
+					"validation": {"type": "string"}
+				},
 				"epType": {
 					"source": ['query.epType', 'body.epType'],
 					"required": true,
@@ -2868,7 +2873,7 @@ module.exports = {
 				},
 				"authentication": {
 					"source": ['query.authentication', 'body.authentication'],
-					"required": true,
+					"required": false,
 					"validation": {"type": "string"}
 				}
 			},
@@ -4145,6 +4150,11 @@ module.exports = {
 					"source": ['query.requestTimeoutRenewal', 'body.requestTimeoutRenewal'],
 					"required": true,
 					"validation": {"type": "number"}
+				},
+				"defaultAuthentication": {
+					"source": ['query.defaultAuthentication', 'body.defaultAuthentication'],
+					"required": false,
+					"validation": {"type": "string"}
 				},
 				"epType": {
 					"source": ['query.epType', 'body.epType'],
