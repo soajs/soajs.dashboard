@@ -36,9 +36,8 @@ var utils = {
 		});
 	},
 	
-	generateSwaggerFromSchema: function (soajsImfvSchema, callback) {
-		
-		jsonUtils.parseJson(soajsImfvSchema, callback);
+	generateSwaggerFromSchema: function (soajsImfvSchema, serviceInfo, callback) {
+		jsonUtils.parseJson(soajsImfvSchema, serviceInfo, callback);
 	}
 };
 
