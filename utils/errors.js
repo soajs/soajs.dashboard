@@ -269,7 +269,8 @@ var errors = {
 
 	"955": "No CI configuration found",
 	"956": "Authentication failed. The deploy token provided is not valid.",
-
+	
+	"966": "The chosen Continuous Integration configuration is not valid.",
 	"967": "Continuous Integration recipe name already exists for this provider.",
 	"968": "This Account already has a Continuous Integration configured with the selected provider.",
     "969": "The chosen Continuous Integration Service does not exist",

@@ -45,8 +45,10 @@ var lib = {
 					//github token is invalid
 					utils.checkError(body === "not a Travis user", { code: 972 }, cb, () => {
 						utils.checkError(!body && !error && response, { code: 973 }, cb, () => {
-							//the body contains the travis token: access_token
-							return cb(null, body.access_token);
+							utils.checkError(!body.access_token, { code: 966 }, cb, () => {
+								//the body contains the travis token: access_token
+								return cb(null, body.access_token);
+							});
 						});
 					});
 				});
