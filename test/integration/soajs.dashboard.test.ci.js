@@ -365,7 +365,7 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 				"owner": "soajs"
 			},
 			"form": {
-				"port": 80,
+				"port": "80",
 				"settings": {
 					build_pull_requests: false,
 					build_pushes: true,
@@ -388,10 +388,27 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 	it("Success - getRepoYamlFile", function (done) {
 		var params = {
 			"qs": {
-				"port": 80
+				"provider": "github",
+				"repo": "soajs.dashboard",
+				"branch": "develop",
+				"owner": "soajs"
 			}
 		};
 		executeMyRequest(params, 'ci/repo/remote/config', 'get', function (body) {
+			assert.ok(body.result);
+			done();
+		});
+	});
+
+	it("Success - get latest build of repo per branch", function (done) {
+		var params = {
+			"qs": {
+				"provider": "travis",
+				"repo": "soajs.dashboard",
+				"owner": "soajs"
+			}
+		};
+		executeMyRequest(params, 'ci/repo/builds', 'get', function (body) {
 			assert.ok(body);
 			done();
 		});

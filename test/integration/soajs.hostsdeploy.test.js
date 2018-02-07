@@ -492,7 +492,7 @@ describe("testing hosts deployment", function () {
 	});
 
 	describe("testing service deployment", function () {
-		
+
 		it("success - deploy 1 core service, global mode", function (done) {
 			var params = {
 				qs: {
@@ -577,7 +577,7 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-		
+
 	});
 
 	describe("testing daemon deployment", function () {
@@ -955,27 +955,32 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 		it("fail - scale service", function(done) {
 			var params = {
-				qs: {
+				// qs: {
+				// 	env: 'dev',
+				// 	resource: 'heapster',
+				// 	namespace: 'kube-system',
+				// 	scale: 2
+				// }
+				form: {
 					env: 'dev',
-					resource: 'heapster',
-					namespace: 'kube-system',
+					serviceId: 'heapster',
 					scale: 2
 				}
 			};
-			
-			executeMyRequest(params, "cloud/services/scale", "get", function (body) {
+
+			executeMyRequest(params, "cloud/services/scale", "put", function (body) {
 				assert.ok(body);
 				done();
 			});
 		});
 
 	});
-	
+
 	describe("metrics tests", function () {
-		
+
 		describe("get service metrics", function () {
 			it("success - get service metrics", function (done) {
 				var params = {
@@ -1002,11 +1007,11 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing plugin deployment", function () {
-		
+
 		it("fail - deploying heapster", function (done) {
 			var params = {
 				form: {
@@ -1019,11 +1024,11 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing service maintence deployment", function () {
-		
+
 		it("fail - deploying heapster", function (done) {
 			var params = {
 				form: {
@@ -1039,11 +1044,11 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing namespace list services ", function () {
-		
+
 		it("fail - list namespaces", function (done) {
 			var params = {
 				qs: {
@@ -1055,7 +1060,7 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 		it("fail - delete namespaces", function (done) {
 			var params = {
 				qs: {
@@ -1068,7 +1073,7 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 	});
 
 });
