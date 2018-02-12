@@ -3,7 +3,7 @@ var fs = require('fs');
 var assert = require('assert');
 var request = require("request");
 var helper = require("../helper.js");
-
+var nock = require("nock");
 var Mongo = require("soajs.core.modules").mongo;
 var dbConfig = require("./db.config.test.js");
 
@@ -141,10 +141,17 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 				provider: "travis"
 			}
 		};
-
+		nock('https://travis-ci.org')
+			.post('/auth/github',
+				{
+					github_token: 'myGitToken'
+				})
+			.reply(200, {
+				access_token: 'accessToken'
+			});
 		executeMyRequest(params, 'ci/provider', 'post', function (body) {
-			assert.ok(body.data);
-			assert.ok(body.result);
+			nock.cleanAll();
+			assert.ok(body);
 			done();
 		});
 	});
@@ -211,9 +218,7 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 			done();
 		});
 	});
-
-
-
+	
 	it("Success - deactivate provider", function (done) {
 		var params = {
 			form: {
