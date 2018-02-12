@@ -641,10 +641,10 @@ describe("testing ci travis index.js", function () {
 		});
 	});
 
-	describe.skip("testing getRepoBuilds", function () {
+	describe("testing getRepoBuilds", function () {
 		before(function (done) {
 			nock('https://my.travis')
-				.get('/repos/123456/branches?access_token=access1')
+				.get('/repos/soajs.dashboard/branches?access_token=access1')
 				.reply(200, {
 					commits: [
 						{
@@ -703,10 +703,8 @@ describe("testing ci travis index.js", function () {
 				}
 			};
 			utils.getRepoBuilds(options, function (error, body) {
-				console.log(JSON.stringify (body, null, 2));
-				process.exit();
 				assert.ok(body);
-				// assert.ok(body.builds_only_with_travis_yml);
+				nock.cleanAll();
 				done();
 			});
 		});
