@@ -25,7 +25,12 @@ var lib = {
 		return /^[^:]+(?=:\/\/)/.test(domain) ? domain : `https://${domain}`;
 	},
 	cleanDomain: function (domain) {
-		return cleanUrls(domain);
+		if (typeof domain === 'string'){
+			return cleanUrls(domain);
+		}
+		else {
+			return domain;
+		}
 	}
 };
 module.exports = lib;

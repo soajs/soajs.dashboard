@@ -23,7 +23,7 @@ describe('testing ci drone index.js', function () {
 		_id: 'aaa',
 		driver: 'drone',
 		settings: {
-			domain: 'my.drone',
+			domain: 'https://my.drone',
 			owner: 'soajsTestAccount',
 			repo: 'soajsTestRepo',
 			gitToken: 'mygitToken',
@@ -82,7 +82,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					gitToken: 'mygitToken',
@@ -147,7 +147,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					gitToken: 'mygitToken',
 					ciToken: 'access1'
 				},
@@ -217,7 +217,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					gitToken: 'mygitToken',
 					ciToken: 'access1'
 				},
@@ -261,7 +261,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					gitToken: 'mygitToken',
 					ciToken: 'access1'
 				},
@@ -295,7 +295,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					gitToken: 'mygitToken',
 					ciToken: 'access1'
 				},
@@ -364,7 +364,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
@@ -420,7 +420,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1',
@@ -457,7 +457,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1',
@@ -491,7 +491,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					name: 'SECRET_NAME',
@@ -540,7 +540,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
@@ -576,7 +576,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'myrepo/dashboard',
 					ciToken: 'access1'
@@ -605,7 +605,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'myrepo/dashboard',
 					ciToken: 'access1'
@@ -638,7 +638,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
@@ -668,7 +668,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
@@ -709,7 +709,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
@@ -757,7 +757,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
@@ -804,7 +804,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
@@ -858,7 +858,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
