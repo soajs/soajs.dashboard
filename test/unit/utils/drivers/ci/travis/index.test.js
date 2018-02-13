@@ -703,7 +703,13 @@ describe("testing ci travis index.js", function () {
 				}
 			};
 			utils.getRepoBuilds(options, function (error, body) {
-				assert.ok(body);
+				const expected = {
+					branch: "develop",
+					commit_id: 123456
+				}
+
+				assert.deepEqual(body[expected.branch].commit_id, expected.commit_id)
+				assert.ok(body[expected.branch]);
 				nock.cleanAll();
 				done();
 			});
