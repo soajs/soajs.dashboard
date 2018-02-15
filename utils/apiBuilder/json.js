@@ -1,5 +1,5 @@
 var json2yaml = require('json2yaml');
-
+let YAML = require("yamljs");
 var SwaggerDiff = require('swagger-diff');
 
 var lib = {
@@ -16,14 +16,17 @@ var lib = {
 			schemes: [
 				"http"
 			],
-			responses: {},
+			responses: { // todo: responses
+				"success": {
+					"description": "success"
+				}
+			},
 			
 			paths: {}, // route / method / ...
-			parameters: {}, //common fields
-			definitions: {}
+			parameters: {} //common fields
+			// definitions: {}
 		};
 		
-		console.log(soajsImfvSchema);
 		let soajsImfvSchemaKeys = Object.keys(soajsImfvSchema);
 		
 		soajsImfvSchemaKeys.forEach(function (schemaKey) {
@@ -41,14 +44,15 @@ var lib = {
 					let routeParams = [];
 					
 					if (custom) {
-						// console.log('..............................');
-						// console.log(' ....... working on : ' + routeKey + ' [ ' + schemaKey + ']');
-						// console.log('..............................');
 						routeParams = lib.convertCustomImfv(custom);
 					}
 					
 					if (commonFields) {
-						// todo: commonFields
+						commonFields.forEach(function (eachCom) {
+							routeParams.push({
+								"$ref": "#/parameters/" + eachCom
+							});
+						});
 					}
 					
 					if (!output.paths[routeKey]) {
@@ -58,16 +62,18 @@ var lib = {
 					output.paths[routeKey][schemaKey] = {
 						tags: [route._apiInfo.group.replace(/\s+/g, '')],
 						summary: route._apiInfo.l,
-						operationId: route._apiInfo.l.replace(/\s+/g, '')
+						operationId: route._apiInfo.l.replace(/\s+/g, ''),
+						responses: {
+							"200": {
+								"$ref": "#/responses/success"
+							}
+						} // todo: responses
 					};
 					
 					if (routeParams && routeParams.length > 0) {
 						output.paths[routeKey][schemaKey].parameters = routeParams;
 					}
 				});
-				
-				// todo: continue from here
-				
 			}
 		});
 		return output;
@@ -79,7 +85,6 @@ var lib = {
 	},
 	
 	convertSource: function (arrayOfSources) {
-		// todo: how to support many source? comma sepperated?
 		let output = ""; // body
 		if (arrayOfSources) {
 			arrayOfSources.forEach(function (eachSource) {
@@ -95,6 +100,9 @@ var lib = {
 				if (eachSource.includes('path')) {
 					output += "path,";
 				}
+				if (eachSource.includes('params')) {
+					output += "path,";
+				}
 			})
 		}
 		
@@ -105,46 +113,92 @@ var lib = {
 		return output !== '' ? output : null;
 	},
 	
-	convertItem: function (key, object) {
-		let output = {
-			in: lib.convertSource(object.source),
-			name: key,
-			required: object.required
-		};
+	/**
+	 *
+	 * @param items
+	 * @returns {array of required object ['xx','yyy']}
+	 */
+	convertRequired: function (items) {
+		let output = [];
 		
-		if(object.description){
+		if(!items){
+			return null;
+		}
+		
+		let itemsKeys = Object.keys(items);
+		itemsKeys.forEach(function (eachItem) {
+			if(items[eachItem].required){
+				output.push(eachItem);
+			}
+		});
+		
+		if(output.length === 0){
+			return null;
+		}else{
+			return output;
+		}
+	},
+	
+	convertItem: function (key, object) {
+		
+		let output = {};
+		
+		if (object.validation) { // on root level
+			output.name = key;
+		}
+		
+		if (object.required && object.validation) { // todo: make sure u r not in a subobject, then u can add required
+			output.required = object.required;
+		}
+		
+		if (object.source) {
+			output.in = lib.convertSource(object.source);
+		}
+		
+		if (object.description) {
 			output.description = object.description;
 		}
 		
 		if (object.validation) {
-			if (output.type !== 'object') {
+			if (object.validation.type !== 'object') {
 				output.type = object.validation.type;
 			} else {
+				// definitions can be supported here!
+				let properties = object.validation.properties;
+				let required = lib.convertRequired(properties);
+				
 				output.schema = {
-					$ref: "#/definitions/" + lib.firstCharToUpper(key) + "_" + 0 // todo: add counter
+					type: "object",
+					properties: {}
 				};
+
+				if(required){
+					output.schema.required = required;
+				}
 				
-				//let definition = deduceDefinition();
-				
+				if (properties) {
+					let propertiesKeys = Object.keys(properties);
+					propertiesKeys.forEach(function (eachProps) {
+						output.schema.properties[eachProps] = lib.convertItem(eachProps, properties[eachProps]);
+					});
+				}
 			}
 		}
 		
-		// schema $ref
-		// type object.type
-		// object.validation.type
-		
-		// "in": "body",
-		// 	"name": "pet",
-		// 	"description": "Pet object that needs to be added to the store",
-		// 	"required": true,
-		// 	"schema": {
-		// 	"$ref": "#/definitions/Pet"
-		// }
-		
-		console.log('------- output ----');
-		console.log(output);
-		console.log('-----------');
-		
+		if (object.type) {
+			output.type = object.type;
+			if (object.type === 'object') {
+				output.properties = {};
+				
+				let properties = object.properties;
+				if (properties) {
+					let propertiesKeys = Object.keys(properties);
+					propertiesKeys.forEach(function (eachProps) {
+						output.properties[eachProps] = lib.convertItem(eachProps, properties[eachProps]);
+					})
+				}
+			}
+		}
 		
 		return output;
 	},
@@ -163,7 +217,7 @@ var lib = {
 	},
 	
 	deduceParamsFromCommonFields: function (commonFields) {
-		let output = [];
+		let output = {};
 		
 		if (!commonFields) {
 			return output;
@@ -173,7 +227,7 @@ var lib = {
 		commonFieldsArray.forEach(function (eachCommon) {
 			let commonField = commonFields[eachCommon];
 			let tempo = lib.convertItem(eachCommon, commonField);
-			output.push(tempo);
+			output[tempo.name] = tempo;
 		});
 		
 		return output;
@@ -187,22 +241,24 @@ module.exports = {
 	 * @param cb
 	 * @returns {*}
 	 */
-	"parseJson": function (jsonContent, serviceRecord, callback) {
-		var yamlCode = lib.generateYaml(jsonContent, serviceRecord);
+	"parseJson": function (soajsImfvSchema, serviceRecord, callback) {
+		
+		let yamlObject = lib.generateYaml(soajsImfvSchema, serviceRecord);
 		
 		try {
-			yamlCode = json2yaml.stringify(yamlCode);
+			let yamlString = YAML.stringify(yamlObject,20);
+			
+			return callback(null, yamlString);
 		}
 		catch (e) {
+			
 			console.log(e);
 			return callback({"code": 851, "msg": e.message});
 		}
 		
-		SwaggerDiff(serviceRecord.swaggerInput, yamlCode).then(function (diff) {
-			// Handle result
-			console.log(diff);
-		});
-		
-		return callback(null, yamlCode);
+		// SwaggerDiff(serviceRecord.swaggerInput, yamlObject).then(function (diff) {
+		// 	// Handle result
+		// 	console.log(diff);
+		// });
 	}
 };

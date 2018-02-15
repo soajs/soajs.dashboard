@@ -2761,6 +2761,22 @@ module.exports = {
 				}
 			},
 			
+			"/swagger/generateExistingService": {
+				"_apiInfo": {
+					"l": "Generate Service via Swagger using service id",
+					"group": "swagger",
+					"groupMain": true
+				},
+				"commonFields": ['project'],
+				"id": {
+					"required": true,
+					"source": ["query.id","body.id"],
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
 			"/apiBuilder/add": {
 				"_apiInfo": {
 					"l": "Add Endpoint",
@@ -2816,6 +2832,18 @@ module.exports = {
 						"type": "string",
 						"enum": ["soap", "rest"]
 					}
+				},
+				"oauth": {
+					"source": ['query.oauth', 'body.oauth'],
+					"required": false,
+					"default": false,
+					"validation": {"type": "boolean"}
+				},
+				"extKeyRequired": {
+					"source": ['query.extKeyRequired', 'body.extKeyRequired'],
+					"required": false,
+					"default": false,
+					"validation": {"type": "boolean"}
 				},
 				"swaggerInput": {
 					"source": ['query.swaggerInput', 'body.swaggerInput'],
@@ -4164,6 +4192,18 @@ module.exports = {
 						"enum": ["soap", "rest"]
 					}
 				},
+				"oauth": {
+					"source": ['query.oauth', 'body.oauth'],
+					"required": false,
+					"default": false,
+					"validation": {"type": "boolean"}
+				},
+				"extKeyRequired": {
+					"source": ['query.extKeyRequired', 'body.extKeyRequired'],
+					"required": false,
+					"default": false,
+					"validation": {"type": "boolean"}
+				},
 				"swaggerInput": {
 					"source": ['query.swaggerInput', 'body.swaggerInput'],
 					"required": false,
@@ -4248,11 +4288,18 @@ module.exports = {
 				},
 				"schemas": {
 					"source": ['query.schemas', 'body.schemas'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "object",
 						"properties": {},
 						"additionalProperties": true
+					}
+				},
+				"swagger": {
+					"source": ['query.swagger', 'body.swagger'],
+					"required": false,
+					"validation": {
+						"type": "string"
 					}
 				}
 			}

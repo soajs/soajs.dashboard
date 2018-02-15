@@ -2885,6 +2885,20 @@ service.init(function () {
 	});
 	
 	/**
+	 * Generate Service from data saved in db
+	 */
+	service.post("/swagger/generateExistingService", function (req, res) {
+		initBLModel(req, res, dashboardBL.swagger.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.generateExistingService(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
 	 * api builder apis
 	 */
 	

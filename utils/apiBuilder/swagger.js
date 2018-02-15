@@ -6,6 +6,17 @@ var Validator = require('jsonschema').Validator;
 var schema = require("./schema");
 
 var lib = {
+	/**
+	 * return required and update object
+	 *
+	 * @param required
+	 * @param object
+	 */
+	"convertRequired" : function (required, object) {
+		let output = {};
+		
+	},
+	
 	"extractValidation": function (commonFields, oneInput, tempInput, inputObj, common) {
 		//if param schema is in common field ( used for objects only ) 
 		if (oneInput.schema && oneInput.schema['$ref']) {
@@ -286,6 +297,7 @@ var swagger = {
 				var sourcePrefix = tempInput.in;
 				var required = tempInput.required;
 				var name = tempInput.name;
+				var description = tempInput.description;
 				if (sourcePrefix === 'path') {
 					sourcePrefix = "params";
 				}
@@ -300,14 +312,15 @@ var swagger = {
 					"source": [sourcePrefix + "." + tempInput.name],
 					"validation": {}
 				};
+				
 				delete tempInput.required;
 				delete tempInput.in;
 				delete tempInput.name;
-				delete tempInput.description;
 				delete tempInput.collectionFormat; //todo: need to provide support for this later on
 				var common = onecommonInput;
 				commonFields[onecommonInput] = {
 					"required": required,
+					description,
 					"source": [sourcePrefix + "." + name],
 					"validation": {}
 				};
@@ -411,13 +424,14 @@ var swagger = {
 							}
 							var inputObj = {
 								"required": tempInput.required,
+								"description": tempInput.description,
 								"source": [sourcePrefix + "." + tempInput.name],
 								"validation": {}
 							};
 							delete tempInput.required;
 							delete tempInput.in;
 							delete tempInput.name;
-							delete tempInput.description;
+							// delete tempInput.description;
 							delete tempInput.collectionFormat; //todo: need to provide support for this later on
 							
 							lib.extractValidation(commonFields, oneInput, tempInput, inputObj);
