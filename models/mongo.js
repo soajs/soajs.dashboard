@@ -259,8 +259,8 @@ var lib = {
 	
 	"switchConnection": function (soajs) {
 		var provision = true;
-		if (process.env.SOAJS_SAAS && soajs.servicesConfig && soajs.servicesConfig.dashboard && soajs.servicesConfig.dashboard.SOAJS_COMPANY) {
-			if (soajs.inputmaskData.soajs_project && soajs.servicesConfig.dashboard.SOAJS_COMPANY[soajs.inputmaskData.soajs_project]) {
+		if (process.env.SOAJS_SAAS && !soajs.tenant.locked && soajs.servicesConfig && soajs.servicesConfig.SOAJS_SAAS) {
+			if (soajs.inputmaskData.soajs_project && soajs.servicesConfig.SOAJS_SAAS[soajs.inputmaskData.soajs_project]) {
 				if (soajs.registry.resources.cluster[soajs.inputmaskData.soajs_project]) {
 					provision = soajsUtils.cloneObj(soajs.registry.resources.cluster[soajs.inputmaskData.soajs_project].config);
 					provision.name = soajs.registry.coreDB.provision.name;
