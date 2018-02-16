@@ -476,13 +476,18 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {},
 							deploy: {
 								selectedDriver : 'docker'
 							}
 						},
-						data: data2
+						data: data2,
+						qs: {
+							"soajs_project": "demo"
+						}
 					}
 				};
+				process.env.SOAJS_SAAS = true;
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
 					assert.ok(body.data);
 					done();
@@ -496,6 +501,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {},
 							deploy: {
 								selectedDriver : 'docker'
 							}
@@ -526,6 +532,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {},
 							deploy: {
 								selectedDriver : 'kubernetes'
 							}
@@ -560,6 +567,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {},
 							deploy: {
 								selectedDriver : 'kubernetes'
 							}
@@ -590,6 +598,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {},
 							deploy: {
 								selectedDriver : 'docker'
 							}
@@ -626,6 +635,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {},
 							deploy: {
 								selectedDriver : 'docker'
 							}
@@ -643,6 +653,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {},
 							deploy: {
 								selectedDriver : 'docker'
 							}
@@ -662,6 +673,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {},
 							deploy: {
 								selectedDriver : 'docker'
 							}

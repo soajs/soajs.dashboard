@@ -132,7 +132,10 @@ var template = {
 		"apiPrefix" : "portal-api",
 		"sitePrefix" : "portal",
 		"domain" : "soajs.local",
-		"deployPortal" : true
+		"deployPortal" : true,
+		"project": {
+			"name": "demo"
+		}
 	},
 	"deploy" : {
 		"certificates": [
@@ -936,7 +939,7 @@ describe("testing statusRollback.js", function () {
 	
 	it("Success redirectTo3rdParty user ", function (done) {
 		nock('http://soajs.dashboard:4000')
-			.post('/test/test?access_token=access_token&test=demo',
+			.post('/test/test?access_token=access_token&test=demo&soajs_project=demo',
 				{ type: 'infra',
 				name: 'google',
 				driver: 'google',
@@ -954,7 +957,7 @@ describe("testing statusRollback.js", function () {
 	it("fail redirectTo3rdParty no test ", function (done) {
 		delete context.template["infra"].wf.rollback.params;
 		nock('http://soajs.dashboard:4000')
-			.post('/test/test?access_token=access_token&test=demo',
+			.post('/test/test?access_token=access_token&test=demo&soajs_project=demo',
 				{ type: 'infra',
 					name: 'google',
 					driver: 'google',
@@ -1028,7 +1031,7 @@ describe("testing statusRollback.js", function () {
 	
 	it("Success redirectTo3rdParty user recursive no id", function (done) {
 		nock('http://soajs.dashboard:4000')
-			.post('/test/test?access_token=access_token&test=demo',
+			.post('/test/test?access_token=access_token&test=demo&soajs_project=demo',
 				{ type: 'infra',
 					name: 'google',
 					driver: 'google',
@@ -1081,7 +1084,7 @@ describe("testing statusRollback.js", function () {
 	it("fail redirectTo3rdParty no options ", function (done) {
 		context.template["infra"].wf.rollback = {};
 		nock('http://soajs.dashboard:4000')
-			.post('/test/test?access_token=access_token&test=demo',
+			.post('/test/test?access_token=access_token&test=demo&soajs_project=demo',
 				{ type: 'infra',
 					name: 'google',
 					driver: 'google',

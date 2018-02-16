@@ -180,7 +180,8 @@ var template = {
 		"apiPrefix" : "portal-api",
 		"sitePrefix" : "portal",
 		"domain" : "soajs.local",
-		"deployPortal" : true
+		"deployPortal" : true,
+		"project": "demo"
 	},
 	"deploy" : {
 		"certificates": [],

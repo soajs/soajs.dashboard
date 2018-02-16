@@ -1644,7 +1644,10 @@ module.exports = {
 					"source": ['body.template'],
 					"required": true,
 					"validation": {
-						"type": "object"
+						"type": "object",
+						"properties": {
+							"gi": {"type": "object", "required": true},
+						}
 					}
 				}
 			},
