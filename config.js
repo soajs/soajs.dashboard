@@ -2572,8 +2572,8 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"soajs_project": {
-					"source": ['body.soajs_project'],
+				"project": {
+					"source": ['body.project'],
 					"required": false,
 					"validation": {
 						"type": "string"
@@ -3739,8 +3739,8 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"soajs_project": {
-					"source": ['body.soajs_project'],
+				"project": {
+					"source": ['body.project'],
 					"required": false,
 					"validation": {
 						"type": "string"
