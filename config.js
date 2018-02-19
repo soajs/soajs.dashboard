@@ -1644,7 +1644,16 @@ module.exports = {
 					"source": ['body.template'],
 					"required": true,
 					"validation": {
-						"type": "object"
+						"type": "object",
+						"properties": {
+							"gi": {
+								"type": "object",
+								"required": true,
+								"properties": {
+									"code": { "type": "string", "required": true },
+								}
+							}
+						}
 					}
 				}
 			},
@@ -2572,8 +2581,8 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"soajs_project": {
-					"source": ['body.soajs_project'],
+				"project": {
+					"source": ['body.project'],
 					"required": false,
 					"validation": {
 						"type": "string"
@@ -3739,8 +3748,8 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"soajs_project": {
-					"source": ['body.soajs_project'],
+				"project": {
+					"source": ['body.project'],
 					"required": false,
 					"validation": {
 						"type": "string"

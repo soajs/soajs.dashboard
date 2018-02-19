@@ -1,6 +1,7 @@
 # soajs.dashboard
 [![Build Status](https://travis-ci.org/soajs/soajs.dashboard.svg?branch=master)](https://travis-ci.org/soajs/soajs.dashboard)
 [![Coverage Status](https://coveralls.io/repos/soajs/soajs.dashboard/badge.png)](https://coveralls.io/r/soajs/soajs.dashboard)
+[![Known Vulnerabilities](https://snyk.io/test/github/soajs/soajs.dashboard/badge.svg)](https://snyk.io/test/github/soajs/soajs.dashboard)
 
 SOAJS dashboard is divided to two components: service - User Interface.
 

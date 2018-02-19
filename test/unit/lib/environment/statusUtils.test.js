@@ -357,7 +357,10 @@ var template = {
 		"apiPrefix" : "portal-api",
 		"sitePrefix" : "portal",
 		"domain" : "soajs.local",
-		"deployPortal" : true
+		"deployPortal" : true,
+		"project": {
+			"name": "demo"
+		}
 	},
 	"deploy" : {
 		"certificates": [
@@ -666,6 +669,7 @@ var template = {
 		"publishPorts":{
 			routeName: "/test",
 			body: {
+				"deployParams":{}
 			},
 			method: "post"
 		}
@@ -1408,7 +1412,10 @@ describe("testing statusUtils.js", function () {
 	});
 	
 	it("Success createNginxRecipe case 1", function (done) {
-		context.template = {};
+		context.template = {
+			"gi" :{
+			}
+		};
 		statusUtils.createNginxRecipe(req, context, function (err) {
 			done();
 		});
@@ -1452,7 +1459,9 @@ describe("testing statusUtils.js", function () {
 	});
 	
 	it("Success deployNgin case 1", function (done) {
-		context.template = {};
+		context.template = {
+			"gi": {}
+		};
 		statusUtils.deployNginx(req, context, function (err) {
 			done();
 		});
@@ -1707,7 +1716,7 @@ describe("testing statusUtils.js", function () {
 				}
 			});
 		nock('http://soajs.dashboard:4000')
-			.post('/test/execute?access_token=access_token&test=test',
+			.post('/test/execute?access_token=access_token&test=test&soajs_project=demo',
 				{
 					"type": "infra",
 					"name": "google",
@@ -1745,7 +1754,7 @@ describe("testing statusUtils.js", function () {
 				}
 			});
 		nock('http://soajs.dashboard:4000')
-			.post('/test/execute?access_token=access_token&test=test',
+			.post('/test/execute?access_token=access_token&test=test&soajs_project=demo',
 				{
 					"type": "infra",
 					"name": "google",
@@ -1813,7 +1822,7 @@ describe("testing statusUtils.js", function () {
 			}
 		}];
 		nock('http://soajs.dashboard:4000')
-			.post('/test/execute?access_token=access_token&test=test',
+			.post('/test/execute?access_token=access_token&test=test&soajs_project=demo',
 				{
 					"type": "infra",
 					"name": "google",
@@ -1833,7 +1842,7 @@ describe("testing statusUtils.js", function () {
 			done();
 		});
 	});
-	it("Success redirectTo3rdPartyStatus case 5", function (done) {
+	it("Success redirectTo3rdPartyStatus case 4", function (done) {
 		context.template["infra"].wf.status =  "0";
 		statusUtils.redirectTo3rdPartyStatus(req, context,'infra', function (err) {
 			done();
