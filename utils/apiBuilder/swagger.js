@@ -476,6 +476,9 @@ var swagger = {
 							delete tempInput.collectionFormat; //todo: need to provide support for this later on
 							
 							lib.extractValidation(commonFields, oneInput, tempInput, inputObj);
+							if(inputObj.validation.schema){
+								inputObj.validation = inputObj.validation.schema;
+							}
 							all_apis[oneMethod.toLowerCase()][soajsRoute].imfv.custom[oneInput.name] = inputObj;
 						}
 					}
