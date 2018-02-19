@@ -1606,6 +1606,7 @@ module.exports = {
 					"l": "List Endpoints",
 					"group": "ep"
 				},
+				"commonFields": ['soajs_project'],
 				"mainType": {
 					"source": ['query.mainType', 'body.mainType'],
 					"required": true,
@@ -1620,6 +1621,7 @@ module.exports = {
 					"l": "Get Endpoint",
 					"group": "ep"
 				},
+				"commonFields": ['soajs_project'],
 				"mainType": {
 					"source": ['query.mainType', 'body.mainType'],
 					"required": true,
@@ -1638,7 +1640,8 @@ module.exports = {
 				"_apiInfo": {
 					"l": "Get Resources",
 					"group": "ep"
-				}
+				},
+				"commonFields": ['soajs_project']
 			}
 		},
 		
@@ -2791,6 +2794,7 @@ module.exports = {
 					"l": "Add Endpoint",
 					"group": "ep"
 				},
+				"commonFields": ['soajs_project'],
 				"mainType": {
 					"source": ['query.mainType', 'body.mainType'],
 					"required": true,
@@ -2885,6 +2889,7 @@ module.exports = {
 					"l": "Update Route Authentication Method",
 					"group": "ep"
 				},
+				"commonFields": ['soajs_project'],
 				"mainType": {
 					"source": ['query.mainType', 'body.mainType'],
 					"required": true,
@@ -2919,6 +2924,7 @@ module.exports = {
 					"l": "Convert Swagger String To an IMFV Soajs Object",
 					"group": "ep"
 				},
+				"commonFields": ['soajs_project'],
 				"mainType": {
 					"source": ['query.mainType', 'body.mainType'],
 					"required": true,
@@ -2945,6 +2951,7 @@ module.exports = {
 					"l": "Convert IMFV Soajs Object to a Swagger String",
 					"group": "ep"
 				},
+				"commonFields": ['soajs_project'],
 				"mainType": {
 					"source": ['query.mainType', 'body.mainType'],
 					"required": true,
@@ -4145,6 +4152,7 @@ module.exports = {
 					"l": "Edit Endpoint",
 					"group": "ep"
 				},
+				"commonFields": ['soajs_project'],
 				"mainType": {
 					"source": ['query.mainType', 'body.mainType'],
 					"required": true,
@@ -4244,6 +4252,7 @@ module.exports = {
 					"l": "Update Endpoint's IMFV",
 					"group": "ep"
 				},
+				"commonFields": ['soajs_project'],
 				"mainType": {
 					"source": ['query.mainType', 'body.mainType'],
 					"required": true,
@@ -4282,6 +4291,7 @@ module.exports = {
 					"l": "Update Endpoint's Schemas",
 					"group": "ep"
 				},
+				"commonFields": ['soajs_project'],
 				"mainType": {
 					"source": ['query.mainType', 'body.mainType'],
 					"required": true,
@@ -4640,6 +4650,7 @@ module.exports = {
 					"l": "Delete Endpoint",
 					"group": "ep"
 				},
+				"commonFields": ['soajs_project'],
 				"mainType": {
 					"source": ['query.mainType', 'body.mainType'],
 					"required": true,
