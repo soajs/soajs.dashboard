@@ -326,7 +326,7 @@ var swagger = {
 		var commonFields = {};
 		
 		//extract common fields
-		if (definitions && (Object.keys(definitions).length > 0 || Object.keys(globalParams).length > 0)) {
+		if ((definitions && Object.keys(definitions).length > 0) || (globalParams && Object.keys(globalParams).length > 0)) {
 			for (var onecommonInput in definitions) {
 				commonFields[onecommonInput] = {
 					"validation": definitions[onecommonInput]
