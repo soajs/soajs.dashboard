@@ -13,8 +13,10 @@ var lib = {
 	 * @param object
 	 */
 	"convertRequired" : function (required, object) {
-		let output = {};
+		let output;
 		
+		// todo: convert required and update object
+		return output;
 	},
 	
 	"extractValidation": function (commonFields, oneInput, tempInput, inputObj, common) {
@@ -149,23 +151,33 @@ var swagger = {
 		
 		context.yaml = jsonAPISchema;
 		
-		swagger.mapAPis(jsonAPISchema, function (response) {
-			context.soajs.config.schema = response.schema;
-			context.soajs.config.errors = response.errors;
-			
-			var myValidator = new Validator();
-			
-			var check = myValidator.validate(context.soajs.config, schema);
-			if (check.valid) {
-				return callback(null, true);
-			}
-			else {
-				var errMsgs = [];
-				check.errors.forEach(function (oneError) {
-					errMsgs.push(oneError.stack);
+		swagger.preMapApisValidation(jsonAPISchema, function (errorDescription) {
+			if(errorDescription){
+				let error = {
+					code : 853,
+					msg : errorDescription
+				};
+				return callback(error);
+			}else{
+				swagger.mapAPis(jsonAPISchema, function (response) {
+					context.soajs.config.schema = response.schema;
+					context.soajs.config.errors = response.errors;
+					
+					var myValidator = new Validator();
+					
+					var check = myValidator.validate(context.soajs.config, schema);
+					if (check.valid) {
+						return callback(null, true);
+					}
+					else {
+						var errMsgs = [];
+						check.errors.forEach(function (oneError) {
+							errMsgs.push(oneError.stack);
+						});
+						
+						return callback({"code": 172, "msg": new Error(errMsgs.join(" - ")).message});
+					}
 				});
-				
-				return callback({"code": 172, "msg": new Error(errMsgs.join(" - ")).message});
 			}
 		});
 	},
@@ -270,6 +282,35 @@ var swagger = {
 		}
 		
 		return config;
+	},
+	
+	/**
+	 * check if apis have responses
+	 *
+	 * @param jsonAPISchema
+	 * @param callback
+	 * @returns {errorDescription/empty}
+	 */
+	preMapApisValidation : function (jsonAPISchema, callback) {
+		let paths = jsonAPISchema.paths;
+		
+		if(paths){
+			let error;
+			let apiKeys = Object.keys(paths);
+			apiKeys.forEach(function (eachApi) {
+				let methods = Object.keys(paths[eachApi]);
+				methods.forEach(function (eachMethod) {
+					let apiData = paths[eachApi][eachMethod];
+					if(apiData.responses){
+						error = `Api responses are not supported by SOAJS framework, please remove them from [${eachMethod} ${eachApi}], otherwise, you cannot sync between swagger and the api builder`;
+					}
+				});
+			});
+			
+			return callback(error);
+		}else{
+			callback();
+		}
 	},
 	
 	/**

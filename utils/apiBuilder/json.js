@@ -251,7 +251,6 @@ module.exports = {
 			return callback(null, yamlString);
 		}
 		catch (e) {
-			
 			console.log(e);
 			return callback({"code": 851, "msg": e.message});
 		}
@@ -260,5 +259,81 @@ module.exports = {
 		// 	// Handle result
 		// 	console.log(diff);
 		// });
+	},
+	
+	/**
+	 * detect multiple bodies
+	 * detect multiple sources
+	 *
+	 * @param soajsImfvSchema : schema
+	 * @param callback()
+	 * @returns {errorDescription/empty}
+	 */
+	preParseValidation : function (schema, callback) {
+		let error;
+		if(schema){
+			let schemaKeys = Object.keys(schema);
+			schemaKeys.forEach(function (eachSchemaKey) {
+				let eachSchema = schema[eachSchemaKey];
+				if(eachSchemaKey === 'commonFields'){
+					let commonFieldsKeys = Object.keys(eachSchema);
+					commonFieldsKeys.forEach(function (eachCommon) {
+						let sources = eachSchema[eachCommon].source;
+						if(sources && sources.length > 1){
+							error = `Swagger doesn't support multiple sources for input, detected in common field [${eachCommon}] with multiple sources. Please reduce sources to one for this input to sync with swagger`;
+						}
+					});
+				}else{
+					let apiKeys = Object.keys(eachSchema);
+					apiKeys.forEach(function (eachApiKey) {
+						let eachApi = eachSchema[eachApiKey];
+						let custom = eachApi.imfv.custom;
+						let commonFields = eachApi.imfv.commonFields;
+						let bodySourceCount = 0;
+						
+						if(custom){
+							let customInputsKeys = Object.keys(custom);
+							customInputsKeys.forEach(function (eachInputKey) {
+								let eachInput = custom[eachInputKey];
+								if(eachInput.source){
+									let sources = eachInput.source;
+									sources.forEach(function (eachSource) {
+										if(eachSource.includes('body.')){
+											bodySourceCount ++;
+										}
+									});
+									
+									if(sources.length > 1){
+										error = `Swagger doesn't support multiple sources for input, detected in API [${eachSchemaKey} ${eachApiKey}] input [${eachInputKey}] with multiple sources. Please reduce sources to one for this input to sync with swagger`;
+									}
+								}
+							});
+						}
+						
+						if(commonFields){
+							commonFields.forEach(function (eachCommon) {
+								let commonInput = schema.commonFields[eachCommon];
+								if(commonInput){
+									let sources = commonInput.source;
+									sources.forEach(function (eachSource) {
+										if(eachSource.includes('body.')){
+											bodySourceCount ++;
+										}
+									});
+								}
+							});
+						}
+						
+						if(bodySourceCount > 1){
+							error = `Swagger doesn't support multiple inputs from body, detected in API [${eachSchemaKey} ${eachApiKey}] multiple bodies. Please consolidate ur inputs under one input (type object) to sync with swagger.`;
+						}
+					});
+				}
+			});
+			
+			callback(error);
+		}else{
+			callback();
+		}
 	}
 };

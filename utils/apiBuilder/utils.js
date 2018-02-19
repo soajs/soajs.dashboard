@@ -37,7 +37,13 @@ var utils = {
 	},
 	
 	generateSwaggerFromSchema: function (soajsImfvSchema, serviceInfo, callback) {
-		jsonUtils.parseJson(soajsImfvSchema, serviceInfo, callback);
+		jsonUtils.preParseValidation(soajsImfvSchema, function (errorDescription) {
+			if(errorDescription){
+				return callback({"code": 852, "msg": errorDescription});
+			}else{
+				jsonUtils.parseJson(soajsImfvSchema, serviceInfo, callback);
+			}
+		});
 	}
 };
 
