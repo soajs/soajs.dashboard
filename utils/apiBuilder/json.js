@@ -16,11 +16,11 @@ var lib = {
 			schemes: [
 				"http"
 			],
-			responses: { // todo: responses
-				"success": {
-					"description": "success"
-				}
-			},
+			// responses: { // todo: responses
+			// 	"success": {
+			// 		"description": "success"
+			// 	}
+			// },
 			
 			paths: {}, // route / method / ...
 			parameters: {} //common fields
@@ -63,11 +63,11 @@ var lib = {
 						tags: [route._apiInfo.group.replace(/\s+/g, '')],
 						summary: route._apiInfo.l,
 						operationId: route._apiInfo.l.replace(/\s+/g, ''),
-						responses: {
-							"200": {
-								"$ref": "#/responses/success"
-							}
-						} // todo: responses
+						// responses: {
+						// 	"200": {
+						// 		"$ref": "#/responses/success"
+						// 	}
+						// } // todo: responses
 					};
 					
 					if (routeParams && routeParams.length > 0) {
