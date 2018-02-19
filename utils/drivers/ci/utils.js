@@ -1,6 +1,7 @@
 'use strict';
+var cleanUrls = require('url-clean');
 
-module.exports = {
+var lib = {
 	//return an error object if a function generates an error
 	checkError: function (error, options, cb, callback) {
 		if (error) {
@@ -15,7 +16,6 @@ module.exports = {
 					};
 				}
 			}
-			
 			return cb(error);
 		}
 		
@@ -23,5 +23,14 @@ module.exports = {
 	},
 	getDomain: function (domain) {
 		return /^[^:]+(?=:\/\/)/.test(domain) ? domain : `https://${domain}`;
+	},
+	cleanDomain: function (domain) {
+		if (typeof domain === 'string'){
+			return cleanUrls(domain);
+		}
+		else {
+			return domain;
+		}
 	}
 };
+module.exports = lib;

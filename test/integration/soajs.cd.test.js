@@ -994,12 +994,19 @@ describe("testing hosts deployment", function () {
 				}
 
 				var options = {
-					qs: {
-						deploy_token: access_token
-					},
-					form:{
-						data:{
-							id: oneUpdate._id.toString()
+					// qs: {
+					// 	deploy_token: access_token
+					// },
+					// form:{
+					// 	data:{
+					// 		id: oneUpdate._id.toString()
+					// 	}
+					// }
+					form: {
+						env: 'dev',
+						data: {
+							id: oneUpdate._id.toString(),
+							action: 'update'
 						}
 					}
 				};

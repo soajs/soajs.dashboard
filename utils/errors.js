@@ -313,6 +313,8 @@ var errors = {
 	"996": "At least one of the deployment's exposed ports conflicts with existing deployments",
 	
 	"997": "Unable to get repository build or job logs",
+	
+	"999": "Limit Exceed, please upgrade your account",
 };
 
 

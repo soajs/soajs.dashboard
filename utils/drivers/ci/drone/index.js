@@ -50,7 +50,7 @@ let lib = {
 	 */
 	listRepos (opts, cb) {
 		let repos = [];
-		
+		opts.settings.domain = utils.cleanDomain(opts.settings.domain);
 		//check if an access token is provided
 		utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
 			//check if the repositories owner name is provided
@@ -146,6 +146,7 @@ let lib = {
 	 * @param cb
 	 */
 	listRepoBranches(opts, cb) {
+		opts.settings.domain = utils.cleanDomain(opts.settings.domain);
 		let branches = [];
 		const params = {
 			uri: utils.getDomain(opts.settings.domain + config.api.url.listRepoBuilds)
@@ -195,6 +196,7 @@ let lib = {
 	 * @param cb
 	 */
 	ensureRepoVars(opts, cb) {
+		opts.settings.domain = utils.cleanDomain(opts.settings.domain);
 		// If there are no variables, skip the check
 		if (!opts.params.variables || (opts.params.variables && Object.keys(opts.params.variables).length === 0))
 			return cb();
@@ -254,6 +256,7 @@ let lib = {
 	 * @param cb
 	 */
 	listEnvVars (opts, cb) {
+		opts.settings.domain = utils.cleanDomain(opts.settings.domain);
 		const params = {
 			uri: utils.getDomain(opts.settings.domain + config.api.url.listEnvVars)
 				.replace('#OWNER#', opts.settings.owner)
@@ -296,6 +299,7 @@ let lib = {
 	 * @param cb
 	 */
 	addEnvVar (opts, cb) {
+		opts.settings.domain = utils.cleanDomain(opts.settings.domain);
 		const params = {
 			uri: utils.getDomain(opts.settings.domain + config.api.url.listEnvVars)
 				.replace('#OWNER#', opts.settings.owner)
@@ -335,6 +339,7 @@ let lib = {
 	 * @param cb
 	 */
 	deleteEnvVar (opts, cb) {
+		opts.settings.domain = utils.cleanDomain(opts.settings.domain);
 		const params = {
 			uri: utils.getDomain(opts.settings.domain + config.api.url.deleteEnvVar)
 				.replace('#OWNER#', opts.settings.owner)
@@ -363,6 +368,7 @@ let lib = {
 	 * @param cb
 	 */
 	setHook (opts, cb) {
+		opts.settings.domain = utils.cleanDomain(opts.settings.domain);
 		var repoName = opts.settings.repo.split(/\/(.+)/)[1];
 		const params = {
 			uri: utils.getDomain(opts.settings.domain + config.api.url.setHook)
@@ -397,6 +403,7 @@ let lib = {
 	 *
 	 */
 	listSettings (opts, cb) {
+		opts.settings.domain = utils.cleanDomain(opts.settings.domain);
 		let settings = {};
 		let uri = utils.getDomain(opts.settings.domain);
 		// getting repos list or one repo is 2 different endpoints completely
@@ -476,6 +483,7 @@ let lib = {
 	 */
 	updateSettings(opts, cb) {
 		//check if an access token is provided
+		opts.settings.domain = utils.cleanDomain(opts.settings.domain);
 		utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
 			//check if the repositories owner name is provided
 			utils.checkError(!opts.settings && !opts.settings.owner, {code: 975}, cb, () => {
@@ -558,7 +566,7 @@ let lib = {
 		utils.checkError(!opts.settings.ciToken, { code: 974 }, cb, () => {
 			//check if the repositories owner name is provided
 			utils.checkError(!opts.settings && !opts.settings.owner, { code: 975 }, cb, () => {
-				
+				opts.settings.domain = utils.cleanDomain(opts.settings.domain);
 				params = {
 					uri: utils.getDomain(opts.settings.domain + config.api.url.listRepoBuilds)
 						.replace('#OWNER#', opts.settings.owner)
@@ -636,14 +644,21 @@ let lib = {
 												opts.log.error(body);
 											}
 											
-											utils.checkError(error, { code: 997 }, cb, () => {
-												oneBranch.job_id = body.procs[0].children[0].pid;
-												oneBranch.result = body.procs[0].children[0].exit_code;
-												
-												body.procs[0].children.forEach((oneJob) => {
-													jobIds.push(oneJob.pid);
-												});
-												return mCb();
+											utils.checkError(error, {code: 997}, cb, () => {
+												if (body && body.procs && body.procs[0] && body.procs[0].children
+													&& body.procs[0].children[0] && body.procs[0].children &&
+													Array.isArray(body.procs[0].children) && body.procs[0].children.length > 0) {
+													oneBranch.job_id = body.procs[0].children[0].pid;
+													oneBranch.result = body.procs[0].children[0].exit_code;
+													
+													body.procs[0].children.forEach((oneJob) => {
+														jobIds.push(oneJob.pid);
+													});
+													return mCb();
+												}
+												else {
+													return cb({code: 997, message: error || body})
+												}
 											});
 										});
 									},
@@ -665,9 +680,11 @@ let lib = {
 													opts.log.error(body);
 												}
 												utils.checkError(error, { code: 997 }, cb, () => {
-													body.forEach((oneProc) => {
-														oneBranch.logs += oneProc.out;
-													});
+													if (body && Array.isArray(body) && body.length > 0){
+														body.forEach((oneProc) => {
+															oneBranch.logs += oneProc.out;
+														});
+													}
 													return fCb();
 												});
 											});
