@@ -2,7 +2,7 @@
 var assert = require('assert');
 var request = require("request");
 var helper = require("../helper.js");
-
+var fs = require("fs");
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 // var extKey = 'd44dfaaf1a3ba93adc6b3368816188f9481bf65ad90f23756391e85d754394e0ee45923e96286f55e60a98efe825af3ef9007121c7baaa49ec8ea3ac9159a4bfc56c87674c94625b36b468c75d58158e0c9df0b386d7f591fbf679eb611d02bf';
 // /tenant/application/acl/get
@@ -50,8 +50,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 describe("DASHBOARD TESTS: API Builder", function () {
 
 	let sampleID = '';
-	let swaggerInput = '';
-
+	let ImfvSchema;
 	it("Success - will list endpoints", function (done) {
 		var params = {
 			qs: {
@@ -60,7 +59,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		};
 		executeMyRequest(params, 'apiBuilder/list', 'get', function (body) {
 			sampleID = body.data.records[0]._id;
-			swaggerInput = body.data.records[0].swaggerInput;
+			ImfvSchema = body.data.records[0].schema;
 			assert.ok(body.data);
 			done();
 		});
@@ -71,7 +70,6 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			qs: {
 				mainType:  "services",
 				id: sampleID,
-
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/get', 'get', function (body) {
@@ -151,6 +149,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 	});
 
 	it("Success - will convert Swagger string to an IMFV SOAJS object", function (done) {
+		let swaggerInput = fs.readFileSync(__dirname + "/swagger-no-response.test.yaml", "utf8").toString();
 		var params = {
 			qs : {
 				mainType :  "services",
@@ -166,10 +165,12 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 
-	it.skip("Success - will convert IMFV SOAJS object to a Swagger string", function (done) {
+	it("Success - will convert IMFV SOAJS object to a Swagger string", function (done) {
 		var params = {
 			qs : {
-				mainType :  "services"
+				mainType :  "services",
+				id: sampleID,
+				schema: ImfvSchema
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/convertImfvToSwagger', 'post', function (body) {
