@@ -2840,7 +2840,7 @@ module.exports = {
 				},
 				"epType": {
 					"source": ['query.epType', 'body.epType'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string",
 						"enum": ["soap", "rest"]
@@ -4203,7 +4203,7 @@ module.exports = {
 				},
 				"epType": {
 					"source": ['query.epType', 'body.epType'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string",
 						"enum": ["soap", "rest"]
