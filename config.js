@@ -2779,7 +2779,7 @@ module.exports = {
 					"group": "swagger",
 					"groupMain": true
 				},
-				"commonFields": ['project'],
+				"commonFields": ['soajs_project'],
 				"id": {
 					"required": true,
 					"source": ["query.id","body.id"],
