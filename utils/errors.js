@@ -260,7 +260,11 @@ var errors = {
 
 	"910": "Specified memory limit is less than minimum memory prerequisite for this service",
 	"911": "Missing value for environment variable %ENV_NAME% of type %ENV_TYPE% set in catalog recipe",
-
+	
+	"920": "Failed. A service with the same port/name is already created!",
+	"921": "No endpoint found",
+	"922": "Please provide either a schema or a swagger object",
+	
 	"950": "Catalog recipe not found",
 	"951": "You are not allowed to edit or delete a locked recipe",
 	"952": "Unable to update catalog recipe",
@@ -314,7 +318,7 @@ var errors = {
 	
 	"997": "Unable to get repository build or job logs",
 	
-	"999": "Limit Exceed, please upgrade your account",
+	"999": "Limit Exceed, please upgrade your account"
 };
 
 
