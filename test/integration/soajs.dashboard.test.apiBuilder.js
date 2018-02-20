@@ -68,8 +68,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		var params = {
 			qs: {
 				mainType:  "services",
-				id: sampleID,
-
+				id: sampleID
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/get', 'get', function (body) {
@@ -88,7 +87,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 				serviceVersion: 1,
 				requestTimeout: 1,
 				requestTimeoutRenewal: 1,
-				epType: "rest",
+				epType: "rest"
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/add', 'post', function (body) {
@@ -109,8 +108,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 				serviceVersion: 1,
 				requestTimeout: 1,
 				requestTimeoutRenewal: 1,
-				epType: "rest",
-
+				epType: "rest"
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/edit', 'put', function (body) {
@@ -120,12 +118,9 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 
-	it.skip("Success - will get getResources", function (done) {
-		var params = {
-			qs : {
-				mainType :  "services"
-			}
-		};
+	it("Success - will get getResources", function (done) {
+		var params = {};
+
 		executeMyRequest(params, 'apiBuilder/getResources', 'get', function (body) {
 			assert.ok(body.data);
 			done();
@@ -192,10 +187,11 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 
-	it.skip("Success - will delete endpoint", function (done) {
+	it("Success - will delete endpoint", function (done) {
 		var params = {
 			qs : {
-				mainType :  "services"
+				mainType:  "services",
+				id: sampleID
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/delete', 'delete', function (body) {
