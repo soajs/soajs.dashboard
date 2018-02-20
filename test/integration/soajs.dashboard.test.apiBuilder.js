@@ -78,25 +78,43 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 
-	it.skip("Success - will add endpoint", function (done) {
+	it("Success - will add endpoint", function (done) {
 		var params = {
-			qs : {
-				mainType :  "services"
+			form: {
+				mainType:  "services",
+				serviceName: "testService",
+				serviceGroup: "testGroup",
+				servicePort: 1337,
+				serviceVersion: 1,
+				requestTimeout: 1,
+				requestTimeoutRenewal: 1,
+				epType: "rest",
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/add', 'post', function (body) {
+			assert.deepEqual(body.result, true);
 			assert.ok(body.data);
 			done();
 		});
 	});
 
-	it.skip("Success - will edit endpoint", function (done) {
+	it("Success - will edit endpoint", function (done) {
 		var params = {
-			qs : {
-				mainType :  "services"
+			form : {
+				id :  sampleID,
+				mainType:  "services",
+				serviceName: "newTestService",
+				serviceGroup: "newTestGroup",
+				servicePort: 6666,
+				serviceVersion: 1,
+				requestTimeout: 1,
+				requestTimeoutRenewal: 1,
+				epType: "rest",
+
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/edit', 'put', function (body) {
+			assert.deepEqual(body.result, true);
 			assert.ok(body.data);
 			done();
 		});
