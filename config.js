@@ -4221,11 +4221,6 @@ module.exports = {
 					"default": false,
 					"validation": {"type": "boolean"}
 				},
-				"swaggerInput": {
-					"source": ['query.swaggerInput', 'body.swaggerInput'],
-					"required": false,
-					"validation": {"type": "string"}
-				},
 				"authentications": {
 					"source": ['query.authentications', 'body.authentications'],
 					"required": false,
@@ -4247,6 +4242,7 @@ module.exports = {
 					}
 				}
 			},
+			
 			"/apiBuilder/updateImfv": {
 				"_apiInfo": {
 					"l": "Update Endpoint's IMFV",
@@ -4286,6 +4282,7 @@ module.exports = {
 					}
 				}
 			},
+			
 			"/apiBuilder/updateSchemas": {
 				"_apiInfo": {
 					"l": "Update Endpoint's Schemas",

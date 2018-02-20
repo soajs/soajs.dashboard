@@ -2,7 +2,7 @@
 var assert = require('assert');
 var request = require("request");
 var helper = require("../helper.js");
-
+var fs = require("fs");
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 // var extKey = 'd44dfaaf1a3ba93adc6b3368816188f9481bf65ad90f23756391e85d754394e0ee45923e96286f55e60a98efe825af3ef9007121c7baaa49ec8ea3ac9159a4bfc56c87674c94625b36b468c75d58158e0c9df0b386d7f591fbf679eb611d02bf';
 // /tenant/application/acl/get
@@ -50,7 +50,9 @@ function executeMyRequest(params, apiPath, method, cb) {
 describe("DASHBOARD TESTS: API Builder", function () {
 
 	let sampleID = '';
-
+	let sampleEndpointID = '';
+	let ImfvSchema;
+	let swaggerInput = fs.readFileSync(__dirname + "/swagger-no-response.test.yaml", "utf8").toString();
 	it("Success - will list endpoints", function (done) {
 		var params = {
 			qs: {
@@ -59,6 +61,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		};
 		executeMyRequest(params, 'apiBuilder/list', 'get', function (body) {
 			sampleID = body.data.records[0]._id;
+			ImfvSchema = body.data.records[0].schema;
 			assert.ok(body.data);
 			done();
 		});
@@ -69,7 +72,6 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			qs: {
 				mainType:  "services",
 				id: sampleID,
-
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/get', 'get', function (body) {
@@ -78,17 +80,22 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 
-	it("Success - will add endpoint", function (done) {
+	it("Success - will add services 1", function (done) {
 		var params = {
 			form: {
 				mainType:  "services",
-				serviceName: "testService",
-				serviceGroup: "testGroup",
+				serviceName: "testService1",
+				serviceGroup: "testGroup1",
 				servicePort: 1337,
 				serviceVersion: 1,
 				requestTimeout: 1,
 				requestTimeoutRenewal: 1,
 				epType: "rest",
+				defaultAuthentication: "testSoapResource",
+				oauth: true,
+				extKeyRequired : true,
+				swaggerInput: swaggerInput,
+				authentications: [{"name":"None","category":"N/A"},{"name":"testSoapResource","category":"soapbasicauth","isDefault":true}]
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/add', 'post', function (body) {
@@ -97,7 +104,29 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
+	it("Success - will add endpoint 2", function (done) {
+		var params = {
+			form: {
+				mainType:  "endpoints",
+				serviceName: "testService2",
+				serviceGroup: "testGroup2",
+				servicePort: 1347,
+				serviceVersion: 1,
+				requestTimeout: 2,
+				requestTimeoutRenewal: 2,
+				epType: "rest",
+				}
+		};
+		executeMyRequest(params, 'apiBuilder/add', 'post', function (body) {
+			assert.deepEqual(body.result, true);
+			console.log(JSON.stringify(body, null, 2), "!!!!!!")
+			sampleEndpointID = body.data._id;
+			assert.ok(body.data);
+			done();
+		});
+	});
+	
 	it("Success - will edit endpoint", function (done) {
 		var params = {
 			form : {
@@ -110,7 +139,10 @@ describe("DASHBOARD TESTS: API Builder", function () {
 				requestTimeout: 1,
 				requestTimeoutRenewal: 1,
 				epType: "rest",
-
+				defaultAuthentication: "testSoapResource",
+				oauth: true,
+				extKeyRequired : true,
+				authentications: [{"name":"None","category":"N/A"},{"name":"testSoapResource","category":"soapbasicauth","isDefault":true}]
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/edit', 'put', function (body) {
@@ -120,22 +152,23 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 
-	it.skip("Success - will get getResources", function (done) {
-		var params = {
-			qs : {
-				mainType :  "services"
-			}
-		};
+	it("Success - will get getResources", function (done) {
+		var params = {};
+
 		executeMyRequest(params, 'apiBuilder/getResources', 'get', function (body) {
 			assert.ok(body.data);
 			done();
 		});
 	});
 
-	it.skip("Success - will update route authentication method", function (done) {
+	it("Success - will update route authentication method", function (done) {
 		var params = {
 			qs : {
-				mainType :  "services"
+				mainType :  "services",
+				endpointId: sampleID,
+				schemaKey: "post",
+				routeKey: "/pet",
+				authentication: "testSoapResource" //false
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/authentication/update', 'post', function (body) {
@@ -144,10 +177,14 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 
-	it.skip("Success - will convert Swagger string to an IMFV SOAJS object", function (done) {
+	it("Success - will convert Swagger string to an IMFV SOAJS object", function (done) {
 		var params = {
 			qs : {
-				mainType :  "services"
+				mainType :  "services",
+				id: sampleID
+			},
+			form: {
+				swagger: swaggerInput
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/convertSwaggerToImfv', 'post', function (body) {
@@ -156,10 +193,14 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 
-	it.skip("Success - will convert IMFV SOAJS object to a Swagger string", function (done) {
+	it("Success - will convert IMFV SOAJS object to a Swagger string", function (done) {
 		var params = {
 			qs : {
-				mainType :  "services"
+				mainType :  "services",
+				id: sampleID
+			},
+			form :{
+				schema: ImfvSchema
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/convertImfvToSwagger', 'post', function (body) {
@@ -168,11 +209,18 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 
-	it.skip("Success - will update endpoint's IMFV", function (done) {
+	it("Success - will update endpoint's IMFV", function (done) {
 		var params = {
 			qs : {
-				mainType :  "services"
+				mainType :  "services",
+				endpointId: sampleID,
+				schemaKey: "post",
+				routeKey: "/pet"
+			},
+			form: {
+				newImfv: ImfvSchema
 			}
+			
 		};
 		executeMyRequest(params, 'apiBuilder/updateImfv', 'put', function (body) {
 			assert.ok(body.data);
@@ -180,10 +228,16 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 
-	it.skip("Success - will update endpoint's schemas", function (done) {
+	it("Success - will update endpoint's schemas 1", function (done) {
 		var params = {
 			qs : {
-				mainType :  "services"
+				mainType :  "endpoints",
+				endpointId: sampleEndpointID,
+				
+			},
+			form: {
+				schemas: ImfvSchema,
+				swagger: swaggerInput
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/updateSchemas', 'put', function (body) {
@@ -191,11 +245,55 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
-	it.skip("Success - will delete endpoint", function (done) {
+	
+	it("Success - will update endpoint's schemas 2", function (done) {
 		var params = {
 			qs : {
-				mainType :  "services"
+				mainType :  "services",
+				endpointId: sampleID,
+			},
+			form: {
+				swagger: swaggerInput
+			}
+		};
+		executeMyRequest(params, 'apiBuilder/updateSchemas', 'put', function (body) {
+			assert.ok(body.data);
+			done();
+		});
+	});
+	it("Success - will update endpoint's schemas 3", function (done) {
+		var params = {
+			qs : {
+				mainType :  "services",
+				endpointId: sampleID,
+			},
+			form: {
+				schemas: ImfvSchema,
+			}
+		};
+		executeMyRequest(params, 'apiBuilder/updateSchemas', 'put', function (body) {
+			assert.ok(body.data);
+			done();
+		});
+	});
+	it("fail - update endpoint's schemas 4", function (done) {
+		var params = {
+			qs : {
+				mainType :  "services",
+				endpointId: sampleID,
+			}
+		};
+		executeMyRequest(params, 'apiBuilder/updateSchemas', 'put', function (body) {
+			assert.ok(body.errors);
+			done();
+		});
+	});
+
+	it("Success - will delete endpoint", function (done) {
+		var params = {
+			qs : {
+				mainType:  "services",
+				id: sampleID
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/delete', 'delete', function (body) {
