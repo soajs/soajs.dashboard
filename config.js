@@ -4242,26 +4242,37 @@ module.exports = {
 					}
 				},
 				"urac": {
+					"source": ['body.urac'],
 					"type": "boolean",
+					"default": false,
 					"required": false
 				},
 				"urac_Profile": {
+					"source": ['body.urac_Profile'],
 					"type": "boolean",
+					"default": false,
 					"required": false
 				},
 				"urac_ACL": {
+					"source": ['body.urac_ACL'],
 					"type": "boolean",
+					"default": false,
 					"required": false
 				},
 				"provision_ACL": {
+					"source": ['body.provision_ACL'],
 					"type": "boolean",
+					"default": false,
 					"required": false
 				},
 				"session": {
+					"source": ['body.session'],
 					"type": "boolean",
+					"default": false,
 					"required": false
 				},
 				"dbs": {
+					"source": ['body.dbs'],
 					"type": "array",
 					"required": false,
 					"items": {
