@@ -44,6 +44,28 @@ var utils = {
 				jsonUtils.parseJson(mainType, soajsImfvSchema, serviceInfo, callback);
 			}
 		});
+	},
+	
+	generateApisFromSchema : function (schema) {
+		let output = [];
+		let schemasKeys = Object.keys(schema);
+		schemasKeys.forEach(function (eachSchema) {
+			if (eachSchema !== 'commonFields') {
+				let apisKeys = Object.keys(schema[eachSchema]);
+				apisKeys.forEach(function (eachApi) {
+					let apiData = schema[eachSchema][eachApi];
+					let tempo = {
+						"l": apiData._apiInfo.l,
+						"v": eachApi,
+						"m": eachSchema,
+						"group": apiData._apiInfo.group
+					};
+					
+					output.push(tempo);
+				});
+			}
+		});
+		return output;
 	}
 };
 
