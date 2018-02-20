@@ -106,6 +106,7 @@ describe("importing sample data", function () {
 			require("./soajs.dashboard.test.ci.js");
 			require("./soajs.cd.test.js");
 			require("./soajs.dashboard.test.gitAccounts.js");
+			require("./soajs.dashboard.test.apiBuilder.js");
 			done();
 		}, 100);
 	});
