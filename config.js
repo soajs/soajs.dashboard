@@ -4240,6 +4240,40 @@ module.exports = {
 							}
 						}
 					}
+				},
+				"urac": {
+					"type": "boolean",
+					"required": false
+				},
+				"urac_Profile": {
+					"type": "boolean",
+					"required": false
+				},
+				"urac_ACL": {
+					"type": "boolean",
+					"required": false
+				},
+				"provision_ACL": {
+					"type": "boolean",
+					"required": false
+				},
+				"session": {
+					"type": "boolean",
+					"required": false
+				},
+				"dbs": {
+					"type": "array",
+					"required": false,
+					"items": {
+						"type": "object",
+						"properties": {
+							"prefix": {"type": "string"},
+							"name": {"type": "string", "required": true},
+							"multitenant": {"type": "boolean"}
+						}
+					},
+					"minItems": 1,
+					"uniqueItems": true
 				}
 			},
 			
