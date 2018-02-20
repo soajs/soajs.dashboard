@@ -50,6 +50,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 describe("DASHBOARD TESTS: API Builder", function () {
 
 	let sampleID = '';
+	let swaggerInput = '';
 
 	it("Success - will list endpoints", function (done) {
 		var params = {
@@ -59,6 +60,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		};
 		executeMyRequest(params, 'apiBuilder/list', 'get', function (body) {
 			sampleID = body.data.records[0]._id;
+			swaggerInput = body.data.records[0].swaggerInput;
 			assert.ok(body.data);
 			done();
 		});
@@ -114,10 +116,14 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 
-	it.skip("Success - will update route authentication method", function (done) {
+	it("Success - will update route authentication method", function (done) {
 		var params = {
 			qs : {
-				mainType :  "services"
+				mainType :  "services",
+				endpointId: sampleID,
+				schemaKey: "post",
+				routeKey: "/pet",
+				authentication: "testSoapResource" //false
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/authentication/update', 'post', function (body) {
@@ -126,10 +132,14 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 
-	it.skip("Success - will convert Swagger string to an IMFV SOAJS object", function (done) {
+	it("Success - will convert Swagger string to an IMFV SOAJS object", function (done) {
 		var params = {
 			qs : {
-				mainType :  "services"
+				mainType :  "services",
+				id: sampleID
+			},
+			form: {
+				swagger: swaggerInput
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/convertSwaggerToImfv', 'post', function (body) {
