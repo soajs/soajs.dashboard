@@ -1,6 +1,5 @@
 var json2yaml = require('json2yaml');
 let YAML = require("yamljs");
-var SwaggerDiff = require('swagger-diff');
 
 var lib = {
 	
@@ -16,16 +15,15 @@ var lib = {
 			schemes: [
 				"http"
 			],
-			// responses: { // todo: responses
-			// 	"success": {
-			// 		"description": "success"
-			// 	}
-			// },
 			
 			paths: {}, // route / method / ...
 			parameters: {} //common fields
 			// definitions: {}
 		};
+		
+		if(serviceRecord.responses){
+			output.responses = serviceRecord.responses;
+		}
 		
 		let soajsImfvSchemaKeys = Object.keys(soajsImfvSchema);
 		
@@ -35,7 +33,8 @@ var lib = {
 			if (schemaKey === 'commonFields') {
 				let parameters = lib.deduceParamsFromCommonFields(schema);
 				output.parameters = parameters;
-			} else {
+			}
+			else {
 				let routesKeys = Object.keys(schema);
 				routesKeys.forEach(function (routeKey) {
 					let route = schema[routeKey];
@@ -241,7 +240,20 @@ module.exports = {
 	 * @param cb
 	 * @returns {*}
 	 */
-	"parseJson": function (soajsImfvSchema, serviceRecord, callback) {
+	"parseJson": function (mainType, soajsImfvSchema, serviceRecord, callback) {
+		
+		if(mainType !== 'endpoints'){
+			try{
+				let yamlJSON = YAML.parse(serviceRecord.swaggerInput);
+				if(yamlJSON.responses && Object.keys(yamlJSON.responses).length > 0){
+					serviceRecord.responses = yamlJSON.responses;
+				}
+			}
+			catch (e){
+				console.log(e);
+				return callback({"code": 851, "msg": e.message});
+			}
+		}
 		
 		let yamlObject = lib.generateYaml(soajsImfvSchema, serviceRecord);
 		

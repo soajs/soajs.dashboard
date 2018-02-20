@@ -60,7 +60,6 @@
     "unzip2": "0.2.5",
     "url-clean": "^1.0.2",
     "yamljs": "0.2.8",
-    "json2yaml": "1.1.0",
-    "swagger-diff": "0.6.0"
+    "json2yaml": "1.1.0"
   }
 }

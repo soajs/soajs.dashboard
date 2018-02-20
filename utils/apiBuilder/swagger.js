@@ -302,7 +302,7 @@ var swagger = {
 				methods.forEach(function (eachMethod) {
 					let apiData = paths[eachApi][eachMethod];
 					if(apiData.responses){
-						error = `Api responses are not supported by SOAJS framework, please remove them from [${eachMethod} ${eachApi}], otherwise, you cannot sync between swagger and the api builder`;
+						error = `Api responses are not supported by SOAJS framework, please remove them from [${eachMethod} ${eachApi}], otherwise, you cannot sync between swagger and the api builder. Only Global Responses are supported and treated as system error codes when generating services.`;
 					}
 				});
 			});
