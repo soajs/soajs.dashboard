@@ -126,7 +126,7 @@ var lib = {
 		
 		let itemsKeys = Object.keys(items);
 		itemsKeys.forEach(function (eachItem) {
-			if(items[eachItem].required){
+			if(items[eachItem] && items[eachItem].required){
 				output.push(eachItem);
 			}
 		});
@@ -141,6 +141,10 @@ var lib = {
 	convertItem: function (key, object) {
 		
 		let output = {};
+		
+		if(!object){
+			return {};
+		}
 		
 		if (object.validation) { // on root level
 			output.name = key;
