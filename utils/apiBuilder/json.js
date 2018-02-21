@@ -126,7 +126,7 @@ var lib = {
 		
 		let itemsKeys = Object.keys(items);
 		itemsKeys.forEach(function (eachItem) {
-			if(items[eachItem].required){
+			if(items[eachItem] && items[eachItem].required){
 				output.push(eachItem);
 			}
 		});
@@ -141,6 +141,10 @@ var lib = {
 	convertItem: function (key, object) {
 		
 		let output = {};
+		
+		if(!object){
+			return {};
+		}
 		
 		if (object.validation) { // on root level
 			output.name = key;
@@ -245,7 +249,7 @@ module.exports = {
 		if(mainType !== 'endpoints'){
 			try{
 				let yamlJSON = YAML.parse(serviceRecord.swaggerInput);
-				if(yamlJSON.responses && Object.keys(yamlJSON.responses).length > 0){
+				if(yamlJSON && yamlJSON.responses && Object.keys(yamlJSON.responses).length > 0){
 					serviceRecord.responses = yamlJSON.responses;
 				}
 			}
