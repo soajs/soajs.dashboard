@@ -3001,6 +3001,16 @@ service.init(function () {
 		});
 	});
 	
+	service.put("/apiBuilder/preUpdateSchemasValidation", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.preUpdateSchemasValidation(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
 	service.put("/apiBuilder/updateSchemas", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {

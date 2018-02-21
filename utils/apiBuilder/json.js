@@ -245,7 +245,7 @@ module.exports = {
 		if(mainType !== 'endpoints'){
 			try{
 				let yamlJSON = YAML.parse(serviceRecord.swaggerInput);
-				if(yamlJSON.responses && Object.keys(yamlJSON.responses).length > 0){
+				if(yamlJSON && yamlJSON.responses && Object.keys(yamlJSON.responses).length > 0){
 					serviceRecord.responses = yamlJSON.responses;
 				}
 			}
