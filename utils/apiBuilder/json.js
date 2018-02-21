@@ -266,11 +266,6 @@ module.exports = {
 			console.log(e);
 			return callback({"code": 851, "msg": e.message});
 		}
-		
-		// SwaggerDiff(serviceRecord.swaggerInput, yamlObject).then(function (diff) {
-		// 	// Handle result
-		// 	console.log(diff);
-		// });
 	},
 	
 	/**
@@ -295,7 +290,8 @@ module.exports = {
 							error = `Swagger doesn't support multiple sources for input, detected in common field [${eachCommon}] with multiple sources. Please reduce sources to one for this input to sync with swagger`;
 						}
 					});
-				}else{
+				}
+				else{
 					let apiKeys = Object.keys(eachSchema);
 					apiKeys.forEach(function (eachApiKey) {
 						let eachApi = eachSchema[eachApiKey];
