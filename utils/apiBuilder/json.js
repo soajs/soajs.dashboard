@@ -296,7 +296,7 @@ module.exports = {
 					commonFieldsKeys.forEach(function (eachCommon) {
 						let sources = eachSchema[eachCommon].source;
 						if(sources && sources.length > 1){
-							error = `Swagger doesn't support multiple sources for input, detected in common field [${eachCommon}] with multiple sources. Please reduce sources to one for this input to sync with swagger`;
+							error = `Swagger doesn't support multiple sources for inputs; detected inputs in common fields [${eachCommon}] with multiple sources. Please reduce sources to one for these inputs to sync with swagger`;
 						}
 					});
 				}else{
@@ -320,7 +320,7 @@ module.exports = {
 									});
 									
 									if(sources.length > 1){
-										error = `Swagger doesn't support multiple sources for input, detected in API [${eachSchemaKey} ${eachApiKey}] input [${eachInputKey}] with multiple sources. Please reduce sources to one for this input to sync with swagger`;
+										error = `Swagger doesn't support multiple sources for inputs; detected in API [${eachSchemaKey} ${eachApiKey}] inputs [${eachInputKey}] with multiple sources. Please reduce sources to one for these inputs to sync with swagger`;
 									}
 								}
 							});
@@ -341,7 +341,7 @@ module.exports = {
 						}
 						
 						if(bodySourceCount > 1){
-							error = `Swagger doesn't support multiple inputs from body, detected in API [${eachSchemaKey} ${eachApiKey}] multiple bodies. Please consolidate ur inputs under one input (type object) to sync with swagger.`;
+							error = `Swagger doesn't support multiple inputs from body, detected in API [${eachSchemaKey} ${eachApiKey}] multiple inputs in bodies. Please consolidate these inputs under one input (type object) to sync with swagger.`;
 						}
 					});
 				}
