@@ -38,39 +38,42 @@ var lib = {
 				let routesKeys = Object.keys(schema);
 				routesKeys.forEach(function (routeKey) {
 					let route = schema[routeKey];
-					let custom = route.imfv.custom;
-					let commonFields = route.imfv.commonFields;
-					let routeParams = [];
 					
-					if (custom) {
-						routeParams = lib.convertCustomImfv(custom);
-					}
-					
-					if (commonFields) {
-						commonFields.forEach(function (eachCom) {
-							routeParams.push({
-								"$ref": "#/parameters/" + eachCom
+					if(route.imfv){
+						let custom = route.imfv.custom;
+						let commonFields = route.imfv.commonFields;
+						let routeParams = [];
+						
+						if (custom) {
+							routeParams = lib.convertCustomImfv(custom);
+						}
+						
+						if (commonFields) {
+							commonFields.forEach(function (eachCom) {
+								routeParams.push({
+									"$ref": "#/parameters/" + eachCom
+								});
 							});
-						});
-					}
-					
-					if (!output.paths[routeKey]) {
-						output.paths[routeKey] = {};
-					}
-					
-					output.paths[routeKey][schemaKey] = {
-						tags: [route._apiInfo.group.replace(/\s+/g, '')],
-						summary: route._apiInfo.l,
-						operationId: route._apiInfo.l.replace(/\s+/g, ''),
-						// responses: {
-						// 	"200": {
-						// 		"$ref": "#/responses/success"
-						// 	}
-						// } // todo: responses
-					};
-					
-					if (routeParams && routeParams.length > 0) {
-						output.paths[routeKey][schemaKey].parameters = routeParams;
+						}
+						
+						if (!output.paths[routeKey]) {
+							output.paths[routeKey] = {};
+						}
+						
+						output.paths[routeKey][schemaKey] = {
+							tags: [(route && route._apiInfo && route._apiInfo.group) ? route._apiInfo.group.replace(/\s+/g, '') : ""],
+							summary: (route && route._apiInfo) ? route._apiInfo.l : "",
+							operationId: (route && route._apiInfo && route._apiInfo.l) ? route._apiInfo.l.replace(/\s+/g, '') : "",
+							// responses: {
+							// 	"200": {
+							// 		"$ref": "#/responses/success"
+							// 	}
+							// } // todo: responses
+						};
+						
+						if (routeParams && routeParams.length > 0) {
+							output.paths[routeKey][schemaKey].parameters = routeParams;
+						}
 					}
 				});
 			}
@@ -299,45 +302,48 @@ module.exports = {
 					let apiKeys = Object.keys(eachSchema);
 					apiKeys.forEach(function (eachApiKey) {
 						let eachApi = eachSchema[eachApiKey];
-						let custom = eachApi.imfv.custom;
-						let commonFields = eachApi.imfv.commonFields;
-						let bodySourceCount = 0;
 						
-						if(custom){
-							let customInputsKeys = Object.keys(custom);
-							customInputsKeys.forEach(function (eachInputKey) {
-								let eachInput = custom[eachInputKey];
-								if(eachInput.source){
-									let sources = eachInput.source;
-									sources.forEach(function (eachSource) {
-										if(eachSource.includes('body.')){
-											bodySourceCount ++;
+						if(eachApi.imfv){
+							let custom = eachApi.imfv.custom;
+							let commonFields = eachApi.imfv.commonFields;
+							let bodySourceCount = 0;
+							
+							if(custom){
+								let customInputsKeys = Object.keys(custom);
+								customInputsKeys.forEach(function (eachInputKey) {
+									let eachInput = custom[eachInputKey];
+									if(eachInput.source){
+										let sources = eachInput.source;
+										sources.forEach(function (eachSource) {
+											if(eachSource.includes('body.')){
+												bodySourceCount ++;
+											}
+										});
+										
+										if(sources.length > 1){
+											error = `Swagger doesn't support multiple sources for inputs; detected in API [${eachSchemaKey} ${eachApiKey}] inputs [${eachInputKey}] with multiple sources. Please reduce sources to one for these inputs to sync with swagger`;
 										}
-									});
-									
-									if(sources.length > 1){
-										error = `Swagger doesn't support multiple sources for inputs; detected in API [${eachSchemaKey} ${eachApiKey}] inputs [${eachInputKey}] with multiple sources. Please reduce sources to one for these inputs to sync with swagger`;
 									}
-								}
-							});
-						}
-						
-						if(commonFields){
-							commonFields.forEach(function (eachCommon) {
-								let commonInput = schema.commonFields[eachCommon];
-								if(commonInput){
-									let sources = commonInput.source;
-									sources.forEach(function (eachSource) {
-										if(eachSource.includes('body.')){
-											bodySourceCount ++;
-										}
-									});
-								}
-							});
-						}
-						
-						if(bodySourceCount > 1){
-							error = `Swagger doesn't support multiple inputs from body, detected in API [${eachSchemaKey} ${eachApiKey}] multiple inputs in bodies. Please consolidate these inputs under one input (type object) to sync with swagger.`;
+								});
+							}
+							
+							if(commonFields){
+								commonFields.forEach(function (eachCommon) {
+									let commonInput = schema.commonFields[eachCommon];
+									if(commonInput){
+										let sources = commonInput.source;
+										sources.forEach(function (eachSource) {
+											if(eachSource.includes('body.')){
+												bodySourceCount ++;
+											}
+										});
+									}
+								});
+							}
+							
+							if(bodySourceCount > 1){
+								error = `Swagger doesn't support multiple inputs from body, detected in API [${eachSchemaKey} ${eachApiKey}] multiple inputs in bodies. Please consolidate these inputs under one input (type object) to sync with swagger.`;
+							}
 						}
 					});
 				}
