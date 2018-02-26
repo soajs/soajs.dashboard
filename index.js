@@ -2766,7 +2766,7 @@ service.init(function () {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, dashboardBL.tenant.module, dbModel, function (BL) {
 				checkConnection(BL, req, res, function () {
-					BL.addApplicationExtKeys(config, soajs.provision, req, res, function (error, data) {
+					BL.addApplicationExtKeys(config, soajs.core, req, res, function (error, data) {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
 					});
