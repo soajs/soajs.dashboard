@@ -37,16 +37,14 @@ function convertSource(key, inObj) {
 
 /**
  *
+ * @param mainDefinitions : coming null from fetch definitions
  * @param item
  * @param level : if root (1) : set in validation
  * @returns {*}
  */
-function convertItem(item, level) {
+function convertItem(mainDefinitions, item, level) {
 	let output = {};
 	let outputKey = '';
-	console.log("uuuuu item");
-	console.log(JSON.stringify(item, null, 2));
-	console.log("uuuuu item");
 	
 	if (!item) {
 		return undefined;
@@ -62,8 +60,7 @@ function convertItem(item, level) {
 	
 	if (item.in) {
 		if (!item.name) {
-			console.log('how could it be???!! .in and !.name !!!');
-			process.exit();
+			// console.log('todo: could it ever happen??');
 		}
 		output.source = convertSource(item.name, item.in);
 	}
@@ -73,8 +70,8 @@ function convertItem(item, level) {
 	}
 	
 	if (item.type) {
-		
 		let workOn = output;
+		
 		if (level === 1) { // root // work with validation
 			output.validation = {};
 			workOn = output.validation;
@@ -87,9 +84,8 @@ function convertItem(item, level) {
 				let propertiesKeys = Object.keys(item.properties);
 				workOn.properties = {};
 				propertiesKeys.forEach(function (eachProp) {
-					console.log("------- XONVERTING ITEM XXXXX");
-					console.log(item.properties[eachProp]);
-					workOn.properties[eachProp] = convertItem(item.properties[eachProp], newLevel);
+					workOn.properties[eachProp] = convertItem(mainDefinitions, item.properties[eachProp], newLevel);
+					workOn.properties[eachProp].required = (item.required && Array.isArray(item.required)) ? item.required.indexOf(eachProp) !== -1 : false;
 				});
 			}
 		}
@@ -103,12 +99,10 @@ function convertItem(item, level) {
 				
 				if (item.items.properties) {
 					let newLevel = level + 1;
-					console.log("ffffff");
-					console.log(item.items.properties);
 					let propertiesKeys = Object.keys(item.items.properties);
 					workOn.items.properties = {};
 					propertiesKeys.forEach(function (eachProp) {
-						workOn.items.properties[eachProp] = convertItem(item.items.properties[eachProp], newLevel);
+						workOn.items.properties[eachProp] = convertItem(mainDefinitions, item.items.properties[eachProp], newLevel);
 					});
 				}
 			}
@@ -116,29 +110,53 @@ function convertItem(item, level) {
 	}
 	
 	if (item.schema) {
-		if (!output.validation) {
-			output.validation = {};
-		}
 		
-		output.validation.type = item.schema.type;
-		
-		if (item.schema.required) {
-			// todoz convert shit
-		}
-		
-		if (item.schema.properties) {
-			let newLevel = level + 1;
-			let propertiesKeys = Object.keys(item.schema.properties);
-			output.validation.properties = {};
-			propertiesKeys.forEach(function (eachProp) {
-				output.validation.properties[eachProp] = convertItem(item.schema.properties[eachProp], newLevel);
-			});
+		if (item.schema['$ref']) {
+			let referenceType = decodeReference(item.schema['$ref']);
+			
+			if (referenceType === 'definitions') {
+				let definitionKey = item.schema['$ref'].split('definitions/')[1];
+				output.validation = mainDefinitions[definitionKey].validation;
+				// todo: required from object
+			}
+			
+		} else {
+			if (!output.validation) {
+				output.validation = {};
+			}
+			
+			output.validation.type = item.schema.type;
+			
+			if (item.schema.properties) { // object
+				let newLevel = level + 1;
+				let propertiesKeys = Object.keys(item.schema.properties);
+				output.validation.properties = {};
+				propertiesKeys.forEach(function (eachProp) {
+					output.validation.properties[eachProp] = convertItem(mainDefinitions, item.schema.properties[eachProp], newLevel);
+					output.validation.properties[eachProp].required = (item.schema.required && Array.isArray(item.schema.required)) ? item.schema.required.indexOf(eachProp) !== -1 : false;
+				});
+			}
+			
+			if (item.schema.type === 'array') {
+				if (item.schema.items) {
+					
+					output.validation.items = {
+						type: item.schema.items.type
+					};
+					
+					if (item.schema.items.properties) { // array of object
+						let newLevel = level + 1;
+						let propertiesKeys = Object.keys(item.schema.items.properties);
+						output.validation.items.properties = {};
+						propertiesKeys.forEach(function (eachProp) {
+							output.validation.items.properties[eachProp] = convertItem(mainDefinitions, item.schema.items.properties[eachProp], newLevel);
+						});
+					}
+				}
+			}
 		}
 	}
 	
-	console.log("uuuuu output");
-	console.log(JSON.stringify(output, null, 2));
-	console.log("uuuuu output");
 	return output;
 }
 
@@ -190,13 +208,12 @@ function convertParams(mainDefinitions, mainParameters, parameters) {
 			}
 			
 		} else {
-			let newItem = convertItem(eachParam, 1);
+			let newItem = convertItem(mainDefinitions, eachParam, 1);
 			
 			if (eachParam.name) {
 				output.custom[eachParam.name] = newItem;
 			} else {
-				console.log("really ???? oh waw!");
-				process.exit();
+				// console.log('todo: could it ever happen??');
 			}
 		}
 	});
@@ -361,12 +378,6 @@ var swagger = {
 		let all_apis = {};
 		let all_errors = {};
 		
-		console.log("zzzz ------------------------------------------------------");
-		console.log(JSON.stringify(yamlJson, null, 2));
-		console.log("zzzz ------------------------------------------------------");
-		console.log("zzzz ------------------------------------------------------");
-		console.log("zzzz ------------------------------------------------------");
-		
 		let paths = yamlJson.paths;
 		let definitions = yamlJson.definitions;
 		let parameters = yamlJson.parameters;
@@ -378,7 +389,7 @@ var swagger = {
 		if (definitions) {
 			let definitionsKeys = Object.keys(definitions);
 			definitionsKeys.forEach(function (eachDef) {
-				convertedDefinitions[eachDef] = convertItem(definitions[eachDef], 1); // 1 ??? definitions should never have schema -=-=-=-=-=
+				convertedDefinitions[eachDef] = convertItem(null, definitions[eachDef], 1); // 1 ??? definitions should never have schema -=-=-=-=-=
 			});
 		}
 		
@@ -386,15 +397,10 @@ var swagger = {
 		if (parameters) {
 			let parametersKeys = Object.keys(parameters);
 			parametersKeys.forEach(function (eachParam) {
-				convertedParameters[eachParam] = convertItem(parameters[eachParam], 1);
+				convertedParameters[eachParam] = convertItem(convertedDefinitions, parameters[eachParam], 1);
 			});
 			all_apis.commonFields = convertedParameters;
 		}
-		
-		console.log("zzzz ------------------------------------------------------ you you you ");
-		console.log(JSON.stringify(convertedParameters, null, 2));
-		console.log("zzzz ------------------------------------------------------ you you you ");
-		
 		
 		let pathsKeys = Object.keys(paths);
 		pathsKeys.forEach(function (eachPath) {
@@ -422,10 +428,7 @@ var swagger = {
 			});
 		});
 		
-		
-		console.log("----- output ----");
-		console.log(all_apis);
-		console.log("----- output ----");
+		// todo: convert errors
 		
 		return cb({"schema": all_apis, "errors": all_errors});
 	}
