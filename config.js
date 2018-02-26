@@ -1604,7 +1604,7 @@ module.exports = {
 			"/apiBuilder/list": {
 				"_apiInfo": {
 					"l": "List Endpoints",
-					"group": "ep"
+					"group": "API Builder"
 				},
 				"commonFields": ['soajs_project'],
 				"mainType": {
@@ -1619,7 +1619,7 @@ module.exports = {
 			"/apiBuilder/get": {
 				"_apiInfo": {
 					"l": "Get Endpoint",
-					"group": "ep"
+					"group": "API Builder"
 				},
 				"commonFields": ['soajs_project'],
 				"mainType": {
@@ -1639,7 +1639,7 @@ module.exports = {
 			"/apiBuilder/getResources": {
 				"_apiInfo": {
 					"l": "Get Resources",
-					"group": "ep"
+					"group": "API Builder"
 				},
 				"commonFields": ['soajs_project']
 			}
@@ -2792,7 +2792,7 @@ module.exports = {
 			"/apiBuilder/add": {
 				"_apiInfo": {
 					"l": "Add Endpoint",
-					"group": "ep"
+					"group": "API Builder"
 				},
 				"commonFields": ['soajs_project'],
 				"mainType": {
@@ -2887,7 +2887,7 @@ module.exports = {
 			"/apiBuilder/authentication/update": {
 				"_apiInfo": {
 					"l": "Update Route Authentication Method",
-					"group": "ep"
+					"group": "API Builder"
 				},
 				"commonFields": ['soajs_project'],
 				"mainType": {
@@ -2922,7 +2922,7 @@ module.exports = {
 			"/apiBuilder/convertSwaggerToImfv": {
 				"_apiInfo": {
 					"l": "Convert Swagger String To an IMFV Soajs Object",
-					"group": "ep"
+					"group": "API Builder"
 				},
 				"commonFields": ['soajs_project'],
 				"mainType": {
@@ -2949,7 +2949,7 @@ module.exports = {
 			"/apiBuilder/convertImfvToSwagger": {
 				"_apiInfo": {
 						"l": "Convert IMFV Soajs Object to a Swagger String",
-					"group": "ep"
+					"group": "API Builder"
 				},
 				"commonFields": ['soajs_project'],
 				"mainType": {
@@ -4150,7 +4150,7 @@ module.exports = {
 			"/apiBuilder/edit": {
 				"_apiInfo": {
 					"l": "Edit Endpoint",
-					"group": "ep"
+					"group": "API Builder"
 				},
 				"commonFields": ['soajs_project'],
 				"mainType": {
@@ -4303,7 +4303,7 @@ module.exports = {
 			"/apiBuilder/updateImfv": {
 				"_apiInfo": {
 					"l": "Update Endpoint's IMFV",
-					"group": "ep"
+					"group": "API Builder"
 				},
 				"commonFields": ['soajs_project'],
 				"mainType": {
@@ -4343,7 +4343,7 @@ module.exports = {
 			"/apiBuilder/preUpdateSchemasValidation": {
 				"_apiInfo": {
 					"l": "validate Endpoint's Schemas",
-					"group": "ep"
+					"group": "API Builder"
 				},
 				"commonFields": ['soajs_project'],
 				"mainType": {
@@ -4380,7 +4380,7 @@ module.exports = {
 			"/apiBuilder/updateSchemas": {
 				"_apiInfo": {
 					"l": "Update Endpoint's Schemas",
-					"group": "ep"
+					"group": "API Builder"
 				},
 				"commonFields": ['soajs_project'],
 				"mainType": {
@@ -4745,7 +4745,7 @@ module.exports = {
 			"/apiBuilder/delete": {
 				"_apiInfo": {
 					"l": "Delete Endpoint",
-					"group": "ep"
+					"group": "API Builder"
 				},
 				"commonFields": ['soajs_project'],
 				"mainType": {
