@@ -16,12 +16,12 @@ var lib = {
 				"http"
 			],
 			
-			paths: {}, // route / method / ...
-			parameters: {} //common fields
+			paths: {} // route / method / ...
+			// parameters: {} //common fields
 			// definitions: {}
 		};
 		
-		if(serviceRecord.responses){
+		if (serviceRecord.responses) {
 			output.responses = serviceRecord.responses;
 		}
 		
@@ -32,45 +32,50 @@ var lib = {
 			
 			if (schemaKey === 'commonFields') {
 				let parameters = lib.deduceParamsFromCommonFields(schema);
-				output.parameters = parameters;
+				if (parameters && Object.keys(parameters).length > 0) {
+					output.parameters = parameters;
+				}
 			}
 			else {
 				let routesKeys = Object.keys(schema);
 				routesKeys.forEach(function (routeKey) {
 					let route = schema[routeKey];
-					let custom = route.imfv.custom;
-					let commonFields = route.imfv.commonFields;
-					let routeParams = [];
 					
-					if (custom) {
-						routeParams = lib.convertCustomImfv(custom);
-					}
-					
-					if (commonFields) {
-						commonFields.forEach(function (eachCom) {
-							routeParams.push({
-								"$ref": "#/parameters/" + eachCom
+					if (route.imfv) {
+						let custom = route.imfv.custom;
+						let commonFields = route.imfv.commonFields;
+						let routeParams = [];
+						
+						if (custom) {
+							routeParams = lib.convertCustomImfv(custom);
+						}
+						
+						if (commonFields) {
+							commonFields.forEach(function (eachCom) {
+								routeParams.push({
+									"$ref": "#/parameters/" + eachCom
+								});
 							});
-						});
-					}
-					
-					if (!output.paths[routeKey]) {
-						output.paths[routeKey] = {};
-					}
-					
-					output.paths[routeKey][schemaKey] = {
-						tags: [route._apiInfo.group.replace(/\s+/g, '')],
-						summary: route._apiInfo.l,
-						operationId: route._apiInfo.l.replace(/\s+/g, ''),
-						// responses: {
-						// 	"200": {
-						// 		"$ref": "#/responses/success"
-						// 	}
-						// } // todo: responses
-					};
-					
-					if (routeParams && routeParams.length > 0) {
-						output.paths[routeKey][schemaKey].parameters = routeParams;
+						}
+						
+						if (!output.paths[routeKey]) {
+							output.paths[routeKey] = {};
+						}
+						
+						output.paths[routeKey][schemaKey] = {
+							tags: [(route && route._apiInfo && route._apiInfo.group) ? route._apiInfo.group.replace(/\s+/g, '') : ""],
+							summary: (route && route._apiInfo) ? route._apiInfo.l : "",
+							operationId: (route && route._apiInfo && route._apiInfo.l) ? route._apiInfo.l.replace(/\s+/g, '') : "",
+							// responses: {
+							// 	"200": {
+							// 		"$ref": "#/responses/success"
+							// 	}
+							// } // todo: responses
+						};
+						
+						if (routeParams && routeParams.length > 0) {
+							output.paths[routeKey][schemaKey].parameters = routeParams;
+						}
 					}
 				});
 			}
@@ -120,20 +125,20 @@ var lib = {
 	convertRequired: function (items) {
 		let output = [];
 		
-		if(!items){
+		if (!items) {
 			return null;
 		}
 		
 		let itemsKeys = Object.keys(items);
 		itemsKeys.forEach(function (eachItem) {
-			if(items[eachItem] && items[eachItem].required){
+			if (items[eachItem] && items[eachItem].required) {
 				output.push(eachItem);
 			}
 		});
 		
-		if(output.length === 0){
+		if (output.length === 0) {
 			return null;
-		}else{
+		} else {
 			return output;
 		}
 	},
@@ -142,7 +147,7 @@ var lib = {
 		
 		let output = {};
 		
-		if(!object){
+		if (!object) {
 			return {};
 		}
 		
@@ -163,9 +168,7 @@ var lib = {
 		}
 		
 		if (object.validation) {
-			if (object.validation.type !== 'object') {
-				output.type = object.validation.type;
-			} else {
+			if (object.validation.type === 'object') {
 				// definitions can be supported here!
 				let properties = object.validation.properties;
 				let required = lib.convertRequired(properties);
@@ -174,8 +177,8 @@ var lib = {
 					type: "object",
 					properties: {}
 				};
-
-				if(required){
+				
+				if (required) {
 					output.schema.required = required;
 				}
 				
@@ -185,6 +188,30 @@ var lib = {
 						output.schema.properties[eachProps] = lib.convertItem(eachProps, properties[eachProps]);
 					});
 				}
+			} else if (object.validation.type === 'array') {
+				
+				output.schema = {
+					type: "array",
+					items: {}
+				};
+				
+				let items = object.validation.items;
+				if (items) {
+					let itemsType = object.validation.items.type;
+					let itemsProperties = object.validation.items.properties;
+					
+					output.schema.items.type = itemsType;
+					
+					if (itemsType === 'object' && itemsProperties) {
+						output.schema.items.properties = {};
+						let itemsKeys = Object.keys(itemsProperties);
+						itemsKeys.forEach(function (eachItem) {
+							output.schema.items.properties [eachItem] = lib.convertItem(eachItem, itemsProperties[eachItem]);
+						});
+					}
+				}
+			} else {
+				output.type = object.validation.type;
 			}
 		}
 		
@@ -194,11 +221,36 @@ var lib = {
 				output.properties = {};
 				
 				let properties = object.properties;
+				let required = lib.convertRequired(properties);
+				
+				if (required) {
+					output.required = required;
+				}
+				
 				if (properties) {
 					let propertiesKeys = Object.keys(properties);
 					propertiesKeys.forEach(function (eachProps) {
 						output.properties[eachProps] = lib.convertItem(eachProps, properties[eachProps]);
-					})
+					});
+				}
+			}
+			
+			if (object.type === 'array') {
+				output.items = {};
+				let items = object.items;
+				if (items) {
+					let itemsType = object.items.type;
+					let itemsProperties = object.items.properties;
+					
+					output.items.type = itemsType;
+					
+					if (itemsType === 'object' && itemsProperties) {
+						output.items.properties = {};
+						let itemsKeys = Object.keys(itemsProperties);
+						itemsKeys.forEach(function (eachItem) {
+							output.items.properties [eachItem] = lib.convertItem(eachItem, itemsProperties[eachItem]);
+						});
+					}
 				}
 			}
 		}
@@ -246,14 +298,14 @@ module.exports = {
 	 */
 	"parseJson": function (mainType, soajsImfvSchema, serviceRecord, callback) {
 		
-		if(mainType !== 'endpoints'){
-			try{
+		if (mainType !== 'endpoints') {
+			try {
 				let yamlJSON = YAML.parse(serviceRecord.swaggerInput);
-				if(yamlJSON && yamlJSON.responses && Object.keys(yamlJSON.responses).length > 0){
+				if (yamlJSON && yamlJSON.responses && Object.keys(yamlJSON.responses).length > 0) {
 					serviceRecord.responses = yamlJSON.responses;
 				}
 			}
-			catch (e){
+			catch (e) {
 				console.log(e);
 				return callback({"code": 851, "msg": e.message});
 			}
@@ -262,7 +314,7 @@ module.exports = {
 		let yamlObject = lib.generateYaml(soajsImfvSchema, serviceRecord);
 		
 		try {
-			let yamlString = YAML.stringify(yamlObject,20);
+			let yamlString = YAML.stringify(yamlObject, 20);
 			
 			return callback(null, yamlString);
 		}
@@ -280,71 +332,74 @@ module.exports = {
 	 * @param callback()
 	 * @returns {errorDescription/empty}
 	 */
-	preParseValidation : function (schema, callback) {
+	preParseValidation: function (schema, callback) {
 		let error;
-		if(schema){
+		if (schema) {
 			let schemaKeys = Object.keys(schema);
 			schemaKeys.forEach(function (eachSchemaKey) {
 				let eachSchema = schema[eachSchemaKey];
-				if(eachSchemaKey === 'commonFields'){
+				if (eachSchemaKey === 'commonFields') {
 					let commonFieldsKeys = Object.keys(eachSchema);
 					commonFieldsKeys.forEach(function (eachCommon) {
 						let sources = eachSchema[eachCommon].source;
-						if(sources && sources.length > 1){
+						if (sources && sources.length > 1) {
 							error = `Swagger doesn't support multiple sources for inputs; detected inputs in common fields [${eachCommon}] with multiple sources. Please reduce sources to one for these inputs to sync with swagger`;
 						}
 					});
 				}
-				else{
+				else {
 					let apiKeys = Object.keys(eachSchema);
 					apiKeys.forEach(function (eachApiKey) {
 						let eachApi = eachSchema[eachApiKey];
-						let custom = eachApi.imfv.custom;
-						let commonFields = eachApi.imfv.commonFields;
-						let bodySourceCount = 0;
 						
-						if(custom){
-							let customInputsKeys = Object.keys(custom);
-							customInputsKeys.forEach(function (eachInputKey) {
-								let eachInput = custom[eachInputKey];
-								if(eachInput.source){
-									let sources = eachInput.source;
-									sources.forEach(function (eachSource) {
-										if(eachSource.includes('body.')){
-											bodySourceCount ++;
+						if (eachApi.imfv) {
+							let custom = eachApi.imfv.custom;
+							let commonFields = eachApi.imfv.commonFields;
+							let bodySourceCount = 0;
+							
+							if (custom) {
+								let customInputsKeys = Object.keys(custom);
+								customInputsKeys.forEach(function (eachInputKey) {
+									let eachInput = custom[eachInputKey];
+									if (eachInput.source) {
+										let sources = eachInput.source;
+										sources.forEach(function (eachSource) {
+											if (eachSource.includes('body.')) {
+												bodySourceCount++;
+											}
+										});
+										
+										if (sources.length > 1) {
+											error = `Swagger doesn't support multiple sources for inputs; detected in API [${eachSchemaKey} ${eachApiKey}] inputs [${eachInputKey}] with multiple sources. Please reduce sources to one for these inputs to sync with swagger`;
 										}
-									});
-									
-									if(sources.length > 1){
-										error = `Swagger doesn't support multiple sources for inputs; detected in API [${eachSchemaKey} ${eachApiKey}] inputs [${eachInputKey}] with multiple sources. Please reduce sources to one for these inputs to sync with swagger`;
 									}
-								}
-							});
-						}
-						
-						if(commonFields){
-							commonFields.forEach(function (eachCommon) {
-								let commonInput = schema.commonFields[eachCommon];
-								if(commonInput){
-									let sources = commonInput.source;
-									sources.forEach(function (eachSource) {
-										if(eachSource.includes('body.')){
-											bodySourceCount ++;
-										}
-									});
-								}
-							});
-						}
-						
-						if(bodySourceCount > 1){
-							error = `Swagger doesn't support multiple inputs from body, detected in API [${eachSchemaKey} ${eachApiKey}] multiple inputs in bodies. Please consolidate these inputs under one input (type object) to sync with swagger.`;
+								});
+							}
+							
+							if (commonFields) {
+								commonFields.forEach(function (eachCommon) {
+									let commonInput = schema.commonFields[eachCommon];
+									if (commonInput) {
+										let sources = commonInput.source;
+										sources.forEach(function (eachSource) {
+											if (eachSource.includes('body.')) {
+												bodySourceCount++;
+											}
+										});
+									}
+								});
+							}
+							
+							if (bodySourceCount > 1) {
+								error = `Swagger doesn't support multiple inputs from body, detected in API [${eachSchemaKey} ${eachApiKey}] multiple inputs in bodies. Please consolidate these inputs under one input (type object) to sync with swagger.`;
+							}
 						}
 					});
 				}
 			});
 			
 			callback(error);
-		}else{
+		} else {
 			callback();
 		}
 	}
