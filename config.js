@@ -4340,43 +4340,6 @@ module.exports = {
 				}
 			},
 			
-			"/apiBuilder/preUpdateSchemasValidation": {
-				"_apiInfo": {
-					"l": "validate Endpoint's Schemas",
-					"group": "API Builder"
-				},
-				"commonFields": ['soajs_project'],
-				"mainType": {
-					"source": ['query.mainType', 'body.mainType'],
-					"required": true,
-					"validation": {
-						"type": "string",
-						"enum": ["endpoints", "services"]
-					}
-				},
-				"endpointId": {
-					"source": ['query.endpointId', 'body.endpointId'],
-					"required": true,
-					"validation": {"type": "string"}
-				},
-				"schemas": {
-					"source": ['query.schemas', 'body.schemas'],
-					"required": false,
-					"validation": {
-						"type": "object",
-						"properties": {},
-						"additionalProperties": true
-					}
-				},
-				"swagger": {
-					"source": ['query.swagger', 'body.swagger'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				}
-			},
-			
 			"/apiBuilder/updateSchemas": {
 				"_apiInfo": {
 					"l": "Update Endpoint's Schemas",
