@@ -4300,46 +4300,6 @@ module.exports = {
 				}
 			},
 			
-			"/apiBuilder/updateImfv": {
-				"_apiInfo": {
-					"l": "Update Endpoint's IMFV",
-					"group": "API Builder"
-				},
-				"commonFields": ['soajs_project'],
-				"mainType": {
-					"source": ['query.mainType', 'body.mainType'],
-					"required": true,
-					"validation": {
-						"type": "string",
-						"enum": ["endpoints", "services"]
-					}
-				},
-				"endpointId": {
-					"source": ['query.endpointId', 'body.endpointId'],
-					"required": true,
-					"validation": {"type": "string"}
-				},
-				"schemaKey": {
-					"source": ['query.schemaKey', 'body.schemaKey'],
-					"required": true,
-					"validation": {"type": "string"}
-				},
-				"routeKey": {
-					"source": ['query.routeKey', 'body.routeKey'],
-					"required": true,
-					"validation": {"type": "string"}
-				},
-				"newImfv": {
-					"source": ['query.newImfv', 'body.newImfv'],
-					"required": true,
-					"validation": {
-						"type": "object",
-						"properties": {},
-						"additionalProperties": true
-					}
-				}
-			},
-			
 			"/apiBuilder/updateSchemas": {
 				"_apiInfo": {
 					"l": "Update Endpoint's Schemas",

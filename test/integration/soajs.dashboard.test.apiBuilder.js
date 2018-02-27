@@ -209,25 +209,6 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 
-	it("Success - will update endpoint's IMFV", function (done) {
-		var params = {
-			qs : {
-				mainType :  "services",
-				endpointId: sampleID,
-				schemaKey: "post",
-				routeKey: "/pet"
-			},
-			form: {
-				newImfv: ImfvSchema
-			}
-			
-		};
-		executeMyRequest(params, 'apiBuilder/updateImfv', 'put', function (body) {
-			assert.ok(body.data);
-			done();
-		});
-	});
-
 	it("Success - will update endpoint's schemas 1", function (done) {
 		var params = {
 			qs : {
