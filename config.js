@@ -2775,7 +2775,7 @@ module.exports = {
 
 			"/swagger/generateExistingService": {
 				"_apiInfo": {
-					"l": "Generate Service via Swagger using service id",
+					"l": "Regenerate Service via Swagger using service id",
 					"group": "swagger",
 					"groupMain": true
 				},
