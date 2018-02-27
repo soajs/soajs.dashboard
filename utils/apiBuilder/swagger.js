@@ -5,6 +5,36 @@ var yamljs = require("yamljs");
 var Validator = require('jsonschema').Validator;
 var schema = require("./schema");
 
+function mapSwaggerTypeToSoajsType(swaggerType) {
+	let soajsType;
+	
+	switch (swaggerType) {
+		case 'string' :
+			soajsType = "string";
+			break;
+		case 'number' :
+			soajsType = "integer";
+			break;
+		case 'integer' :
+			soajsType = "integer";
+			break;
+		case 'boolean' :
+			soajsType = "boolean";
+			break;
+		case 'array' :
+			soajsType = "array";
+			break;
+		case 'object' :
+			soajsType = "object";
+			break;
+		default:
+			soajsType = swaggerType; // unmapped, keep as is
+			break;
+	}
+	
+	return soajsType;
+}
+
 function decodeReference(ref) {
 	// todo: split and decode
 	if (ref.includes('parameters')) {
@@ -19,14 +49,18 @@ function decodeReference(ref) {
 }
 
 /**
- *
+ * swagger types : body, header, formData, query, path
+ * soajs types : query, body, params, headers
  * @param inObj String ex: body
  */
 function convertSource(key, inObj) {
-	let source = inObj; // body, headers, path : keep it as is
+	let source = inObj; // body, query : keep it as is
 	
-	if (inObj === 'params') {
-		source = "query";
+	if (inObj === 'header') {
+		source = "headers";
+	}
+	if (inObj === 'formData') {
+		source = "body";
 	}
 	if (inObj === 'path') {
 		source = "params";
@@ -75,7 +109,7 @@ function convertItem(mainDefinitions, item, level) {
 			workOn = output.validation;
 		}
 		
-		workOn.type = item.type;
+		workOn.type = mapSwaggerTypeToSoajsType(item.type);
 		if (item.type === 'object') {
 			if (item.properties) {
 				let newLevel = level + 1;
@@ -123,7 +157,7 @@ function convertItem(mainDefinitions, item, level) {
 				output.validation = {};
 			}
 			
-			output.validation.type = item.schema.type;
+			output.validation.type = mapSwaggerTypeToSoajsType(item.schema.type);
 			
 			if (item.schema.properties) { // object
 				let newLevel = level + 1;
@@ -422,7 +456,6 @@ var swagger = {
 				newSoajsApi._apiInfo.group = apiData.tags ? apiData.tags[0] : "";
 				newSoajsApi._apiInfo.l = apiData.summary;
 				newSoajsApi.imfv = convertParams(convertedDefinitions, convertedParameters, params);
-				
 			});
 		});
 		
