@@ -226,8 +226,39 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.keyUpdate(config, soajs.core, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
+					if(error){
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					}
+					else if(process.env.SOAJS_DEPLOY_HA){
+						initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
+							let env = req.soajs.inputmaskData.envCode;
+							
+							let controllerService;
+							if (process.env.SOAJS_DEPLOY_HA === 'kubernetes') {
+								controllerService = env.toLowerCase() + "-controller-v1";
+							}
+							else {
+								controllerService = env.toLowerCase() + "-controller";
+							}
+							
+							req.soajs.inputmaskData = {
+								type: "service",
+								serviceName: "controller",
+								env: env,
+								serviceId: controllerService,
+								operation: "loadProvision"
+							};
+							BL.maintenance(config, req.soajs, deployer, function (error, data) {
+								BL.model.closeConnection(req.soajs);
+								return res.json(req.soajs.buildResponse(error, data));
+							});
+						});
+					}
+					else{
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					}
 				});
 			});
 		});
