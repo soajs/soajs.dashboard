@@ -225,7 +225,7 @@ service.init(function () {
 	service.put("/environment/key/update", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.keyUpdate(config, soajs.provision, req, res, function (error, data) {
+				BL.keyUpdate(config, soajs.core, req, res, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
