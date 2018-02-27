@@ -32,7 +32,7 @@ function convertSource(key, inObj) {
 		source = "params";
 	}
 	
-	return [`${key}.${source}`];
+	return [`${source}.${key}`];
 }
 
 /**
@@ -54,9 +54,7 @@ function convertItem(mainDefinitions, item, level) {
 		outputKey = item.name;
 	}
 	
-	if (item.required) {
-		output.required = item.required;
-	}
+	output.required = item.required || false;
 	
 	if (item.in) {
 		if (!item.name) {
