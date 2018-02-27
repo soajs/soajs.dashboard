@@ -2990,17 +2990,6 @@ service.init(function () {
 		});
 	});
 	
-	service.put("/apiBuilder/updateImfv", function (req, res) {
-		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.updateImfv(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-	
 	service.put("/apiBuilder/updateSchemas", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
