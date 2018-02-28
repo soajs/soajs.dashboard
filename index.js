@@ -85,11 +85,11 @@ var service = new soajs.server.service(config);
 
 function checkMyAccess(req, res, cb) {
 	if (!req.soajs.uracDriver || !req.soajs.uracDriver.getProfile()) {
-		return res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
+		return res.jsonp(req.soajs.buildResponse({ "code": 601, "msg": config.errors[601] }));
 	}
 	var myTenant = req.soajs.uracDriver.getProfile().tenant;
 	if (!myTenant || !myTenant.id) {
-		return res.jsonp(req.soajs.buildResponse({"code": 608, "msg": config.errors[608]}));
+		return res.jsonp(req.soajs.buildResponse({ "code": 608, "msg": config.errors[608] }));
 	}
 	else {
 		req.soajs.inputmaskData.id = myTenant.id.toString();
@@ -101,7 +101,7 @@ function initBLModel(req, res, BLModule, modelName, cb) {
 	BLModule.init(modelName, function (error, BL) {
 		if (error) {
 			req.soajs.log.error(error);
-			return res.json(req.soajs.buildResponse({"code": 407, "msg": config.errors[407]}));
+			return res.json(req.soajs.buildResponse({ "code": 407, "msg": config.errors[407] }));
 		}
 		else {
 			return cb(BL);
@@ -111,7 +111,7 @@ function initBLModel(req, res, BLModule, modelName, cb) {
 
 function checkConnection(BL, req, res, cb) {
 	if (!BL.model.initConnection(req.soajs)) {
-		return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
+		return res.json(req.soajs.buildResponse({ "code": 600, "msg": config.errors[600] }));
 	}
 	return cb();
 }
@@ -226,8 +226,39 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.keyUpdate(config, soajs.core, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
+					if (error) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					}
+					else if (process.env.SOAJS_DEPLOY_HA) {
+						initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
+							let env = req.soajs.inputmaskData.envCode;
+							
+							let controllerService;
+							if (process.env.SOAJS_DEPLOY_HA === 'kubernetes') {
+								controllerService = env.toLowerCase() + "-controller-v1";
+							}
+							else {
+								controllerService = env.toLowerCase() + "-controller";
+							}
+							
+							req.soajs.inputmaskData = {
+								type: "service",
+								serviceName: "controller",
+								env: env,
+								serviceId: controllerService,
+								operation: "loadProvision"
+							};
+							BL.maintenance(config, req.soajs, deployer, function (error, result) {
+								BL.model.closeConnection(req.soajs);
+								return res.json(req.soajs.buildResponse(error, data));
+							});
+						});
+					}
+					else {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					}
 				});
 			});
 		});
@@ -2100,7 +2131,7 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.get("/ci/repo/builds", function(req, res) {
+	service.get("/ci/repo/builds", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
 			initBLModel(req, res, dashboardBL.git.module, dbModel, function (gitBL) {
 				checkConnection(BL, req, res, function () {

@@ -2080,6 +2080,23 @@ describe("DASHBOARD Integration Tests:", function () {
 			// 	});
 			// });
 
+			it("reload controller provision", function (done) {
+				var params = {
+					"uri": "http://127.0.0.1:5000/loadProvision",
+					"headers": {
+						"content-type": "application/json"
+					},
+					"json": true
+				};
+				helper.requester("get", params, function (error, response) {
+					assert.ifError(error);
+					assert.ok(response);
+					setTimeout(function () {
+						done();
+					}, 100);
+				});
+			});
+
 			it("get Auhtorization token", function (done) {
 				var options = {
 					uri: 'http://localhost:4000/oauth/authorization',
