@@ -27,7 +27,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 		assert.ok(body);
 		return cb(body);
 	});
-
+	
 	function requester(apiName, method, params, cb) {
 		var options = {
 			uri: 'http://localhost:4000/dashboard/' + apiName,
@@ -37,7 +37,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 			},
 			json: true
 		};
-
+		
 		if (params.headers) {
 			for (var h in params.headers) {
 				if (params.headers.hasOwnProperty(h)) {
@@ -45,15 +45,15 @@ function executeMyRequest(params, apiPath, method, cb) {
 				}
 			}
 		}
-
+		
 		if (params.form) {
 			options.body = params.form;
 		}
-
+		
 		if (params.qs) {
 			options.qs = params.qs;
 		}
-
+		
 		request[method](options, function (error, response, body) {
 			assert.ifError(error);
 			assert.ok(body);
@@ -64,18 +64,18 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 describe("DASHBOARD UNIT Tests:", function () {
 	var expDateValue = new Date().toISOString();
-
+	
 	after(function (done) {
 		mongo.closeDb();
 		done();
 	});
-
+	
 	describe("products tests", function () {
 		var productId;
-
+		
 		describe("product", function () {
 			before(function (done) {
-				mongo.remove('products', {'code': 'TPROD'}, function (error) {
+				mongo.remove('products', { 'code': 'TPROD' }, function (error) {
 					assert.ifError(error);
 					done();
 				});
@@ -94,7 +94,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						form: {
@@ -107,11 +107,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: code"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it('fail - product exists', function (done) {
 					var params = {
 						form: {
@@ -121,15 +121,15 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'product/add', 'post', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 413, "message": errorCodes[413]});
-
+						assert.deepEqual(body.errors.details[0], { "code": 413, "message": errorCodes[413] });
+						
 						done();
 					});
 				});
 				// product/get
-
+				
 				it('mongo test', function (done) {
-					mongo.findOne('products', {'code': 'TPROD'}, function (error, productRecord) {
+					mongo.findOne('products', { 'code': 'TPROD' }, function (error, productRecord) {
 						assert.ifError(error);
 						productId = productRecord._id.toString();
 						delete productRecord._id;
@@ -141,14 +141,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 						});
 						done();
 					});
-
+					
 				});
 			});
-
+			
 			describe("update product tests", function () {
 				it("success - will update product", function (done) {
 					var params = {
-						qs: {'id': productId},
+						qs: { 'id': productId },
 						form: {
 							"id": productId,
 							"description": 'this is a dummy updated description',
@@ -160,7 +160,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('success - product/get', function (done) {
 					var params = {
 						qs: {
@@ -173,10 +173,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
-						qs: {'id': productId},
+						qs: { 'id': productId },
 						form: {
 							"description": 'this is a dummy description'
 						}
@@ -186,26 +186,26 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: name"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it('fail - invalid product id provided', function (done) {
 					var params = {
-						qs: {'id': 'aaaabbbbccccdddd'},
+						qs: { 'id': 'aaaabbbbccccdddd' },
 						form: {
 							"description": 'this is a dummy description',
 							"name": 'test product updated'
 						}
 					};
 					executeMyRequest(params, 'product/update', 'put', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 409, "message": errorCodes[409]});
-
+						assert.deepEqual(body.errors.details[0], { "code": 409, "message": errorCodes[409] });
+						
 						done();
 					});
 				});
-
+				
 				it('mongo test', function (done) {
 					mongo.find('products', {}, {}, function (error, records) {
 						assert.ifError(error);
@@ -222,7 +222,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("delete product tests", function () {
 				var tProd2;
 				it('fail - missing params', function (done) {
@@ -234,18 +234,18 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - invalid product id provided', function (done) {
 					var params = {
-						qs: {'id': "aaaabbbbccccdddd"}
+						qs: { 'id': "aaaabbbbccccdddd" }
 					};
 					executeMyRequest(params, 'product/delete', 'delete', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 409, "message": errorCodes[409]});
-
+						assert.deepEqual(body.errors.details[0], { "code": 409, "message": errorCodes[409] });
+						
 						done();
 					});
 				});
-
+				
 				it("success - will add product again", function (done) {
 					var params = {
 						form: {
@@ -256,24 +256,24 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 					executeMyRequest(params, 'product/add', 'post', function (body) {
 						assert.ok(body.data);
-						mongo.findOne('products', {'code': 'TPRO2'}, function (error, productRecord) {
+						mongo.findOne('products', { 'code': 'TPRO2' }, function (error, productRecord) {
 							assert.ifError(error);
 							tProd2 = productRecord._id.toString();
 							done();
 						});
 					});
 				});
-
+				
 				it("success - will delete product", function (done) {
 					var params = {
-						qs: {'id': tProd2}
+						qs: { 'id': tProd2 }
 					};
 					executeMyRequest(params, 'product/delete', 'delete', function (body) {
 						assert.ok(body.data);
 						done();
 					});
 				});
-
+				
 				it('mongo test', function (done) {
 					mongo.find('products', {}, {}, function (error, records) {
 						assert.ifError(error);
@@ -283,16 +283,15 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("list product tests", function () {
 				it("success - will list product", function (done) {
 					executeMyRequest({}, 'product/list', 'get', function (body) {
 						assert.ok(body.data);
-						assert.equal(body.data.length, 1);
-
-						productId = body.data[0]._id.toString();
-						delete body.data[0]._id;
-						assert.deepEqual(body.data[0], {
+						assert.equal(body.data.length, 2);
+						productId = body.data[1]._id.toString();
+						delete body.data[1]._id;
+						assert.deepEqual(body.data[1], {
 							"code": "TPROD",
 							"name": "test product updated",
 							"description": "this is a dummy updated description",
@@ -303,12 +302,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("package", function () {
 			describe("add package tests", function () {
 				it("fail - invalid env code in acl", function (done) {
 					var params = {
-						qs: {'id': productId},
+						qs: { 'id': productId },
 						form: {
 							"code": "BASIC",
 							"name": "basic package",
@@ -336,10 +335,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will add package, no locked product -> acl will be ignored for dashboard's env", function (done) {
 					var params = {
-						qs: {'id': productId},
+						qs: { 'id': productId },
 						form: {
 							"code": "BASIC",
 							"name": "basic package",
@@ -361,7 +360,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 					executeMyRequest(params, 'product/packages/add', 'post', function (body) {
 						assert.ok(body.data);
-						mongo.findOne('products', {'code': 'TPROD'}, function (error, record) {
+						mongo.findOne('products', { 'code': 'TPROD' }, function (error, record) {
 							assert.ifError(error);
 							delete record._id;
 							assert.deepEqual(record.packages[0], {
@@ -372,14 +371,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"acl": {}
 							});
 							done();
-
+							
 						});
 					});
 				});
-
+				
 				it("success - will add another package", function (done) {
 					var params = {
-						qs: {'id': productId},
+						qs: { 'id': productId },
 						form: {
 							"code": "PACKA",
 							"name": "some package",
@@ -390,7 +389,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 					executeMyRequest(params, 'product/packages/add', 'post', function (body) {
 						assert.ok(body.data);
-						mongo.findOne('products', {'code': 'TPROD'}, function (error, record) {
+						mongo.findOne('products', { 'code': 'TPROD' }, function (error, record) {
 							assert.ifError(error);
 							delete record._id;
 							assert.deepEqual(record.packages[1], {
@@ -401,14 +400,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"acl": {}
 							});
 							done();
-
+							
 						});
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
-						qs: {'id': productId},
+						qs: { 'id': productId },
 						form: {
 							"name": "basic package",
 							"description": 'this is a dummy description',
@@ -430,13 +429,13 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: code"
 						});
-
+						
 						done();
 					});
 				});
-				it("fail - wrong product id", function (done) {
+				it("fail add - wrong product id", function (done) {
 					var params = {
-						qs: {'id': wrong_Id},
+						qs: { 'id': wrong_Id },
 						form: {
 							"name": "basic package",
 							"code": "BSIC",
@@ -447,13 +446,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 					executeMyRequest(params, 'product/packages/add', 'post', function (body) {
 						assert.ok(body.errors);
+						assert.equal(body.errors.details[0].code, 415);
 						done();
 					});
 				});
-
+				
 				it('fail - package exists', function (done) {
 					var params = {
-						qs: {'id': productId},
+						qs: { 'id': productId },
 						form: {
 							"code": "BASIC",
 							"name": "basic package",
@@ -474,14 +474,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'product/packages/add', 'post', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 418, "message": errorCodes[418]});
-
+						assert.deepEqual(body.errors.details[0], { "code": 418, "message": errorCodes[418] });
+						
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("get prod package tests", function () {
 				it('success - product/packages/get', function (done) {
 					var params = {
@@ -505,7 +505,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'product/packages/get', 'get', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 461, "message": errorCodes[461]});
+						assert.deepEqual(body.errors.details[0], { "code": 461, "message": errorCodes[461] });
 						done();
 					});
 				});
@@ -517,16 +517,16 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'product/packages/get', 'get', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 460, "message": errorCodes[460]});
+						assert.deepEqual(body.errors.details[0], { "code": 460, "message": errorCodes[460] });
 						done();
 					});
 				});
 			});
-
+			
 			describe("update package tests", function () {
 				it('fail - invalid env code in acl', function (done) {
 					var params = {
-						qs: {'id': productId, "code": "BASIC"},
+						qs: { 'id': productId, "code": "BASIC" },
 						form: {
 							"name": "basic package 2",
 							"description": 'this is a dummy updated description',
@@ -553,10 +553,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will update package, acl will be ignored", function (done) {
 					var params = {
-						qs: {'id': productId, "code": "BASIC"},
+						qs: { 'id': productId, "code": "BASIC" },
 						form: {
 							"name": "basic package 2",
 							"description": 'this is a dummy updated description',
@@ -577,8 +577,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 					executeMyRequest(params, 'product/packages/update', 'put', function (body) {
 						assert.ok(body.data);
-
-						mongo.findOne('products', {'code': 'TPROD'}, function (error, record) {
+						
+						mongo.findOne('products', { 'code': 'TPROD' }, function (error, record) {
 							assert.ifError(error);
 							delete record._id;
 							assert.deepEqual(record.packages[0], {
@@ -589,14 +589,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"acl": {}
 							});
 							done();
-
+							
 						});
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
-						qs: {"code": "BASIC2"},
+						qs: { "code": "BASIC2" },
 						form: {
 							"name": "basic package 2",
 							"description": 'this is a dummy updated description',
@@ -618,14 +618,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: id"
 						});
-
+						
 						done();
 					});
 				});
-
-				it("fail - wrong product id", function (done) {
+				
+				it("fail update - wrong product id", function (done) {
 					var params = {
-						qs: {'id': wrong_Id, "code": "BASIC"},
+						qs: { 'id': wrong_Id, "code": "BASIC" },
 						form: {
 							"name": "basic package",
 							"description": 'this is a dummy description',
@@ -638,10 +638,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - invalid package code provided', function (done) {
 					var params = {
-						qs: {'id': productId, "code": "BASI2"},
+						qs: { 'id': productId, "code": "BASI2" },
 						form: {
 							"name": "basic package 2",
 							"description": 'this is a dummy updated description',
@@ -661,15 +661,15 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'product/packages/update', 'put', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 405, "message": errorCodes[405]});
+						assert.deepEqual(body.errors.details[0], { "code": 405, "message": errorCodes[405] });
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("delete package tests", function () {
-
+				
 				it("success - will delete package", function (done) {
 					var params = {
 						qs: {
@@ -683,7 +683,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						qs: {}
@@ -693,31 +693,31 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: code, id"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it('fail - invalid package code provided', function (done) {
 					var params = {
-						qs: {"id": productId, 'code': 'BASI4'}
+						qs: { "id": productId, 'code': 'BASI4' }
 					};
 					executeMyRequest(params, 'product/packages/delete', 'delete', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 419, "message": errorCodes[419]});
+						assert.deepEqual(body.errors.details[0], { "code": 419, "message": errorCodes[419] });
 						done();
 					});
 				});
-
+				
 				it("fail - cannot delete package being used by current key", function (done) {
 					var params = {
-						qs: {"id": productId, 'code': 'BASIC'}
+						qs: { "id": productId, 'code': 'BASIC' }
 					};
 					executeMyRequest(params, 'product/packages/delete', 'delete', function (body) {
 						assert.ok(body.errors);
 						done();
 					});
 				});
-
+				
 				it('mongo test', function (done) {
 					mongo.find('products', {}, {}, function (error, records) {
 						assert.ifError(error);
@@ -728,7 +728,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("list package tests", function () {
 				//it("success - will get empty list", function(done) {
 				//    var params = {
@@ -769,7 +769,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				//});
 				it("success - will list package", function (done) {
 					var params = {
-						qs: {"id": productId, 'code': 'BASIC'}
+						qs: { "id": productId, 'code': 'BASIC' }
 					};
 					executeMyRequest(params, 'product/packages/list', 'get', function (body) {
 						assert.ok(body.data);
@@ -786,10 +786,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("mongo check db", function () {
 			it('asserting product record', function (done) {
-				mongo.findOne('products', {"code": "TPROD"}, function (error, record) {
+				mongo.findOne('products', { "code": "TPROD" }, function (error, record) {
 					assert.ifError(error);
 					assert.ok(record);
 					delete record._id;
@@ -811,25 +811,25 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 	});
-
+	
 	describe("tenants tests", function () {
 		var tenantId, applicationId, key, tstgTenantId;
-
+		
 		describe("tenant", function () {
 			before(function (done) {
-				uracMongo.remove('users', {'tenant.code': 'TSTN'}, function (error, data) {
+				uracMongo.remove('users', { 'tenant.code': 'TSTN' }, function (error, data) {
 					assert.ifError(error);
-					uracMongo.remove('groups', {'tenant.code': 'TSTN'}, function (error, data) {
+					uracMongo.remove('groups', { 'tenant.code': 'TSTN' }, function (error, data) {
 						assert.ifError(error);
 						done();
 					});
 				});
 			});
-
+			
 			describe("add tenant tests", function () {
-
+				
 				it("success - will add tenant and set type to client by default", function (done) {
 					var params = {
 						form: {
@@ -844,7 +844,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will add tenant and set type to product and tag to testing", function (done) {
 					var params = {
 						form: {
@@ -862,7 +862,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						form: {
@@ -875,7 +875,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - tenant exists', function (done) {
 					var params = {
 						form: {
@@ -886,14 +886,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'tenant/add', 'post', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 423, "message": errorCodes[423]});
+						assert.deepEqual(body.errors.details[0], { "code": 423, "message": errorCodes[423] });
 						done();
 					});
 				});
-
+				
 				it('mongo test', function (done) {
-
-					mongo.findOne('tenants', {'code': 'TSTN'}, function (error, tenantRecord) {
+					
+					mongo.findOne('tenants', { 'code': 'TSTN' }, function (error, tenantRecord) {
 						assert.ifError(error);
 						tenantId = tenantRecord._id.toString();
 						delete tenantRecord._id;
@@ -905,11 +905,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"applications": [],
 							"oauth": {}
 						});
-
-						uracMongo.find('users', {'tenant.code': 'TSTN'}, function (error, data) {
+						
+						uracMongo.find('users', { 'tenant.code': 'TSTN' }, function (error, data) {
 							assert.ifError(error);
 							assert.ok(data);
-							uracMongo.find('groups', {'tenant.code': 'TSTN'}, function (error, data) {
+							uracMongo.find('groups', { 'tenant.code': 'TSTN' }, function (error, data) {
 								assert.ifError(error);
 								assert.ok(data);
 								done();
@@ -918,11 +918,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("update tenant tests", function () {
 				it("success - will update tenant", function (done) {
 					var params = {
-						qs: {"id": tenantId},
+						qs: { "id": tenantId },
 						form: {
 							"description": 'this is a dummy updated description',
 							"name": "test tenant updated"
@@ -932,9 +932,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 						assert.ok(body.data);
 						done();
 					});
-
+					
 				});
-
+				
 				it("success - will get tenant", function (done) {
 					var params = {
 						qs: {
@@ -955,7 +955,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will update tenant type and tag", function (done) {
 					var params = {
 						qs: {
@@ -975,7 +975,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						qs: {},
@@ -992,24 +992,24 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - invalid tenant id provided', function (done) {
 					var params = {
-						qs: {"id": "aaaabbdd"},
+						qs: { "id": "aaaabbdd" },
 						form: {
 							"description": 'this is a dummy description',
 							"name": 'test tenant updated'
 						}
 					};
 					executeMyRequest(params, 'tenant/update', 'put', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 438, "message": errorCodes[438]});
-
+						assert.deepEqual(body.errors.details[0], { "code": 438, "message": errorCodes[438] });
+						
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("delete tenant tests", function () {
 				it('fail - missing params', function (done) {
 					executeMyRequest({}, 'tenant/delete', 'delete', function (body) {
@@ -1017,24 +1017,24 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - invalid tenant id provided', function (done) {
-					executeMyRequest({qs: {id: 'aaaabdddd'}}, 'tenant/delete', 'delete', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 438, "message": errorCodes[438]});
+					executeMyRequest({ qs: { id: 'aaaabdddd' } }, 'tenant/delete', 'delete', function (body) {
+						assert.deepEqual(body.errors.details[0], { "code": 438, "message": errorCodes[438] });
 						done();
 					});
 				});
-
+				
 				it("success - will delete tenant", function (done) {
-					executeMyRequest({'qs': {id: tenantId}}, 'tenant/delete/', 'delete', function (body) {
+					executeMyRequest({ 'qs': { id: tenantId } }, 'tenant/delete/', 'delete', function (body) {
 						assert.ok(body.data);
-
+						
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("list tenant tests", function () {
 				it("success - will get empty list", function (done) {
 					executeMyRequest({}, 'tenant/list', 'get', function (body) {
@@ -1042,7 +1042,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will add tenant", function (done) {
 					var params = {
 						form: {
@@ -1052,25 +1052,25 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"name": "test tenant"
 						}
 					};
-
-					uracMongo.remove('users', {'tenant.code': 'TSTN'}, function (error) {
+					
+					uracMongo.remove('users', { 'tenant.code': 'TSTN' }, function (error) {
 						assert.ifError(error);
-						uracMongo.remove('groups', {'tenant.code': 'TSTN'}, function (error) {
+						uracMongo.remove('groups', { 'tenant.code': 'TSTN' }, function (error) {
 							assert.ifError(error);
-
+							
 							executeMyRequest(params, 'tenant/add', 'post', function (body) {
 								assert.ok(body.data);
-								mongo.findOne('tenants', {'code': 'TSTN'}, function (error, tenantRecord) {
+								mongo.findOne('tenants', { 'code': 'TSTN' }, function (error, tenantRecord) {
 									assert.ifError(error);
 									tenantId = tenantRecord._id.toString();
 									done();
 								});
 							});
-
+							
 						});
 					});
 				});
-
+				
 				it("succeess - will list tenants of type client only", function (done) {
 					var params = {
 						qs: {
@@ -1087,7 +1087,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("oauth", function () {
 			describe("add oauth tests", function () {
 				it("success - will add oauth", function (done) {
@@ -1098,15 +1098,15 @@ describe("DASHBOARD UNIT Tests:", function () {
 						form: {
 							"secret": "my secret key",
 							"redirectURI": "http://www.myredirecturi.com/",
-							"oauthType" : "urac",
-							"availableEnv" : ["dashboard","dev","stg"]
+							"oauthType": "urac",
+							"availableEnv": ["dashboard", "dev", "stg"]
 						}
 					};
-
+					
 					executeMyRequest(params, 'tenant/oauth/add/', 'post', function (body) {
 						assert.ok(body.data);
-
-						mongo.findOne('tenants', {'code': 'TSTN'}, function (error, tenantRecord) {
+						
+						mongo.findOne('tenants', { 'code': 'TSTN' }, function (error, tenantRecord) {
 							assert.ifError(error);
 							assert.deepEqual(tenantRecord.oauth, {
 								"secret": "my secret key",
@@ -1114,20 +1114,20 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"grants": ["password", "refresh_token"]
 							});
 							done();
-
+							
 						});
-
+						
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						qs: {},
 						form: {
 							"secret": "my secret key",
 							"redirectURI": "http://www.myredirecturi.com/",
-							"oauthType" : "urac",
-							"availableEnv" : ["dashboard","dev","stg"]
+							"oauthType": "urac",
+							"availableEnv": ["dashboard", "dev", "stg"]
 						}
 					};
 					executeMyRequest(params, 'tenant/oauth/add/', 'post', function (body) {
@@ -1135,18 +1135,18 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: id"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it("success - will get tenant containing oauth", function (done) {
 					var params = {
 						qs: {
 							'id': tenantId
 						}
 					};
-
+					
 					executeMyRequest(params, 'tenant/get', 'get', function (body) {
 						assert.ok(body.data);
 						assert.ok(body.data.oauth.authorization);
@@ -1154,21 +1154,21 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("update oauth tests", function () {
 				it("success - will update oauth", function (done) {
 					var params = {
-						qs: {id: tenantId},
+						qs: { id: tenantId },
 						form: {
 							"secret": "my secret key",
 							"redirectURI": "http://www.myredirecturi2.com/",
-							"oauthType" : "urac",
-							"availableEnv" : ["dashboard","dev","stg"]
+							"oauthType": "urac",
+							"availableEnv": ["dashboard", "dev", "stg"]
 						}
 					};
 					executeMyRequest(params, 'tenant/oauth/update/', 'put', function (body) {
 						assert.ok(body.data);
-						mongo.findOne('tenants', {'code': 'TSTN'}, function (error, tenantRecord) {
+						mongo.findOne('tenants', { 'code': 'TSTN' }, function (error, tenantRecord) {
 							assert.ifError(error);
 							assert.deepEqual(tenantRecord.oauth, {
 								"secret": "my secret key",
@@ -1179,15 +1179,15 @@ describe("DASHBOARD UNIT Tests:", function () {
 						});
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						qs: {},
 						form: {
 							"secret": "my secret key",
 							"redirectURI": "http://www.myredirecturi.com/",
-							"oauthType" : "urac",
-							"availableEnv" : ["dashboard","dev","stg"]
+							"oauthType": "urac",
+							"availableEnv": ["dashboard", "dev", "stg"]
 						}
 					};
 					executeMyRequest(params, 'tenant/oauth/update', 'put', function (body) {
@@ -1195,35 +1195,35 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: id"
 						});
-
+						
 						done();
 					});
 				});
 			});
-
+			
 			describe("delete oauth tests", function () {
 				it('fail - missing params', function (done) {
-					executeMyRequest({qs: {}}, 'tenant/oauth/delete', 'delete', function (body) {
+					executeMyRequest({ qs: {} }, 'tenant/oauth/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: id"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it("success - will delete oauth", function (done) {
-					executeMyRequest({qs: {id: tenantId}}, 'tenant/oauth/delete/', 'delete', function (body) {
+					executeMyRequest({ qs: { id: tenantId } }, 'tenant/oauth/delete/', 'delete', function (body) {
 						assert.ok(body.data);
 						done();
 					});
 				});
 			});
-
+			
 			describe("list oauth tests", function () {
 				it("success - will get empty object", function (done) {
-					executeMyRequest({qs: {id: tenantId}}, 'tenant/oauth/list/', 'get', function (body) {
+					executeMyRequest({ qs: { id: tenantId } }, 'tenant/oauth/list/', 'get', function (body) {
 						assert.ok(body.data);
 						assert.equal(JSON.stringify(body.data), '{}');
 						done();
@@ -1231,12 +1231,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 				it("success - will add oauth", function (done) {
 					var params = {
-						qs: {id: tenantId},
+						qs: { id: tenantId },
 						form: {
 							"secret": "my secret key",
 							"redirectURI": "http://www.myredirecturi.com/",
-							"oauthType" : "urac",
-							"availableEnv" : ["dashboard","dev","stg"]
+							"oauthType": "urac",
+							"availableEnv": ["dashboard", "dev", "stg"]
 						}
 					};
 					executeMyRequest(params, 'tenant/oauth/add/', 'post', function (body) {
@@ -1245,7 +1245,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 				it("success - will get oauth object", function (done) {
-					executeMyRequest({qs: {id: tenantId}}, 'tenant/oauth/list/', 'get', function (body) {
+					executeMyRequest({ qs: { id: tenantId } }, 'tenant/oauth/list/', 'get', function (body) {
 						assert.ok(body.data);
 						assert.deepEqual(body.data, {
 							"secret": "my secret key",
@@ -1257,7 +1257,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("oauth users", function () {
 			var oauthUserId, oauthUserId2;
 			describe("add oauth users tests", function () {
@@ -1271,11 +1271,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"password": "password1"
 						}
 					};
-
+					
 					executeMyRequest(params, 'tenant/oauth/users/add/', 'post', function (body) {
 						assert.ok(body.data);
-
-						mongo.findOne('oauth_urac', {'userId': 'oauth_user'}, function (error, tenantRecord) {
+						
+						mongo.findOne('oauth_urac', { 'userId': 'oauth_user' }, function (error, tenantRecord) {
 							assert.ifError(error);
 							assert.ok(tenantRecord);
 							assert.equal(tenantRecord.userId, "oauth_user");
@@ -1285,7 +1285,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						});
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						qs: {},
@@ -1299,13 +1299,13 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: id"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("update oauth users tests", function () {
 				it("success - will update oauth users", function (done) {
 					var params = {
@@ -1320,7 +1320,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 					executeMyRequest(params, 'tenant/oauth/users/update/', 'put', function (body) {
 						assert.ok(body.data);
-						mongo.findOne('oauth_urac', {'userId': 'oauth_user_up'}, function (error, tenantRecord) {
+						mongo.findOne('oauth_urac', { 'userId': 'oauth_user_up' }, function (error, tenantRecord) {
 							assert.ifError(error);
 							assert.ok(tenantRecord);
 							assert.equal(tenantRecord.userId, 'oauth_user_up');
@@ -1330,7 +1330,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						});
 					});
 				});
-
+				
 				it("fail - will update oauth users without password", function (done) {
 					var params = {
 						qs: {
@@ -1347,7 +1347,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						qs: {
@@ -1363,11 +1363,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: id"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it('fail - user does not exist', function (done) {
 					var params = {
 						qs: {
@@ -1384,11 +1384,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 447,
 							"message": "Unable to get tenant oAuth Users"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it('fail - invalid userid given', function (done) {
 					var params = {
 						qs: {
@@ -1405,11 +1405,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 439,
 							"message": "Invalid tenant oauth user Id provided"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it('fail - userid already exist in another account', function (done) {
 					var params = {
 						qs: {
@@ -1420,11 +1420,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"password": "password1"
 						}
 					};
-
+					
 					executeMyRequest(params, 'tenant/oauth/users/add/', 'post', function (body) {
 						assert.ok(body.data);
-
-
+						
+						
 						var params = {
 							qs: {
 								id: tenantId,
@@ -1440,25 +1440,25 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"code": 448,
 								"message": "tenant oAuth User already exists"
 							});
-
+							
 							done();
 						});
 					});
 				});
 			});
-
+			
 			describe("delete oauth tests", function () {
 				it('fail - missing params', function (done) {
-					executeMyRequest({qs: {uId: oauthUserId}}, 'tenant/oauth/users/delete', 'delete', function (body) {
+					executeMyRequest({ qs: { uId: oauthUserId } }, 'tenant/oauth/users/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: id"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it('fail - invalid id provided', function (done) {
 					executeMyRequest({
 						qs: {
@@ -1470,11 +1470,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 439,
 							"message": "Invalid tenant oauth user Id provided"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it("success - will delete oauth user", function (done) {
 					executeMyRequest({
 						qs: {
@@ -1486,19 +1486,19 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("list oauth users tests", function () {
-
+				
 				it("success - will get oauth users", function (done) {
-					executeMyRequest({qs: {id: tenantId}}, 'tenant/oauth/users/list/', 'get', function (body) {
+					executeMyRequest({ qs: { id: tenantId } }, 'tenant/oauth/users/list/', 'get', function (body) {
 						assert.ok(body.data);
 						assert.equal(body.data.length, 1);
 						done();
 					});
 				});
-
+				
 				it("success - will remove oauth user", function (done) {
 					var params = {
 						qs: {
@@ -1511,9 +1511,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will get empty object", function (done) {
-					executeMyRequest({qs: {id: tenantId}}, 'tenant/oauth/users/list/', 'get', function (body) {
+					executeMyRequest({ qs: { id: tenantId } }, 'tenant/oauth/users/list/', 'get', function (body) {
 						assert.ok(body.data);
 						assert.equal(body.data.length, 1);
 						done();
@@ -1521,13 +1521,13 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("applications", function () {
-
+			
 			describe("add applications tests", function () {
 				it("success - will add application", function (done) {
 					var params = {
-						qs: {'id': tenantId},
+						qs: { 'id': tenantId },
 						form: {
 							"productCode": "TPROD",
 							"packageCode": "BASIC",
@@ -1540,7 +1540,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						qs: {},
@@ -1556,14 +1556,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: id"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it('fail - invalid product code given', function (done) {
 					var params = {
-						qs: {'id': tenantId},
+						qs: { 'id': tenantId },
 						form: {
 							"productCode": "INVAL",
 							"packageCode": "BASIC",
@@ -1572,15 +1572,15 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'tenant/application/add/', 'post', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 434, "message": errorCodes[434]});
-
+						assert.deepEqual(body.errors.details[0], { "code": 434, "message": errorCodes[434] });
+						
 						done();
 					});
 				});
-
+				
 				it('fail - invalid package code given', function (done) {
 					var params = {
-						qs: {'id': tenantId},
+						qs: { 'id': tenantId },
 						form: {
 							"productCode": "TPROD",
 							"packageCode": "INVAL",
@@ -1589,17 +1589,17 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'tenant/application/add/', 'post', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 434, "message": errorCodes[434]});
-
+						assert.deepEqual(body.errors.details[0], { "code": 434, "message": errorCodes[434] });
+						
 						done();
 					});
 				});
-
+				
 				it('mongo test', function (done) {
-					mongo.findOne('tenants', {"code": "TSTN"}, function (error, records) {
+					mongo.findOne('tenants', { "code": "TSTN" }, function (error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-
+						
 						assert.ok(records.applications);
 						assert.equal(records.applications.length, 1);
 						applicationId = records.applications[0].appId.toString();
@@ -1615,11 +1615,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("update applications tests", function () {
 				it("success - will update application", function (done) {
 					var params = {
-						qs: {'id': tenantId, 'appId': applicationId},
+						qs: { 'id': tenantId, 'appId': applicationId },
 						form: {
 							"productCode": "TPROD",
 							"packageCode": "BASIC",
@@ -1637,7 +1637,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 				it("fail - wrong key: fdsffsd", function (done) {
 					var params = {
-						qs: {'id': tenantId, 'appId': 'fdsffsd'},
+						qs: { 'id': tenantId, 'appId': 'fdsffsd' },
 						form: {
 							"productCode": "TPROD",
 							"packageCode": "BASIC",
@@ -1653,10 +1653,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
-						qs: {'id': tenantId, 'appId': applicationId},
+						qs: { 'id': tenantId, 'appId': applicationId },
 						form: {
 							"packageCode": "BASIC",
 							"description": "this is a dummy description",
@@ -1668,14 +1668,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: productCode"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it('fail - invalid product code given', function (done) {
 					var params = {
-						qs: {'id': tenantId, 'appId': applicationId},
+						qs: { 'id': tenantId, 'appId': applicationId },
 						form: {
 							"productCode": "INVAL",
 							"packageCode": "BASIC",
@@ -1684,15 +1684,15 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'tenant/application/update', 'put', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 434, "message": errorCodes[434]});
-
+						assert.deepEqual(body.errors.details[0], { "code": 434, "message": errorCodes[434] });
+						
 						done();
 					});
 				});
-
+				
 				it('fail - invalid package code given', function (done) {
 					var params = {
-						qs: {'id': tenantId, 'appId': applicationId},
+						qs: { 'id': tenantId, 'appId': applicationId },
 						form: {
 							"productCode": "TPROD",
 							"packageCode": "INVAL",
@@ -1701,14 +1701,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'tenant/application/update', 'put', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 434, "message": errorCodes[434]});
-
+						assert.deepEqual(body.errors.details[0], { "code": 434, "message": errorCodes[434] });
+						
 						done();
 					});
 				});
-
+				
 				it('mongo test', function (done) {
-					mongo.findOne('tenants', {"code": "TSTN"}, function (error, records) {
+					mongo.findOne('tenants', { "code": "TSTN" }, function (error, records) {
 						assert.ifError(error);
 						assert.ok(records);
 						assert.ok(records.applications);
@@ -1737,10 +1737,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will clear application acl", function (done) {
 					var params = {
-						qs: {'id': tenantId, 'appId': applicationId},
+						qs: { 'id': tenantId, 'appId': applicationId },
 						form: {
 							"productCode": "TPROD",
 							"packageCode": "BASIC",
@@ -1753,7 +1753,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					executeMyRequest(params, 'tenant/application/update', 'put', function (body) {
 						assert.ok(body);
 						assert.ok(body.data);
-						mongo.findOne('tenants', {"code": "TSTN"}, function (error, records) {
+						mongo.findOne('tenants', { "code": "TSTN" }, function (error, records) {
 							assert.ifError(error);
 							assert.ok(records.applications);
 							assert.equal(records.applications.length, 1);
@@ -1769,14 +1769,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 							});
 							done();
 						});
-
+						
 					});
 				});
 			});
-
+			
 			describe("delete applications tests", function () {
 				it('fail - missing params', function (done) {
-					executeMyRequest({qs: {'id': tenantId}}, 'tenant/application/delete/', 'delete', function (body) {
+					executeMyRequest({ qs: { 'id': tenantId } }, 'tenant/application/delete/', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: appId"
@@ -1784,7 +1784,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will delete application", function (done) {
 					executeMyRequest({
 						qs: {
@@ -1807,27 +1807,27 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
-
+				
+				
 			});
-
+			
 			describe("list applications tests", function () {
 				it("success - will get empty object", function (done) {
-					executeMyRequest({qs: {id: tenantId}}, 'tenant/application/list/', 'get', function (body) {
+					executeMyRequest({ qs: { id: tenantId } }, 'tenant/application/list/', 'get', function (body) {
 						assert.ok(body.data);
 						assert.equal(body.data.length, 0);
 						done();
 					});
 				});
 				it("fail - wrong id", function (done) {
-					executeMyRequest({qs: {id: wrong_Id}}, 'tenant/application/list/', 'get', function (body) {
+					executeMyRequest({ qs: { id: wrong_Id } }, 'tenant/application/list/', 'get', function (body) {
 						assert.ok(body.errors);
 						done();
 					});
 				});
 				it("success - will add application", function (done) {
 					var params = {
-						qs: {id: tenantId},
+						qs: { id: tenantId },
 						form: {
 							"productCode": "TPROD",
 							"packageCode": "BASIC",
@@ -1845,7 +1845,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 				it("fail - cant add application - wrong id", function (done) {
 					var params = {
-						qs: {id: wrong_Id},
+						qs: { id: wrong_Id },
 						form: {
 							"productCode": "TPROD",
 							"packageCode": "BASIC",
@@ -1860,7 +1860,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 				it("success - will list applications", function (done) {
-					executeMyRequest({qs: {id: tenantId}}, 'tenant/application/list/', 'get', function (body) {
+					executeMyRequest({ qs: { id: tenantId } }, 'tenant/application/list/', 'get', function (body) {
 						assert.ok(body.data);
 						assert.equal(body.data.length, 1);
 						applicationId = body.data[0].appId.toString();
@@ -1890,7 +1890,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("application keys", function () {
 			describe("add application keys", function () {
 				it("success - will add key", function (done) {
@@ -1917,7 +1917,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						qs: {
@@ -1932,12 +1932,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('mongo test', function (done) {
-					mongo.findOne('tenants', {"code": "TSTN"}, function (error, records) {
+					mongo.findOne('tenants', { "code": "TSTN" }, function (error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-
+						
 						assert.ok(records.applications);
 						assert.equal(records.applications.length, 1);
 						assert.equal(records.applications[0].keys.length, 1);
@@ -1946,9 +1946,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("delete application keys", function () {
 				it("success - will delete key", function (done) {
 					var params = {
@@ -1981,7 +1981,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						qs: {
@@ -1997,9 +1997,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("list application keys", function () {
 				it("success - will add key", function (done) {
 					var params = {
@@ -2014,7 +2014,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will add key", function (done) {
 					var params = {
 						qs: {
@@ -2027,7 +2027,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will list key", function (done) {
 					var params = {
 						qs: {
@@ -2044,7 +2044,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("application ext keys", function () {
 			var extKey;
 			describe("add application ext keys 1", function () {
@@ -2072,7 +2072,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - wrong key', function (done) {
 					var params = {
 						qs: {
@@ -2092,11 +2092,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 440, "message": errorCodes[440]});
+						assert.deepEqual(body.errors.details[0], { "code": 440, "message": errorCodes[440] });
 						done();
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						qs: {
@@ -2119,16 +2119,16 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: key"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it('mongo test for key', function (done) {
-					mongo.findOne('tenants', {"code": "TSTN"}, function (error, records) {
+					mongo.findOne('tenants', { "code": "TSTN" }, function (error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-
+						
 						assert.ok(records.applications);
 						assert.equal(records.applications.length, 1);
 						assert.equal(records.applications[0].keys.length, 1);
@@ -2151,11 +2151,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("add application ext keys 2", function () {
-
+				
 				it("success - will add two external keys (using locked product) but only one with dashboard access", function (done) {
 					var params = {
 						form: {
@@ -2219,7 +2219,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						});
 					});
 				});
-
+				
 				it("success - will add an external key for DEV environment using its corresponding encryption key (tenant using new acl)", function (done) {
 					var newAcl = {
 						'dev': {
@@ -2243,15 +2243,15 @@ describe("DASHBOARD UNIT Tests:", function () {
 							}
 						}
 					};
-
+					
 					try {
 						var id = mongo.ObjectId(tenantId);
 					} catch (e) {
 						assert.ifError(e);
 					}
-
+					
 					//Upgrading acl of TSTN from old to new and removing external keys for all environments except dashboard
-					mongo.findOne("tenants", {"_id": id}, function (error, tenantRecord) {
+					mongo.findOne("tenants", { "_id": id }, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.ok(tenantRecord);
 						tenantRecord.applications[0].acl = newAcl;
@@ -2268,7 +2268,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						mongo.save("tenants", tenantRecord, function (error, result) {
 							assert.ifError(error);
 							assert.ok(result);
-
+							
 							var params = {
 								qs: {
 									id: tenantId,
@@ -2286,7 +2286,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 									'env': 'STG'
 								}
 							};
-
+							
 							executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
 								assert.ok(body.data);
 								done();
@@ -2294,7 +2294,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						});
 					});
 				});
-
+				
 				it("fail - trying to add an external key for an environment that does not exist", function (done) {
 					var params = {
 						qs: {
@@ -2313,16 +2313,16 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'env': 'QAAAAA'
 						}
 					};
-
+					
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
 						assert.ok(body.errors);
-						assert.deepEqual(body.errors.details[0], {"code": 446, "message": errorCodes[446]});
+						assert.deepEqual(body.errors.details[0], { "code": 446, "message": errorCodes[446] });
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("update application ext keys", function () {
 				it("success - will update ext key", function (done) {
 					var params = {
@@ -2348,7 +2348,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - wrong key value', function (done) {
 					var params = {
 						qs: {
@@ -2376,7 +2376,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						qs: {
@@ -2399,16 +2399,16 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: extKeyEnv, extKey"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it('mongo test. 1', function (done) {
-					mongo.findOne('tenants', {"code": "TSTN"}, function (error, records) {
+					mongo.findOne('tenants', { "code": "TSTN" }, function (error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-
+						
 						assert.ok(records.applications);
 						assert.equal(records.applications.length, 1);
 						assert.equal(records.applications[0].keys.length, 1);
@@ -2432,7 +2432,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("delete application ext keys", function () {
 				it("success - will delete ext key", function (done) {
 					var params = {
@@ -2472,7 +2472,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						qs: {
@@ -2487,16 +2487,16 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: extKeyEnv, extKey"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it('mongo test', function (done) {
-					mongo.findOne('tenants', {"code": "TSTN"}, function (error, records) {
+					mongo.findOne('tenants', { "code": "TSTN" }, function (error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-
+						
 						assert.ok(records.applications);
 						assert.equal(records.applications.length, 1);
 						assert.equal(records.applications[0].keys.length, 1);
@@ -2507,7 +2507,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("list application ext keys", function () {
 				it("success - will list ext key", function (done) {
 					var params = {
@@ -2537,7 +2537,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will add ext key to STG", function (done) {
 					var params = {
 						qs: {
@@ -2561,7 +2561,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will list ext key", function (done) {
 					var params = {
 						qs: {
@@ -2576,12 +2576,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will list ext keys that contain an ext key with dashboard access", function (done) {
-					mongo.findOne("tenants", {"code": "test"}, function (error, record) {
+					mongo.findOne("tenants", { "code": "test" }, function (error, record) {
 						assert.ifError(error);
 						assert.ok(record);
-
+						
 						var params = {
 							qs: {
 								id: record._id.toString(),
@@ -2598,10 +2598,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("application config", function () {
 			describe("update application config", function () {
-
+				
 				it("success - will update configuration (empty config)", function (done) {
 					var params = {
 						qs: {
@@ -2619,7 +2619,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will update configuration", function (done) {
 					var params = {
 						qs: {
@@ -2644,7 +2644,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("fail - wrong key: gfdgdf", function (done) {
 					var params = {
 						qs: {
@@ -2667,12 +2667,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 					executeMyRequest(params, 'tenant/application/key/config/update', 'put', function (body) {
 						assert.ok(body.errors);
 						assert.deepEqual(body.errors.details[0],
-							{"code": 445, "message": "Unable to update the tenant application configuration"});
-
+							{ "code": 445, "message": "Unable to update the tenant application configuration" });
+						
 						done();
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						qs: {
@@ -2692,7 +2692,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("fail - invalid environment provided", function (done) {
 					var params = {
 						qs: {
@@ -2713,13 +2713,13 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/config/update', 'put', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 446, "message": errorCodes[446]});
+						assert.deepEqual(body.errors.details[0], { "code": 446, "message": errorCodes[446] });
 						done();
 					});
 				});
-
+				
 				it('mongo test', function (done) {
-					mongo.findOne('tenants', {"code": "TSTN"}, function (error, records) {
+					mongo.findOne('tenants', { "code": "TSTN" }, function (error, records) {
 						assert.ifError(error);
 						assert.ok(records);
 						assert.ok(records.applications);
@@ -2730,11 +2730,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 						assert.ok(records.applications[0].keys[0].config.dev);
 						assert.ok(records.applications[0].keys[0].config.dev.mail);
 						assert.ok(records.applications[0].keys[0].config.dev.urac);
-
+						
 						assert.deepEqual(records.applications[0].keys[0].config.dev.mail, {
 							'a': 'b'
 						});
-
+						
 						assert.deepEqual(records.applications[0].keys[0].config.dev.urac, {
 							'x': 'y'
 						});
@@ -2742,7 +2742,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("list application config", function () {
 				it("success - will list configuration", function (done) {
 					var params = {
@@ -2756,11 +2756,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 						assert.ok(body.data);
 						assert.deepEqual(body.data, {
 							dev: {
-								mail: {'a': 'b'},
-								urac: {'x': 'y'}
+								mail: { 'a': 'b' },
+								urac: { 'x': 'y' }
 							}
 						});
-
+						
 						done();
 					});
 				});
@@ -2778,14 +2778,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 			});
 		});
-
+		
 		describe("Removal of automatically created dashboard tenant keys tests", function () {
 			var tenantCode = "DTKT";
 			var tenantId, appId, key, tenantExtKey;
-
+			
 			function createDashboardTenantKey(cb) {
 				var params = {
 					form: {
@@ -2842,13 +2842,13 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			}
-
+			
 			function deleteTestingTenantIfExists(cb) {
-				mongo.count('tenants', {'code': tenantCode}, function (error, count) {
+				mongo.count('tenants', { 'code': tenantCode }, function (error, count) {
 					assert.ifError(error);
-
+					
 					if (count > 0) {
-						mongo.remove('tenants', {'code': tenantCode}, function (error) {
+						mongo.remove('tenants', { 'code': tenantCode }, function (error) {
 							assert.ifError(error);
 							cb();
 						});
@@ -2857,15 +2857,15 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				});
 			}
-
+			
 			function deleteTenantUracDataIfExists(cb) {
-				uracMongo.count('users', {'tenant.code': tenantCode}, function (error, count) {
+				uracMongo.count('users', { 'tenant.code': tenantCode }, function (error, count) {
 					assert.ifError(error);
-
+					
 					if (count > 0) {
-						uracMongo.remove('users', {'tenant.code': tenantCode}, function (error, data) {
+						uracMongo.remove('users', { 'tenant.code': tenantCode }, function (error, data) {
 							assert.ifError(error);
-							uracMongo.remove('groups', {'tenant.code': tenantCode}, function (error, data) {
+							uracMongo.remove('groups', { 'tenant.code': tenantCode }, function (error, data) {
 								assert.ifError(error);
 								cb();
 							});
@@ -2875,9 +2875,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				});
 			}
-
+			
 			function checkIfKeyExists(code, cb) {
-				mongo.findOne("dashboard_extKeys", {'code': code}, function (error, result) {
+				mongo.findOne("dashboard_extKeys", { 'code': code }, function (error, result) {
 					assert.ifError(error);
 					if (!result) {
 						cb(null, true);
@@ -2887,7 +2887,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				});
 			}
-
+			
 			beforeEach("remove test tenant if it exists and recreate it", function (done) {
 				deleteTestingTenantIfExists(function () {
 					deleteTenantUracDataIfExists(function () {
@@ -2897,7 +2897,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			it("success - will automatically delete dashboard key when tenant gets deleted", function (done) {
 				var params = {
 					qs: {
@@ -2907,7 +2907,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				executeMyRequest(params, 'tenant/delete', 'delete', function (body) {
 					if (body.result === false)
 						assert.ifError(body);
-
+					
 					checkIfKeyExists(tenantCode, function (error, deleted) {
 						assert.ifError(error);
 						assert.ok(deleted);
@@ -2916,7 +2916,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			it("success - will automatically delete dashboard key when application gets deleted", function (done) {
 				var params = {
 					qs: {
@@ -2927,7 +2927,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				executeMyRequest(params, 'tenant/application/delete', 'delete', function (body) {
 					if (body.result === false)
 						assert.ifError(body.result);
-
+					
 					checkIfKeyExists(tenantCode, function (error, deleted) {
 						assert.ifError(error);
 						assert.ok(deleted);
@@ -2936,7 +2936,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			it("success - will automatically delete dashboard key when key gets deleted", function (done) {
 				var params = {
 					qs: {
@@ -2948,7 +2948,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				executeMyRequest(params, 'tenant/application/key/delete', 'delete', function (body) {
 					if (body.result === false)
 						assert.ifError(body.result);
-
+					
 					checkIfKeyExists(tenantCode, function (error, deleted) {
 						assert.ifError(error);
 						assert.ok(deleted);
@@ -2957,7 +2957,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			it("success - will automatically delete dashboard key when external key gets deleted", function (done) {
 				var params = {
 					qs: {
@@ -2981,26 +2981,26 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("mongo check db", function () {
-
+			
 			it('asserting tenant record', function (done) {
 				//TSTN
-				mongo.findOne('tenants', {"code": 'TSTN'}, function (error, record) {
+				mongo.findOne('tenants', { "code": 'TSTN' }, function (error, record) {
 					assert.ifError(error);
 					assert.ok(record);
 					delete record._id;
 					delete record.applications[0].appId;
-
+					
 					assert.ok(record.applications[0].keys[0].key);
 					delete record.applications[0].keys[0].key;
-
+					
 					assert.ok(record.applications[0].keys[0].extKeys[0].extKey);
 					delete record.applications[0].keys[0].extKeys[0].extKey;
-
+					
 					assert.ok(record.applications[0].keys[0].extKeys[1].extKey);
 					delete record.applications[0].keys[0].extKeys[1].extKey;
-
+					
 					assert.deepEqual(record.oauth, {
 						"secret": "my secret key",
 						"redirectURI": "http://www.myredirecturi.com/",
@@ -3043,15 +3043,15 @@ describe("DASHBOARD UNIT Tests:", function () {
 										{
 											"expDate": new Date(expDateValue).getTime() + config.expDateTTL,
 											"dashboardAccess": false,
-											"device": {'a': 'b'},
-											"geo": {'x': 'y'},
+											"device": { 'a': 'b' },
+											"geo": { 'x': 'y' },
 											"env": 'STG'
 										},
 										{
 											"expDate": new Date(expDateValue).getTime() + config.expDateTTL,
 											"dashboardAccess": false,
-											"device": {'aa': 'bb'},
-											"geo": {'xxx': 'yyy'},
+											"device": { 'aa': 'bb' },
+											"geo": { 'xxx': 'yyy' },
 											"env": 'STG'
 										}
 									],
@@ -3079,10 +3079,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 		});
-
-
+		
+		
 	});
-
+	
 });
