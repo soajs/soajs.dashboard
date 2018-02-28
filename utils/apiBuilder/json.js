@@ -1,6 +1,36 @@
 var json2yaml = require('json2yaml');
 let YAML = require("yamljs");
 
+function mapSoajsTypeToSwaggerType(soajsType) {
+	let swaggerType;
+	
+	switch (soajsType) {
+		case 'string' :
+			swaggerType = "string";
+			break;
+		case 'float' :
+			swaggerType = "number";
+			break;
+		case 'integer' :
+			swaggerType = "integer";
+			break;
+		case 'boolean' :
+			swaggerType = "boolean";
+			break;
+		case 'array' :
+			swaggerType = "array";
+			break;
+		case 'object' :
+			swaggerType = "object";
+			break;
+		default:
+			swaggerType = swaggerType; // unmapped, keep as is
+			break;
+	}
+	
+	return swaggerType;
+}
+
 var lib = {
 	
 	generateYaml: function (soajsImfvSchema, serviceRecord) {
@@ -88,6 +118,12 @@ var lib = {
 		return str;
 	},
 	
+	/**
+	 * swagger types : body, header, formData, query, path
+	 * soajs types : query, body, params, headers
+	 * @param arrayOfSources
+	 * @returns {*}
+	 */
 	convertSource: function (arrayOfSources) {
 		let output = ""; // body
 		if (arrayOfSources) {
@@ -96,13 +132,10 @@ var lib = {
 					output += "body,";
 				}
 				if (eachSource.includes('headers')) {
-					output += "headers,";
+					output += "header,";
 				}
 				if (eachSource.includes('query')) {
-					output += "params,";
-				}
-				if (eachSource.includes('path')) {
-					output += "path,";
+					output += "query,";
 				}
 				if (eachSource.includes('params')) {
 					output += "path,";
@@ -211,12 +244,12 @@ var lib = {
 					}
 				}
 			} else {
-				output.type = object.validation.type;
+				output.type = mapSoajsTypeToSwaggerType(object.validation.type);
 			}
 		}
 		
 		if (object.type) {
-			output.type = object.type;
+			output.type = mapSoajsTypeToSwaggerType(object.type);
 			if (object.type === 'object') {
 				output.properties = {};
 				
