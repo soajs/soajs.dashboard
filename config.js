@@ -756,14 +756,16 @@ module.exports = {
 					"source": ['query.start'],
 					"required": false,
 					"validation": {
-						"type": "number"
+						"type": "number",
+						"minimum": 0
 					}
 				},
 				"end": {
 					"source": ['query.end'],
 					"required": false,
 					"validation": {
-						"type": "number"
+						"type": "number",
+						"minimum": 1
 					}
 				}
 			},
@@ -1224,7 +1226,8 @@ module.exports = {
 					"source": ['query.version'],
 					"required": false,
 					"validation": {
-						"type": "number"
+						"type": "number",
+						"minimum": 1
 					}
 				}
 			},
@@ -2104,7 +2107,7 @@ module.exports = {
 										"type": "string",
 										"enum": ['replicated', 'global', 'deployment', 'daemonset']
 									},
-									"replicas": {"required": false, "type": "number"}
+									"replicas": {"required": false, "type": "number", "minimum": 1}
 								}
 							}
 						}
@@ -2120,8 +2123,8 @@ module.exports = {
 								"type": "object",
 								"required": true,
 								"properties": {
-									"min": {"type": "number", "required": true},
-									"max": {"type": "number", "required": true}
+									"min": {"type": "number", "minimum": 1, "required": true},
+									"max": {"type": "number", "minimum": 1, "required": true}
 								}
 							},
 							"metrics": {
@@ -2133,7 +2136,7 @@ module.exports = {
 										"type": "object",
 										"required": true,
 										"properties": {
-											"percent": {"type": "number", "required": true}
+											"percent": {"type": "number", "minimum": 1, "required": true}
 										}
 									}
 								}
@@ -2188,7 +2191,7 @@ module.exports = {
 								"type": "object",
 								"properties": {
 									"gcName": {"required": true, "type": "string"},
-									"gcVersion": {"required": true, "type": "number"}
+									"gcVersion": {"required": true, "type": "number", "minimum": 1}
 								}
 							}
 						}
@@ -2243,7 +2246,8 @@ module.exports = {
 					"source": ['body.port'],
 					"required": false,
 					"validation": {
-						"type": "number"
+						"type": "number",
+						"minimum": 1
 					}
 				},
 				"role": {
@@ -2512,7 +2516,7 @@ module.exports = {
 							"type": "object",
 							"properties": {
 								"serviceName": {"type": "string", "required": true},
-								"serviceVersion": {"type": "number", "required": false}
+								"serviceVersion": {"type": "number", "minimum": 1, "required": false}
 							}
 						}
 					}
@@ -2714,10 +2718,12 @@ module.exports = {
 									},
 									"requestTimeout": {
 										"type": "number",
+										"minimum": 1,
 										"required": true
 									},
 									"requestTimeoutRenewal": {
 										"type": "number",
+										"minimum": 1,
 										"required": true
 									},
 									"extKeyRequired": {
@@ -2816,22 +2822,22 @@ module.exports = {
 				"servicePort": {
 					"source": ['query.servicePort', 'body.servicePort'],
 					"required": true,
-					"validation": {"type": "number"}
+					"validation": {"type": "number", "minimum": 1}
 				},
 				"serviceVersion": {
 					"source": ['query.serviceVersion', 'body.serviceVersion'],
 					"required": true,
-					"validation": {"type": "number"}
+					"validation": {"type": "number", "minimum": 1}
 				},
 				"requestTimeout": {
 					"source": ['query.requestTimeout', 'body.requestTimeout'],
 					"required": true,
-					"validation": {"type": "number"}
+					"validation": {"type": "number", "minimum": 1}
 				},
 				"requestTimeoutRenewal": {
 					"source": ['query.requestTimeoutRenewal', 'body.requestTimeoutRenewal'],
 					"required": true,
-					"validation": {"type": "number"}
+					"validation": {"type": "number", "minimum": 1}
 				},
 				"defaultAuthentication": {
 					"source": ['query.defaultAuthentication', 'body.defaultAuthentication'],
@@ -3804,7 +3810,8 @@ module.exports = {
 					"source": ['body.scale'],
 					"required": true,
 					"validation": {
-						"type": "number"
+						"type": "number",
+						"minimum": 1
 					}
 				}
 			},
@@ -3896,8 +3903,8 @@ module.exports = {
 							"replicas": {
 								"type": "object",
 								"properties": {
-									"min": {"type": "number", "required": true},
-									"max": {"type": "number", "required": true}
+									"min": {"type": "number", "minimum": 1, "required": true},
+									"max": {"type": "number", "minimum": 1, "required": true}
 								}
 							},
 							"metrics": {"type": "object", "required": true}
@@ -3936,8 +3943,8 @@ module.exports = {
 							"replicas": {
 								"type": "object",
 								"properties": {
-									"min": {"type": "number", "required": true},
-									"max": {"type": "number", "required": true}
+									"min": {"type": "number", "minimum": 1, "required": true},
+									"max": {"type": "number", "minimum": 1, "required": true}
 								}
 							},
 							"metrics": {
@@ -3948,7 +3955,7 @@ module.exports = {
 									"cpu": {
 										"type": "object",
 										"properties": {
-											"percent": {"type": "number", "required": true}
+											"percent": {"type": "number", "minimum": 1, "required": true}
 										}
 									}
 								}
@@ -4179,22 +4186,22 @@ module.exports = {
 				"servicePort": {
 					"source": ['query.servicePort', 'body.servicePort'],
 					"required": true,
-					"validation": {"type": "number"}
+					"validation": {"type": "number", "minimum": 1}
 				},
 				"serviceVersion": {
 					"source": ['query.serviceVersion', 'body.serviceVersion'],
 					"required": true,
-					"validation": {"type": "number"}
+					"validation": {"type": "number", "minimum": 1}
 				},
 				"requestTimeout": {
 					"source": ['query.requestTimeout', 'body.requestTimeout'],
 					"required": true,
-					"validation": {"type": "number"}
+					"validation": {"type": "number", "minimum": 1}
 				},
 				"requestTimeoutRenewal": {
 					"source": ['query.requestTimeoutRenewal', 'body.requestTimeoutRenewal'],
 					"required": true,
-					"validation": {"type": "number"}
+					"validation": {"type": "number", "minimum": 1}
 				},
 				"defaultAuthentication": {
 					"source": ['query.defaultAuthentication', 'body.defaultAuthentication'],
@@ -4616,7 +4623,8 @@ module.exports = {
 					"source": ['query.version'],
 					"required": false,
 					"validation": {
-						"type": "number"
+						"type": "number",
+						"minimum": 1
 					}
 				}
 			},
