@@ -414,11 +414,13 @@ module.exports = {
 									let commonInput = schema.commonFields[eachCommon];
 									if (commonInput) {
 										let sources = commonInput.source;
-										sources.forEach(function (eachSource) {
-											if (eachSource.includes('body.')) {
-												bodySourceCount++;
-											}
-										});
+										if(sources){
+											sources.forEach(function (eachSource) {
+												if (eachSource.includes('body.')) {
+													bodySourceCount++;
+												}
+											});
+										}
 									}
 								});
 							}
