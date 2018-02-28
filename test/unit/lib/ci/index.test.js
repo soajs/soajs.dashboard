@@ -249,12 +249,22 @@ describe("testing ci.js", function () {
 					"var2": "val2"
 				}
 			};
+
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, {
+					apiPrefix: "dashboard-api",
+					domain: "soajs",
+					port: 80,
+					protocol: "http"
+				});
+			};
+
 			ci.updateRepoSettings(config, req, ciDriver, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-		
+
 		it("Success id (string)", function (done) {
 			req.soajs.inputmaskData = {
 				"id": "CLOUD/dashboard",
@@ -265,6 +275,16 @@ describe("testing ci.js", function () {
 					"var2": "val2"
 				}
 			};
+
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, {
+					apiPrefix: "dashboard-api",
+					domain: "soajs",
+					port: 80,
+					protocol: "http"
+				});
+			};
+			
 			ci.updateRepoSettings(config, req, ciDriver, function (error, body) {
 				assert.ok(body);
 				done();

@@ -120,13 +120,12 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		};
 		executeMyRequest(params, 'apiBuilder/add', 'post', function (body) {
 			assert.deepEqual(body.result, true);
-			console.log(JSON.stringify(body, null, 2), "!!!!!!")
 			sampleEndpointID = body.data._id;
 			assert.ok(body.data);
 			done();
 		});
 	});
-	
+
 	it("Success - will edit endpoint", function (done) {
 		var params = {
 			form : {
