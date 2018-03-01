@@ -239,7 +239,7 @@ var errors = {
 	"824": "The port %PORTNUMBER% chosen for Nginx is outside the range of valid exposed ports (%MINNGINXPORT% , %MAXNGINXPORT%)",
 	"825": "Invalid or no environment deployer settings detected. Make sure you are running in container mode",
 	"826": "Invalid or no published port provided!",
-	"827": "Invalid schema provided!",
+	"827": "Invalid volume schema provided!",
 
 	"850": "The simulator returned an error",
 	"851": "Invalid YAML code provided",

@@ -48,6 +48,7 @@ var docker= {
 	"properties": {
 		"volumes": {
 			"type": "array",
+			"additionalProperties": false,
 			"items": {
 				"type": "object",
 				"properties": {
