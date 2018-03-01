@@ -113,11 +113,6 @@ var lib = {
 		return output;
 	},
 	
-	firstCharToUpper: function (str) {
-		//todo:
-		return str;
-	},
-	
 	/**
 	 * swagger types : body, header, formData, query, path
 	 * soajs types : query, body, params, headers
