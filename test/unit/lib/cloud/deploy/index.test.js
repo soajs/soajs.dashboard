@@ -22,7 +22,27 @@ var req = {
 
 			}
 		},
-		inputmaskData: {}
+		inputmaskData: {},
+		validator: {
+			Validator: function () {
+				return {
+					validate: function (boolean) {
+						if (boolean) {
+							//valid
+							return {
+								error: []
+							};
+						}
+						else {
+							//invalid
+							return {
+								error: [{error: 'msg'}]
+							};
+						}
+					}
+				};
+			}
+		}
 	}
 };
 // BL.model.validateCustomId

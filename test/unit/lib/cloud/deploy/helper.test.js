@@ -148,7 +148,7 @@ describe("testing deploy.js", function () {
             envRecord: envRecord
         };
         it("Fail. checkPort", function (done) {
-            helpers.checkPort(context, config, cbMain, function (error, body) {
+            helpers.checkPort(context, config, soajs, cbMain, function (error, body) {
                 done();
             });
         });
@@ -171,7 +171,7 @@ describe("testing deploy.js", function () {
                 },
                 envRecord: envRecord
             };
-            helpers.checkPort(context, config, cbMain, function (error, body) {
+            helpers.checkPort(context, config, soajs, cbMain, function (error, body) {
                 done();
             });
         });
