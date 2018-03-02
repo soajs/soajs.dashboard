@@ -339,38 +339,6 @@ var swagger = {
 	},
 	
 	/**
-	 * clone a javascript object with type casting
-	 * @param obj
-	 * @returns {*}
-	 */
-	"cloneObj": function (obj) {
-		if (typeof obj !== "object" || obj === null) {
-			return obj;
-		}
-		
-		if (obj instanceof Date) {
-			return new Date(obj.getTime());
-		}
-		
-		if (obj instanceof RegExp) {
-			return new RegExp(obj);
-		}
-		
-		if (obj instanceof Array && Object.keys(obj).every(function (k) {
-				return !isNaN(k);
-			})) {
-			return obj.slice(0);
-		}
-		var _obj = {};
-		for (var attr in obj) {
-			if (Object.hasOwnProperty.call(obj, attr)) {
-				_obj[attr] = swagger.cloneObj(obj[attr]);
-			}
-		}
-		return _obj;
-	},
-	
-	/**
 	 * check if apis have responses
 	 *
 	 * @param jsonAPISchema
