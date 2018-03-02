@@ -251,7 +251,10 @@ service.init(function () {
 							};
 							BL.maintenance(config, req.soajs, deployer, function (error, result) {
 								BL.model.closeConnection(req.soajs);
-								return res.json(req.soajs.buildResponse(error, data));
+								if (error) {
+									req.soajs.log.error(error);
+								}
+								return res.json(req.soajs.buildResponse(null, data));
 							});
 						});
 					}
