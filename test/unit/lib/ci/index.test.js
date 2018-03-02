@@ -95,6 +95,23 @@ var req = {
 		registry: {
 			coreDB: {
 				provision: {}
+			},
+			custom:{
+				ciConfig : {
+					value : {
+						apiPrefix : 'PRE',
+						domain : 'localhost',
+						protocol : 'http',
+						port : 1234
+					}
+				}
+			}
+		},
+		servicesConfig : {
+			SOAJS_SAAS : {
+				test : {
+
+				}
 			}
 		},
 		log: {
@@ -284,8 +301,38 @@ describe("testing ci.js", function () {
 					protocol: "http"
 				});
 			};
-			
+
 			ci.updateRepoSettings(config, req, ciDriver, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+
+		it("Success empty reg", function (done) {
+			let oldSoajsSaasValue = process.env.SOAJS_SAAS;
+			process.env.SOAJS_SAAS = true;
+			req.soajs.inputmaskData = {
+				"id": "CLOUD/dashboard",
+				"port": 80,
+				"settings": {},
+				"variables": {
+					"var1": "val1",
+					"var2": "val2"
+				},
+				soajs_project : 'test'
+			};
+
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, {});
+			};
+
+			ci.updateRepoSettings(config, req, ciDriver, function (error, body) {
+				if(oldSoajsSaasValue){
+					process.env.SOAJS_SAAS = oldSoajsSaasValue;
+				}else{
+					delete process.env.SOAJS_SAAS;
+				}
+
 				assert.ok(body);
 				done();
 			});
