@@ -1317,7 +1317,7 @@ describe("DASHBOARD Integration Tests:", function () {
 						'access_token': access_token
 					},
 					form: {
-						"secret": "my secret key2",
+						"secret": "shhh this is a secret",
 						"redirectURI": "http://www.myredirecturi.com/",
 						"oauthType": "urac",
 						"availableEnv": ["dashboard", "dev", "stg"]
@@ -1328,7 +1328,7 @@ describe("DASHBOARD Integration Tests:", function () {
 					mongo.findOne('tenants', {'code': 'test'}, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.deepEqual(tenantRecord.oauth, {
-							"secret": "my secret key2",
+							"secret": "shhh this is a secret",
 							"redirectURI": "http://www.myredirecturi.com/",
 							"grants": ["password", "refresh_token"]
 						});
@@ -1345,7 +1345,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				}, 'settings/tenant/oauth/list/', 'get', function (body) {
 					assert.ok(body.data);
 					assert.deepEqual(body.data, {
-						"secret": "my secret key2",
+						"secret": "shhh this is a secret",
 						"redirectURI": "http://www.myredirecturi.com/",
 						"grants": ["password", "refresh_token"]
 					});
@@ -1370,7 +1370,7 @@ describe("DASHBOARD Integration Tests:", function () {
 						'access_token': access_token
 					},
 					form: {
-						"secret": "my secret key2",
+						"secret": "shhh this is a secret",
 						"redirectURI": "http://www.myredirecturi.com/",
 						"oauthType": "urac",
 						"availableEnv": ["dashboard", "dev", "stg"]
@@ -2060,26 +2060,6 @@ describe("DASHBOARD Integration Tests:", function () {
 		});
 
 		describe("fail - logged in user is not the owner of the app", function () {
-			var Authorization2, access_token;
-
-			// before("update mongo. assure oauth", function (done) {
-			// 	mongo.update('tenants', {'code': 'test'}, {
-			// 		$set: {
-			// 			"oauth": {
-			// 				"secret": "my secret key2",
-			// 				"redirectURI": "http://www.myredirecturi.com/",
-			// 				"grants": ["password", "refresh_token"]
-			// 			}
-			// 		}
-			// 	}, {
-			// 		'upsert': false, 'safe': true, multi: false
-			// 	}, function (error, success) {
-			// 		setTimeout(function () {
-			// 			done();
-			// 		}, 900);
-			// 	});
-			// });
-
 			it("reload controller provision", function (done) {
 				var params = {
 					"uri": "http://127.0.0.1:5000/loadProvision",
@@ -2094,49 +2074,6 @@ describe("DASHBOARD Integration Tests:", function () {
 					setTimeout(function () {
 						done();
 					}, 100);
-				});
-			});
-
-			it("get Auhtorization token", function (done) {
-				var options = {
-					uri: 'http://localhost:4000/oauth/authorization',
-					headers: {
-						'Content-Type': 'application/json',
-						'key': extKey
-					},
-					json: true
-				};
-
-				request.get(options, function (error, response, body) {
-					assert.ifError(error);
-					assert.ok(body);
-					assert.ok(body.data);
-					Authorization2 = body.data;
-					done();
-				});
-			});
-
-			it("Login first", function (done) {
-				var options = {
-					uri: 'http://localhost:4000/oauth/token',
-					headers: {
-						'Content-Type': 'application/json',
-						key: extKey,
-						Authorization: Authorization2
-					},
-					body: {
-						"username": "user1",
-						"password": "123456",
-						"grant_type": "password"
-					},
-					json: true
-				};
-				request.post(options, function (error, response, body) {
-					assert.ifError(error);
-					assert.ok(body);
-					access_token = body.access_token;
-					assert.ok(body.access_token);
-					done();
 				});
 			});
 		});
