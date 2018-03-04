@@ -22,5 +22,6 @@ module.exports = {
 		"userAgent": "Travis/1.0.0",
 		"accept": "application/vnd.travis-ci.2+json",
 		"contentType": "application/json"
-	}
+	},
+	"saas": "travis-ci.org"
 };

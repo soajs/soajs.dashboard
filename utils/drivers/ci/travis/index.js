@@ -629,7 +629,9 @@ var lib = {
 												response[branch].started_at = oneBranch.started_at;
 												response[branch].finished_at  = oneBranch.finished_at;
 												response[branch].duration  = oneBranch.duration;
-												response[branch].buildHistory = "https://" + opts.settings.domain + config.headers.api.url.listRepoBuilds.replace('#REPO_ID#', opts.params.repo);
+												
+												// https://travis-ci.org/soajs/soajs.nodejs.express/builds
+												response[branch].buildHistory = "https://" + config.saas + "/" + opts.params.repo + "/builds";
 												response[branch].job_id = oneBranch.job_ids[0];
 												response[branch].logs = ""; //job log
 												response[branch].result = ""; //job details
