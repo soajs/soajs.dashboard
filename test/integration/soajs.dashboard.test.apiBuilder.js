@@ -125,7 +125,21 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
+	it("Fail - try to publish without schemas", function (done) {
+		var params = {
+			qs: {
+				mainType:  "endpoints",
+				endpointId: sampleEndpointID
+			}
+		};
+		executeMyRequest(params, 'apiBuilder/publish', 'get', function (body) {
+			assert.equal(body.errors.codes[0],702);
+			done();
+		});
+	});
+	
+	
 	it("Success - will edit endpoint", function (done) {
 		var params = {
 			form : {
@@ -222,6 +236,19 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		};
 		executeMyRequest(params, 'apiBuilder/updateSchemas', 'put', function (body) {
 			assert.ok(body.data);
+			done();
+		});
+	});
+	
+	it("Success - Publish endpoint", function (done) {
+		var params = {
+			qs: {
+				mainType:  "endpoints",
+				endpointId: sampleEndpointID
+			}
+		};
+		executeMyRequest(params, 'apiBuilder/publish', 'get', function (body) {
+			assert.ok(body);
 			done();
 		});
 	});

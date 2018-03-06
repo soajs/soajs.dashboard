@@ -1639,6 +1639,26 @@ module.exports = {
 					"validation": {"type": "string"}
 				}
 			},
+			"/apiBuilder/publish": {
+				"_apiInfo": {
+					"l": "Publish endpoint apis",
+					"group": "API Builder"
+				},
+				"commonFields": ['soajs_project'],
+				"mainType": {
+					"source": ['query.mainType'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["endpoints", "services"]
+					}
+				},
+				"endpointId": {
+					"source": ['query.endpointId'],
+					"required": true,
+					"validation": {"type": "string"}
+				}
+			},
 			"/apiBuilder/getResources": {
 				"_apiInfo": {
 					"l": "Get Resources",

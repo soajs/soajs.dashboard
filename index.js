@@ -2958,6 +2958,17 @@ service.init(function () {
 		});
 	});
 	
+	service.get("/apiBuilder/publish", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.publish(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
 	service.get("/apiBuilder/getResources", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
