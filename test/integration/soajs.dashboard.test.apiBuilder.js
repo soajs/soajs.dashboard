@@ -134,7 +134,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/publish', 'get', function (body) {
-			assert.equal(body.errors.codes[0],702);
+			assert.equal(body.errors.codes[0], 923);
 			done();
 		});
 	});

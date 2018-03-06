@@ -1650,7 +1650,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["endpoints", "services"]
+						"enum": ["endpoints"]
 					}
 				},
 				"endpointId": {

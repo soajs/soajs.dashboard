@@ -266,6 +266,7 @@ var errors = {
 	"920": "Failed. A service with the same port/name is already created!",
 	"921": "No endpoint found",
 	"922": "Please provide either a schema or a swagger object",
+	"923": "Warning! Publish failed. You don't have any api.",
 	
 	"950": "Catalog recipe not found",
 	"951": "You are not allowed to edit or delete a locked recipe",
