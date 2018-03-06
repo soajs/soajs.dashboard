@@ -268,20 +268,26 @@ var lib = {
 		if (process.env.SOAJS_SAAS) {
 			soajs.log.info(soajs.servicesConfig);
 		}
-		if (process.env.SOAJS_SAAS && !soajs.tenant.locked && soajs.servicesConfig && soajs.servicesConfig.SOAJS_SAAS) {
-			if (soajs.inputmaskData.soajs_project && soajs.servicesConfig.SOAJS_SAAS[soajs.inputmaskData.soajs_project]) {
-				if (soajs.registry.resources.cluster && soajs.registry.resources.cluster[soajs.inputmaskData.soajs_project]) {
-					provision = soajsUtils.cloneObj(soajs.registry.resources.cluster[soajs.inputmaskData.soajs_project].config);
-					provision.name = soajs.registry.coreDB.provision.name;
-					provision.prefix = soajs.inputmaskData.soajs_project + "_";
-					soajs.log.info('Switch connection');
+		if (process.env.SOAJS_SAAS && !soajs.tenant.locked ) {
+			if(soajs.servicesConfig && soajs.servicesConfig.SOAJS_SAAS){
+				if (soajs.inputmaskData.soajs_project && soajs.servicesConfig.SOAJS_SAAS[soajs.inputmaskData.soajs_project]) {
+					if (soajs.registry.resources.cluster && soajs.registry.resources.cluster[soajs.inputmaskData.soajs_project]) {
+						provision = soajsUtils.cloneObj(soajs.registry.resources.cluster[soajs.inputmaskData.soajs_project].config);
+						provision.name = soajs.registry.coreDB.provision.name;
+						provision.prefix = soajs.inputmaskData.soajs_project + "_";
+						soajs.log.info('Switch connection');
+					}
+					else {
+						soajs.log.error('Missing cluster for ', soajs.inputmaskData.soajs_project);
+						return false;
+					}
 				}
 				else {
-					soajs.log.error('Missing cluster for ', soajs.inputmaskData.soajs_project);
+					soajs.log.error('Missing project in servicesConfig.', soajs.inputmaskData.soajs_project);
 					return false;
 				}
 			}
-			else {
+			else{
 				soajs.log.error('Missing project in servicesConfig.', soajs.inputmaskData.soajs_project);
 				return false;
 			}
