@@ -2195,7 +2195,8 @@ module.exports = {
 							},
 							"name": {
 								"required": false,
-								"type": "string"
+								"type": "string",
+								"pattern": /^[a-z0-9]{0,61}$/
 							},
 							"version": {
 								"required": false,

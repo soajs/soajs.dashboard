@@ -6,7 +6,7 @@ module.exports = {
         "required": true,
         "additionalProperties": false,
         "properties": {
-            "name": { "type": "string", "required": true },
+            "name": { "type": "string", "required": true , "pattern": /^[a-z0-9]{0,61}$/},
             "type": { "type": "string", "required": true, "enum": [ 'cluster', 'server', 'cdn', 'system', 'authorization', 'other' ] },
             "category": { "type": "string", "required": true },
             "locked": { "type": "boolean", "required": false },
