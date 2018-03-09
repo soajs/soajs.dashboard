@@ -64,12 +64,12 @@ describe("DASHBOARD Saas Integration Tests:", function () {
 	var envId;
 	var qaID;
 	before(function (done) {
-		process.env.SOAJS_SAAS = true;
+		process.env.SOAJS_SAAS = "true";
 		done();
 	});
 
 	after(function (done) {
-		process.env.SOAJS_SAAS = false;
+		delete process.env.SOAJS_SAAS;
 		mongo.closeDb();
 		done();
 	});
