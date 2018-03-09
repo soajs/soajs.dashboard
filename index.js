@@ -3047,11 +3047,13 @@ service.init(function () {
 	});
 	
 	service.delete("/apiBuilder/delete", function (req, res) {
-		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.delete(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
+		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (cloudBL) {
+			initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+				checkConnection(BL, req, res, function () {
+					BL.delete(config, req, res, cloudBL, deployer, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
 				});
 			});
 		});

@@ -1,20 +1,26 @@
 "use strict";
-var assert = require('assert');
-var request = require("request");
-var helper = require("../helper.js");
-var fs = require("fs");
-var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
-// var extKey = 'd44dfaaf1a3ba93adc6b3368816188f9481bf65ad90f23756391e85d754394e0ee45923e96286f55e60a98efe825af3ef9007121c7baaa49ec8ea3ac9159a4bfc56c87674c94625b36b468c75d58158e0c9df0b386d7f591fbf679eb611d02bf';
-// /tenant/application/acl/get
+let assert = require('assert');
+let request = require("request");
+let helper = require("../helper.js");
+let fs = require("fs");
+
+let extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
+
+let Mongo = require("soajs.core.modules").mongo;
+let dbConfig = require("./db.config.test.js");
+let dashboardConfig = dbConfig();
+dashboardConfig.name = "core_provision";
+let mongo = new Mongo(dashboardConfig);
+
 function executeMyRequest(params, apiPath, method, cb) {
 	requester(apiPath, method, params, function (error, body) {
 		assert.ifError(error);
 		assert.ok(body);
 		return cb(body);
 	});
-
+	
 	function requester(apiName, method, params, cb) {
-		var options = {
+		let options = {
 			uri: 'http://localhost:4000/dashboard/' + apiName,
 			headers: {
 				'Content-Type': 'application/json',
@@ -22,23 +28,23 @@ function executeMyRequest(params, apiPath, method, cb) {
 			},
 			json: true
 		};
-
+		
 		if (params.headers) {
-			for (var h in params.headers) {
+			for (let h in params.headers) {
 				if (params.headers.hasOwnProperty(h)) {
 					options.headers[h] = params.headers[h];
 				}
 			}
 		}
-
+		
 		if (params.form) {
 			options.body = params.form;
 		}
-
+		
 		if (params.qs) {
 			options.qs = params.qs;
 		}
-
+		
 		request[method](options, function (error, response, body) {
 			assert.ifError(error);
 			assert.ok(body);
@@ -48,15 +54,16 @@ function executeMyRequest(params, apiPath, method, cb) {
 }
 
 describe("DASHBOARD TESTS: API Builder", function () {
-
+	
 	let sampleID = '';
 	let sampleEndpointID = '';
 	let ImfvSchema;
 	let swaggerInput = fs.readFileSync(__dirname + "/swagger-no-response.test.yaml", "utf8").toString();
+	
 	it("Success - will list endpoints", function (done) {
-		var params = {
+		let params = {
 			qs: {
-				mainType:  "services"
+				mainType: "services"
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/list', 'get', function (body) {
@@ -66,11 +73,11 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 	it("Success - will get endpoint", function (done) {
-		var params = {
+		let params = {
 			qs: {
-				mainType:  "services",
+				mainType: "services",
 				id: sampleID,
 			}
 		};
@@ -79,11 +86,11 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 	it("Success - will add services 1", function (done) {
-		var params = {
+		let params = {
 			form: {
-				mainType:  "services",
+				mainType: "services",
 				serviceName: "testService1",
 				serviceGroup: "testGroup1",
 				servicePort: 1337,
@@ -93,9 +100,13 @@ describe("DASHBOARD TESTS: API Builder", function () {
 				epType: "rest",
 				defaultAuthentication: "testSoapResource",
 				oauth: true,
-				extKeyRequired : true,
+				extKeyRequired: true,
 				swaggerInput: swaggerInput,
-				authentications: [{"name":"None","category":"N/A"},{"name":"testSoapResource","category":"soapbasicauth","isDefault":true}]
+				authentications: [{"name": "None", "category": "N/A"}, {
+					"name": "testSoapResource",
+					"category": "soapbasicauth",
+					"isDefault": true
+				}]
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/add', 'post', function (body) {
@@ -106,9 +117,9 @@ describe("DASHBOARD TESTS: API Builder", function () {
 	});
 	
 	it("Success - will add endpoint 2", function (done) {
-		var params = {
+		let params = {
 			form: {
-				mainType:  "endpoints",
+				mainType: "endpoints",
 				serviceName: "testService2",
 				serviceGroup: "testGroup2",
 				servicePort: 1347,
@@ -116,7 +127,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 				requestTimeout: 2,
 				requestTimeoutRenewal: 2,
 				epType: "rest",
-				}
+			}
 		};
 		executeMyRequest(params, 'apiBuilder/add', 'post', function (body) {
 			assert.deepEqual(body.result, true);
@@ -127,9 +138,9 @@ describe("DASHBOARD TESTS: API Builder", function () {
 	});
 	
 	it("Fail - try to publish without schemas", function (done) {
-		var params = {
+		let params = {
 			qs: {
-				mainType:  "endpoints",
+				mainType: "endpoints",
 				endpointId: sampleEndpointID
 			}
 		};
@@ -141,10 +152,10 @@ describe("DASHBOARD TESTS: API Builder", function () {
 	
 	
 	it("Success - will edit endpoint", function (done) {
-		var params = {
-			form : {
-				id :  sampleID,
-				mainType:  "services",
+		let params = {
+			form: {
+				id: sampleID,
+				mainType: "services",
 				serviceName: "newTestService",
 				serviceGroup: "newTestGroup",
 				servicePort: 6666,
@@ -154,8 +165,12 @@ describe("DASHBOARD TESTS: API Builder", function () {
 				epType: "rest",
 				defaultAuthentication: "testSoapResource",
 				oauth: true,
-				extKeyRequired : true,
-				authentications: [{"name":"None","category":"N/A"},{"name":"testSoapResource","category":"soapbasicauth","isDefault":true}]
+				extKeyRequired: true,
+				authentications: [{"name": "None", "category": "N/A"}, {
+					"name": "testSoapResource",
+					"category": "soapbasicauth",
+					"isDefault": true
+				}]
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/edit', 'put', function (body) {
@@ -164,20 +179,20 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 	it("Success - will get getResources", function (done) {
-		var params = {};
-
+		let params = {};
+		
 		executeMyRequest(params, 'apiBuilder/getResources', 'get', function (body) {
 			assert.ok(body.data);
 			done();
 		});
 	});
-
+	
 	it("Success - will update route authentication method", function (done) {
-		var params = {
-			qs : {
-				mainType :  "services",
+		let params = {
+			qs: {
+				mainType: "services",
 				endpointId: sampleID,
 				schemaKey: "post",
 				routeKey: "/pet",
@@ -189,11 +204,11 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 	it("Success - will convert Swagger string to an IMFV SOAJS object", function (done) {
-		var params = {
-			qs : {
-				mainType :  "services",
+		let params = {
+			qs: {
+				mainType: "services",
 				id: sampleID
 			},
 			form: {
@@ -205,14 +220,14 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 	it("Success - will convert IMFV SOAJS object to a Swagger string", function (done) {
-		var params = {
-			qs : {
-				mainType :  "services",
+		let params = {
+			qs: {
+				mainType: "services",
 				id: sampleID
 			},
-			form :{
+			form: {
 				schema: ImfvSchema
 			}
 		};
@@ -221,11 +236,11 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 	it("Success - will update endpoint's schemas 1", function (done) {
-		var params = {
-			qs : {
-				mainType :  "endpoints",
+		let params = {
+			qs: {
+				mainType: "endpoints",
 				endpointId: sampleEndpointID,
 				
 			},
@@ -241,9 +256,9 @@ describe("DASHBOARD TESTS: API Builder", function () {
 	});
 	
 	it("Success - Publish endpoint", function (done) {
-		var params = {
+		let params = {
 			qs: {
-				mainType:  "endpoints",
+				mainType: "endpoints",
 				endpointId: sampleEndpointID
 			}
 		};
@@ -254,9 +269,9 @@ describe("DASHBOARD TESTS: API Builder", function () {
 	});
 	
 	it("Success - will update endpoint's schemas 2", function (done) {
-		var params = {
-			qs : {
-				mainType :  "services",
+		let params = {
+			qs: {
+				mainType: "services",
 				endpointId: sampleID,
 			},
 			form: {
@@ -269,9 +284,9 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 	it("Success - will update endpoint's schemas 3", function (done) {
-		var params = {
-			qs : {
-				mainType :  "services",
+		let params = {
+			qs: {
+				mainType: "services",
 				endpointId: sampleID,
 			},
 			form: {
@@ -284,9 +299,9 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 	it("fail - update endpoint's schemas 4", function (done) {
-		var params = {
-			qs : {
-				mainType :  "services",
+		let params = {
+			qs: {
+				mainType: "services",
 				endpointId: sampleID,
 			}
 		};
@@ -295,11 +310,11 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 	it("Success - will delete endpoint", function (done) {
-		var params = {
-			qs : {
-				mainType:  "services",
+		let params = {
+			qs: {
+				mainType: "services",
 				id: sampleID
 			}
 		};
@@ -308,5 +323,56 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
+	// it.skip("Success - delete ep", function (done) {
+	// 	let params = {
+	// 		qs: {
+	// 			access_token: access_token
+	// 		},
+	// 		form: {
+	// 			env: 'dev',
+	// 			"custom": {
+	// 				"name": "petstore",
+	// 				"type": "service",
+	// 				"version": 1
+	// 			},
+	// 			"gitSource": {
+	// 				"branch": "master",
+	// 				"owner": "soajs",
+	// 				"commit": "565a294b680144860f69baf1f254ab79176182b3",
+	// 				"repo": "soajs.epg"
+	// 			},
+	// 			recipe: '59034e43c69a1b962fc62213',
+	// 			deployConfig: {
+	// 				memoryLimit: 209715200,
+	// 				replication: {
+	// 					mode: 'replicated',
+	// 					replicas: 1
+	// 				}
+	// 			}
+	// 		}
+	// 	};
+	// 	executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
+	// 		// assert on service deployed
+	// 		assert.ok(body.result);
+	// 		assert.ok(body.data.id);
+	// 		process.env.SOAJS_DEPLOY_HA = "docker";
+	//
+	// 		let params = {
+	// 			qs: {
+	// 				mainType: "services",
+	// 				id: sampleID
+	// 			}
+	// 		};
+	// 		executeMyRequest(params, 'apiBuilder/delete', 'delete', function (body) {
+	// 			// assert.ok(body.data);
+	// 			console.log('----');
+	// 			console.log(JSON.stringify(body, null, 2));
+	// 			console.log('----');
+	// 			done();
+	// 		});
+	// 	});
+	// });
+	
+	
 });
