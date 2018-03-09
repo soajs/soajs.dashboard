@@ -1468,10 +1468,17 @@ module.exports = {
 				'commonFields': ['soajs_project'],
 				"fullList": {
 					"source": ['query.fullList'],
-					"required": true,
+					"required": false,
 					"default": false,
 					"validation": {
 						"type": "boolean"
+					}
+				},
+				"type": {
+					"source": ['query.type'],
+					"required": false,
+					"validation": {
+						"type": "string"
 					}
 				},
 			},
