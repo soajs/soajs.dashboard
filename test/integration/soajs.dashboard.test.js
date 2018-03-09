@@ -468,39 +468,7 @@ describe("DASHBOARD Integration Tests:", function () {
 		});
 
 		describe("add environment tests", function () {
-			it("success - will add TEST environment", function (done) {
-				var data2 = util.cloneObj(validEnvRecord);
-				data2.code = 'TEST';
-				data2.services.config.session.proxy = "true";
-				delete data2._id;
-				var params = {
-					form: {
-						template: {
-							gi: {
-								code: "TEST",
-								deploy: {}
-							},
-							nginx: {
-								http: 30080,
-								https: 30443
-							},
-							deploy: {
-								selectedDriver : 'docker'
-							}
-						},
-						data: data2,
-					},
-					qs: {
-						"soajs_project": "demo"
-					}
-				};
-				process.env.SOAJS_SAAS = true;
-				executeMyRequest(params, 'environment/add', 'post', function (body) {
-					process.env.SOAJS_SAAS = false;
-					assert.ok(body.data);
-					done();
-				});
-			});
+
 			it("success - will add STG environment", function (done) {
 				var data2 = util.cloneObj(validEnvRecord);
 				data2.code = 'STG';
@@ -518,9 +486,6 @@ describe("DASHBOARD Integration Tests:", function () {
 							controller: {}
 						},
 						data: data2,
-					},
-					qs: {
-						"soajs_project": "demo"
 					}
 				};
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
@@ -1018,7 +983,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				mongo.find('environment', {}, {}, function (error, records) {
 					assert.ifError(error);
 					assert.ok(records);
-					assert.equal(records.length, 8);
+					assert.equal(records.length, 7);
 					done();
 				});
 			});
@@ -1028,7 +993,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			it("success - will get 3 environments", function (done) {
 				executeMyRequest({}, 'environment/list', 'get', function (body) {
 					assert.ok(body.data);
-					assert.equal(body.data.length, 8);
+					assert.equal(body.data.length, 7);
 					done();
 				});
 			});
@@ -1043,7 +1008,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			it("success - will list environment", function (done) {
 				executeMyRequest({}, 'environment/list', 'get', function (body) {
 					assert.ok(body.data);
-					assert.equal(body.data.length, 9);
+					assert.equal(body.data.length, 8);
 
 					body.data.forEach(function (oneEnv) {
 						if (oneEnv.code === 'STG') {
