@@ -75,6 +75,11 @@ var methods = {
             conditions: {},
             fields: { token: 0, repos: 0 }
         };
+        
+        if(soajs.inputmaskData.fullList){
+        	delete opts.fields.repos;
+        }
+        
         model.findEntries(soajs, opts, cb);
     },
 	

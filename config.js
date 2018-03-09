@@ -1465,7 +1465,15 @@ module.exports = {
 					"l": "List Git Accounts",
 					"group": "Git Accounts"
 				},
-				'commonFields': ['soajs_project']
+				'commonFields': ['soajs_project'],
+				"fullList": {
+					"source": ['query.fullList'],
+					"required": true,
+					"default": false,
+					"validation": {
+						"type": "boolean"
+					}
+				},
 			},
 
 			"/gitAccounts/getRepos": {
