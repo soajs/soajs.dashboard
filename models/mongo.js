@@ -154,7 +154,12 @@ var lib = {
 				soajs.log.debug('Closing connection to client core_provision', soajs.inputmaskData.soajs_project);
 			}
 			else {
-				soajs.log.debug('Closing connection to core_provision');
+				if(soajs && soajs.log){
+					soajs.log.debug('Closing connection to core_provision');
+				}
+				else{
+					console.log('Closing connection to core_provision');
+				}
 			}
 			soajs.mongoDb.closeDb();
 		}
