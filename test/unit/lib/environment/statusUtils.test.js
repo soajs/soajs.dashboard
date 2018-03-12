@@ -518,7 +518,7 @@ var template = {
 						"pullPolicy": "IfNotPresent",
 						"override": false
 					},
-					"specifyGitConfiguration": false,
+					"sourceCode": {},
 					"readinessProbe": {
 						"httpGet": {
 							"path": "/",
