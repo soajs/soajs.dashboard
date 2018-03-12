@@ -310,7 +310,7 @@ describe("testing ci.js", function () {
 
 		it("Success empty reg", function (done) {
 			let oldSoajsSaasValue = process.env.SOAJS_SAAS;
-			process.env.SOAJS_SAAS = true;
+			process.env.SOAJS_SAAS = "true";
 			req.soajs.inputmaskData = {
 				"id": "CLOUD/dashboard",
 				"port": 80,

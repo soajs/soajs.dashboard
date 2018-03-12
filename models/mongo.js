@@ -154,7 +154,12 @@ var lib = {
 				soajs.log.debug('Closing connection to client core_provision', soajs.inputmaskData.soajs_project);
 			}
 			else {
-				soajs.log.debug('Closing connection to core_provision');
+				if(soajs && soajs.log){
+					soajs.log.debug('Closing connection to core_provision');
+				}
+				else{
+					console.log('Closing connection to core_provision');
+				}
 			}
 			soajs.mongoDb.closeDb();
 		}
@@ -268,8 +273,8 @@ var lib = {
 		if (process.env.SOAJS_SAAS) {
 			soajs.log.info(soajs.servicesConfig);
 		}
-		if (process.env.SOAJS_SAAS && !soajs.tenant.locked ) {
-			if(soajs.servicesConfig && soajs.servicesConfig.SOAJS_SAAS){
+		if (process.env.SOAJS_SAAS && !soajs.tenant.locked) {
+			if (soajs.servicesConfig && soajs.servicesConfig.SOAJS_SAAS) {
 				if (soajs.inputmaskData.soajs_project && soajs.servicesConfig.SOAJS_SAAS[soajs.inputmaskData.soajs_project]) {
 					if (soajs.registry.resources.cluster && soajs.registry.resources.cluster[soajs.inputmaskData.soajs_project]) {
 						provision = soajsUtils.cloneObj(soajs.registry.resources.cluster[soajs.inputmaskData.soajs_project].config);
@@ -287,7 +292,7 @@ var lib = {
 					return false;
 				}
 			}
-			else{
+			else {
 				soajs.log.error('Missing project in servicesConfig.', soajs.inputmaskData.soajs_project);
 				return false;
 			}
@@ -295,4 +300,5 @@ var lib = {
 		return provision;
 	}
 };
+
 module.exports = lib;
