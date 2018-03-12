@@ -35,10 +35,7 @@ module.exports = {
                                     "pullPolicy": { "type": "string", "required": false }
                                 }
                             },
-                            "specifyGitConfiguration": {
-                                "type": "boolean",
-                                "required": false
-                            },
+                            
                             "readinessProbe": {
                                 "type": "object",
                                 "required": false
