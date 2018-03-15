@@ -68,7 +68,7 @@ var errors = {
 
 	"457": "You are not allowed to create an environment named PORTAL or DASHBOARD",
 	"458": "Failed to Create User Account, try adding the user manually!",
-	
+
 	"460": "Unable to find product",
 	"461": "Unable to find package",
 
@@ -210,7 +210,8 @@ var errors = {
 	"788": "Invalid or no type provided in config.js",
 	"789": "Unable to get content from git provider",
 	"790": "Error while pushing code to remote repository",
-
+	"791": "Missing repository branch",
+	"792": "Selected type does not support alternative repositories”,
 	"795": "Invalid Operation, service/daemon record not found in Database.",
 
 	"800": "Unable to get manager nodes, make sure you have at least one manager node in the cluster",
@@ -262,12 +263,12 @@ var errors = {
 
 	"910": "Specified memory limit is less than minimum memory prerequisite for this service",
 	"911": "Missing value for environment variable %ENV_NAME% of type %ENV_TYPE% set in catalog recipe",
-	
+
 	"920": "Failed. A service with the same port/name is already created!",
 	"921": "No endpoint found",
 	"922": "Please provide either a schema or a swagger object",
 	"923": "Warning! Publish failed. You don't have any api.",
-	
+
 	"950": "Catalog recipe not found",
 	"951": "You are not allowed to edit or delete a locked recipe",
 	"952": "Unable to update catalog recipe",
@@ -276,7 +277,7 @@ var errors = {
 
 	"955": "No CI configuration found",
 	"956": "Authentication failed. The deploy token provided is not valid.",
-	
+
 	"966": "The chosen Continuous Integration configuration is not valid.",
 	"967": "Continuous Integration recipe name already exists for this provider.",
 	"968": "This Account already has a Continuous Integration configured with the selected provider.",
@@ -318,9 +319,9 @@ var errors = {
 	"995": "Modifying a custom registry entry is only allowed in the environment where it was created",
 
 	"996": "At least one of the deployment's exposed ports conflicts with existing deployments",
-	
+
 	"997": "Unable to get repository build or job logs",
-	
+
 	"999": "Limit Exceed, please upgrade your account"
 };
 
