@@ -238,7 +238,7 @@ var errors = {
  	"823": "Update operations are not permitted for clusters that that composed of a single node",
 	"824": "The port %PORTNUMBER% chosen for Nginx is outside the range of valid exposed ports (%MINNGINXPORT% , %MAXNGINXPORT%)",
 	"825": "Invalid or no environment deployer settings detected. Make sure you are running in container mode",
-	"826": "Invalid or no published port provided!",
+	"826": "Invalid port schema provided!",
 	"827": "Invalid volume schema provided!",
 
 	"850": "The simulator returned an error",
