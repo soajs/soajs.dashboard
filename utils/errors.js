@@ -211,7 +211,7 @@ var errors = {
 	"789": "Unable to get content from git provider",
 	"790": "Error while pushing code to remote repository",
 	"791": "Missing repository branch",
-	"792": "Selected type does not support alternative repositories”,
+	"792": "Selected type does not support alternative repositories",
 	"795": "Invalid Operation, service/daemon record not found in Database.",
 
 	"800": "Unable to get manager nodes, make sure you have at least one manager node in the cluster",
