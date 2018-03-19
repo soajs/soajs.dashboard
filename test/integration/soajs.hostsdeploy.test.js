@@ -502,7 +502,15 @@ describe("testing hosts deployment", function () {
 					env: 'dev',
 					custom: {
 						type: 'service',
-						name: 'urac'
+						name: 'urac',
+						sourceCode:{
+							configuration: {
+								"repo" : "soajsTestAccount/custom-configuration",
+								"branch" : "master",
+								"commit" : "e61063e026d4b904bf254b176d9f2c0034b62cbf",
+								"owner" : "soajsTestAccount"
+							}
+						}
 					},
 					recipe: '59034e43c69a1b962fc62213',
 					gitSource: {

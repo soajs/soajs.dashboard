@@ -465,6 +465,14 @@ describe("testing deploy.js", function () {
 								"prefix": "soajstest",
 								"name": "soajs",
 								"tag": "latest"
+							},
+							"sourceCode" : {
+								"configuration" : {
+									"repo" : "soajsTestAccount/custom-configuration",
+									"branch" : "master",
+									"owner" : "soajsTestAccount",
+									"commit" : "e61063e026d4b904bf254b176d9f2c0034b62cbf"
+								}
 							}
 						},
 						"buildOptions": {

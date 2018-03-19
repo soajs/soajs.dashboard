@@ -648,6 +648,22 @@ var template = {
 		"custom": {
 			"PORTAL": {
 				"value": "1"
+			},
+			"sourceCode" : {
+				"configuration" : {
+					"repo" : "soajsTestAccount/custom-configuration",
+					"branch" : "master",
+					"owner" : "soajsTestAccount",
+					"commit" : "e61063e026d4b904bf254b176d9f2c0034b62cbf"
+				},
+				"custom" : {
+					"repo" : "soajsTestAccount/test.successMulti",
+					"branch" : "master",
+					"owner" : "soajsTestAccount",
+					"path" : "/sample4/",
+					"commit" : "d0f80dc4fe46d354035cb95b317feac69b83b876",
+					"subName" : "sampletest4"
+				}
 			}
 		},
 		"certs": true,

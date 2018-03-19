@@ -624,7 +624,7 @@ describe("Testing Resources Functionality", function() {
                     config: {
                         deploy: true,
                         options: {
-                            recipe: '58b4026e511807397f8228f6',
+                            recipe: '5aafcf3689111c3b2fd7518d',
                             deployConfig: {
                                 replication: {
                                     mode: 'replicated',
@@ -632,8 +632,29 @@ describe("Testing Resources Functionality", function() {
                                 }
                             },
                             custom: {
-                                name: 'cluster1',
-                                type: 'resource'
+	                            "image" : {
+		                            "name" : "nginx",
+		                            "prefix" : "soajsorg",
+		                            "tag" : "latest"
+	                            },
+	                            name: 'testserver',
+                                type: 'resource',
+	                            "sourceCode" : {
+		                            "configuration" : {
+			                            "repo" : "soajsTestAccount/custom-configuration",
+			                            "branch" : "master",
+			                            "owner" : "soajsTestAccount",
+			                            "commit" : "e61063e026d4b904bf254b176d9f2c0034b62cbf"
+		                            },
+		                            "custom" : {
+			                            "repo" : "soajsTestAccount/test.successMulti",
+			                            "branch" : "master",
+			                            "owner" : "soajsTestAccount",
+			                            "path" : "/sample4/",
+			                            "commit" : "d0f80dc4fe46d354035cb95b317feac69b83b876",
+			                            "subName" : "sampletest4"
+		                            }
+	                            }
                             }
                         }
                     }
