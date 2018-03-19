@@ -209,7 +209,7 @@ module.exports = function (grunt) {
 	process.env.SHOW_LOGS = grunt.option('showLogs');
 	grunt.registerTask("default", ['jshint']);
 	grunt.registerTask("integration", ['env:coverage', 'mochaTest:integration']);
-	grunt.registerTask("unit", ['env:coverage', 'mochaTest:unit']);
+	grunt.registerTask("unit", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'storeCoverage', 'makeReport']);
 	grunt.registerTask("test", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration']);
 	grunt.registerTask("coverage", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'storeCoverage', 'makeReport', 'coveralls']);
 	//grunt.registerTask("coverage", ['clean', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'storeCoverage', 'makeReport']);
