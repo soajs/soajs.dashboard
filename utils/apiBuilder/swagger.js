@@ -5,6 +5,34 @@ var yamljs = require("yamljs");
 var Validator = require('jsonschema').Validator;
 var schema = require("./schema");
 
+/**
+ * reformat paths/keys having {} and convert them to :
+ * @param paths
+ */
+function reformatPaths(paths) {
+	let output = {};
+	
+	if (!paths) {
+		return output;
+	}
+	
+	let pathsKeys = Object.keys(paths);
+	
+	pathsKeys.forEach(function (eachKey) {
+		let newKey = eachKey;
+		
+		if (eachKey.includes("{") && eachKey.includes("}")) {
+			// replace : {params} by :params
+			newKey = newKey.replace(new RegExp('{', 'g'), ':');
+			newKey = newKey.replace(new RegExp('}', 'g'), '');
+		}
+		
+		output[newKey] = paths[eachKey];
+	});
+	
+	return output;
+}
+
 function mapSwaggerTypeToSoajsType(swaggerType) {
 	let soajsType;
 	
@@ -378,7 +406,7 @@ var swagger = {
 		let all_apis = {};
 		let all_errors = {};
 		
-		let paths = yamlJson.paths;
+		let paths = reformatPaths(yamlJson.paths);
 		let definitions = yamlJson.definitions;
 		let parameters = yamlJson.parameters;
 		
