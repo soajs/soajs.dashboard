@@ -59,10 +59,6 @@ module.exports = {
 		"maxPort": 2767
 	},
 
-	"certificates": {
-		types: ['ca', 'cert', 'key']
-	},
-
 	"docker": {
 		"url": "https://hub.docker.com/v2/repositories/%organization%/%imagename%/tags/"
 	},
@@ -1809,14 +1805,6 @@ module.exports = {
 				"customRegEntry": customRegEntrySchema
 			},
 
-			"/environment/platforms/cert/upload": {
-				_apiInfo: {
-					"l": "Upload Certificate",
-					"group": "Environment Platforms"
-				},
-				'commonFields': ['soajs_project']
-			},
-
 			"/product/add": {
 				_apiInfo: {
 					"l": "Add Product",
@@ -3433,66 +3421,6 @@ module.exports = {
 				"commonFields": ['soajs_project', 'env']
 			},
 
-			"/environment/platforms/cert/choose": {
-				_apiInfo: {
-					"l": "Choose Existing Certificates",
-					"group": "Environment Platforms"
-				},
-				"commonFields": ['soajs_project', 'env'],
-				"platform": {
-					"source": ['query.platform'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"driverName": {
-					"source": ['query.driverName'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"certIds": {
-					"source": ['body.certIds'],
-					"required": true,
-					"validation": {
-						"type": "array"
-					}
-				}
-			},
-
-			"/environment/platforms/driver/changeSelected": {
-				_apiInfo: {
-					"l": "Change Selected Driver",
-					"group": "Environment Platforms"
-				},
-				"commonFields": ['soajs_project', 'env'],
-				"selected": {
-					"source": ['body.selected'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
-			},
-
-			"/environment/platforms/deployer/type/change": {
-				_apiInfo: {
-					"l": "Change Deployer Type",
-					"group": "Environment Platforms"
-				},
-				"commonFields": ['soajs_project', 'env'],
-				"deployerType": {
-					"source": ['body.deployerType'],
-					"required": true,
-					"validation": {
-						"type": "string",
-						"enum": ["manual", "container"]
-					}
-				}
-			},
-
 			"/environment/platforms/deployer/update": {
 				_apiInfo: {
 					"l": "Change Deployer Type",
@@ -4430,28 +4358,6 @@ module.exports = {
 				"commonFields": ['soajs_project', 'env'],
 				"id": {
 					"source": ['query.id'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
-			},
-
-			"/environment/platforms/cert/delete": {
-				_apiInfo: {
-					"l": "Remove Certificate",
-					"group": "Environment Platforms"
-				},
-				"commonFields": ['soajs_project', 'env'],
-				"id": {
-					"source": ['query.id'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"driverName": {
-					"source": ['query.driverName'],
 					"required": true,
 					"validation": {
 						"type": "string"
