@@ -270,7 +270,9 @@ var errors = {
 	"922": "Please provide either a schema or a swagger object",
 	"923": "Warning! Publish failed. You don't have any api.",
 
-    "949": "Must specify the type for docker volume",
+    "948": "Detected old Schema for volumes, please upgrade",
+    "949": "Specify the type for docker volume(s)",
+	
 	"950": "Catalog recipe not found",
 	"951": "You are not allowed to edit or delete a locked recipe",
 	"952": "Unable to update catalog recipe",
