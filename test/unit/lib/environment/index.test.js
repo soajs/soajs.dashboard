@@ -128,31 +128,7 @@ describe("testing environment.js", function () {
 		});
 
 	});
-
-	describe("testing removeCert", function () {
-		
-		it("Success removeCert", function (done) {
-			mongoStub.findEntry = function (soajs, opts, cb) {
-				cb(null, {
-					_id: '111',
-					metadata: {
-						env: {
-							dev: ["some"]
-						}
-					}
-				});
-			};
-			
-			req.soajs.inputmaskData.id = '111';
-			req.soajs.inputmaskData.env = 'dev';
-			
-			environment.removeCert({}, req, res, function (error, body) {
-				assert.ok(body);
-				done();
-			});
-		});
-		
-	});
+	
 	describe("testing Update deployer configuration", function () {
 		
 		it("Success removeCert", function (done) {

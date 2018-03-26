@@ -167,7 +167,7 @@ describe("Testing Catalog Functionality", function() {
 
             executeMyRequest(params, "catalog/recipes/update", 'put', function (result) {
                 assert.ok(result.errors);
-                assert.deepEqual(result.errors.details[0].code, 701);
+                assert.deepEqual(result.errors.details[0].code, 404);
                 done();
             });
         });
