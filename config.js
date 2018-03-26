@@ -1673,7 +1673,30 @@ module.exports = {
 					"group": "API Builder"
 				},
 				"commonFields": ['soajs_project']
+			},
+			
+			"/secrets/list": {
+				"_apiInfo": {
+					"l": "List Available Secrets",
+					"group": "Secrets"
+				},
+				'commonFields': ['soajs_project', 'namespace', 'env']
+			},
+			"/secrets/get": {
+				"_apiInfo": {
+					"l": "Get One Secret",
+					"group": "Secrets"
+				},
+				'commonFields': ['soajs_project', 'namespace', 'env'],
+				"name": {
+					"source": ['query.name'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
 			}
+			
 		},
 
 		"post": {
@@ -3009,7 +3032,42 @@ module.exports = {
 						"additionalProperties": true
 					}
 				}
-			}
+			},
+			
+			"/secrets/post": {
+				"_apiInfo": {
+					"l": "Add Secret",
+					"group": "Secrets"
+				},
+				'commonFields': ['soajs_project'],
+				"name": {
+					"source": ['body.name'],
+					"required": true,
+					"validation": {"type": "string", "required": true, "format": "lowercase"}
+				},
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {"type": "string", "required": true}
+				},
+				"type": {
+					"source": ['body.type'],
+					"required": false,
+					"validation": {"type": "string", "required": true}
+				},
+				"namespace": {
+					"source": ['body.namespace'],
+					"required": false,
+					"validation": {"type": "string", "required": true}
+				},
+				"data": {
+					"source": ['body.data'],
+					"required": true,
+					"validation": {
+						"type": "object"
+					}
+				}
+			},
 		},
 
 		"put": {
@@ -4720,6 +4778,21 @@ module.exports = {
 					"source": ['query.id', 'body.id'],
 					"required": true,
 					"validation": {"type": "string"}
+				}
+			},
+			
+			"/secrets/delete": {
+				_apiInfo: {
+					"l": "Delete Secret",
+					"group": "Secrets"
+				},
+				'commonFields': ['soajs_project', 'namespace', 'env'],
+				"name": {
+					"source": ['query.name'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
 				}
 			}
 		}

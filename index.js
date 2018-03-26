@@ -72,6 +72,9 @@ var dashboardBL = {
 		},
 		metrics: {
 			module: require('./lib/cloud/metrics/index.js')
+		},
+		secrets: {
+			module: require('./lib/cloud/secrets/index.js')
 		}
 	}
 };
@@ -3059,7 +3062,69 @@ service.init(function () {
 		});
 	});
 	
+	/**
+	 * List secrets
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/secrets/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.secrets.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.list(config, req.soajs, BL, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
 	
+	/**
+	 * Add a new secret
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/secrets/add", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.secrets.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.add(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Get one secret
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/secrets/get", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.secrets.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.get(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Delete a secret
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.delete("/secrets/delete", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.secrets.module, dbModel, function (BL) {
+			checkConnection(BL, req.soajs, res, function () {
+				BL.delete(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
 	/**
 	 * Service Start
 	 */
