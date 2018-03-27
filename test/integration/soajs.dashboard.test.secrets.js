@@ -58,7 +58,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 //Begin testing
 describe("Testing Secrets Management", function () {
 
-    it("Success - Add Secret"), function (done) {
+    it("Success - Add Secret", function (done) {
         var params = {
             "form": {
                 "name": "wissam",
@@ -70,18 +70,31 @@ describe("Testing Secrets Management", function () {
             assert.ok(result.result);
             done();
         });
-    };
+    });
 
-    it("Success - List Secrets"), function (done) {
+    it("Success - List Secrets", function (done) {
         var params = {};
         executeMyRequest(params, "secrets/list", 'get', function (result) {
             assert.ok(result.data);
             assert.ok(result.result);
             done();
         });
-    };
+    });
+	
+	it("Success - Get Secret", function (done) {
+		var params = {
+			"qs": {
+				"name": "wissam"
+			}
+		};
+		executeMyRequest(params, "secrets/get", 'get', function (result) {
+			assert.ok(result.data);
+			assert.ok(result.result);
+			done();
+		});
+	});
 
-    it("Success - Delete Secret"), function (done) {
+    it("Success - Delete Secret", function (done) {
         var params = {
             "form": {
                 "name": "wissam"
@@ -92,10 +105,8 @@ describe("Testing Secrets Management", function () {
             assert.ok(result.result);
             done();
         });
-    };
+    });
 
-    it("Success - Get Secret"), function (done) {
-        done();
-    };
+   
 
 });
