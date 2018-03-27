@@ -1177,7 +1177,7 @@ describe("testing hosts deployment", function () {
                                 "prefix": "soajsorg",
                                 "tag": "latest"
                             },
-                            "name": "testserver",
+                            "name": "nginx",
                             "type": "resource",
                             "sourceCode": {
                                 "configuration": {
@@ -1245,40 +1245,22 @@ describe("testing hosts deployment", function () {
                     executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
                         assert.ok(body.result);
                         assert.ok(body.data);
-
-                        var param = {
+	                    
+                        var options = {
                             qs: {
-                                access_token: access_token,
-                                env: 'dev'
+                                access_token: access_token
+                            },
+                            form: {
+                                env: 'DEV',
+                                serviceId: body.data.service.id,
+                                mode: 'replicated',
+                                action: 'rebuild'
                             }
                         };
 
-                        executeMyRequest(param, "cloud/services/list", "get", function (body) {
-                            assert.ok(body.result);
-                            assert.ok(body.data);
-
-                            for (var i = 0; i < body.data.length; i++) {
-                                if (body.data[i].labels['soajs.service.name'] === 'nginx') {
-                                    var nginxDeployment = body.data[i];
-                                }
-                            }
-
-                            var options = {
-                                qs: {
-                                    access_token: access_token
-                                },
-                                form: {
-                                    env: 'dev',
-                                    serviceId: nginxDeployment.id,
-                                    mode: nginxDeployment.labels['soajs.service.mode'],
-                                    action: 'rebuild'
-                                }
-                            };
-
-                            executeMyRequest(options, "cloud/services/redeploy", "put", function (body) {
-                                assert.ok(body);
-                                done();
-                            });
+                        executeMyRequest(options, "cloud/services/redeploy", "put", function (body) {
+                            assert.ok(body);
+                            done();
                         });
                     });
                 });
