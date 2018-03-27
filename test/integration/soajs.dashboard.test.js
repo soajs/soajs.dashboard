@@ -248,7 +248,10 @@ describe("DASHBOARD Integration Tests:", function () {
 				"container": {
 					"docker": {
 						"local": {
-							"socketPath": "/var/run/docker.sock"
+							"socketPath": "/var/run/docker.sock",
+                            "auth": {
+                                "token": ""
+                            }
 						},
 						"remote": {
 							"nodes": []
@@ -549,6 +552,7 @@ describe("DASHBOARD Integration Tests:", function () {
 					done();
 				});
 			});
+
 			it("success - will add testKubRemote environment", function (done) {
 				var data5 = util.cloneObj(qaEnvRecord);
 				data5.code = 'testKubRemote';
@@ -596,7 +600,11 @@ describe("DASHBOARD Integration Tests:", function () {
 					"deployment" : {
 						"docker" : {
 							"dockerremote": false,
-							"loval": {}
+							"token" : "123abd",
+							"port": 2222,
+							"loval": {
+
+							}
 						}
 					}
 				};
@@ -1639,6 +1647,85 @@ describe("DASHBOARD Integration Tests:", function () {
 	describe("platforms tests", function () {
 
 		describe("list platforms", function () {
+			before(function(done){
+				mongo.remove("fs.files", {}, (error)=>{
+					assert.ifError(error);
+					mongo.insert("fs.files", [
+						{
+							"filename": "key.pem",
+							"contentType": "binary/octet-stream",
+							"length": 3247,
+							"chunkSize": 261120,
+							"uploadDate": "2017-11-29T17:51:24.332+0000",
+							"aliases": null,
+							"metadata": {
+								"platform": "docker",
+								"certType": "key",
+								"env": {
+									"TESTDOCKERLOCAL": [
+										"docker.remote"
+									]
+								}
+							},
+							"md5": "f174ab26870198bfdd568ffeaf92b41a"
+						},
+						{
+							"filename": "key.pem",
+							"contentType": "binary/octet-stream",
+							"length": 3247,
+							"chunkSize": 261120,
+							"uploadDate": "2017-11-29T17:51:24.332+0000",
+							"aliases": null,
+							"metadata": {
+								"platform": "docker",
+								"certType": "key",
+								"env": {
+									"TESTDOCKERLOCAL": [
+										"docker.remote",
+										"remote"
+									]
+								}
+							},
+							"md5": "f174ab26870198bfdd568ffeaf92b41a"
+						},
+						{
+							"filename": "key.pem",
+							"contentType": "binary/octet-stream",
+							"length": 3247,
+							"chunkSize": 261120,
+							"uploadDate": "2017-11-29T17:51:24.332+0000",
+							"aliases": null,
+							"metadata": {
+								"platform": "docker",
+								"certType": "key",
+								"env": {
+									"TESTDOCKERLOCAL": [
+										"docker.remote"
+									],
+									"TESTDOCKERLOCA": [
+										"docker.remote"
+									]
+								}
+							},
+							"md5": "f174ab26870198bfdd568ffeaf92b41a"
+						},
+						{
+							"filename": "key.pem",
+							"contentType": "binary/octet-stream",
+							"length": 3247,
+							"chunkSize": 261120,
+							"uploadDate": "2017-11-29T17:51:24.332+0000",
+							"aliases": null,
+							"metadata": {
+							},
+							"md5": "f174ab26870198bfdd568ffeaf92b41a"
+						}
+					], (error) =>{
+						assert.ifError(error);
+						done();
+					});
+				});
+			});
 
 			it("success - will list platforms and available certificates", function (done) {
 				var params = {
@@ -1661,8 +1748,26 @@ describe("DASHBOARD Integration Tests:", function () {
 					done();
 				});
 			});
-			
-			//todo: call /environment/platforms/deployer/update
+
+            it("success - will update the deployer ", function (done) {
+                var params = {
+                    qs: {
+                        env: 'TESTDOCKERLOCAL'
+                    },
+                    form: {
+                        driver: 'remote',
+                        config: {
+                            nodes: '127.0.0.1',
+                            apiPort: '2222',
+                            token: '123abc'
+						}
+                    }
+                };
+                executeMyRequest(params, "environment/platforms/deployer/update", 'put', function (body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
 		});
 	});
 

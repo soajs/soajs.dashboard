@@ -61,7 +61,11 @@ var deployer = {
 		];
 		
 		return cb(null, services);
-	}
+	},
+
+    createNameSpace: function (options, cb) {
+        return cb(null, true);
+    }
 	
 };
 var mongoStub = {
@@ -149,7 +153,12 @@ describe("testing environment.js", function () {
 								}
 							},
 							"kubernetes": {
-								"local": {},
+								"local": {
+                                    "namespace": {
+                                    	"default": "test",
+										"perService": false
+									}
+								},
 								"remote": {
 									"nodes": []
 								}
@@ -277,7 +286,7 @@ describe("testing environment.js", function () {
 				cb(null, true);
 			};
 			
-			req.soajs.inputmaskData.env = 'dev';
+			req.soajs.inputmaskData.env = 'qa';
 			req.soajs.inputmaskData.driver = 'local';
 			req.soajs.inputmaskData.config = {
 					namespace :{
