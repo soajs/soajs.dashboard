@@ -3022,7 +3022,7 @@ module.exports = {
 				}
 			},
 			
-			"/secrets/post": {
+			"/secrets/add": {
 				"_apiInfo": {
 					"l": "Add Secret",
 					"group": "Secrets"
