@@ -3031,7 +3031,7 @@ module.exports = {
 				"name": {
 					"source": ['body.name'],
 					"required": true,
-					"validation": {"type": "string", "required": true, "format": "lowercase"}
+					"validation": {"type": "string", "required": true, "format": "lowercase", "pattern": /[a-zA-Z0-9_\-]/}
 				},
 				"env": {
 					"source": ['body.env'],
