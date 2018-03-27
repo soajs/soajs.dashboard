@@ -3037,7 +3037,7 @@ service.init(function () {
 	 */
 	service.delete("/secrets/delete", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.secrets.module, dbModel, function (BL) {
-			checkConnection(BL, req.soajs, res, function () {
+			checkConnection(BL, req, res, function () {
 				BL.delete(config, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
