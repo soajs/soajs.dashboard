@@ -3052,7 +3052,7 @@ module.exports = {
 					"source": ['body.data'],
 					"required": true,
 					"validation": {
-						"type": "object"
+						"type": "string"
 					}
 				}
 			},
