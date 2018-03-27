@@ -186,6 +186,13 @@ module.exports = function (grunt) {
 					timeout: 90000
 				},
 				src: ['test/integration/_server.test.js']
+			},
+			saas: {
+				options: {
+					reporter: 'spec',
+					timeout: 90000
+				},
+				src: ['test/integration/_server.saas.test.js']
 			}
 		},
 
@@ -211,8 +218,9 @@ module.exports = function (grunt) {
 	grunt.registerTask("integration", ['env:coverage', 'mochaTest:integration']);
 	grunt.registerTask("unit", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'storeCoverage', 'makeReport']);
 	grunt.registerTask("integration", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:integration', 'storeCoverage', 'makeReport']);
-	grunt.registerTask("test", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration']);
-	grunt.registerTask("coverage", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'storeCoverage', 'makeReport', 'coveralls']);
+	grunt.registerTask("saas", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:saas', 'storeCoverage', 'makeReport']);
+	grunt.registerTask("test", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'mochaTest:saas']);
+	grunt.registerTask("coverage", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'mochaTest:saas', 'storeCoverage', 'makeReport', 'coveralls']);
 	//grunt.registerTask("coverage", ['clean', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'storeCoverage', 'makeReport']);
 
 };
