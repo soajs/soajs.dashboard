@@ -62,7 +62,8 @@ describe("Testing Secrets Management", function () {
         var params = {
             "form": {
                 "name": "wissam",
-                "data": "d2lzc2Ft"
+                "data": "d2lzc2Ft",
+                "env": "DASHBOARD"
             }
         };
         executeMyRequest(params, "secrets/add", 'post', function (result) {
@@ -72,19 +73,38 @@ describe("Testing Secrets Management", function () {
         });
     });
 
+    it("Fail - Add Secret Same Name", function (done) {
+        var params = {
+            "form": {
+                "name": "wissam",
+                "data": "d2lzc2Ft",
+                "env": "DASHBOARD"
+            }
+        };
+        executeMyRequest(params, "secrets/add", 'post', function (result) {
+            assert.ok(result.errors);
+            done();
+        });
+    });
+
     it("Success - List Secrets", function (done) {
-        var params = {};
+        var params = {
+            "qs": {
+                "env": "DASHBOARD"
+            }
+        };
         executeMyRequest(params, "secrets/list", 'get', function (result) {
             assert.ok(result.data);
             assert.ok(result.result);
             done();
         });
     });
-	
+
 	it("Success - Get Secret", function (done) {
 		var params = {
 			"qs": {
-				"name": "wissam"
+				"name": "wissam",
+                "env": "DASHBOARD"
 			}
 		};
 		executeMyRequest(params, "secrets/get", 'get', function (result) {
@@ -96,8 +116,9 @@ describe("Testing Secrets Management", function () {
 
     it("Success - Delete Secret", function (done) {
         var params = {
-            "form": {
-                "name": "wissam"
+            "qs": {
+                "name": "wissam",
+                "env": "DASHBOARD"
             }
         };
         executeMyRequest(params, "secrets/delete", 'delete', function (result) {
@@ -107,6 +128,6 @@ describe("Testing Secrets Management", function () {
         });
     });
 
-   
+
 
 });
