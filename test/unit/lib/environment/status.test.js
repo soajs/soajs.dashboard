@@ -13,9 +13,6 @@ function stubStatusUtils() {
 		.stub(statusUtils, 'getAPIInfo')
 		.withArgs(sinon.match.string).returns('http://test.local');
 	sinon
-		.stub(statusUtils, 'uploadCertificates')
-		.yields(null, true);
-	sinon
 		.stub(statusUtils, 'productize')
 		.yields(null, true);
 	sinon
@@ -58,10 +55,7 @@ function stubStatusUtils() {
 		.stub(statusUtils, 'generateAndRunRequest')
 		.yields(null, true);
 
-//mock statusRollback
-	sinon
-		.stub(statusRollback, 'removeCertificates')
-		.yields(null, true);
+	//mock statusRollback
 	sinon
 		.stub(statusRollback, 'removeProduct')
 		.yields(null, true);
@@ -187,7 +181,6 @@ var template = {
 		"project": "demo"
 	},
 	"deploy": {
-		"certificates": [],
 		"deployment": {
 			"docker": {
 				"dockerremote": true,

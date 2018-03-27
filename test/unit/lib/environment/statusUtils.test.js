@@ -1284,34 +1284,13 @@ describe("testing statusUtils.js", function () {
 	after(function () {
 		sinon.restore(statusUtils);
 	});
-	it("Success uploadCertificates case 1", function (done) {
-		stubGridFS();
-		statusUtils.uploadCertificates(req, context, function (err) {
-			sinon.restore(fs);
-			done();
-		});
-	});
-	
-	it("Success uploadCertificates case 2", function (done) {
-		delete context.template.deploy.deployment.docker.certificates;
-		statusUtils.uploadCertificates(req, context, function (err) {
-			done();
-		});
-	});
-	
-	it("Success uploadCertificates case 3", function (done) {
-		context.template.deploy.selectedDriver = "kuberentes;"
-		statusUtils.uploadCertificates(req, context, function (err) {
-			delete context.template.deploy.deployment.docker.certificates;
-			done();
-		});
-	});
 	
 	it("Success productize case 1", function (done) {
 		statusUtils.productize(req, context, function (err) {
 			done();
 		});
 	});
+	
 	it("Success productize case 2", function (done) {
 		context.BL.model.findEntry = function (soajs, opts, cb) {
 			if (opts.collection === 'products'){

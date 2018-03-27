@@ -794,11 +794,6 @@ describe("testing statusRollback.js", function () {
 	after(function() {
 		sinon.restore(statusRollback);
 	});
-	it("Success removeCertificates", function (done) {
-		statusRollback.removeCertificates(req, context,  function (err) {
-			done();
-		})
-	});
 	
 	it("Success removeProduct with id", function (done) {
 		statusRollback.removeProduct(req, context,  function (err) {
