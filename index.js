@@ -2990,7 +2990,7 @@ service.init(function () {
 	service.get("/secrets/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.secrets.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.list(config, req.soajs, BL, deployer, function (error, data) {
+				BL.list(config, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
