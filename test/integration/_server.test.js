@@ -102,6 +102,7 @@ describe("importing sample data", function () {
 			require("./soajs.resources.test.js");
 			require("./soajs.catalog.test.js");
 			require("./soajs.hostsdeploy.test.js");
+			require("./soajs.dashboard.test.secrets.js");
 			require("./soajs.dashboard.test.ci.js");
 			require("./soajs.cd.test.js");
 			require("./soajs.dashboard.test.gitAccounts.js");
