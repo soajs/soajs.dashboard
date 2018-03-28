@@ -10,6 +10,9 @@ var request = require("request");
 
 module.exports = {
 	deployer: {
+		inspectService: function (options, cb) {
+			return cb(null, true);
+		},
 		deleteService: function (options, cb) {
 			return cb(null, true);
 		},

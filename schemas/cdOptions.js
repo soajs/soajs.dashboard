@@ -10,7 +10,7 @@ module.exports = {
 		"properties": {
 			"owner": {"required": true, "type": "string"},
 			"repo": {"required": true, "type": "string"},
-			"branch": {"required": true, "type": "string", "minLength": 1, 'pattern': /[a-z]+/},
+			"branch": {"required": true, "type": "string", "minLength": 1},
 			"commit": {"required": false, "type": "string"}
 		}
 	},

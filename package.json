@@ -1,7 +1,7 @@
 {
   "name": "soajs.dashboard",
   "description": "soajs dashboard service",
-  "version": "2.0.5",
+  "version": "2.0.11",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -47,16 +47,19 @@
     "formidable": "1.0.17",
     "github": "^0.2.4",
     "gridfs-stream": "1.1.1",
+    "jsonschema": "1.1.1",
+    "json2yaml": "1.1.0",
     "kubernetes-client": "^2.2.2",
     "mkdirp": "0.5.1",
     "moment-timezone": "0.5.11",
     "ncp": "2.0.0",
     "object-hash": "1.1.5",
-    "request": "2.81.0",
+    "request": "2.82.0",
     "rimraf": "2.5.4",
     "shortid": "^2.2.4",
-    "soajs": "2.0.2",
+    "soajs": "2.0.6",
     "unzip2": "0.2.5",
+    "url-clean": "^1.0.2",
     "yamljs": "0.2.8"
   }
 }

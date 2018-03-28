@@ -75,8 +75,22 @@ var methods = {
             conditions: {},
             fields: { token: 0, repos: 0 }
         };
+        
+        if(soajs.inputmaskData.fullList){
+        	delete opts.fields.repos;
+        }
+        
         model.findEntries(soajs, opts, cb);
     },
+	
+	"listGitAccountsWithRepos": function (soajs, model, cb) {
+		var opts = {
+			collection: collName,
+			conditions: {},
+			fields: { token: 0 }
+		};
+		model.findEntries(soajs, opts, cb);
+	},
 
     "addRepoToAccount": function (soajs, model, options, cb) {
         var opts = {

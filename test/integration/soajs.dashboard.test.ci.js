@@ -3,7 +3,7 @@ var fs = require('fs');
 var assert = require('assert');
 var request = require("request");
 var helper = require("../helper.js");
-
+var nock = require("nock");
 var Mongo = require("soajs.core.modules").mongo;
 var dbConfig = require("./db.config.test.js");
 
@@ -141,10 +141,17 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 				provider: "travis"
 			}
 		};
-
+		nock('https://travis-ci.org')
+			.post('/auth/github',
+				{
+					github_token: 'myGitToken'
+				})
+			.reply(200, {
+				access_token: 'accessToken'
+			});
 		executeMyRequest(params, 'ci/provider', 'post', function (body) {
-			assert.ok(body.data);
-			assert.ok(body.result);
+			nock.cleanAll();
+			assert.ok(body);
 			done();
 		});
 	});
@@ -211,9 +218,7 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 			done();
 		});
 	});
-
-
-
+	
 	it("Success - deactivate provider", function (done) {
 		var params = {
 			form: {
@@ -365,7 +370,7 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 				"owner": "soajs"
 			},
 			"form": {
-				"port": 80,
+				"port": "80",
 				"settings": {
 					build_pull_requests: false,
 					build_pushes: true,
@@ -388,10 +393,27 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 	it("Success - getRepoYamlFile", function (done) {
 		var params = {
 			"qs": {
-				"port": 80
+				"provider": "github",
+				"repo": "soajs.dashboard",
+				"branch": "develop",
+				"owner": "soajs"
 			}
 		};
 		executeMyRequest(params, 'ci/repo/remote/config', 'get', function (body) {
+			assert.ok(body.result);
+			done();
+		});
+	});
+
+	it("Success - get latest build of repo per branch", function (done) {
+		var params = {
+			"qs": {
+				"provider": "travis",
+				"repo": "soajs.dashboard",
+				"owner": "soajs"
+			}
+		};
+		executeMyRequest(params, 'ci/repo/builds', 'get', function (body) {
 			assert.ok(body);
 			done();
 		});

@@ -57,7 +57,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 let catalog = {
     "name": "testCatalog",
-    "type": "service",
+    "type": "server",
     "subtype": "soajs",
     "description": "This is a catalog for testing purposes.",
     "recipe": {
@@ -80,10 +80,23 @@ let catalog = {
         }
     }
 };
-
+let sourceCode = {
+    configuration :{
+        label : "testlabel",
+        repo : "repo",
+        branch : "branch",
+        required : false
+    },
+    custom : {
+        label : "label",
+        type : "server",
+        repo : "repo",
+        branch : "branch",
+        required : false
+    }
+};
 let catalogId = null;
 let lockedId = null;
-
 let params = {};
 //Begin testing
 describe("Testing Catalog Functionality", function() {
@@ -130,6 +143,224 @@ describe("Testing Catalog Functionality", function() {
                 done();
             });
         });
+
+        it("Success - Add a valid catalog with sourceCode", function (done){
+
+            delete catalog.invalidProperty;
+            //the API will delete this property
+            catalog.locked = true;
+            catalog.name = "testSourceCode";
+            catalog.recipe.deployOptions.sourceCode = sourceCode;
+            params = {
+                "form": {
+                    "catalog": catalog
+                }
+            };
+
+            executeMyRequest(params, "catalog/recipes/add", 'post', function (result) {
+                assert.ok(result.data);
+                assert.ok(result.result);
+                done();
+            });
+        });
+
+        it("Fail - Add an catalog with invalid type", function (done) {
+
+            catalog.name = "testInvalidType";
+            catalog.type = "service";
+            catalog.recipe.deployOptions.sourceCode = sourceCode;
+            params = {
+                "form": {
+                    "catalog": catalog
+                }
+            };
+
+            executeMyRequest(params, "catalog/recipes/add", 'post', function (result) {
+                assert.ok(result.errors);
+                assert.deepEqual(result.errors.details[0].code, 792);
+                done();
+            });
+        });
+
+        it("Fail - Add an catalog with invalid label", function (done) {
+
+            catalog.name = "testInvalidType";
+            catalog.type = 'server';
+            sourceCode.configuration = {
+                "fail": "fail"
+            };
+            catalog.recipe.deployOptions.sourceCode = sourceCode;
+            params = {
+                "form": {
+                    "catalog": catalog
+                }
+            };
+
+            executeMyRequest(params, "catalog/recipes/add", 'post', function (result) {
+                assert.ok(result.errors);
+                assert.deepEqual(result.errors.details[0].code, 791);
+                done();
+            });
+        });
+
+        it("Fail - Add an catalog with invalid branch", function (done) {
+
+            catalog.name = "testInvalidType";
+            sourceCode.configuration = {
+                "label" : "xxx",
+                "repo" : "repo"
+            };
+            catalog.recipe.deployOptions.sourceCode = sourceCode;
+            params = {
+                "form": {
+                    "catalog": catalog
+                }
+            };
+
+            executeMyRequest(params, "catalog/recipes/add", 'post', function (result) {
+                assert.ok(result.errors);
+                assert.deepEqual(result.errors.details[0].code, 791);
+                done();
+            });
+        });
+
+        it("Fail - Add an catalog with invalid custom label", function (done) {
+
+            catalog.name = "testInvalidType";
+            sourceCode= {
+                configuration :{
+                    label : "testlabel",
+                    repo : "repo",
+                    branch : "branch",
+                    required : false
+                },
+                custom: {
+                     "type": "server",
+                }
+            };
+            catalog.recipe.deployOptions.sourceCode = sourceCode;
+            params = {
+                "form": {
+                    "catalog": catalog
+                }
+            };
+
+            executeMyRequest(params, "catalog/recipes/add", 'post', function (result) {
+                assert.ok(result.errors);
+                assert.deepEqual(result.errors.details[0].code, 793);
+                done();
+            });
+        });
+        
+        it("Fail - Add an catalog with invalid custom branch", function (done) {
+
+            catalog.name = "testInvalidType";
+            sourceCode= {
+                configuration :{
+                    label : "testlabel",
+                    repo : "repo",
+                    branch : "branch",
+                    required : false
+                },
+                custom: {
+                    "label": "xxx",
+                    "repo": "repo",
+                    "type": "server",
+                }
+            };
+            catalog.recipe.deployOptions.sourceCode = sourceCode;
+            params = {
+                "form": {
+                    "catalog": catalog
+                }
+            };
+
+            executeMyRequest(params, "catalog/recipes/add", 'post', function (result) {
+                assert.ok(result.errors);
+                assert.deepEqual(result.errors.details[0].code, 793);
+                done();
+            });
+        });
+
+        it("Fail - Add an catalog with invalid voluming", function (done) {
+            delete catalog.recipe.deployOptions.sourceCode;
+            catalog.name = "testInvalidType";
+            catalog.recipe.deployOptions.voluming = [{
+                docker :{
+                    volume : {}
+                }
+            }];
+            params = {
+                "form": {
+                    "catalog": catalog
+                }
+            };
+
+            executeMyRequest(params, "catalog/recipes/add", 'post', function (result) {
+                delete catalog.recipe.deployOptions.voluming;
+                assert.ok(result.errors);
+                assert.deepEqual(result.errors.details[0].code, 949);
+                done();
+            });
+        });
+
+        it("Fail - Add an catalog with port > 2676", function (done) {
+
+            catalog.name = "test";
+            catalog.recipe.deployOptions.ports = [
+                {
+                    "name": "servicePort",
+                    "isPublished": true,
+                    "published": 34444,
+                    "target": 84
+                }];
+            params = {
+                "form": {
+                    "catalog": catalog
+                }
+            };
+
+            executeMyRequest(params, "catalog/recipes/add", 'post', function (result) {
+                catalog.recipe.deployOptions.ports = [];
+                assert.ok(result);
+                assert.deepEqual(result.errors.details[0].code, 824);
+                done();
+            });
+        });
+
+        it("Fail - Add an catalog with invalid port", function (done) {
+
+            catalog.name = "test";
+            catalog.recipe.deployOptions.ports = [
+                {
+                    "name": "servicePort",
+                    "target": 84
+                },
+                {
+                    "name": "servicePort",
+                    "isPublished": true,
+                    "published": 34444,
+                    "target": 84
+                },
+                {
+                    "name": "servicePort",
+                    "published": 34444,
+                    "target": 84
+                },
+            ];
+            params = {
+                "form": {
+                    "catalog": catalog
+                }
+            };
+
+            executeMyRequest(params, "catalog/recipes/add", 'post', function (result) {
+                catalog.recipe.deployOptions.ports = [];
+                assert.ok(result);
+                assert.deepEqual(result.errors.details[0].code, 826);
+                done();
+            });
+        });
     });
 
     describe("Testing Catalog LIST API", function() {
@@ -156,6 +387,7 @@ describe("Testing Catalog Functionality", function() {
     describe("Testing Catalog EDIT API", function() {
         //Edit a record that doesn't exist
         it("Fail - Edit a record that doesn't exist", function (done) {
+            delete catalog.recipe.deployOptions.sourceCode;
             params = {
                 "qs": {
                     "id": "invalidId"
@@ -167,7 +399,7 @@ describe("Testing Catalog Functionality", function() {
 
             executeMyRequest(params, "catalog/recipes/update", 'put', function (result) {
                 assert.ok(result.errors);
-                assert.deepEqual(result.errors.details[0].code, 701);
+                assert.deepEqual(result.errors.details[0].code, 404);
                 done();
             });
         });

@@ -357,7 +357,10 @@ var template = {
 		"apiPrefix" : "portal-api",
 		"sitePrefix" : "portal",
 		"domain" : "soajs.local",
-		"deployPortal" : true
+		"deployPortal" : true,
+		"project": {
+			"name": "demo"
+		}
 	},
 	"deploy" : {
 		"certificates": [
@@ -515,7 +518,7 @@ var template = {
 						"pullPolicy": "IfNotPresent",
 						"override": false
 					},
-					"specifyGitConfiguration": false,
+					"sourceCode": {},
 					"readinessProbe": {
 						"httpGet": {
 							"path": "/",
@@ -645,6 +648,22 @@ var template = {
 		"custom": {
 			"PORTAL": {
 				"value": "1"
+			},
+			"sourceCode" : {
+				"configuration" : {
+					"repo" : "soajsTestAccount/custom-configuration",
+					"branch" : "master",
+					"owner" : "soajsTestAccount",
+					"commit" : "e61063e026d4b904bf254b176d9f2c0034b62cbf"
+				},
+				"custom" : {
+					"repo" : "soajsTestAccount/test.successMulti",
+					"branch" : "master",
+					"owner" : "soajsTestAccount",
+					"path" : "/sample4/",
+					"commit" : "d0f80dc4fe46d354035cb95b317feac69b83b876",
+					"subName" : "sampletest4"
+				}
 			}
 		},
 		"certs": true,
@@ -666,6 +685,7 @@ var template = {
 		"publishPorts":{
 			routeName: "/test",
 			body: {
+				"deployParams":{}
 			},
 			method: "post"
 		}
@@ -1264,34 +1284,13 @@ describe("testing statusUtils.js", function () {
 	after(function () {
 		sinon.restore(statusUtils);
 	});
-	it("Success uploadCertificates case 1", function (done) {
-		stubGridFS();
-		statusUtils.uploadCertificates(req, context, function (err) {
-			sinon.restore(fs);
-			done();
-		});
-	});
-	
-	it("Success uploadCertificates case 2", function (done) {
-		delete context.template.deploy.deployment.docker.certificates;
-		statusUtils.uploadCertificates(req, context, function (err) {
-			done();
-		});
-	});
-	
-	it("Success uploadCertificates case 3", function (done) {
-		context.template.deploy.selectedDriver = "kuberentes;"
-		statusUtils.uploadCertificates(req, context, function (err) {
-			delete context.template.deploy.deployment.docker.certificates;
-			done();
-		});
-	});
 	
 	it("Success productize case 1", function (done) {
 		statusUtils.productize(req, context, function (err) {
 			done();
 		});
 	});
+	
 	it("Success productize case 2", function (done) {
 		context.BL.model.findEntry = function (soajs, opts, cb) {
 			if (opts.collection === 'products'){
@@ -1408,7 +1407,10 @@ describe("testing statusUtils.js", function () {
 	});
 	
 	it("Success createNginxRecipe case 1", function (done) {
-		context.template = {};
+		context.template = {
+			"gi" :{
+			}
+		};
 		statusUtils.createNginxRecipe(req, context, function (err) {
 			done();
 		});
@@ -1452,7 +1454,9 @@ describe("testing statusUtils.js", function () {
 	});
 	
 	it("Success deployNgin case 1", function (done) {
-		context.template = {};
+		context.template = {
+			"gi": {}
+		};
 		statusUtils.deployNginx(req, context, function (err) {
 			done();
 		});
@@ -1707,7 +1711,7 @@ describe("testing statusUtils.js", function () {
 				}
 			});
 		nock('http://soajs.dashboard:4000')
-			.post('/test/execute?access_token=access_token&test=test',
+			.post('/test/execute?access_token=access_token&test=test&soajs_project=demo',
 				{
 					"type": "infra",
 					"name": "google",
@@ -1745,7 +1749,7 @@ describe("testing statusUtils.js", function () {
 				}
 			});
 		nock('http://soajs.dashboard:4000')
-			.post('/test/execute?access_token=access_token&test=test',
+			.post('/test/execute?access_token=access_token&test=test&soajs_project=demo',
 				{
 					"type": "infra",
 					"name": "google",
@@ -1813,7 +1817,7 @@ describe("testing statusUtils.js", function () {
 			}
 		}];
 		nock('http://soajs.dashboard:4000')
-			.post('/test/execute?access_token=access_token&test=test',
+			.post('/test/execute?access_token=access_token&test=test&soajs_project=demo',
 				{
 					"type": "infra",
 					"name": "google",
@@ -1833,7 +1837,7 @@ describe("testing statusUtils.js", function () {
 			done();
 		});
 	});
-	it("Success redirectTo3rdPartyStatus case 5", function (done) {
+	it("Success redirectTo3rdPartyStatus case 4", function (done) {
 		context.template["infra"].wf.status =  "0";
 		statusUtils.redirectTo3rdPartyStatus(req, context,'infra', function (err) {
 			done();

@@ -21,7 +21,7 @@ let stubMongo = {
 		return cb(null, soajs.inputmaskData.id);
 	},
 	findEntry: function (soajs, opts, cb) {
-		cb(null, { metadata: {} });
+		cb(null, {metadata: {}});
 	},
 	findEntries: function (soajs, opts, cb) {
 		cb(null, []);
@@ -44,7 +44,7 @@ let stubMongo = {
 	closeConnection: function (soajs) {
 		return true;
 	},
-	switchConnection: function(soajs) {
+	switchConnection: function (soajs) {
 	}
 };
 var envRecord = {
@@ -95,13 +95,13 @@ describe("testing host.js", function () {
 			coreDB: {},
 			serviceConfig: {
 				awareness: {},
-				ports: { controller: 4000, maintenanceInc: 1000, randomInc: 100 }
+				ports: {controller: 4000, maintenanceInc: 1000, randomInc: 100}
 			},
 			ports: {},
 			deployer: {
 				type: 'manual',
 				selected: 'container.docker.local',
-				container: { docker: {}, kubernetes: {} }
+				container: {docker: {}, kubernetes: {}}
 			},
 			services: {}
 		},
@@ -135,9 +135,14 @@ describe("testing host.js", function () {
 		var arr = [
 			{
 				labels: {
-					'soajs.env.code': 'dev'
+					'soajs.env.code': 'dev',
+					'soajs.service.name': 'kbprofile'
 				},
-				ports: []
+				ports: [
+					{
+						published: true
+					}
+				]
 			}
 		];
 		return cb(null, arr);
@@ -267,7 +272,7 @@ describe("testing host.js", function () {
 		
 		it("Success listHostEnv", function (done) {
 			stubMongo.distinctEntries = function (soajs, opts, cb) {
-				var hosts = [ 'dev', 'prod' ];
+				var hosts = ['dev', 'prod'];
 				return cb(null, hosts);
 			};
 			soajs.inputmaskData = {
@@ -291,6 +296,7 @@ describe("testing host.js", function () {
 		var envs = [{
 			_id: '',
 			code: 'DEV',
+			domain: '',
 			deployer: {
 				type: "docker",
 				"selected": "container.docker.local",
@@ -312,9 +318,7 @@ describe("testing host.js", function () {
 				}
 			},
 			services: {
-				config: {
-				
-				}
+				config: {}
 			}
 		}];
 		var tenants = [
@@ -339,6 +343,123 @@ describe("testing host.js", function () {
 			stubMongo.findEntries = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envs);
+				}
+				return cb(null, tenants);
+			};
+			
+			host.listHAhostEnv(config, soajs, deployer, helpers, function (error, body) {
+				// assert.ok(body);
+				done();
+			});
+		});
+		
+		it("Success listHAhostEnv as controller", function (done) {
+			
+			soajs.inputmaskData = {
+				service: 'controller'
+			};
+			
+			deployer.listServices = function (data, cb) {
+				var arr = [
+					{
+						labels: {
+							'soajs.env.code': 'dev',
+							'soajs.service.name': 'controller'
+						},
+						ports: [
+							{
+								published : false
+							}
+						]
+					}
+				];
+				return cb(null, arr);
+			};
+			
+			stubMongo.findEntries = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envs);
+				}
+				return cb(null, tenants);
+			};
+			
+			host.listHAhostEnv(config, soajs, deployer, helpers, function (error, body) {
+				// assert.ok(body);
+				done();
+			});
+		});
+		
+		it("Success listHAhostEnv as soajs-nginx", function (done) {
+			
+			soajs.inputmaskData = {
+				service: 'controller'
+			};
+			
+			deployer.listServices = function (data, cb) {
+				var arr = [
+					{
+						labels: {
+							'soajs.env.code': 'dev',
+							'soajs.service.group': 'soajs-nginx',
+							'soajs.service.name': 'controller'
+						},
+						ports: [
+							{
+								published : false
+							}
+						]
+					}
+				];
+				return cb(null, arr);
+			};
+			
+			stubMongo.findEntries = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envs);
+				}
+				return cb(null, tenants);
+			};
+			
+			host.listHAhostEnv(config, soajs, deployer, helpers, function (error, body) {
+				// assert.ok(body);
+				done();
+			});
+		});
+		
+		it("Success listHAhostEnv kubernetes", function (done) {
+			
+			var envsKubernetes = [{
+				_id: '',
+				code: 'DEV',
+				domain: '',
+				deployer: {
+					type: "kubernetes",
+					"selected": "container.kubernetes.remote",
+					"container": {
+						"docker": {
+							"local": {
+								"socketPath": "/var/run/docker.sock"
+							},
+							"remote": {
+								"nodes": []
+							}
+						},
+						"kubernetes": {
+							"local": {},
+							"remote": {
+								"nodes": []
+							}
+						}
+					}
+				},
+				services: {
+					config: {}
+				}
+			}];
+			
+			stubMongo.findEntries = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envsKubernetes);
 				}
 				return cb(null, tenants);
 			};

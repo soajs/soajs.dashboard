@@ -23,7 +23,7 @@ describe('testing ci drone index.js', function () {
 		_id: 'aaa',
 		driver: 'drone',
 		settings: {
-			domain: 'my.drone',
+			domain: 'https://my.drone',
 			owner: 'soajsTestAccount',
 			repo: 'soajsTestRepo',
 			gitToken: 'mygitToken',
@@ -67,7 +67,7 @@ describe('testing ci drone index.js', function () {
 
 		it('Call listRepos will return 1 repo only', function (done) {
 			const REPO = require('../../fixtures/drone/repos.json')[0];
-			const BUILDS = require('../../fixtures/drone/builds.json');
+			const BUILDS = require('../../fixtures/drone/build-1.json');
 
 			const nocks = nock('https://my.drone', headers)
 				.get('/api/repos/dashboard')
@@ -82,7 +82,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					gitToken: 'mygitToken',
@@ -130,7 +130,7 @@ describe('testing ci drone index.js', function () {
 
 		it('Call listRepos will return repos list', function (done) {
 			const REPOS = require('../../fixtures/drone/repos.json');
-			const BUILDS = require('../../fixtures/drone/builds.json');
+			const BUILDS = require('../../fixtures/drone/build-1.json');
 
 			const nocks = nock('https://my.drone', headers)
 				.get('/api/user/repos')
@@ -147,7 +147,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					gitToken: 'mygitToken',
 					ciToken: 'access1'
 				},
@@ -217,7 +217,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					gitToken: 'mygitToken',
 					ciToken: 'access1'
 				},
@@ -261,7 +261,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					gitToken: 'mygitToken',
 					ciToken: 'access1'
 				},
@@ -295,7 +295,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					gitToken: 'mygitToken',
 					ciToken: 'access1'
 				},
@@ -318,7 +318,7 @@ describe('testing ci drone index.js', function () {
 	});
 
 	describe('testing listRepoBranches', function () {
-		const BUILDS = require('../../fixtures/drone/builds.json');
+		const BUILDS = require('../../fixtures/drone/build-1.json');
 
 		it('Call listRepoBranches', function (done) {
 			const nocks = nock('https://my.drone', headers)
@@ -364,7 +364,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
@@ -420,7 +420,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1',
@@ -457,7 +457,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1',
@@ -491,7 +491,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					name: 'SECRET_NAME',
@@ -540,7 +540,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
@@ -564,7 +564,7 @@ describe('testing ci drone index.js', function () {
 	});
 
 	describe('testing setHook', function () {
-		const BUILDS = require('../../fixtures/drone/builds.json');
+		const BUILDS = require('../../fixtures/drone/build-1.json');
 		it('Call activate setHook', function (done) {
 			const nocks = nock('https://my.drone', headers)
 				.post('/api/repos/CLOUD/dashboard')
@@ -576,7 +576,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'myrepo/dashboard',
 					ciToken: 'access1'
@@ -605,7 +605,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'myrepo/dashboard',
 					ciToken: 'access1'
@@ -638,7 +638,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
@@ -668,7 +668,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
@@ -709,7 +709,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
@@ -757,7 +757,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
@@ -804,7 +804,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
@@ -858,7 +858,7 @@ describe('testing ci drone index.js', function () {
 					}
 				},
 				settings: {
-					domain: 'my.drone',
+					domain: 'https://my.drone',
 					owner: 'CLOUD',
 					repo: 'dashboard',
 					ciToken: 'access1'
@@ -878,6 +878,78 @@ describe('testing ci drone index.js', function () {
 				done();
 			});
 
+		});
+	});
+	
+	describe('testing getRepoBuilds', function () {
+		it('fail', function (done) {
+
+			var options = {
+				driver: 'drone',
+				settings: {
+					domain: 'https://my.drone',
+					owner: 'CLOUD',
+					repo: 'dashboard',
+					ciToken: 'access1'
+				},
+				log: {
+					debug: function (data) {
+						console.log('DATA', data);
+					}
+				},
+				params: {
+					repo: '/dashboard',
+					gitDomain: 'https://my.drone'
+				}
+			};
+			utils.getRepoBuilds(options, function (error, body) {
+				assert.equal(error.code, 971);
+				done();
+			});
+		});
+		
+		it('success 1st', function (done) {
+			const BUILDS = require('../../fixtures/drone/build-2.json');
+			const BUILDS_INFO = require('../../fixtures/drone/build-2-info.json');
+			const BUILDS_LOGS_1 = require('../../fixtures/drone/build-2-logs-1.json');
+			const BUILDS_LOGS_2 = require('../../fixtures/drone/build-2-logs-2.json');
+			const nocks = nock('https://my.drone', headers)
+				.get('/api/repos/CLOUD/dashboard/builds')
+				.reply(200, BUILDS)
+				.get('/api/repos/CLOUD/dashboard/builds/1')
+				.reply(200, BUILDS_INFO)
+				.get('/api/repos/CLOUD/dashboard/logs/1/2')
+				.reply(200, BUILDS_LOGS_1)
+				.get('/api/repos/CLOUD/dashboard/logs/1/3')
+				.reply(200, BUILDS_LOGS_2);
+			
+				
+			var options = {
+				driver: 'drone',
+				settings: {
+					domain: 'https://my.drone',
+					owner: 'CLOUD',
+					repo: 'dashboard',
+					ciToken: 'access1'
+				},
+				log: {
+					debug: function (data) {
+						console.log('DATA', data);
+					}
+				},
+				params: {
+					repo: '/dashboard',
+					gitDomain: 'https://my.drone'
+				}
+			};
+			utils.getRepoBuilds(options, function (error, body) {
+				const EXPECTED = {
+					commit_id: '4ddb5fb85abc91d83d03ef8e9d22ed0b3c942c3a'
+				};
+				assert.deepEqual(body.master.commit_id, EXPECTED.commit_id);
+				assert.equal(nocks.isDone(), true);
+				done();
+			});
 		});
 	});
 

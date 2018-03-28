@@ -27,6 +27,9 @@ var dashboardBL = {
 	swagger: {
 		module: require("./lib/swagger/index.js")
 	},
+	apiBuilder: {
+		module: require("./lib/apiBuilder/index.js")
+	},
 	hosts: {
 		module: require("./lib/hosts/index.js"),
 		helper: require("./lib/hosts/helper.js")
@@ -69,6 +72,9 @@ var dashboardBL = {
 		},
 		metrics: {
 			module: require('./lib/cloud/metrics/index.js')
+		},
+		secrets: {
+			module: require('./lib/cloud/secrets/index.js')
 		}
 	}
 };
@@ -82,11 +88,11 @@ var service = new soajs.server.service(config);
 
 function checkMyAccess(req, res, cb) {
 	if (!req.soajs.uracDriver || !req.soajs.uracDriver.getProfile()) {
-		return res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
+		return res.jsonp(req.soajs.buildResponse({ "code": 601, "msg": config.errors[601] }));
 	}
 	var myTenant = req.soajs.uracDriver.getProfile().tenant;
 	if (!myTenant || !myTenant.id) {
-		return res.jsonp(req.soajs.buildResponse({"code": 608, "msg": config.errors[608]}));
+		return res.jsonp(req.soajs.buildResponse({ "code": 608, "msg": config.errors[608] }));
 	}
 	else {
 		req.soajs.inputmaskData.id = myTenant.id.toString();
@@ -98,7 +104,7 @@ function initBLModel(req, res, BLModule, modelName, cb) {
 	BLModule.init(modelName, function (error, BL) {
 		if (error) {
 			req.soajs.log.error(error);
-			return res.json(req.soajs.buildResponse({"code": 407, "msg": config.errors[407]}));
+			return res.json(req.soajs.buildResponse({ "code": 407, "msg": config.errors[407] }));
 		}
 		else {
 			return cb(BL);
@@ -108,7 +114,7 @@ function initBLModel(req, res, BLModule, modelName, cb) {
 
 function checkConnection(BL, req, res, cb) {
 	if (!BL.model.initConnection(req.soajs)) {
-		return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
+		return res.json(req.soajs.buildResponse({ "code": 600, "msg": config.errors[600] }));
 	}
 	return cb();
 }
@@ -126,7 +132,7 @@ service.init(function () {
 	service.post("/environment/add", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.add(config, service, soajs.provision, dbModel, req, res, function (error, data) {
+				BL.add(config, service, dbModel, req, res, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -222,9 +228,43 @@ service.init(function () {
 	service.put("/environment/key/update", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.keyUpdate(config, soajs.provision, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
+				BL.keyUpdate(config, soajs.core, req, res, function (error, data) {
+					if (error) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					}
+					else if (process.env.SOAJS_DEPLOY_HA) {
+						initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
+							let env = req.soajs.inputmaskData.envCode;
+							
+							let controllerService;
+							if (process.env.SOAJS_DEPLOY_HA === 'kubernetes') {
+								controllerService = env.toLowerCase() + "-controller-v1";
+							}
+							else {
+								controllerService = env.toLowerCase() + "-controller";
+							}
+							
+							req.soajs.inputmaskData = {
+								type: "service",
+								serviceName: "controller",
+								env: env,
+								serviceId: controllerService,
+								operation: "loadProvision"
+							};
+							BL.maintenance(config, req.soajs, deployer, function (error, result) {
+								BL.model.closeConnection(req.soajs);
+								if (error) {
+									req.soajs.log.error(error);
+								}
+								return res.json(req.soajs.buildResponse(null, data));
+							});
+						});
+					}
+					else {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					}
 				});
 			});
 		});
@@ -561,86 +601,6 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.listPlatforms(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-	
-	/**
-	 * Upload platform certificate
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.post("/environment/platforms/cert/upload", function (req, res) {
-		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.uploadCerts(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-	
-	/**
-	 * Delete platform certificate
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.delete("/environment/platforms/cert/delete", function (req, res) {
-		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.removeCert(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-	
-	/**
-	 * Choose existing platform certificate
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.put("/environment/platforms/cert/choose", function (req, res) {
-		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.chooseExistingCerts(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-	
-	/**
-	 * Change selected platform
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.put("/environment/platforms/driver/changeSelected", function (req, res) {
-		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.changeSelectedDriver(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-	
-	/**
-	 * Change selected platform driver
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.put("/environment/platforms/deployer/type/change", function (req, res) {
-		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.changeDeployerType(config, req, res, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -1192,7 +1152,7 @@ service.init(function () {
 	service.post("/tenant/application/key/ext/add", function (req, res) {
 		initBLModel(req, res, dashboardBL.tenant.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.addApplicationExtKeys(config, soajs.provision, req, res, function (error, data) {
+				BL.addApplicationExtKeys(config, soajs.core, req, res, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -2093,6 +2053,26 @@ service.init(function () {
 	});
 	
 	/**
+	 * get the latest build of a repo per branch from a ci provider
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/ci/repo/builds", function (req, res) {
+		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
+			initBLModel(req, res, dashboardBL.git.module, dbModel, function (gitBL) {
+				checkConnection(BL, req, res, function () {
+					checkConnection(gitBL, req, res, function () {
+						BL.getRepoBuilds(config, req, dashboardBL.ci.driver, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, gitBL, function (error, data) {
+							BL.model.closeConnection(req.soajs);
+							return res.jsonp(req.soajs.buildResponse(error, data));
+						});
+					});
+				});
+			});
+		});
+	});
+	
+	/**
 	 * Git App features gitAccountsBL
 	 */
 	
@@ -2743,7 +2723,7 @@ service.init(function () {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, dashboardBL.tenant.module, dbModel, function (BL) {
 				checkConnection(BL, req, res, function () {
-					BL.addApplicationExtKeys(config, soajs.provision, req, res, function (error, data) {
+					BL.addApplicationExtKeys(config, soajs.core, req, res, function (error, data) {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
 					});
@@ -2861,6 +2841,210 @@ service.init(function () {
 		});
 	});
 	
+	/**
+	 * Generate Service from data saved in db
+	 */
+	service.post("/swagger/generateExistingService", function (req, res) {
+		initBLModel(req, res, dashboardBL.swagger.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.generateExistingService(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * api builder apis
+	 */
+	
+	service.get("/apiBuilder/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.list(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.get("/apiBuilder/get", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.get(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.get("/apiBuilder/publish", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.publish(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.get("/apiBuilder/getResources", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.getResources(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.post("/apiBuilder/add", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.add(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.post("/apiBuilder/authentication/update", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.authenticationUpdate(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.post("/apiBuilder/convertSwaggerToImfv", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.convertSwaggerToImfv(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.post("/apiBuilder/convertImfvToSwagger", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.convertImfvToSwagger(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.put("/apiBuilder/edit", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.edit(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.put("/apiBuilder/updateSchemas", function (req, res) {
+		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.updateSchemas(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.delete("/apiBuilder/delete", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (cloudBL) {
+			initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
+				checkConnection(BL, req, res, function () {
+					BL.delete(config, req, res, cloudBL, deployer, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
+				});
+			});
+		});
+	});
+	
+	/**
+	 * List secrets
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/secrets/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.secrets.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.list(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Add a new secret
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/secrets/add", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.secrets.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.add(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Get one secret
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/secrets/get", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.secrets.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.get(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Delete a secret
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.delete("/secrets/delete", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.secrets.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.delete(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
 	/**
 	 * Service Start
 	 */

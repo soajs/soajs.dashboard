@@ -22,7 +22,27 @@ var req = {
 
 			}
 		},
-		inputmaskData: {}
+		inputmaskData: {},
+		validator: {
+			Validator: function () {
+				return {
+					validate: function (boolean) {
+						if (boolean) {
+							//valid
+							return {
+								error: []
+							};
+						}
+						else {
+							//invalid
+							return {
+								error: [{error: 'msg'}]
+							};
+						}
+					}
+				};
+			}
+		}
 	}
 };
 // BL.model.validateCustomId
@@ -40,6 +60,9 @@ var mongoStub = {
 		cb(null, []);
 	},
 	findEntry: function (soajs, opts, cb) {
+		cb(null, {});
+	},
+	updateEntry: function (soajs, opts, cb) {
 		cb(null, {});
 	},
 	removeEntry: function (soajs, opts, cb) {
@@ -157,7 +180,278 @@ describe("testing deploy.js", function () {
 
 	// "deployService": function (config, soajs, registry, deployer, cbMain) {
 	describe("deployService", function () {
-
+		
+		it("Fail deployService ports mismatch", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				var catalogRecord = {
+					"_id": '12',
+					"name": "serviceCatalog",
+					"type": "soajs",
+					"description": "This is a test catalog for deploying service instances",
+					"recipe": {
+						"deployOptions": {
+							"image": {
+								"prefix": "soajstest",
+								"name": "soajs",
+								"tag": "latest"
+							},
+							"ports" : [
+								{
+									"name" : "http",
+									"target" : 80,
+									"isPublished" : true,
+									"published" : 80,
+									"preserveClientIP" : true
+								},
+								{
+									"name" : "https",
+									"target" : 443,
+									"isPublished" : true,
+									"preserveClientIP" : true
+								}
+							]
+						},
+						"buildOptions": {
+							"settings": {
+								"accelerateDeployment": true
+							},
+							"env": {
+								"SOAJS_SRV_AUTOREGISTERHOST": {
+									"type": "static",
+									"value": "true"
+								},
+								"SOAJS_MONGO_PORT": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_PORT_N"
+								}
+							},
+							"cmd": {
+								"deploy": {
+									"command": [
+										"bash",
+										"-c"
+									],
+									"args": [
+										"node index.js -T service"
+									]
+								}
+							}
+						}
+					}
+				};
+				
+				var tenantRecord = {
+					"_id": '551286bce603d7e01ab1688e',
+					"oauth": {},
+					"locked": true,
+					"code": "DBTN",
+					"name": "Dashboard Tenant",
+					"description": "This is the main dashboard tenant",
+					"applications": [
+						{
+							"product": "DSBRD",
+							"package": "DSBRD_MAIN",
+							"appId": '5512926a7a1f0e2123f638de',
+							"description": "this is the main application for the dashboard tenant",
+							"_TTL": 604800000,
+							"keys": [
+								{
+									"key": "38145c67717c73d3febd16df38abf311",
+									"extKeys": [
+										{
+											"expDate": 1503058746824,
+											"extKey": "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974",
+											"device": null,
+											"geo": null,
+											"dashboardAccess": true,
+											"env": "DASHBOARD"
+										}
+									],
+									"config": {
+										"dashboard": {
+											"urac": {
+												"tokenExpiryTTL": 172800000
+											}
+										}
+									}
+								}
+							]
+						}
+					]
+				};
+				
+				if (opts.collection === 'catalogs') {
+					return cb(null, catalogRecord);
+				}
+				if(opts.collection === 'tenants'){
+					return cb(null, tenantRecord);
+				}
+				return cb(null, envRecord);
+			};
+			
+			req.soajs.registry = envRecord;
+			req.soajs.registry.coreDB = {
+				provision: {
+					"servers": [],
+					"credentials": {}
+				}
+			};
+			
+			req.soajs.inputmaskData = {
+				deployConfig: {
+					replication: {
+						mode: ""
+					}
+				},
+				recipe: {
+					_id: '123456'
+				},
+				custom: {}
+			};
+			req.soajs.inputmaskData.env = 'dev';
+			req.soajs.inputmaskData.type = 'service';
+			req.soajs.inputmaskData.serviceName = 'test';
+			
+			deploy.deployService(config, req.soajs, deployer, function (error, body) {
+				assert.ok(error);
+				done();
+			});
+		});
+		
+		it("Fail deployService port outside range", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				var catalogRecord = {
+					"_id": '12',
+					"name": "serviceCatalog",
+					"type": "soajs",
+					"description": "This is a test catalog for deploying service instances",
+					"recipe": {
+						"deployOptions": {
+							"image": {
+								"prefix": "soajstest",
+								"name": "soajs",
+								"tag": "latest"
+							},
+							"ports" : [
+								{
+									"name" : "http",
+									"target" : 80,
+									"isPublished" : true,
+									"published" : 5000,
+									"preserveClientIP" : true
+								}
+							]
+						},
+						"buildOptions": {
+							"settings": {
+								"accelerateDeployment": true
+							},
+							"env": {
+								"SOAJS_SRV_AUTOREGISTERHOST": {
+									"type": "static",
+									"value": "true"
+								},
+								"SOAJS_MONGO_PORT": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_PORT_N"
+								}
+							},
+							"cmd": {
+								"deploy": {
+									"command": [
+										"bash",
+										"-c"
+									],
+									"args": [
+										"node index.js -T service"
+									]
+								}
+							}
+						}
+					}
+				};
+				
+				var tenantRecord = {
+					"_id": '551286bce603d7e01ab1688e',
+					"oauth": {},
+					"locked": true,
+					"code": "DBTN",
+					"name": "Dashboard Tenant",
+					"description": "This is the main dashboard tenant",
+					"applications": [
+						{
+							"product": "DSBRD",
+							"package": "DSBRD_MAIN",
+							"appId": '5512926a7a1f0e2123f638de',
+							"description": "this is the main application for the dashboard tenant",
+							"_TTL": 604800000,
+							"keys": [
+								{
+									"key": "38145c67717c73d3febd16df38abf311",
+									"extKeys": [
+										{
+											"expDate": 1503058746824,
+											"extKey": "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974",
+											"device": null,
+											"geo": null,
+											"dashboardAccess": true,
+											"env": "DASHBOARD"
+										}
+									],
+									"config": {
+										"dashboard": {
+											"urac": {
+												"tokenExpiryTTL": 172800000
+											}
+										}
+									}
+								}
+							]
+						}
+					]
+				};
+				
+				if (opts.collection === 'catalogs') {
+					return cb(null, catalogRecord);
+				}
+				if(opts.collection === 'tenants'){
+					return cb(null, tenantRecord);
+				}
+				
+				let kubeEnvRecord = JSON.parse(JSON.stringify(envRecord, null, 2));
+				kubeEnvRecord.deployer.selected = "container.kubernetes.local";
+				return cb(null, kubeEnvRecord);
+			};
+			
+			req.soajs.registry = envRecord;
+			req.soajs.registry.coreDB = {
+				provision: {
+					"servers": [],
+					"credentials": {}
+				}
+			};
+			
+			req.soajs.inputmaskData = {
+				deployConfig: {
+					replication: {
+						mode: ""
+					}
+				},
+				recipe: {
+					_id: '123456'
+				},
+				custom: {}
+			};
+			req.soajs.inputmaskData.env = 'dev';
+			req.soajs.inputmaskData.type = 'service';
+			req.soajs.inputmaskData.serviceName = 'test';
+			
+			deploy.deployService(config, req.soajs, deployer, function (error, body) {
+				assert.ok(error);
+				done();
+			});
+		});
+		
 		it("Success deployService. soajs", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				var catalogRecord = {
@@ -171,6 +465,14 @@ describe("testing deploy.js", function () {
 								"prefix": "soajstest",
 								"name": "soajs",
 								"tag": "latest"
+							},
+							"sourceCode" : {
+								"configuration" : {
+									"repo" : "soajsTestAccount/custom-configuration",
+									"branch" : "master",
+									"owner" : "soajsTestAccount",
+									"commit" : "e61063e026d4b904bf254b176d9f2c0034b62cbf"
+								}
 							}
 						},
 						"buildOptions": {
@@ -279,45 +581,55 @@ describe("testing deploy.js", function () {
 				done();
 			});
 		});
-
-		it("testing deploy service type custom", function(done) {
+		
+		it("Success deploy Nginx server", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				var catalogRecord = {
 					"_id": '12',
 					"name": "serviceCatalog",
-					"type": "custom",
-					"description": "This is a test catalog for deploying service instances",
+					"type": "server",
+					"subtype": "nginx",
+					"description": "This is a test catalog for deploying an nginx instances",
 					"recipe": {
 						"deployOptions": {
 							"image": {
 								"prefix": "soajstest",
-								"name": "soajs",
+								"name": "nginx",
 								"tag": "latest"
 							},
-							"labels": {
-								"testcatalog": "1"
-							}
+							"ports" : [
+								{
+									"name" : "http",
+									"target" : 80,
+									"isPublished" : true,
+									"published" : 80,
+									"preserveClientIP" : true
+								},
+								{
+									"name" : "https",
+									"target" : 443,
+									"isPublished" : true,
+									"published" : 443,
+									"preserveClientIP" : true
+								}
+							]
 						},
 						"buildOptions": {
 							"settings": {
 								"accelerateDeployment": true
 							},
 							"env": {
-								"SOAJS_GIT_REPO": {
-									"type": "computed",
-									"value": "$SOAJS_GIT_REPO"
+								"SOAJS_SRV_AUTOREGISTERHOST": {
+									"type": "static",
+									"value": "true"
 								},
-								"SOAJS_GIT_BRANCH": {
+								"SOAJS_MONGO_PORT": {
 									"type": "computed",
-									"value": "$SOAJS_GIT_BRANCH"
+									"value": "$SOAJS_MONGO_PORT_N"
 								},
-								"SOAJS_GIT_COMMIT": {
-									"type": "computed",
-									"value": "$SOAJS_GIT_COMMIT"
-								},
-								"SOAJS_GIT_OWNER": {
-									"type": "computed",
-									"value": "$SOAJS_GIT_OWNER"
+								"SOAJS_NX_API_HTTPS": {
+									"type": "static",
+									"value": "true"
 								}
 							},
 							"cmd": {
@@ -327,14 +639,14 @@ describe("testing deploy.js", function () {
 										"-c"
 									],
 									"args": [
-										"node index.js -T service"
+										"node index.js -T nginx"
 									]
 								}
 							}
 						}
 					}
 				};
-
+				
 				var tenantRecord = {
 					"_id": '551286bce603d7e01ab1688e',
 					"oauth": {},
@@ -374,19 +686,25 @@ describe("testing deploy.js", function () {
 						}
 					]
 				};
-
+				
 				if (opts.collection === 'catalogs') {
 					return cb(null, catalogRecord);
 				}
 				if(opts.collection === 'tenants'){
 					return cb(null, tenantRecord);
 				}
-
 				return cb(null, envRecord);
 			};
-
+			
+			req.soajs.registry = envRecord;
+			req.soajs.registry.coreDB = {
+				provision: {
+					"servers": [],
+					"credentials": {}
+				}
+			};
+			
 			req.soajs.inputmaskData = {
-				env: 'dev',
 				deployConfig: {
 					replication: {
 						mode: ""
@@ -395,20 +713,17 @@ describe("testing deploy.js", function () {
 				recipe: {
 					_id: '123456'
 				},
-				custom: {
-					name: 'tester',
-					allEnv: true,
-					version: '1',
-
-				}
+				custom: {}
 			};
-
+			req.soajs.inputmaskData.env = 'dev';
+			req.soajs.inputmaskData.type = 'service';
+			req.soajs.inputmaskData.serviceName = 'test';
+			
 			deploy.deployService(config, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-
 	});
 
 	describe("testing deploy plugin", function() {

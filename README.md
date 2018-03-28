@@ -1,6 +1,7 @@
 # soajs.dashboard
 [![Build Status](https://travis-ci.org/soajs/soajs.dashboard.svg?branch=master)](https://travis-ci.org/soajs/soajs.dashboard)
 [![Coverage Status](https://coveralls.io/repos/soajs/soajs.dashboard/badge.png)](https://coveralls.io/r/soajs/soajs.dashboard)
+[![Known Vulnerabilities](https://snyk.io/test/github/soajs/soajs.dashboard/badge.svg)](https://snyk.io/test/github/soajs/soajs.dashboard)
 
 SOAJS dashboard is divided to two components: service - User Interface.
 
@@ -36,14 +37,14 @@ $ grunt test
 * Manage all your products, packages and access levels via the Productization APIs.
 * Manage all your tenants, applications, keys and their device and geo security via the Multitenancy APIs.
 
-More information on Dashboard Services is available on the website section [dashboard](http://www.soajs.org/#/documentation/dashboard-services)
+More information on Dashboard Services is available on the website section [Dashboard](https://soajsorg.atlassian.net/wiki/spaces/DSBRD/overview)
 
 ###1. Environments
 Create and manage environments with different IPs.<br>
 Environments are linked to the Registry.<br>
 Environments are also used when adding tenant service configuration.
 
-More information on Environments is available on the website section [registry](http://www.soajs.org/#/documentation/registry)
+More information on Environments is available on the website section [Registry](https://soajsorg.atlassian.net/wiki/spaces/SOAJ/pages/61354289/Registry)
 
 ###2. Productization
 Package your services with different permissions and access controls and offer them as commercial products.<br>
@@ -52,7 +53,7 @@ Each Package offers a variety of access levels on the services' APIs.<br>
 If a service is contained in a package, then this product offers the ability to use this service.<br>
 When specifying the access level over a service, you can grant access to the whole service or add restrictions on its APIs.
 
-More information on Productization is available on the website section [provisioning](http://www.soajs.org/#/documentation/provisioning)
+More information on Productization is available on the website section [Productization](https://soajsorg.atlassian.net/wiki/spaces/DSBRD/pages/61979857/Productization)
 
 ###3. Multitenancy
 Create and manage multiple tenants (clients) and assign product packages to them.<br>
@@ -61,9 +62,9 @@ Then when making calls to the APIs of that service, specify the key of the tenan
 
 Tenants applications contains the tenant keys. These keys are checked when a request is made to a multitenant configured service API to determine if the requested service API is accessible or not using this key value. These keys also have expiry dates and are secured by device and geo location information if needed.
 
-More information on Multitenancy is available on the website section [provisioning](http://www.soajs.org/#/documentation/provisioning)
+More information on Multitenancy is available on the website section [Multitenancy](https://soajsorg.atlassian.net/wiki/spaces/DSBRD/pages/61979922/Multitenancy)
 
-More information on Dashboard Services is available on the website section [Dashboard](http://www.soajs.org/#/documentation/dashboard-services)
+More information on Dashboard Services is available on the website section [Dashboard](https://soajsorg.atlassian.net/wiki/spaces/DSBRD/overview)
 
 ---
 
@@ -84,4 +85,6 @@ To get the UI running, you need to install several packages:
 * Load the provisioned data from the **examples** module and login with the test administrator account.
 * Once logged in, the UI navigation is straight forward to every section of the dashboard service.
 
-More information on how to set up the Dashboard UI is available on the website section [dashboard UI](http://www.soajs.org/#/documentation/dashboard-setup)
+More information on how to set up the Dashboard UI is available on the website section [Dashboard UI](https://soajsorg.atlassian.net/wiki/spaces/EX/pages/61673365/How+to+Install).
+
+For More Information about SOAJS Framework, please visit the [Get Started](http://www.soajs.org/getstarted) section.

@@ -248,7 +248,10 @@ describe("DASHBOARD Integration Tests:", function () {
 				"container": {
 					"docker": {
 						"local": {
-							"socketPath": "/var/run/docker.sock"
+							"socketPath": "/var/run/docker.sock",
+                            "auth": {
+                                "token": ""
+                            }
 						},
 						"remote": {
 							"nodes": []
@@ -457,7 +460,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				});
 			});
 		});
-		
+
 		describe("listing environments to initiate templates", function (){
 			it("success - will get environments", function (done) {
 				executeMyRequest({}, 'environment/list', 'get', function (body) {
@@ -466,8 +469,9 @@ describe("DASHBOARD Integration Tests:", function () {
 				});
 			});
 		});
-		
+
 		describe("add environment tests", function () {
+
 			it("success - will add STG environment", function (done) {
 				var data2 = util.cloneObj(validEnvRecord);
 				data2.code = 'STG';
@@ -476,11 +480,15 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {
+								code: "STG",
+							},
 							deploy: {
 								selectedDriver : 'docker'
-							}
+							},
+							controller: {}
 						},
-						data: data2
+						data: data2,
 					}
 				};
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
@@ -496,6 +504,9 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {
+								code: "PROD",
+							},
 							deploy: {
 								selectedDriver : 'docker'
 							}
@@ -526,6 +537,9 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {
+								code: "testKubLocal",
+							},
 							deploy: {
 								selectedDriver : 'kubernetes'
 							}
@@ -538,6 +552,7 @@ describe("DASHBOARD Integration Tests:", function () {
 					done();
 				});
 			});
+
 			it("success - will add testKubRemote environment", function (done) {
 				var data5 = util.cloneObj(qaEnvRecord);
 				data5.code = 'testKubRemote';
@@ -560,6 +575,9 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {
+								code: "testKubRemote",
+							},
 							deploy: {
 								selectedDriver : 'kubernetes'
 							}
@@ -582,7 +600,11 @@ describe("DASHBOARD Integration Tests:", function () {
 					"deployment" : {
 						"docker" : {
 							"dockerremote": false,
-							"loval": {}
+							"token" : "123abd",
+							"port": 2222,
+							"loval": {
+
+							}
 						}
 					}
 				};
@@ -590,6 +612,9 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {
+								code: "testDockerLocal",
+							},
 							deploy: {
 								selectedDriver : 'docker'
 							}
@@ -626,6 +651,9 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {
+								code: "testDockerRemote",
+							},
 							deploy: {
 								selectedDriver : 'docker'
 							}
@@ -643,6 +671,9 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {
+								code: "testDockerRemote",
+							},
 							deploy: {
 								selectedDriver : 'docker'
 							}
@@ -662,6 +693,9 @@ describe("DASHBOARD Integration Tests:", function () {
 				var params = {
 					form: {
 						template: {
+							gi: {
+								code: "testDockerRemote",
+							},
 							deploy: {
 								selectedDriver : 'docker'
 							}
@@ -1011,6 +1045,21 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 		});
 
+		describe("Get environment status tests", function () {
+			it("success - will get environment status", function (done) {
+				var params = {
+					qs: {
+						code: 'PROD',
+						activate: false
+					}
+				};
+				executeMyRequest(params, 'environment/status', 'get', function (body) {
+					assert.ok(body);
+					done();
+				});
+			});
+		});
+
 		//NOTE: db tests moved to soajs.resources.test.js
 	});
 
@@ -1241,7 +1290,7 @@ describe("DASHBOARD Integration Tests:", function () {
 						'access_token': access_token
 					},
 					form: {
-						"secret": "my secret key2",
+						"secret": "shhh this is a secret",
 						"redirectURI": "http://www.myredirecturi.com/",
 						"oauthType": "urac",
 						"availableEnv": ["dashboard", "dev", "stg"]
@@ -1252,7 +1301,7 @@ describe("DASHBOARD Integration Tests:", function () {
 					mongo.findOne('tenants', {'code': 'test'}, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.deepEqual(tenantRecord.oauth, {
-							"secret": "my secret key2",
+							"secret": "shhh this is a secret",
 							"redirectURI": "http://www.myredirecturi.com/",
 							"grants": ["password", "refresh_token"]
 						});
@@ -1269,7 +1318,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				}, 'settings/tenant/oauth/list/', 'get', function (body) {
 					assert.ok(body.data);
 					assert.deepEqual(body.data, {
-						"secret": "my secret key2",
+						"secret": "shhh this is a secret",
 						"redirectURI": "http://www.myredirecturi.com/",
 						"grants": ["password", "refresh_token"]
 					});
@@ -1294,7 +1343,7 @@ describe("DASHBOARD Integration Tests:", function () {
 						'access_token': access_token
 					},
 					form: {
-						"secret": "my secret key2",
+						"secret": "shhh this is a secret",
 						"redirectURI": "http://www.myredirecturi.com/",
 						"oauthType": "urac",
 						"availableEnv": ["dashboard", "dev", "stg"]
@@ -1598,6 +1647,85 @@ describe("DASHBOARD Integration Tests:", function () {
 	describe("platforms tests", function () {
 
 		describe("list platforms", function () {
+			before(function(done){
+				mongo.remove("fs.files", {}, (error)=>{
+					assert.ifError(error);
+					mongo.insert("fs.files", [
+						{
+							"filename": "key.pem",
+							"contentType": "binary/octet-stream",
+							"length": 3247,
+							"chunkSize": 261120,
+							"uploadDate": "2017-11-29T17:51:24.332+0000",
+							"aliases": null,
+							"metadata": {
+								"platform": "docker",
+								"certType": "key",
+								"env": {
+									"TESTDOCKERLOCAL": [
+										"docker.remote"
+									]
+								}
+							},
+							"md5": "f174ab26870198bfdd568ffeaf92b41a"
+						},
+						{
+							"filename": "key.pem",
+							"contentType": "binary/octet-stream",
+							"length": 3247,
+							"chunkSize": 261120,
+							"uploadDate": "2017-11-29T17:51:24.332+0000",
+							"aliases": null,
+							"metadata": {
+								"platform": "docker",
+								"certType": "key",
+								"env": {
+									"TESTDOCKERLOCAL": [
+										"docker.remote",
+										"remote"
+									]
+								}
+							},
+							"md5": "f174ab26870198bfdd568ffeaf92b41a"
+						},
+						{
+							"filename": "key.pem",
+							"contentType": "binary/octet-stream",
+							"length": 3247,
+							"chunkSize": 261120,
+							"uploadDate": "2017-11-29T17:51:24.332+0000",
+							"aliases": null,
+							"metadata": {
+								"platform": "docker",
+								"certType": "key",
+								"env": {
+									"TESTDOCKERLOCAL": [
+										"docker.remote"
+									],
+									"TESTDOCKERLOCA": [
+										"docker.remote"
+									]
+								}
+							},
+							"md5": "f174ab26870198bfdd568ffeaf92b41a"
+						},
+						{
+							"filename": "key.pem",
+							"contentType": "binary/octet-stream",
+							"length": 3247,
+							"chunkSize": 261120,
+							"uploadDate": "2017-11-29T17:51:24.332+0000",
+							"aliases": null,
+							"metadata": {
+							},
+							"md5": "f174ab26870198bfdd568ffeaf92b41a"
+						}
+					], (error) =>{
+						assert.ifError(error);
+						done();
+					});
+				});
+			});
 
 			it("success - will list platforms and available certificates", function (done) {
 				var params = {
@@ -1620,100 +1748,26 @@ describe("DASHBOARD Integration Tests:", function () {
 					done();
 				});
 			});
-		});
 
-		describe("change selected driver", function () {
-
-			it("success - will change selected driver", function (done) {
-				var params = {
-					qs: {
-						env: 'DEV'
-					},
-					form: {
-						selected: 'container.dockermachine.cloud.joyent'
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/driver/changeSelected', 'put', function (body) {
-					assert.ok(body.data);
-					done();
-				});
-			});
-
-			it("fail - missing required params", function (done) {
-				var params = {
-					form: {
-						selected: 'container.dockermachine.cloud.joyent'
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/driver/changeSelected', 'put', function (body) {
-					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
-					done();
-				});
-			});
-		});
-
-		describe("change deployer type", function () {
-
-			it("success - will change deployer type", function (done) {
-				var params = {
-					qs: {
-						env: 'DEV'
-					},
-					form: {
-						deployerType: 'container'
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/deployer/type/change', 'put', function (body) {
-					assert.ok(body.data);
-					done();
-				});
-			});
-
-			it("fail - missing required params", function (done) {
-				var params = {
-					qs: {
-						env: 'DEV'
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/deployer/type/change', 'put', function (body) {
-					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {
-						'code': 172,
-						'message': 'Missing required field: deployerType'
-					});
-					done();
-				});
-			});
-		});
-
-		describe("update deployer type", function () {
-
-			it("fail - update change deployer type", function (done) {
-				var params = {
-					qs: {
-						env: 'QA'
-					},
-					form: {
-						driver: 'local',
-						config: {
-							namespace :{
-								default : 'soajs',
-								perService: false
-							}
+            it("success - will update the deployer ", function (done) {
+                var params = {
+                    qs: {
+                        env: 'TESTDOCKERLOCAL'
+                    },
+                    form: {
+                        driver: 'remote',
+                        config: {
+                            nodes: '127.0.0.1',
+                            apiPort: '2222',
+                            token: '123abc'
 						}
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/deployer/update', 'put', function (body) {
-					assert.ok(body);
-					done();
-				});
-			});
+                    }
+                };
+                executeMyRequest(params, "environment/platforms/deployer/update", 'put', function (body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
 		});
 	});
 
@@ -1984,66 +2038,20 @@ describe("DASHBOARD Integration Tests:", function () {
 		});
 
 		describe("fail - logged in user is not the owner of the app", function () {
-			var Authorization2, access_token;
-
-			// before("update mongo. assure oauth", function (done) {
-			// 	mongo.update('tenants', {'code': 'test'}, {
-			// 		$set: {
-			// 			"oauth": {
-			// 				"secret": "my secret key2",
-			// 				"redirectURI": "http://www.myredirecturi.com/",
-			// 				"grants": ["password", "refresh_token"]
-			// 			}
-			// 		}
-			// 	}, {
-			// 		'upsert': false, 'safe': true, multi: false
-			// 	}, function (error, success) {
-			// 		setTimeout(function () {
-			// 			done();
-			// 		}, 900);
-			// 	});
-			// });
-
-			it("get Auhtorization token", function (done) {
-				var options = {
-					uri: 'http://localhost:4000/oauth/authorization',
-					headers: {
-						'Content-Type': 'application/json',
-						'key': extKey
+			it("reload controller provision", function (done) {
+				var params = {
+					"uri": "http://127.0.0.1:5000/loadProvision",
+					"headers": {
+						"content-type": "application/json"
 					},
-					json: true
+					"json": true
 				};
-
-				request.get(options, function (error, response, body) {
+				helper.requester("get", params, function (error, response) {
 					assert.ifError(error);
-					assert.ok(body);
-					assert.ok(body.data);
-					Authorization2 = body.data;
-					done();
-				});
-			});
-
-			it("Login first", function (done) {
-				var options = {
-					uri: 'http://localhost:4000/oauth/token',
-					headers: {
-						'Content-Type': 'application/json',
-						key: extKey,
-						Authorization: Authorization2
-					},
-					body: {
-						"username": "user1",
-						"password": "123456",
-						"grant_type": "password"
-					},
-					json: true
-				};
-				request.post(options, function (error, response, body) {
-					assert.ifError(error);
-					assert.ok(body);
-					access_token = body.access_token;
-					assert.ok(body.access_token);
-					done();
+					assert.ok(response);
+					setTimeout(function () {
+						done();
+					}, 100);
 				});
 			});
 		});

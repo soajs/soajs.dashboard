@@ -1,0 +1,34 @@
+[
+  {"proc": "clone", "pos": 0, "out": "+ git init\n"}, {
+  "proc": "clone",
+  "pos": 1,
+  "out": "Initialized empty Git repository in /drone/src/bitbucket.org/CLOUD/dashboard/.git/\n"
+}, {
+  "proc": "clone",
+  "pos": 2,
+  "out": "+ git remote add origin https://bitbucket.org/CLOUD/dashboard.git\n"
+}, {
+  "proc": "clone",
+  "pos": 3,
+  "out": "+ git fetch --no-tags origin +refs/heads/master:\n"
+}, {
+  "proc": "clone",
+  "time": 2,
+  "pos": 4,
+  "out": "From https://bitbucket.org/CLOUD/dashboard\n"
+}, {
+  "proc": "clone",
+  "time": 2,
+  "pos": 5,
+  "out": " * branch            master     -\u003e FETCH_HEAD\n"
+}, {
+  "proc": "clone",
+  "time": 2,
+  "pos": 6,
+  "out": " * [new branch]      master     -\u003e origin/master\n"
+}, {
+  "proc": "clone",
+  "time": 2,
+  "pos": 7,
+  "out": "+ git reset --hard -q 4ddb5fb85abc91d83d03ef8e9d22ed0b3c942c3a\n"
+}, {"proc": "clone", "time": 2, "pos": 8, "out": "+ git submodule update --init --recursive\n"}]

@@ -29,23 +29,23 @@ describe("testing ci travis index.js", function () {
 		done();
 	});
 	describe("testing generateToken", function () {
-		
+
 		it("Call generateToken", function (done) {
 			nock('https://my.travis')
 				.post('/auth/github')
 				.reply(200, { access_token: 'access1' });
-			
+
 			utils.generateToken(options, function (error, body) {
 				assert.ok(body);
 				assert.equal(body, 'access1');
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing listRepos", function () {
-		
+
 		it("Call listRepos", function (done) {
 			nock('https://my.travis')
 				.get('/repos/soajsTestAccount?access_token=access1')
@@ -116,7 +116,7 @@ describe("testing ci travis index.js", function () {
 						}
 					]
 				});
-			
+
 			options.variables = {
 				SOAJS_CD_AUTH_KEY: 'aa39b54908c39565bd8d72f68ac',
 				SOAJS_CD_DEPLOY_TOKEN: 'token',
@@ -130,11 +130,11 @@ describe("testing ci travis index.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing listRepoBranches", function () {
-		
+
 		it("Call listRepoBranches", function (done) {
 			nock('https://my.travis')
 				.get('/repos/123456/branches?access_token=access1')
@@ -160,9 +160,9 @@ describe("testing ci travis index.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing updateEnvVar", function () {
 		before(function (done) {
 			nock('https://my.travis')
@@ -170,13 +170,13 @@ describe("testing ci travis index.js", function () {
 				.reply(200, {});
 			done();
 		});
-		
+
 		it("Call updateEnvVar", function (done) {
-			
+
 			var options = {
 				log: {
 					debug: function (data) {
-						
+
 					}
 				},
 				_id: 'aaa',
@@ -202,13 +202,13 @@ describe("testing ci travis index.js", function () {
 			});
 		});
 	});
-	
+
 	describe("testing ensureRepoVars", function () {
 		beforeEach(function (done) {
 			nock('https://my.travis')
 				.delete('/settings/env_vars/5eb00b12424d?repository_id=123456&access_token=access1')
 				.reply(200, {});
-			
+
 			nock('https://my.travis')
 				.post('/settings/env_vars?repository_id=123456&access_token=access1', {
 					env_var: {
@@ -226,7 +226,7 @@ describe("testing ci travis index.js", function () {
 						repository_id: 123456
 					}
 				});
-			
+
 			nock('https://my.travis')
 				.post('/settings/env_vars?repository_id=123456&access_token=access1', {
 					env_var: {
@@ -244,7 +244,7 @@ describe("testing ci travis index.js", function () {
 						repository_id: 123456
 					}
 				});
-			
+
 			nock('https://my.travis')
 				.post('/settings/env_vars?repository_id=123456&access_token=access1', {
 					env_var: {
@@ -262,7 +262,7 @@ describe("testing ci travis index.js", function () {
 						repository_id: 123456
 					}
 				});
-			
+
 			nock('https://my.travis')
 				.get('/settings/env_vars?repository_id=123456&access_token=access1')
 				.reply(200, {
@@ -299,7 +299,7 @@ describe("testing ci travis index.js", function () {
 				});
 			done();
 		});
-		
+
 		it("Call addEnvVar", function (done) {
 			var options = {
 				log: {
@@ -328,7 +328,7 @@ describe("testing ci travis index.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Call updateEnvVar", function (done) {
 			nock('https://my.travis')
 				.patch('/settings/env_vars/18e99209-5eb00b12424d?repository_id=123456&access_token=access1', {
@@ -371,7 +371,7 @@ describe("testing ci travis index.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Call deleteEnvVar", function (done) {
 			var options = {
 				log: {
@@ -398,7 +398,7 @@ describe("testing ci travis index.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Call listEnvVars", function (done) {
 			var options = {
 				log: {
@@ -422,7 +422,7 @@ describe("testing ci travis index.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Call ensureRepoVars Success", function (done) {
 			nock('https://my.travis')
 				.post('/settings/env_vars?repository_id=123456&access_token=access1', {
@@ -441,7 +441,7 @@ describe("testing ci travis index.js", function () {
 						repository_id: 123456
 					}
 				});
-			
+
 			var options = {
 				log: {
 					debug: function (data) {
@@ -471,7 +471,7 @@ describe("testing ci travis index.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Call ensureRepoVars Fail", function (done) {
 			var options = {
 				log: {
@@ -498,9 +498,9 @@ describe("testing ci travis index.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing updateSettings", function () {
 		before(function (done) {
 			nock('https://my.travis')
@@ -523,7 +523,7 @@ describe("testing ci travis index.js", function () {
 				});
 			done();
 		});
-		
+
 		it("Call updateSettings", function (done) {
 			var options = {
 				log: {
@@ -560,7 +560,7 @@ describe("testing ci travis index.js", function () {
 			});
 		});
 	});
-	
+
 	describe("testing setHook", function () {
 		before(function (done) {
 			nock('https://my.travis')
@@ -574,12 +574,12 @@ describe("testing ci travis index.js", function () {
 				});
 			done();
 		});
-		
+
 		it("Call setHook", function (done) {
 			var options = {
 				log: {
 					debug: function (data) {
-						
+
 					}
 				},
 				hook: { id: 1234, active: false },
@@ -601,7 +601,7 @@ describe("testing ci travis index.js", function () {
 			});
 		});
 	});
-	
+
 	describe("testing listSettings", function () {
 		before(function (done) {
 			nock('https://my.travis')
@@ -615,7 +615,7 @@ describe("testing ci travis index.js", function () {
 				});
 			done();
 		});
-		
+
 		it("Call listSettings", function (done) {
 			var options = {
 				log: {
@@ -640,5 +640,80 @@ describe("testing ci travis index.js", function () {
 			});
 		});
 	});
-	
+
+	describe("testing getRepoBuilds", function () {
+		before(function (done) {
+			nock('https://my.travis')
+				.get('/repos/soajs.dashboard/branches?access_token=access1')
+				.reply(200, {
+					commits: [
+						{
+							branch: "develop",
+							id: "123456",
+							sha: "sha",
+							comitter_name: "wissam",
+							message: "message",
+							compare_url: "http://compare/url"
+						}
+					],
+					branches: [
+						{
+							commit_id: '123456',
+							id: '123',
+							number: '456',
+							config: {},
+							started_at: 0,
+							finished_at: 10,
+							duration: 10,
+							job_ids: [
+								'123'
+							]
+						}
+					]
+				})
+
+				.get('/jobs/123?access_token=access1')
+				.reply(200, {
+					state: "completed", //dummy values
+					result: "passed"    //dummy values
+				})
+
+				.get('/jobs/123/log?access_token=access1')
+				.reply(200, "this is the log");
+			done();
+		});
+
+		it("Call getRepoBuilds", function (done) {
+			var options = {
+				driver: 'travis',
+				settings: {
+					ciToken: 'access1',
+					domain: 'my.travis',
+					owner: 'soajs',
+					gitToken: 'mygitToken'
+				},
+				log: {
+					debug: function (data) {
+						console.log(data);
+					}
+				},
+				params: {
+					repo: 'soajs.dashboard',
+					gitDomain: 'github.com'
+				}
+			};
+			utils.getRepoBuilds(options, function (error, body) {
+				const expected = {
+					branch: "develop",
+					commit_id: 123456
+				}
+
+				assert.deepEqual(body[expected.branch].commit_id, expected.commit_id)
+				assert.ok(body[expected.branch]);
+				nock.cleanAll();
+				done();
+			});
+		});
+	});
+
 });
