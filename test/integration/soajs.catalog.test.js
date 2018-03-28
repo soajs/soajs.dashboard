@@ -57,7 +57,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 let catalog = {
     "name": "testCatalog",
-    "type": "service",
+    "type": "server",
     "subtype": "soajs",
     "description": "This is a catalog for testing purposes.",
     "recipe": {
@@ -167,7 +167,7 @@ describe("Testing Catalog Functionality", function() {
         it("Fail - Add an catalog with invalid type", function (done) {
 
             catalog.name = "testInvalidType";
-            sourceCode.custom.type = "custom";
+            catalog.type = "service";
             catalog.recipe.deployOptions.sourceCode = sourceCode;
             params = {
                 "form": {
@@ -185,6 +185,7 @@ describe("Testing Catalog Functionality", function() {
         it("Fail - Add an catalog with invalid label", function (done) {
 
             catalog.name = "testInvalidType";
+            catalog.type = 'server';
             sourceCode.configuration = {
                 "fail": "fail"
             };
