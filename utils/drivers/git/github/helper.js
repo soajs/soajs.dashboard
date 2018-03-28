@@ -18,7 +18,8 @@ var github = new gitApihub({
 	host: config.gitAccounts.github.domainName,
 	timeout: config.gitAccounts.github.timeout,
 	headers: {
-		'user-agent': config.gitAccounts.github.userAgent
+		'user-agent': config.gitAccounts.github.userAgent,
+		'Cache-Control': 'no-cache'
 	}
 });
 
@@ -99,38 +100,50 @@ var lib = {
 	},
 
 	"checkUserRecord": function (options, cb) {
-		github.user.getFrom({
-			user: options.owner
-		}, function (error, result) {
-			if (error) {
-				error.code = 763;
-				if (error.message && JSON.parse(error).message === "Not Found") {
-					error.code = 767;
-				}
-				return cb(error);
-			}
-			if(result.login){
-				options.owner = result.login;
-			}
-			return cb();
+		lib.authenticate({
+				type: 'basic',
+				username: options.owner,
+				password: options.password
+			}, function () {
+				github.user.getFrom({
+					user: options.owner
+				}, function (error, result) {
+					if (error) {
+						error.code = 763;
+						if (error.message && JSON.parse(error).message === "Not Found") {
+							error.code = 767;
+						}
+						return cb(error);
+					}
+					if(result.login){
+						options.owner = result.login;
+					}
+					return cb();
+				});
 		});
 	},
 
 	"checkOrgRecord": function (options, cb) {
-		github.orgs.get({
-			org: options.owner
-		}, function (error, result) {
-			if (error) {
-				error.code = 763;
-				if (error.message && JSON.parse(error).message === "Not Found") {
-					error.code = 767;
+		lib.authenticate({
+				type: 'basic',
+				username: options.owner,
+				password: options.password
+			}, function () {
+			github.orgs.get({
+				org: options.owner
+			}, function (error, result) {
+				if (error) {
+					error.code = 763;
+					if (error.message && JSON.parse(error).message === "Not Found") {
+						error.code = 767;
+					}
+					return cb(error);
 				}
-				return cb(error);
-			}
-			if(result.login){
-				options.owner = result.login;
-			}
-			return cb();
+				if (result.login) {
+					options.owner = result.login;
+				}
+				return cb();
+			});
 		});
 	},
 
