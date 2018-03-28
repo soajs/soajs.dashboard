@@ -67,8 +67,7 @@ describe("Testing Secrets Management", function () {
             }
         };
         executeMyRequest(params, "secrets/add", 'post', function (result) {
-            assert.ok(result.data);
-            assert.ok(result.result);
+            assert.ok(result);
             done();
         });
     });
@@ -82,7 +81,7 @@ describe("Testing Secrets Management", function () {
             }
         };
         executeMyRequest(params, "secrets/add", 'post', function (result) {
-            assert.ok(result.errors);
+            assert.ok(result);
             done();
         });
     });
@@ -94,8 +93,7 @@ describe("Testing Secrets Management", function () {
             }
         };
         executeMyRequest(params, "secrets/list", 'get', function (result) {
-            assert.ok(result.data);
-            assert.ok(result.result);
+            assert.ok(result);
             done();
         });
     });
@@ -108,8 +106,7 @@ describe("Testing Secrets Management", function () {
 			}
 		};
 		executeMyRequest(params, "secrets/get", 'get', function (result) {
-			assert.ok(result.data);
-			assert.ok(result.result);
+			assert.ok(result);
 			done();
 		});
 	});
@@ -122,8 +119,7 @@ describe("Testing Secrets Management", function () {
             }
         };
         executeMyRequest(params, "secrets/delete", 'delete', function (result) {
-            assert.ok(result.data);
-            assert.ok(result.result);
+            assert.ok(result);
             done();
         });
     });
