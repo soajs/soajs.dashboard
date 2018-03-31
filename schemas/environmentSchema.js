@@ -53,6 +53,10 @@ var environment = {
 		"propeties": {
 		
 		}
+	},
+	"templateId": {
+		"required": true,
+		"type": "string"
 	}
 };
 

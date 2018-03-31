@@ -1738,13 +1738,9 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "object",
-						"properties": {
-							"gi": {
-								"type": "object",
-								"required": true,
-								"properties": {
-									"code": { "type": "string", "required": true },
-								}
+						"properties":{
+							"deploy": {
+								"type": "object"
 							}
 						}
 					}
