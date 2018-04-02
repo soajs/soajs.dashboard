@@ -19,31 +19,7 @@ module.exports = {
                     "^[A-Z]+$": { "type": "boolean" }
                 }
             },
-            "config": { "type": "object", "required": true },
-	        "sourceCode" : {
-		        "type": "object",
-		        "required": false,
-		        "properties" : {
-			        "configuration" : {
-				        "type": "object",
-				        "required": false,
-				        "properties" : {
-					        "label" : {"type": "string", "required": true},
-					        "repo" : {"type": "string", "required": false},
-					        "branch" : {"type": "string", "required": false},
-				        }
-			        },
-			        "custom" : {
-				        "type": "object",
-				        "required": false,
-				        "properties" : {
-					        "label" : {"type": "string", "required": true},
-					        "repo" : {"type": "string", "required": false},
-					        "branch" : {"type": "string", "required": false},
-				        }
-			        }
-		        }
-	        }
+            "config": { "type": "object", "required": true }
         }
     }
 };

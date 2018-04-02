@@ -60,6 +60,32 @@ module.exports = {
 		"type": "object",
 		"required": false,
 		"properties": {
+			"sourceCode" : {
+				"type": "object",
+				"required": false,
+				"properties" : {
+					"configuration" : {
+						"type": "object",
+						"required": false,
+						"properties" : {
+							"repo" : {"type": "string", "required": true},
+							"branch" : {"type": "string", "required": true},
+							"commit" : {"type": "string", "required": false},
+							"path" : {"type": "string", "required": false}
+						}
+					},
+					"custom" : {
+						"type": "object",
+						"required": false,
+						"properties" : {
+							"repo" : {"type": "string", "required": true},
+							"branch" : {"type": "string", "required": true},
+							"commit" : {"type": "string", "required": false},
+							"path" : {"type": "string", "required": false}
+						}
+					}
+				}
+			},
 			"image": {
 				"type": "object",
 				"required": false,

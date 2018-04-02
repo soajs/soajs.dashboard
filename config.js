@@ -1740,7 +1740,10 @@ module.exports = {
 						"type": "object",
 						"properties":{
 							"deploy": {
-								"type": "object"
+								"type": "object",
+								"properties": {
+									"deploy": true
+								}
 							}
 						}
 					}
@@ -2106,6 +2109,7 @@ module.exports = {
 					"source": ['body.recipe'],
 					"required": true,
 					"validation": {
+						"required": true,
 						"type": "string"
 					}
 				},
@@ -2186,6 +2190,22 @@ module.exports = {
 						"type": "object",
 						"required": false,
 						"properties": {
+							"sourceCode" : {
+								"type": "object",
+								"required": false,
+								"properties" : {
+									"custom" : {
+										"type": "object",
+										"required": false,
+										"properties" : {
+											"repo" : {"type": "string", "required": true},
+											"branch" : {"type": "string", "required": true},
+											"commit" : {"type": "string", "required": false},
+											"path" : {"type": "string", "required": false}
+										}
+									}
+								}
+							},
 							"image": {
 								"type": "object",
 								"required": false,
