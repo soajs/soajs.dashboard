@@ -107,6 +107,19 @@ module.exports = {
 			"name": {
 				"required": true,
 				"type": "string"
+			},
+			"secrets": {
+				"type": "array",
+				"required": false,
+				"items":{
+					"type": "object",
+					"required": true,
+					"properties":{
+						"name": {"type":"string", "required": true},
+						"type": {"type":"string", "required": false},
+						"mountPath": {"type":"string", "required": false}
+					}
+				}
 			}
 		}
 	}

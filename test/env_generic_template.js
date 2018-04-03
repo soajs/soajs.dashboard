@@ -598,11 +598,13 @@ let template = {
 										"secrets": [
 											{
 												"name": "private-key-cert",
-												"mountPath": "/etc/nginx/ssl"
+												"mountPath": "/etc/nginx/ssl",
+												"type":"certificate"
 											},
 											{
 												"name": "fullchain-cert",
-												"mountPath": "/etc/nginx/ssl"
+												"mountPath": "/etc/nginx/ssl",
+												"type":"certificate"
 											}
 										],
 										"name" : "mynginx",
