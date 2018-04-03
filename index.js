@@ -132,7 +132,7 @@ service.init(function () {
 	service.post("/environment/add", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.add(config, service, dbModel, req, res, function (error, data) {
+				BL.add(config, req, res, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

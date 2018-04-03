@@ -658,6 +658,13 @@ module.exports = {
 					"validation": {
 						"type": "boolean"
 					}
+				},
+				'resume': {
+					"required": false,
+					"source": ["query.resume"],
+					"validation": {
+						"type": "boolean"
+					}
 				}
 			},
 

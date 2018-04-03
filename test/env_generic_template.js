@@ -290,6 +290,7 @@ let template = {
 						"readonly": true
 					}
 				},
+				
 				"tenant": {
 					"ui": {
 						"readonly": true
