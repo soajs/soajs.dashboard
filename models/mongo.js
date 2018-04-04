@@ -22,6 +22,7 @@ var gitAccountsCollectionName = 'git_accounts';
 var templatesCollectionName = 'templates';
 var resourcesCollection = 'resources';
 var customRegCollection = 'custom_registry';
+var templatesCollection = 'templates';
 
 var firstRun = true;
 var lib = {
@@ -138,6 +139,11 @@ var lib = {
 			//custom registry
 			soajs.mongoDb.createIndex(customRegCollection, { name: 1, created: 1 }, errorLogger); //compound index, includes {name: 1}
 			soajs.mongoDb.createIndex(customRegCollection, { created: 1, shared: 1, sharedEnv: 1 }, errorLogger); //compound index, includes {created: 1}, {created: 1, shared: 1}
+			
+			//templates
+			soajs.mongoDb.createIndex(templatesCollection, { type: 1 }, errorLogger);
+			soajs.mongoDb.createIndex(templatesCollection, { name: 1, type: 1 }, errorLogger);
+			soajs.mongoDb.createIndex(templatesCollection, { expires: 1 }, { expireAfterSeconds: 0 }, errorLogger);
 			
 			firstRun = false;
 		}
