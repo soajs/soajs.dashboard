@@ -123,6 +123,7 @@ module.exports = {
 				"database": commonDeploySchema,
 				"deployments": commonDeploySchema
 			}
-		},
-	}
+		}
+	},
+	"additionalProperties": false
 };
