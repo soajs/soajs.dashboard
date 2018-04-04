@@ -3,6 +3,7 @@
 let commonContentSchema = {
 	"type": "object",
 	"required": false,
+	"additionalProperties": false,
 	"properties": {
 		"data": {
 			"type": "array",
@@ -26,10 +27,12 @@ module.exports = {
 		"content": {
 			"type": "object",
 			"required": false,
+			"additionalProperties": false,
 			"properties":{
 				"recipes": {
 					"type": "object",
 					"required": false,
+					"additionalProperties": false,
 					"properties":{
 						"ci": {
 							"type": "array",
@@ -58,11 +61,35 @@ module.exports = {
 				"productization": commonContentSchema,
 				"tenant": commonContentSchema,
 				"secrets": commonContentSchema,
+				"deployments": {
+					"type": "object",
+					"required": false,
+					"additionalProperties": false,
+					"properties": {
+						"repo": {
+							"type": "object",
+							"required": false,
+							"additionalProperties":{
+								"type": "object",
+								"required": true
+							}
+						},
+						"resources": {
+							"type": "object",
+							"required": false,
+							"additionalProperties":{
+								"type": "object",
+								"required": true
+							}
+						}
+					}
+				}
 			}
 		},
 		"deploy": {
 			"type": "object",
 			"required": false,
+			"additionalProperties": false,
 			"properties": {
 				"database": {
 					"type": "object",
