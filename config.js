@@ -631,7 +631,15 @@ module.exports = {
 					}
 				}
 			},
-
+			
+			"/environment/templates": {
+				_apiInfo: {
+					"l": "Get Environment Deployment Templates",
+					"group": "Environment"
+				},
+				"commonFields": ['soajs_project']
+			},
+			
 			"/environment/status": {
 				_apiInfo: {
 					"l": "Get/Set Environment Deployment Status",

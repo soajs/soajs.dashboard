@@ -205,6 +205,22 @@ service.init(function () {
 	});
 	
 	/**
+	 * returns all templates that can be used to deploy an environment
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/environment/templates", function (req, res) {
+		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.getTemplates(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
 	 * Get a specific environment Deployment Status
 	 * @param {String} API route
 	 * @param {Function} API middleware
