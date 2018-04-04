@@ -17,6 +17,35 @@ let commonContentSchema = {
 	}
 };
 
+let commonDeploySchema = {
+	"type": "object",
+	"required": false,
+	"additionalProperties": false,
+	"properties":{
+		"pre": {
+			"type": "object",
+			"additionalProperties":{
+				"type": "object",
+				"required": true
+			}
+		},
+		"steps": {
+			"type": "object",
+			"additionalProperties":{
+				"type": "object",
+				"required": true
+			}
+		},
+		"post": {
+			"type": "object",
+			"additionalProperties":{
+				"type": "object",
+				"required": true
+			}
+		},
+	}
+};
+
 module.exports = {
 	"type": "object",
 	"required": true,
@@ -91,14 +120,8 @@ module.exports = {
 			"required": false,
 			"additionalProperties": false,
 			"properties": {
-				"database": {
-					"type": "object",
-					"required": false
-				},
-				"deployment": {
-					"type": "object",
-					"required": false
-				}
+				"database": commonDeploySchema,
+				"deployments": commonDeploySchema
 			}
 		},
 	}
