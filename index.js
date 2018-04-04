@@ -127,17 +127,22 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.templates.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				
-				//unzip file and process template first time
-				BL.import(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-				
-				//correct the template inputs
-				// BL.correct(config, req, res, function (error, data) {
-				// 	BL.model.closeConnection(req.soajs);
-				// 	return res.json(req.soajs.buildResponse(error, data));
-				// });
+				//correct template
+				if(req.soajs.inputmaskData && Object.keys(req.soajs.inputmaskData).length > 0){
+					//correct the template inputs
+					BL.correct(config, req, res, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
+				}
+				//import new template
+				else{
+					//unzip file and process template first time
+					BL.import(config, req, res, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
+				}
 			});
 		});
 	});

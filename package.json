@@ -44,7 +44,7 @@
     "compare-versions": "3.0.1",
     "cron": "1.2.1",
     "easy-zip": "0.0.4",
-    "formidable": "1.0.17",
+    "formidable": "1.2.1",
     "github": "^0.2.4",
     "gridfs-stream": "1.1.1",
     "jsonschema": "1.1.1",
