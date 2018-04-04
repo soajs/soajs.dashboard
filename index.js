@@ -76,9 +76,11 @@ var dashboardBL = {
 		secrets: {
 			module: require('./lib/cloud/secrets/index.js')
 		}
+	},
+	templates: {
+		module: require("./lib/templates/index.js")
 	}
 };
-
 
 var deployer = require("soajs").drivers;
 
@@ -120,6 +122,18 @@ function checkConnection(BL, req, res, cb) {
 }
 
 service.init(function () {
+	
+	service.post("/templates", function(req, res) {
+		initBLModel(req, res, dashboardBL.templates.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.import(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
 	/**
 	 * Environments features
 	 */

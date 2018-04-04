@@ -1711,6 +1711,29 @@ module.exports = {
 		},
 
 		"post": {
+			
+			"/templates": {
+				_apiInfo: {
+					"l": "Import Templates",
+					"group": "Templates"
+				},
+				'commonFields': ['soajs_project'],
+				"id": {
+					"source": ['query.id', 'body.id'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"correction": {
+					"source": ['body.correction'],
+					"required": false,
+					"validation": {
+						"type": "object"
+					}
+				}
+			},
+			
 			"/services/list": {
 				_apiInfo: {
 					"l": "List Services",
