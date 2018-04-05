@@ -2312,6 +2312,19 @@ module.exports = {
 										"mountPath": {"type": "string", "required": false}
 									}
 								}
+							},
+							"ports": {
+								"type": "array",
+								"required": false,
+								"uniqueItems": true,
+								"items": {
+									"type": "object",
+									"required": true,
+									"properties": {
+										"name": {"type": "string", "required": true},
+										"port": {"type": "number", "required": false, "min": 1, "max": 2766 }
+									}
+								}
 							}
 						}
 					}
