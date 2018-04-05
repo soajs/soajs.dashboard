@@ -1739,6 +1739,41 @@ module.exports = {
 				}
 			},
 			
+			"/templates/export": {
+				_apiInfo: {
+					"l": "Export Templates",
+					"group": "Templates"
+				},
+				'commonFields': ['soajs_project'],
+				"ci": {
+					"source": ['body.ci'],
+					"required": false,
+					"validation": {
+						"type": "array",
+						"uniqueItems": true,
+						"items":{ "type": "string", "required": true }
+					}
+				},
+				"deployment": {
+					"source": ['body.deployment'],
+					"required": false,
+					"validation": {
+						"type": "array",
+						"uniqueItems": true,
+						"items":{ "type": "string", "required": true }
+					}
+				},
+				"endpoints": {
+					"source": ['body.endpoints'],
+					"required": false,
+					"validation": {
+						"type": "array",
+						"uniqueItems": true,
+						"items":{ "type": "string", "required": true }
+					}
+				},
+			},
+			
 			"/services/list": {
 				_apiInfo: {
 					"l": "List Services",

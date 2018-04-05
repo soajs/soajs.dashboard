@@ -123,6 +123,11 @@ function checkConnection(BL, req, res, cb) {
 
 service.init(function () {
 	
+	/**
+	 * Upload a templated environment or post its correction inputs
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.post("/templates", function(req, res) {
 		initBLModel(req, res, dashboardBL.templates.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
@@ -143,6 +148,23 @@ service.init(function () {
 						return res.json(req.soajs.buildResponse(error, data));
 					});
 				}
+			});
+		});
+	});
+	
+	/**
+	 * Generate and export a templated environment
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/templates/export", function (req, res) {
+		initBLModel(req, res, dashboardBL.templates.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				//unzip file and process template first time
+				BL.export(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
