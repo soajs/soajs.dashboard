@@ -23,6 +23,8 @@ var templatesCollectionName = 'templates';
 var resourcesCollection = 'resources';
 var customRegCollection = 'custom_registry';
 var templatesCollection = 'templates';
+var endpointCollections = 'api_builder_endpoints';
+var microservicesCollection = 'api_builder_services';
 
 var firstRun = true;
 var lib = {
@@ -75,6 +77,7 @@ var lib = {
 			soajs.mongoDb.createIndex(servicesCollectionName, { gcId: 1 }, errorLogger);
 			soajs.mongoDb.createIndex(servicesCollectionName, { name: 1, gcId: 1 }, errorLogger);
 			soajs.mongoDb.createIndex(servicesCollectionName, { port: 1, gcId: 1 }, errorLogger);
+			soajs.mongoDb.createIndex(servicesCollectionName, { epId: 1 }, errorLogger);
 			
 			//daemons
 			soajs.mongoDb.createIndex(daemonsCollectionName, { name: 1 }, { unique: true }, errorLogger);
@@ -97,9 +100,9 @@ var lib = {
 			
 			//fs.files
 			// soajs.mongoDb.createIndex(gridfsCollectionName, {filename: 1}, {unique: true}, errorLogger);
-			soajs.mongoDb.createIndex(gridfsCollectionName, { filename: 1, 'metadata.type': 1 }, errorLogger);
-			soajs.mongoDb.createIndex(gridfsCollectionName, { 'metadata.type': 1 }, errorLogger);
-			soajs.mongoDb.createIndex(gridfsCollectionName, { 'metadata.env': 1 }, errorLogger);
+			// soajs.mongoDb.createIndex(gridfsCollectionName, { filename: 1, 'metadata.type': 1 }, errorLogger);
+			// soajs.mongoDb.createIndex(gridfsCollectionName, { 'metadata.type': 1 }, errorLogger);
+			// soajs.mongoDb.createIndex(gridfsCollectionName, { 'metadata.env': 1 }, errorLogger);
 			
 			//tenants
 			soajs.mongoDb.createIndex(tenantCollectionName, { _id: 1, locked: 1 }, errorLogger);
@@ -133,6 +136,7 @@ var lib = {
 			soajs.mongoDb.createIndex(templatesCollectionName, { type: 1 }, errorLogger);
 			
 			//resources
+			soajs.mongoDb.createIndex(customRegCollection, { type: 1, }, errorLogger);
 			soajs.mongoDb.createIndex(customRegCollection, { name: 1, type: 1, category: 1 }, errorLogger); //compound index, includes {name: 1}, {name: 1, type: 1}
 			soajs.mongoDb.createIndex(resourcesCollection, { created: 1, shared: 1, sharedEnv: 1 }, errorLogger); //compound index, includes {created: 1}, {created: 1, shared: 1}
 			
@@ -144,6 +148,14 @@ var lib = {
 			soajs.mongoDb.createIndex(templatesCollection, { type: 1 }, errorLogger);
 			soajs.mongoDb.createIndex(templatesCollection, { name: 1, type: 1 }, errorLogger);
 			soajs.mongoDb.createIndex(templatesCollection, { expires: 1 }, { expireAfterSeconds: 0 }, errorLogger);
+			
+			//endpoint collections
+			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1}, errorLogger);
+			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1, servicePort: 1 }, errorLogger);
+			
+			//microservices collections
+			soajs.mongoDb.createIndex(microservicesCollection, { serviceName: 1}, errorLogger);
+			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1, servicePort: 1 }, errorLogger);
 			
 			firstRun = false;
 		}
