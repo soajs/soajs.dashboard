@@ -1,8 +1,9 @@
 "use strict";
 var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/environment/status.js');
-var statusUtils = helper.requireModule("./lib/environment/statusUtils");
+var async = require("async");
+var helper = require("../../../../helper.js");
+var config = require("../../../../../config.js");
+var utils = helper.requireModule('./lib/environment/drivers/secrets.js');
 var sinon = require('sinon');
 
 function stubStatusUtils(error) {
@@ -28,7 +29,6 @@ function stubStatusUtils(error) {
 		.stub(statusUtils, 'thirdPartStep')
 		.yields(error, true);
 }
-var timer = 500;
 var req = {
 	soajs: {
 		registry: {
@@ -69,7 +69,18 @@ var req = {
 
 			}
 		},
-		inputmaskData: {}
+		inputmaskData: {},
+		validator: {
+			Validator: function () {
+				return {
+					validate: function () {
+						return {
+							errors: []
+						};
+					}
+				};
+			}
+		}
 	}
 };
 var mongoStub = {
@@ -100,9 +111,9 @@ var mongoStub = {
 	}
 };
 var BL = {
+	customRegistry :{},
 	model: mongoStub
 };
-var config = {};
 var template = {
 	"type": "_template",
 	"name": "MGTT",
@@ -378,9 +389,9 @@ var template = {
 						}
 					],
 					"status": {
-					
+
 					}
-					
+
 				},
 				'deployments__dot__resources__dot__nginx': {
 					imfv: [
@@ -423,198 +434,6 @@ var template = {
 				}
 			},
 			post: {}
-		}
-	}
-};
-var errorTemplate = {
-	"type": "_template",
-	"name": "MGTT",
-	"description": "Mike Generic Test Template",
-	"link": "",
-	"content": {
-		"custom_registry": {
-			"data": [
-				{
-					"name": "ciConfig",
-					"value": {
-						"apiPrefix": "cloud-api",
-						"domain": "herrontech.com",
-						"protocol": "https",
-						"port": 443.0
-					}
-				},
-				{
-					"name": "ciConfig2",
-					"value": "string value here ..."
-				},
-				{
-					"name": "ciConfig3",
-					"value": {
-						"apiPrefix": "dashboard-api",
-						"domain": "soajs.org",
-						"protocol": "https",
-						"port": 443.0
-					}
-				}
-			]
-		},
-		"productization": {
-			"data": [
-				{
-					"code": "MIKE",
-					"name": "Mike Product",
-					"description": "Mike Product Description",
-					"packages": [
-						{
-							"code": "BASIC",
-							"name": "Basic Package",
-							"description": "Basic Package Description",
-							"TTL": 2160000.0,
-							"acl": {
-								"oauth": {},
-								"urac": {},
-								"daas": {}
-							}
-						},
-						{
-							"code": "MAIN",
-							"name": "Main Package",
-							"description": "Main Package Description",
-							"TTL": 2160000.0,
-							"acl": {}
-						}
-					]
-				}
-			]
-		},
-		"tenants": {
-			"data": [
-				{
-					"code": "MIKE",
-					"name": "Mike Tenant",
-					"description": "Mike Tenant Description",
-					"applications": [
-						{
-							"product": "MIKE",
-							"package": "MIKE_MAIN",
-							"description": "Mike main application",
-							"_TTL": 2160000.0,
-							"keys": [
-								{
-									"extKeys": [
-										{
-											"device": {},
-											"geo": {},
-											"dashboardAccess": false,
-											"expDate": null
-										}
-									],
-									"config": {
-										"a": "b"
-									}
-								}
-							]
-						},
-						{
-							"product": "MIKE",
-							"package": "MIKE_USER",
-							"description": "Mike Logged In user Application",
-							"_TTL": 2160000.0,
-							"keys": [
-								{
-									"extKeys": [
-										{
-											"device": {},
-											"geo": {},
-											"dashboardAccess": true,
-											"expDate": null
-										}
-									],
-									"config": {
-										"c": "d"
-									}
-								}
-							]
-						}
-					]
-				}
-			]
-		},
-		"secrets": {
-			"data": [
-				{
-					"name": "mike"
-				}
-			]
-		},
-		"deployments": {
-			"repo": {
-				"controller": {
-					"label": "SOAJS API Gateway",
-					"name": "controller",
-					"type": "service",
-					"category": "soajs",
-					"deploy": {
-						"memoryLimit": 500.0,
-						"mode": "replicated",
-						"replicas": 1.0
-					}
-				}
-			},
-			"resources": {
-				"nginx": {
-					"label": "Nginx",
-					"type": "server",
-					"category": "nginx",
-					"ui": "${REF:resources/drivers/server/nginx}",
-					"deploy": {
-						"memoryLimit": 500.0,
-						"mode": "global",
-						"secrets": "mike"
-					}
-				},
-				"external": {
-					"label": "External Mongo",
-					"type": "cluster",
-					"category": "mongo",
-					"limit": 1.0,
-					"ui": "${REF:resources/drivers/cluster/mongo}",
-					"deploy": null
-				}
-			}
-		}
-	},
-	"deploy": {
-		"database": {
-			"pre": {
-				"custom_registry": {}
-			},
-			"steps": {
-				"productization": {
-					"ui": {
-						"readOnly": true
-					}
-				},
-				"tenants": {
-					"ui": {
-						"readOnly": true
-					}
-				}
-			},
-			"post": {
-				"deployments__dot__resources__dot__external": {}
-			}
-		},
-		"deployments": {
-			"pre": {},
-			"steps": {
-				"secrets": {
-					"mike": {}
-				},
-				"deployments__dot__repo__dot__controller": {},
-				"deployments__dot__resources__dot__nginx": {}
-			},
-			"post": {}
 		}
 	}
 };
@@ -666,87 +485,84 @@ var environmentRecord = {
 	services: {},
 	profile: ''
 };
-describe("testing status.js", function () {
-	
-	describe("testing validateDeploymentInputs", function () {
-		it("Success", function (done) {
-			stubStatusUtils(null);
-			utils.validateDeploymentInputs(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)), function (err, body) {
-				assert.ok(body);
-				sinon.restore(statusUtils);
+
+var lib = {
+	initBLModel : function(module, modelName, cb){
+		return cb(null, true);
+	}
+};
+
+describe("Testing secrets.js", function () {
+
+	describe.skip("Testing Validate", function () {
+
+		var context = {
+			BL: BL,
+			environmentRecord: {},
+			template: {},
+			config: config,
+			errors: [],
+			opts: {  }
+		};
+
+		it("Fail no Secrets in content", function (done) {
+			context.template.content = {};
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.ok(context.errors);
+				assert.deepEqual(context.errors[0], {"code": 172, "msg": 'The template does not support deploying secrets'});
+				context.errors = [];
 				done();
-			})
+			});
 		});
-		
-		it("Errors", function (done) {
-			stubStatusUtils(null);
-			utils.validateDeploymentInputs(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(errorTemplate)), function (err, body) {
-				assert.ok(err);
-				sinon.restore(statusUtils);
+
+		it("Fail no Data in Secrets", function (done) {
+			context.template = template;
+			context.template.content.secrets = {};
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.ok(context.errors);
+				assert.deepEqual(context.errors[0], {"code": 172, "msg": 'The template does not support deploying secrets'});
+				context.errors = [];
 				done();
-			})
+			});
+		});
+
+		it("Fail Data is not of type array", function (done) {
+			context.template = template;
+			context.template.content.secrets.data = {};
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.ok(context.errors);
+				assert.deepEqual(context.errors[0], {"code": 172, "msg": 'The template does not support deploying secrets'});
+				context.errors = [];
+				done();
+			});
+		});
+
+		it("Fail no data in Data array", function (done) {
+			context.template = template;
+			context.template.content.secrets.data = [];
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.ok(context.errors);
+				assert.deepEqual(context.errors[0], {"code": 172, "msg": 'The template does not support deploying secrets'});
+				context.errors = [];
+				done();
+			});
+		});
+
+		it("Success Validation", function (done) {
+			context.template = template;
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				console.log(context.errors);
+				process.exit();
+				done();
+			});
 		});
 	});
-	
-	describe("testing resumeDeployment", function () {
-		it("Success", function (done) {
-			stubStatusUtils(null);
-			req.soajs.inputmaskData= {
-				resume: true
-			};
-			utils.resumeDeployment(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)), function (err, body) {
-				setTimeout(() => {
-					assert.ok(body);
-					sinon.restore(statusUtils);
-					done();
-				}, timer);
-			})
-		});
-		
-		it("Error", function (done) {
-			stubStatusUtils(true);
-			req.soajs.inputmaskData= {
-				resume: true
-			};
-			BL.model.saveEntry = function (soajs, opts, cb) {
-				cb(true, true);
-			};
-			utils.resumeDeployment(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)), function (err, body) {
-				setTimeout(() => {
-					assert.ok(body);
-					sinon.restore(statusUtils);
-					done();
-				}, timer);
-			})
-		});
+
+	describe.skip("Testing Deploy", function () {
+
 	});
-	
-	describe("testing checkProgress", function () {
-		it("Success", function (done) {
-			stubStatusUtils(null);
-			req.soajs.inputmaskData= {
-			
-			};
-			utils.checkProgress(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)), function (err, body) {
-				setTimeout(() => {
-					assert.ok(body);
-					sinon.restore(statusUtils);
-					done();
-				}, timer);
-			})
-		});
-		it("Success", function (done) {
-			stubStatusUtils(null);
-			req.soajs.inputmaskData= {
-				rollback: true
-			};
-			utils.checkProgress(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)), function (err, body) {
-				setTimeout(() => {
-					assert.ok(body);
-					sinon.restore(statusUtils);
-					done();
-				}, timer);
-			})
-		});
+
+	describe.skip("Testing Rollback", function () {
+
 	});
 });

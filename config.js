@@ -674,6 +674,13 @@ module.exports = {
 					"validation": {
 						"type": "boolean"
 					}
+				},
+				'id': {
+					"required": false,
+					"source": ["query.id"],
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
 			

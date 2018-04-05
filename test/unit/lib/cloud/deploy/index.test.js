@@ -30,13 +30,13 @@ var req = {
 						if (boolean) {
 							//valid
 							return {
-								error: []
+								errors: []
 							};
 						}
 						else {
 							//invalid
 							return {
-								error: [{error: 'msg'}]
+								errors: [{error: 'msg'}]
 							};
 						}
 					}

@@ -4,7 +4,21 @@ var assert = require("assert");
 var helper = require("../../../helper.js");
 var utils = helper.requireModule('./lib/environment/index.js');
 var mongoModel = helper.requireModule('./models/mongo.js');
-
+var status = helper.requireModule('./lib/environment/status.js');
+function stubStatusUtils() {
+	sinon
+		.stub(status, 'validateDeploymentInputs')
+		.yields(null, true);
+	sinon
+		.stub(status, 'resumeDeployment')
+		.yields(null, true);
+	sinon
+		.stub(status, 'checkProgress')
+		.yields(null, true);
+	sinon
+		.stub(status, 'rollbackDeployment')
+		.yields(null, true);
+}
 var environment;
 
 var req = {
@@ -47,14 +61,204 @@ var req = {
 				
 			}
 		},
-		inputmaskData: {}
+		inputmaskData: {},
+		validator: {
+			Validator: function () {
+				return {
+					validate: function (boolean) {
+						if (boolean) {
+							//valid
+							return {
+								errors: []
+							};
+						}
+						else {
+							//invalid
+							return {
+								errors: [{error: 'msg'}]
+							};
+						}
+					}
+				};
+			}
+		}
 	}
 };
 
-var res = {};
-var config = {};
-var deployer = {
+var input =  {
+	data:
+		{
+			code: 'MIKE',
+			description: 'mike env',
+			sensitive: false,
+			tKeyPass: 'sadf asdf asdf as',
+			apiPrefix: 'mike-api',
+			sitePrefix: 'mike-site',
+			domain: 'soajs.local',
+			deploy:
+				{
+					previousEnvironment: "last"
+				},
+			templateId: '5ac39208c29b8c2e3fd9279a',
+			soajsFrmwrk: true,
+			cookiesecret: 1,
+			sessionName: 2,
+			sessionSecret: 3,
+		},
+	template:
+		{
+			deploy:
+				{
+					database:
+						{
+							pre:
+								{
+									custom_registry:
+										{
+											imfv:
+												[{
+													name: 'ciConfig',
+													locked: true,
+													plugged: false,
+													shared: true,
+													value: {test1: true}
+												},
+													{
+														name: 'ciConfig2',
+														locked: true,
+														plugged: false,
+														shared: true,
+														value: {test2: true}
+													},
+													{
+														name: 'ciConfig3',
+														locked: true,
+														plugged: false,
+														shared: true,
+														value: {test3: true}
+													}]
+										}
+								},
+							steps:
+								{
+									productization: {ui: {readOnly: true}},
+									tenant: {ui: {readOnly: true}}
+								},
+							post:
+								{
+									'deployments.resources.external':
+										{
+											imfv:
+												[{
+													name: 'external',
+													type: 'cluster',
+													category: 'mongo',
+													locked: false,
+													shared: false,
+													plugged: false,
+													config: {username: 'username', password: 'pwd'}
+												}]
+										}
+								}
+						},
+					deployments:
+						{
+							pre: {},
+							steps:
+								{
+									secrets: {
+										imfv: [{
+											name: 'mike',
+											type: 'Generic',
+											data: 'something in secret'
+										}]
+									},
+									'deployments.repo.controller':
+										{
+											imfv:
+												[{
+													name: 'controller',
+													options:
+														{
+															deployConfig:
+																{
+																	replication: {
+																		mode: 'replicated',
+																		replicas: 1
+																	},
+																	memoryLimit: 524288000
+																},
+															gitSource:
+																{
+																	owner: 'soajs',
+																	repo: 'soajs.controller',
+																	branch: 'master',
+																	commit: '468588b0a89e55020f26b805be0ff02e0f31a7d8'
+																},
+															custom: {
+																sourceCode: {},
+																name: 'controller',
+																type: 'service'
+															},
+															recipe: '5ab4d65bc261bdb38a9fe363',
+															env: 'MIKE'
+														},
+													deploy: true,
+													type: 'custom'
+												}]
+										},
+									'deployments.resources.nginx':
+										{
+											imfv:
+												[{
+													name: 'nginx',
+													type: 'server',
+													category: 'nginx',
+													locked: false,
+													shared: false,
+													plugged: false,
+													config: null,
+													deploy:
+														{
+															options:
+																{
+																	deployConfig: {
+																		replication: {mode: 'global'},
+																		memoryLimit: 524288000
+																	},
+																	custom:
+																		{
+																			sourceCode: {},
+																			secrets:
+																				[{
+																					name: 'mike',
+																					mountPath: '/etc/soajs/certs',
+																					type: 'certificate'
+																				}],
+																			name: 'mynginx',
+																			type: 'server'
+																		},
+																	recipe: '5ab4d65bc261bdb38a9fe363',
+																	env: 'MIKE'
+																},
+															deploy: true,
+															type: 'custom'
+														}
+												}]
+										}
+								},
+							post: {}
+						}
+				}
+		}
 	
+}
+
+var res = {};
+var config = {
+	"errors": {}
+};
+var deployer = {
 	listServices: function (options, cb) {
 		var services = [
 		
@@ -69,29 +273,50 @@ var deployer = {
 	
 };
 var mongoStub = {
-		checkForMongo: function (soajs) {
-			return true;
-		},
-		validateId: function (soajs, cb) {
-			return cb(null, soajs.inputmaskData.id);
-		},
-		findEntry: function (soajs, opts, cb) {
-			cb(null, {metadata: {}});
-		},
-		removeEntry: function (soajs, opts, cb) {
-			cb(null, true);
-		},
-		saveEntry: function (soajs, opts, cb) {
-			cb(null, true);
-		},
-		initConnection: function (soajs) {
-			return true;
-		},
-		closeConnection: function (soajs) {
-			return true;
-		},
-		switchConnection: function (soajs) {
+	checkForMongo: function (soajs) {
+		return true;
+	},
+	validateId: function (soajs, cb) {
+		return cb(null, soajs.inputmaskData.id);
+	},
+	findEntry: function (soajs, opts, cb) {
+		cb(null, {
+			metadata: {}
+		});
+	},
+	findEntries: function (soajs, opts, cb) {
+		cb(null, [input.template]);
+	},
+	countEntries: function (soajs, opts, cb) {
+		cb(null, 0);
+	},
+	getDb: function (data) {
+		return {
+			ObjectId: function () {
+				return data;
+			}
 		}
+	},
+	removeEntry: function (soajs, opts, cb) {
+		cb(null, true);
+	},
+	insertEntry: function (soajs, opts, cb) {
+		cb(null, [{
+			_id: 1,
+			code: "code"
+		}]);
+	},
+	saveEntry: function (soajs, opts, cb) {
+		cb(null, true);
+	},
+	initConnection: function (soajs) {
+		return true;
+	},
+	closeConnection: function (soajs) {
+		return true;
+	},
+	switchConnection: function (soajs) {
+	}
 };
 
 it("Init environment model", function (done) {
@@ -104,7 +329,7 @@ it("Init environment model", function (done) {
 	});
 });
 
-describe("testing environment.js", function () {
+describe("testing index.js", function () {
 	
 	beforeEach(() => {
 		environment.model = mongoStub;
@@ -131,6 +356,148 @@ describe("testing environment.js", function () {
 			});
 		});
 
+	});
+	
+	describe("testing add environment", function () {
+		
+		it("Success add", function (done) {
+			req.soajs.inputmaskData = input;
+			stubStatusUtils();
+			environment.add(config, req, res, function (error, body) {
+				assert.ok(body);
+				sinon.restore(status);
+				done();
+			});
+		});
+		
+		it("Success add previous", function (done) {
+			req.soajs.inputmaskData = input;
+			req.soajs.inputmaskData.data.soajsFrmwrk = true;
+			req.soajs.inputmaskData.data.cookiesecret = 1;
+			req.soajs.inputmaskData.data.sessionName = 2;
+			req.soajs.inputmaskData.data.sessionSecret = 3;
+			req.soajs.inputmaskData.data.deploy = {
+				previousEnvironment: "last"
+			};
+			stubStatusUtils();
+			environment.add(config, req, res, function (error, body) {
+				assert.ok(body);
+				sinon.restore(status);
+				done();
+			});
+		});
+		
+		it("Fail validating inputs", function (done) {
+			req.soajs.inputmaskData = input;
+			sinon
+				.stub(status, 'validateDeploymentInputs')
+				.yields(true);
+			sinon
+				.stub(status, 'resumeDeployment')
+				.yields(null, true);
+			sinon
+				.stub(status, 'checkProgress')
+				.yields(null, true);
+			sinon
+				.stub(status, 'rollbackDeployment')
+				.yields(null, true);
+			environment.model.removeEntry = function (soajs, opts, cb) {
+				cb(true);
+			};
+			environment.add(config, req, res, function (error, body) {
+				assert.ok(error);
+				sinon.restore(status);
+				done();
+			});
+		});
+		
+	});
+	
+	describe("testing getDeploymentStatus", function () {
+		
+		it("Success environment has been deployment - activate", function (done) {
+			req.soajs.inputmaskData = {
+				code: 'MIKE',
+				//rollback: false,
+				activate: true,
+				resume: true,
+			};
+			environment.model.findEntry = function (soajs, opts, cb) {
+				cb(null, {
+					pending: true,
+					error: true
+				});
+			};
+			environment.getDeploymentStatus(config, req, res, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+		
+		it("Success environment has been deployment - activate", function (done) {
+			req.soajs.inputmaskData = {
+				code: 'MIKE',
+				//rollback: false,
+				activate: false,
+				resume: true,
+			};
+			stubStatusUtils();
+			environment.getDeploymentStatus(config, req, res, function (error, body) {
+				assert.ok(body);
+				sinon.restore(status);
+				done();
+			});
+		});
+		
+		it("Success ", function (done) {
+			req.soajs.inputmaskData = {
+				code: 'MIKE',
+				//rollback: false,
+				activate: true,
+				resume: true,
+			};
+			environment.getDeploymentStatus(config, req, res, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+		
+		it("Success with id", function (done) {
+			req.soajs.inputmaskData = {
+				id: '1234',
+				//rollback: false,
+				activate: true,
+				resume: true,
+			};
+			environment.getDeploymentStatus(config, req, res, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+		it("Success with rollback", function (done) {
+			req.soajs.inputmaskData = {
+				id: '1234',
+				rollback: true,
+				activate: true,
+				resume: true,
+			};
+			environment.getDeploymentStatus(config, req, res, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+		
+	});
+	
+	describe("testing getTemplates", function () {
+		
+		it("Success", function (done) {
+			req.soajs.inputmaskData = {};
+			environment.getTemplates(config, req, res, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
 	});
 	
 	describe("testing Update deployer configuration", function () {
