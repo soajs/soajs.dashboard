@@ -488,21 +488,30 @@ var environmentRecord = {
 
 var lib = {
 	initBLModel : function(module, modelName, cb){
+		return cb(null, {
+			add : function (context, req, data, cb) {
+				return cb(null, true);
+			}
+		});
+	},
+	checkReturnError: function(req, {}, {}, cb){
 		return cb(null, true);
 	}
 };
+var context = {};
 describe("testing customReg.js", function () {
 	
 	describe("testing validate", function () {
-		var context = {
-			BL: BL,
-			environmentRecord: {},
-			template: {},
-			config: config,
-			errors: [],
-			opts: {  }
-		};
+		
 		it("fail no custom_registry", function (done) {
+			context = {
+				BL: BL,
+				environmentRecord: {},
+				template: {},
+				config: config,
+				errors: [],
+				opts: {  }
+			};
 			context.template.content = {};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
@@ -510,7 +519,7 @@ describe("testing customReg.js", function () {
 		});
 		
 		it("fail no inputs", function (done) {
-			context.template = template;
+			context.template = JSON.parse(JSON.stringify(template));
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
 			})
@@ -600,70 +609,139 @@ describe("testing customReg.js", function () {
 		
 	});
 	
-	// describe("testing deploy", function () {
-	// 	var context = {
-	// 		BL: BL,
-	// 		environmentRecord: {},
-	// 		template: template,
-	// 		config: config,
-	// 		errors: [],
-	// 		opts: {
-	// 			"stage": "database",
-	// 			"group": "pre",
-	// 			"stepPath": "custom_registry",
-	// 			"section": "custom_registry",
-	// 			"inputs": [
-	// 				{
-	// 					"name": "ciConfig",
-	// 					"locked": true,
-	// 					"plugged": false,
-	// 					"shared": true,
-	// 					"value": {
-	// 						"test1": true
-	// 					}
-	// 				},
-	// 				{
-	// 					"name": "ciConfig2",
-	// 					"locked": true,
-	// 					"plugged": false,
-	// 					"shared": true,
-	// 					"value": {
-	// 						"test2": true
-	// 					}
-	// 				},
-	// 				{
-	// 					"name": "ciConfig3",
-	// 					"locked": true,
-	// 					"plugged": false,
-	// 					"shared": true,
-	// 					"value": {
-	// 						"test3": true
-	// 					}
-	// 				}
-	// 			]
-	// 		}
-	// 	};
-	// 	it("success custom_registry already deployed", function (done) {
-	// 		context.template.deploy.database.pre.custom_registry.status = {
-	// 			done: true
-	// 		};
-	// 		utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
-	// 			done();
-	// 		})
-	// 	});
-	//
-	// 	it("success custom_registry", function (done) {
-	// 		context.template.deploy.database.pre.custom_registry.status = {
-	// 			done: false
-	// 		};
-	// 		utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
-	// 			done();
-	// 		})
-	// 	});
-	//
-	// });
-	//
-	// describe("testing rollback", function () {
-	//
-	// })
+	describe("testing deploy", function () {
+		
+		it("success custom_registry already deployed", function (done) {
+			context = {
+				BL: BL,
+				environmentRecord: {},
+				template: JSON.parse(JSON.stringify(template)),
+				config: config,
+				errors: [],
+				opts: {
+					"stage": "database",
+					"group": "pre",
+					"stepPath": "custom_registry",
+					"section": "custom_registry",
+					"inputs": [
+						{
+							"name": "ciConfig",
+							"locked": true,
+							"plugged": false,
+							"shared": true,
+							"value": {
+								"test1": true
+							}
+						},
+						{
+							"name": "ciConfig2",
+							"locked": true,
+							"plugged": false,
+							"shared": true,
+							"value": {
+								"test2": true
+							}
+						},
+						{
+							"name": "ciConfig3",
+							"locked": true,
+							"plugged": false,
+							"shared": true,
+							"value": {
+								"test3": true
+							}
+						}
+					]
+				}
+			};
+			context.template.deploy.database.pre.custom_registry.status = {
+				done: true
+			};
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
+
+		it("success custom_registry", function (done) {
+			context.template.deploy.database.pre.custom_registry.status = {
+				done: false
+			};
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
+		
+		it("success custom_registry with data", function (done) {
+			context.template.deploy.database.pre.custom_registry.status = {
+				done: false,
+				data: [
+					{
+						name: 'ciConfig',
+						value:
+							{
+								apiPrefix: 'cloud-api',
+								domain: 'herrontech.com',
+								protocol: 'https',
+								port: 443
+							}
+					},
+					{
+						name: 'ciConfig2', value: 'string value here ...'
+					},
+					{
+						name: 'ciConfig3',
+						value:
+							{
+								apiPrefix: 'dashboard-api',
+								domain: 'soajs.org',
+								protocol: 'https',
+								port: 443
+							}
+					}
+				]
+			};
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
+		
+		it("success custom_registry with malformed datadata", function (done) {
+			context.template.deploy.database.pre.custom_registry.status = {
+				done: false,
+				data: [
+					{
+						
+						value:
+							{
+								apiPrefix: 'cloud-api',
+								domain: 'herrontech.com',
+								protocol: 'https',
+								port: 443
+							}
+					},
+					{
+						 value: 'string value here ...'
+					},
+					{
+						
+						value:
+							{
+								apiPrefix: 'dashboard-api',
+								domain: 'soajs.org',
+								protocol: 'https',
+								port: 443
+							}
+					}
+				]
+			};
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
+
+	});
+
+	describe("testing rollback", function () {
+
+	})
 });
