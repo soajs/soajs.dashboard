@@ -61,7 +61,27 @@ var req = {
 				
 			}
 		},
-		inputmaskData: {}
+		inputmaskData: {},
+		validator: {
+			Validator: function () {
+				return {
+					validate: function (boolean) {
+						if (boolean) {
+							//valid
+							return {
+								errors: []
+							};
+						}
+						else {
+							//invalid
+							return {
+								errors: [{error: 'msg'}]
+							};
+						}
+					}
+				};
+			}
+		}
 	}
 };
 
@@ -309,7 +329,7 @@ it("Init environment model", function (done) {
 	});
 });
 
-describe("testing environment.js", function () {
+describe("testing index.js", function () {
 	
 	beforeEach(() => {
 		environment.model = mongoStub;
@@ -337,6 +357,7 @@ describe("testing environment.js", function () {
 		});
 
 	});
+	
 	describe("testing add environment", function () {
 		
 		it("Success add", function (done) {
