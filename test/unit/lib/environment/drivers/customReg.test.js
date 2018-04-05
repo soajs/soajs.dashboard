@@ -2,6 +2,7 @@
 var assert = require("assert");
 var async = require("async");
 var helper = require("../../../../helper.js");
+var config = require("../../../../../config.js");
 var utils = helper.requireModule('./lib/environment/drivers/customReg.js');
 var sinon = require('sinon');
 
@@ -72,19 +73,10 @@ var req = {
 		validator: {
 			Validator: function () {
 				return {
-					validate: function (boolean) {
-						if (boolean) {
-							//valid
-							return {
-								errors: []
-							};
-						}
-						else {
-							//invalid
-							return {
-								errors: [{error: 'msg'}]
-							};
-						}
+					validate: function () {
+						return {
+							errors: []
+						};
 					}
 				};
 			}
@@ -119,6 +111,7 @@ var mongoStub = {
 	}
 };
 var BL = {
+	customRegistry :{},
 	model: mongoStub
 };
 var template = {
@@ -493,18 +486,6 @@ var environmentRecord = {
 	profile: ''
 };
 
-var context = {
-	BL: BL,
-	environmentRecord: environmentRecord,
-	template: template,
-	config: {},
-	errors: [],
-	opts: { stage: 'database',
-		group: 'pre',
-		stepPath: 'custom_registry',
-		section: 'custom_registry',
-		inputs: [ ] }
-};
 var lib = {
 	initBLModel : function(module, modelName, cb){
 		return cb(null, true);
@@ -512,14 +493,177 @@ var lib = {
 };
 describe("testing customReg.js", function () {
 	
-	describe("testing validateDeploymentInputs", function () {
-		it("Success", function (done) {
-			//stubStatusUtils(null);
+	describe("testing validate", function () {
+		var context = {
+			BL: BL,
+			environmentRecord: {},
+			template: {},
+			config: config,
+			errors: [],
+			opts: {  }
+		};
+		it("fail no custom_registry", function (done) {
+			context.template.content = {};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
-				//assert.ok(body);
-				//sinon.restore(statusUtils);
 				done();
 			})
 		});
+		
+		it("fail no inputs", function (done) {
+			context.template = template;
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
+		
+		it("success", function (done) {
+			context.opts = {
+				"stage": "database",
+				"group": "pre",
+				"stepPath": "custom_registry",
+				"section": "custom_registry",
+				"inputs": [
+					{
+						"name": "ciConfig",
+						"locked": true,
+						"plugged": false,
+						"shared": true,
+						"value": {
+							"test1": true
+						}
+					},
+					{
+						"name": "ciConfig2",
+						"locked": true,
+						"plugged": false,
+						"shared": true,
+						"value": {
+							"test2": true
+						}
+					},
+					{
+						"name": "ciConfig3",
+						"locked": true,
+						"plugged": false,
+						"shared": true,
+						"value": {
+							"test3": true
+						}
+					}
+				]
+			};
+			context.environmentRecord = environmentRecord;
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
+		
+		it("fail validation", function (done) {
+			req.soajs.validator = {
+				Validator: function () {
+					return {
+						validate: function () {
+							return {
+								valid: false,
+								errors: [{error: 'msg'}]
+							};
+						}
+					};
+				}
+			};
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
+		
+		it("fail no custom_registry data with no name in all inputs", function (done) {
+			//stubStatusUtils(null);
+			context.template.content = {
+				custom_registry : {
+					data : [
+						{
+							test: 1
+						},
+						{
+							test: 2
+						},
+						{
+							test: 3
+						}
+					]
+				}
+			};
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
+		
 	});
+	
+	// describe("testing deploy", function () {
+	// 	var context = {
+	// 		BL: BL,
+	// 		environmentRecord: {},
+	// 		template: template,
+	// 		config: config,
+	// 		errors: [],
+	// 		opts: {
+	// 			"stage": "database",
+	// 			"group": "pre",
+	// 			"stepPath": "custom_registry",
+	// 			"section": "custom_registry",
+	// 			"inputs": [
+	// 				{
+	// 					"name": "ciConfig",
+	// 					"locked": true,
+	// 					"plugged": false,
+	// 					"shared": true,
+	// 					"value": {
+	// 						"test1": true
+	// 					}
+	// 				},
+	// 				{
+	// 					"name": "ciConfig2",
+	// 					"locked": true,
+	// 					"plugged": false,
+	// 					"shared": true,
+	// 					"value": {
+	// 						"test2": true
+	// 					}
+	// 				},
+	// 				{
+	// 					"name": "ciConfig3",
+	// 					"locked": true,
+	// 					"plugged": false,
+	// 					"shared": true,
+	// 					"value": {
+	// 						"test3": true
+	// 					}
+	// 				}
+	// 			]
+	// 		}
+	// 	};
+	// 	it("success custom_registry already deployed", function (done) {
+	// 		context.template.deploy.database.pre.custom_registry.status = {
+	// 			done: true
+	// 		};
+	// 		utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+	// 			done();
+	// 		})
+	// 	});
+	//
+	// 	it("success custom_registry", function (done) {
+	// 		context.template.deploy.database.pre.custom_registry.status = {
+	// 			done: false
+	// 		};
+	// 		utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+	// 			done();
+	// 		})
+	// 	});
+	//
+	// });
+	//
+	// describe("testing rollback", function () {
+	//
+	// })
 });
