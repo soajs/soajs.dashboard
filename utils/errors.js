@@ -321,11 +321,9 @@ var errors = {
 	"993": "Custom registry entry not found",
 	"994": "You are not allowed to modify or delete this custom registry entry",
 	"995": "Modifying a custom registry entry is only allowed in the environment where it was created",
-
 	"996": "At least one of the deployment's exposed ports conflicts with existing deployments",
-
 	"997": "Unable to get repository build or job logs",
-
+	"998": "A template with the same name already exists",
 	"999": "Limit Exceed, please upgrade your account"
 };
 

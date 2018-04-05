@@ -157,7 +157,9 @@ let template = {
 					"type": "service",
 					"category": "soajs",
 					"deploy": {
-						"recipes": ["SOAJS Controller Recipe"], //reduce available recipes to what is restricted by this list
+						"recipes": {
+							"available": ["SOAJS Controller Recipe"], //reduce available recipes to what is restricted by this list
+						},
 						"memoryLimit": 500,
 						"mode": "replicated",
 						"replicas": 1,
