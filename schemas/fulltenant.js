@@ -44,7 +44,7 @@ module.exports = {
 					},
 					"package": {"required": true, "type": "string", "format": "alphanumeric"},
 					"description": {"required": true, "type": "string"},
-					"TTL": {"type": "number", "min": 1, "required": true},
+					"_TTL": {"type": "number", "min": 1, "required": true},
 					"keys": {
 						"type": "array",
 						"uniqueItems": true,

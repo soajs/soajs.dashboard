@@ -63,11 +63,11 @@ var oneApiRoute = {
 				}
 			},
 			"_apiInfo": {
-				"requried": true,
+				"required": true,
 				"type": "object",
 				"properties": {
-					"l": {"type": "string", "requried": true},
-					"group": {"type": "string", "requried": true},
+					"l": {"type": "string", "required": true},
+					"group": {"type": "string", "required": true},
 					"groupMain": {"type": "boolean"}
 				}
 			},
@@ -277,7 +277,7 @@ var config = {
 									"^\/[a-zA-Z0-9_\.\-]+$": {
 										"type": "object",
 										"properties": {
-											"l": {"type": "string", "requried": true},
+											"l": {"type": "string", "required": true},
 											"mw": {
 												"type": "string",
 												"required": false,
@@ -368,9 +368,66 @@ var pckg = {
 	}
 };
 
+var contract = {
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"oneOf": [
+			{
+				"commonFields": {
+					"type": "object",
+					"additionalProperties": { "type": "object" }
+				}
+			},
+			{
+				"patternProperties": {
+					"^\b(get|post|put|del|delete)\b$": {
+						"type": "object",
+						"patternProperties": {
+							"^[_a-z\/][_a-zA-Z0-9\/:]*$": { //pattern to match an api route
+								"type": "object",
+								"required": true,
+								"properties": {
+									"_apiInfo": {
+										"required": true,
+										"type": "object",
+										"additionalProperties": false,
+										"properties": {
+											"l": {"type": "string", "required": true},
+											"group": {"type": "string", "required": true},
+											"groupMain": {"type": "boolean"}
+										}
+									},
+									"imfv": {
+										"type": "object",
+										"additionalProperties": false,
+										"properties": {
+											"commonFields": {
+												"type": "array",
+												"uniqueItems": true,
+												"items": {"type": "string", "required": true}
+											},
+											"custom": {
+												"type": "object",
+												"additionalProperties": { "type": "object" }
+											}
+										}
+									}
+								},
+								"additionalProperties": false
+							}
+						}
+					}
+				}
+			}
+		]
+	}
+};
+
 module.exports = {
 	"config": config,
 	"service": config.oneOf[0],
 	"daemon": config.oneOf[1],
-	"package": pckg
+	"package": pckg,
+	"contract": contract
 };

@@ -17,7 +17,7 @@ module.exports = {
 					"code": {"required": true, "type": "string", "format": "alphanumeric", "minLength": 4, "maxLength": 5},
 					"name": {"required": true, "type": "string"},
 					"description": {"required": true, "type": "string"},
-					"TTL": {"type": "number", "min": 1, "required": true},
+					"_TTL": {"type": "number", "min": 1, "required": true},
 					"acl": {"type": "object", "required": true}
 				}
 			}
