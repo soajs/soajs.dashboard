@@ -103,6 +103,11 @@ module.exports = {
 							"serviceAccount": {
 								"type": "object",
 								"required": false
+							},
+							"certificates":{
+								"type": "string",
+								"required": true,
+								"enum": ["none","optional","required"]
 							}
 						}
 					},
