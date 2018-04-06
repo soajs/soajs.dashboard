@@ -42,7 +42,7 @@ module.exports = {
 						"minLength": 4,
 						"maxLength": 5
 					},
-					"package": {"required": true, "type": "string", "format": "alphanumeric"},
+					"package": {"required": true, "type": "string", "pattern": "[A-Z0-9_]+"},
 					"description": {"required": true, "type": "string"},
 					"_TTL": {"type": "number", "min": 1, "required": true},
 					"keys": {
@@ -53,7 +53,7 @@ module.exports = {
 							"type": "object",
 							"additionalProperties": false,
 							"properties": {
-								"key": {"required": true, "type": "string"},
+								"key": {"required": false, "type": "string"},
 								"extKeys": {
 									"type": "array",
 									"uniqueItems": true,
@@ -62,14 +62,9 @@ module.exports = {
 										"type": "object",
 										"additionalProperties": false,
 										"properties": {
-											"device": {"anyOf": [{"type": "string"}, {"type": "null"}]},
-											"geo": {"anyOf": [{"type": "string"}, {"type": "null"}]},
-											"env": {
-												"type": "string",
-												"format": "alphanumeric",
-												"required": true
-											},
-											"expDate": {"type": "string"},
+											"device": {"anyOf": [{"type": "object"}, {"type": "null"}]},
+											"geo": {"anyOf": [{"type": "object"}, {"type": "null"}]},
+											"expDate": {"anyOf": [{"type": "string"}, {"type": "null"}]},
 											"dashboardAccess": {"type": "boolean"},
 										}
 									}

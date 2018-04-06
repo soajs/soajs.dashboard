@@ -368,59 +368,58 @@ var pckg = {
 	}
 };
 
+var apiMethodSchema = {
+	"type": "object",
+	"additionalProperties": false,
+	"patternProperties": {
+		"^[_a-z\/][_a-zA-Z0-9\/:]*$": { //pattern to match an api route
+			"type": "object",
+			"required": true,
+			"properties": {
+				"_apiInfo": {
+					"required": true,
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"l": {"type": "string", "required": true},
+						"group": {"type": "string", "required": true},
+						"groupMain": {"type": "boolean"}
+					}
+				},
+				"imfv": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"commonFields": {
+							"type": "array",
+							"uniqueItems": true,
+							"items": {"type": "string", "required": true}
+						},
+						"custom": {
+							"type": "object",
+							"additionalProperties": { "type": "object" }
+						}
+					}
+				}
+			},
+			"additionalProperties": false
+		}
+	}
+};
+
 var contract = {
 	"type": "object",
 	"additionalProperties": false,
 	"properties": {
-		"oneOf": [
-			{
-				"commonFields": {
-					"type": "object",
-					"additionalProperties": { "type": "object" }
-				}
-			},
-			{
-				"patternProperties": {
-					"^\b(get|post|put|del|delete)\b$": {
-						"type": "object",
-						"patternProperties": {
-							"^[_a-z\/][_a-zA-Z0-9\/:]*$": { //pattern to match an api route
-								"type": "object",
-								"required": true,
-								"properties": {
-									"_apiInfo": {
-										"required": true,
-										"type": "object",
-										"additionalProperties": false,
-										"properties": {
-											"l": {"type": "string", "required": true},
-											"group": {"type": "string", "required": true},
-											"groupMain": {"type": "boolean"}
-										}
-									},
-									"imfv": {
-										"type": "object",
-										"additionalProperties": false,
-										"properties": {
-											"commonFields": {
-												"type": "array",
-												"uniqueItems": true,
-												"items": {"type": "string", "required": true}
-											},
-											"custom": {
-												"type": "object",
-												"additionalProperties": { "type": "object" }
-											}
-										}
-									}
-								},
-								"additionalProperties": false
-							}
-						}
-					}
-				}
-			}
-		]
+		"commonFields": {
+			"type": "object",
+			"additionalProperties": { "type": "object" }
+		},
+		"get": apiMethodSchema,
+		"put": apiMethodSchema,
+		"post": apiMethodSchema,
+		"del": apiMethodSchema,
+		"delete": apiMethodSchema
 	}
 };
 
