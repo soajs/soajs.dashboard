@@ -115,8 +115,6 @@ module.exports = {
 				}
 			}
 		},
-		"type": {"type": "string", "enum": ["_import", "_template"]},
-		"expires": {"type": "string"},
 		"deploy": {
 			"type": "object",
 			"required": false,

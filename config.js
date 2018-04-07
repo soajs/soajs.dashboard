@@ -649,6 +649,14 @@ module.exports = {
 				}
 			},
 			
+			"/templates/upgrade": {
+				_apiInfo: {
+					"l": "Upgrade Old Templates",
+					"group": "Templates"
+				},
+				"commonFields": ['soajs_project']
+			},
+			
 			"/environment/status": {
 				_apiInfo: {
 					"l": "Get/Set Environment Deployment Status",
@@ -1732,7 +1740,7 @@ module.exports = {
 		
 		"post": {
 			
-			"/templates": {
+			"/templates/import": {
 				_apiInfo: {
 					"l": "Import Templates",
 					"group": "Templates"

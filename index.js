@@ -140,7 +140,23 @@ service.init(function () {
 	});
 	
 	/**
-	 * returns all templates that can be used to deploy an environment
+	 * run upgrade process on old template schemas
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/templates/upgrade", function (req, res) {
+		initBLModel(req, res, dashboardBL.templates.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.upgradeTemplates(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * remove a selected template by id
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
@@ -160,7 +176,7 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.post("/templates", function(req, res) {
+	service.post("/templates/import", function(req, res) {
 		initBLModel(req, res, dashboardBL.templates.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				
