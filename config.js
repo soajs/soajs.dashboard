@@ -633,12 +633,20 @@ module.exports = {
 				}
 			},
 			
-			"/environment/templates": {
+			"/templates": {
 				_apiInfo: {
-					"l": "Get Environment Deployment Templates",
-					"group": "Environment"
+					"l": "Get Templates",
+					"group": "Templates"
 				},
-				"commonFields": ['soajs_project']
+				"commonFields": ['soajs_project'],
+				"fullList": {
+					"required": false,
+					"default": false,
+					"source": ["query.fullList"],
+					"validation":{
+						"type": "boolean"
+					}
+				}
 			},
 			
 			"/environment/status": {
@@ -4515,6 +4523,14 @@ module.exports = {
 		},
 		
 		"delete": {
+			"/templates": {
+				_apiInfo: {
+					"l": "Delete Template",
+					"group": "Templates"
+				},
+				"commonFields": ['soajs_project', 'id']
+			},
+			
 			"/environment/delete": {
 				_apiInfo: {
 					"l": "Delete Environment",

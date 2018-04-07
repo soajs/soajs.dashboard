@@ -124,6 +124,38 @@ function checkConnection(BL, req, res, cb) {
 service.init(function () {
 	
 	/**
+	 * returns all templates that can be used to deploy an environment
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/templates", function (req, res) {
+		initBLModel(req, res, dashboardBL.templates.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.getTemplates(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * returns all templates that can be used to deploy an environment
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.delete("/templates", function (req, res) {
+		initBLModel(req, res, dashboardBL.templates.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.deleteTemplate(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
 	 * Upload a templated environment or post its correction inputs
 	 * @param {String} API route
 	 * @param {Function} API middleware
@@ -246,22 +278,6 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.get(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-	
-	/**
-	 * returns all templates that can be used to deploy an environment
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.get("/environment/templates", function (req, res) {
-		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.getTemplates(config, req, res, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

@@ -21,24 +21,24 @@ let commonDeploySchema = {
 	"type": "object",
 	"required": false,
 	"additionalProperties": false,
-	"properties":{
+	"properties": {
 		"pre": {
 			"type": "object",
-			"additionalProperties":{
+			"additionalProperties": {
 				"type": "object",
 				"required": true
 			}
 		},
 		"steps": {
 			"type": "object",
-			"additionalProperties":{
+			"additionalProperties": {
 				"type": "object",
 				"required": true
 			}
 		},
 		"post": {
 			"type": "object",
-			"additionalProperties":{
+			"additionalProperties": {
 				"type": "object",
 				"required": true
 			}
@@ -57,12 +57,12 @@ module.exports = {
 			"type": "object",
 			"required": false,
 			"additionalProperties": false,
-			"properties":{
+			"properties": {
 				"recipes": {
 					"type": "object",
 					"required": false,
 					"additionalProperties": false,
-					"properties":{
+					"properties": {
 						"ci": {
 							"type": "array",
 							"required": false,
@@ -98,7 +98,7 @@ module.exports = {
 						"repo": {
 							"type": "object",
 							"required": false,
-							"additionalProperties":{
+							"additionalProperties": {
 								"type": "object",
 								"required": true
 							}
@@ -106,7 +106,7 @@ module.exports = {
 						"resources": {
 							"type": "object",
 							"required": false,
-							"additionalProperties":{
+							"additionalProperties": {
 								"type": "object",
 								"required": true
 							}
@@ -115,6 +115,8 @@ module.exports = {
 				}
 			}
 		},
+		"type": {"type": "string", "enum": ["_import", "_template"]},
+		"expires": {"type": "string"},
 		"deploy": {
 			"type": "object",
 			"required": false,
