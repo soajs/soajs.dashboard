@@ -486,22 +486,11 @@ describe("testing index.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
-	describe("testing getTemplates", function () {
-		
-		it("Success", function (done) {
-			req.soajs.inputmaskData = {};
-			environment.getTemplates(config, req, res, function (error, body) {
-				assert.ok(body);
-				done();
-			});
-		});
-	});
-	
+
 	describe("testing Update deployer configuration", function () {
-		
+
 		it("Success removeCert", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, {
