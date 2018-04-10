@@ -208,11 +208,20 @@ service.init(function () {
 	service.post("/templates/export", function (req, res) {
 		initBLModel(req, res, dashboardBL.templates.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				//unzip file and process template first time
-				BL.export(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
+				if(req.soajs.inputmaskData.id){
+					//download template
+					BL.download(config, req, res, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
+				}
+				else{
+					//generate and download new template
+					BL.export(config, req, res, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
+				}
 			});
 		});
 	});

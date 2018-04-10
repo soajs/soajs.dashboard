@@ -1795,6 +1795,13 @@ module.exports = {
 						"items":{ "type": "string", "required": true }
 					}
 				},
+				"id": {
+					"source": ['body.id'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
 			},
 			
 			"/services/list": {

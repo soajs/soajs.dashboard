@@ -52,6 +52,7 @@ module.exports = {
 	"properties": {
 		"name": {"type": "string", "required": true},
 		"description": {"type": "string", "required": true},
+		"logo": {"type": "string", "required": false, "format": "uri"},
 		"link": {"type": "string", "required": false, "format": "uri"},
 		"content": {
 			"type": "object",
