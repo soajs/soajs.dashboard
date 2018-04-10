@@ -80,6 +80,7 @@ var errors = {
 	"480": "A template with the same name already exists",
 	"481": "Select at least one CI or Deployment Recipe or one endpoint to generate and export a template.",
 	"482": "Requested template does not exist!",
+	"483": "Error exporting endpoints. Some of the resources associated with your endpoints were not found!",
 	
 	"500": "This record is locked. You cannot delete it",
 	"501": "This record is locked. You cannot modify or delete it",
