@@ -6,29 +6,6 @@ var config = require("../../../../../config.js");
 var utils = helper.requireModule('./lib/environment/drivers/customReg.js');
 var sinon = require('sinon');
 
-function stubStatusUtils(error) {
-	sinon
-		.stub(statusUtils, 'custom_registry')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'products')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'tenants')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'secrets')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'repos')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'resources')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'thirdPartStep')
-		.yields(error, true);
-}
 var req = {
 	soajs: {
 		registry: {
@@ -491,6 +468,9 @@ var lib = {
 		return cb(null, {
 			add : function (context, req, data, cb) {
 				return cb(null, true);
+			},
+			delete : function (context, req, data, cb) {
+				return cb(null, true);
 			}
 		});
 	},
@@ -742,6 +722,137 @@ describe("testing customReg.js", function () {
 	});
 
 	describe("testing rollback", function () {
-
+		it("success custom_registry  ", function (done) {
+			context = {
+				BL: BL,
+				environmentRecord: {},
+				template: JSON.parse(JSON.stringify(template)),
+				config: config,
+				errors: [],
+				opts: {
+					"stage": "database",
+					"group": "pre",
+					"stepPath": "custom_registry",
+					"section": "custom_registry",
+					"inputs": [
+						{
+							"name": "ciConfig",
+							"locked": true,
+							"plugged": false,
+							"shared": true,
+							"value": {
+								"test1": true
+							}
+						},
+						{
+							"name": "ciConfig2",
+							"locked": true,
+							"plugged": false,
+							"shared": true,
+							"value": {
+								"test2": true
+							}
+						},
+						{
+							"name": "ciConfig3",
+							"locked": true,
+							"plugged": false,
+							"shared": true,
+							"value": {
+								"test3": true
+							}
+						}
+					]
+				}
+			};
+			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
+		
+		it("success custom_registry ", function (done) {
+			context = {
+				BL: BL,
+				environmentRecord: {},
+				template: JSON.parse(JSON.stringify(template)),
+				config: config,
+				errors: [],
+				opts: {
+					"stage": "database",
+					"group": "pre",
+					"stepPath": "custom_registry",
+					"section": "custom_registry",
+					"inputs": [
+						{
+							"name": "ciConfig",
+							"locked": true,
+							"plugged": false,
+							"shared": true,
+							"value": {
+								"test1": true
+							}
+						},
+						{
+							"name": "ciConfig2",
+							"locked": true,
+							"plugged": false,
+							"shared": true,
+							"value": {
+								"test2": true
+							}
+						},
+						{
+							"name": "ciConfig3",
+							"locked": true,
+							"plugged": false,
+							"shared": true,
+							"value": {
+								"test3": true
+							}
+						}
+					]
+				}
+			};
+			context.template.deploy.database.pre.custom_registry.status = {
+				done: true
+			};
+			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
+		
+		it("success custom_registry with data", function (done) {
+			context.template.deploy.database.pre.custom_registry.status = {
+				done: true,
+				data: [
+					{
+						name: 'ciConfig',
+						value:
+							{
+								apiPrefix: 'cloud-api',
+								domain: 'herrontech.com',
+								protocol: 'https',
+								port: 443
+							}
+					},
+					{
+						name: 'ciConfig2', value: 'string value here ...'
+					},
+					{
+						name: 'ciConfig3',
+						value:
+							{
+								apiPrefix: 'dashboard-api',
+								domain: 'soajs.org',
+								protocol: 'https',
+								port: 443
+							}
+					}
+				]
+			};
+			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
 	})
 });
