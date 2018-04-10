@@ -2,18 +2,20 @@
 
 module.exports = [
 	{
-		"name": "Empty Environment",
+		"name": "Blank Environment",
 		"type": "_template",
-		"description": "This templates allows creating a blank environment. You can deploy components in it later on.",
-		"link": "",
+		"description": "This templates will create a blank environment.",
+		"link": "https://soajsorg.atlassian.net/wiki/spaces/DSBRD/pages/400392194/Blank+Environment",
+		"logo": "modules/dashboard/templates/images/file-empty.png",
 		"content": {},
 		"deploy": {}
 	},
 	{
-		"name": "SOAJS Environment",
+		"name": "SOAJS Microservices Environment",
 		"type": "_template",
-		"description": "This template allows creating a SOAJS environment that contains the SOAJS API Gateway.",
-		"link": "",
+		"description": "This template will create an environment with SOAJS API Gateway configured, deployed & ready to use. You can leverage this environment to deploy microservices.",
+		"link": "https://soajsorg.atlassian.net/wiki/spaces/DSBRD/pages/400588803/SOAJS+Microservices+Environment",
+		"logo": "modules/dashboard/templates/images/soajs.png",
 		"content": {
 			"deployments": {
 				"repo": {
@@ -51,10 +53,11 @@ module.exports = [
 		}
 	},
 	{
-		"name": "SOAJS Environment + NGINX",
+		"name": "NGINX & SOAJS Microservices Environment",
 		"type": "_template",
-		"description": "This template allows creating a SOAJS environment that contains the SOAJS API Gateway and an NGINX server.",
-		"link": "",
+		"description": "This template will create an environment with Nginx & SOAJS API Gateway configured, deployed & ready to use. You can leverage this environment to deploy microservices & static content.",
+		"link": "https://soajsorg.atlassian.net/wiki/spaces/DSBRD/pages/400424978/NGINX+SOAJS+Microservices+Environment",
+		"logo": "modules/dashboard/templates/images/soajs-nginx.png",
 		"content": {
 			"deployments": {
 				"repo": {
@@ -110,10 +113,11 @@ module.exports = [
 		}
 	},
 	{
-		"name": "Portal Environment",
+		"name": "SOAJS Portal Environment",
 		"type": "_template",
-		"description": "This templates creates and deploys a PORTAL environment that contains the SOAJS API Gateway, URAC, oAuth & Nginx server",
-		"link": "",
+		"description": "This templates will create an environment with SOAJS PORTAL (SOAJS API Gateway, URAC, oAuth & Nginx) configured, deployed and ready to use.",
+		"link": "https://soajsorg.atlassian.net/wiki/spaces/DSBRD/pages/400457732/SOAJS+Portal+Environment",
+		"logo": "modules/dashboard/templates/images/soajs-portal.png",
 		"content": {
 			"productization": {
 				"data": [
