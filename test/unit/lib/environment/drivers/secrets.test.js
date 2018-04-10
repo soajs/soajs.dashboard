@@ -494,7 +494,7 @@ var lib = {
 
 describe("Testing secrets.js", function () {
 
-	describe.skip("Testing Validate", function () {
+	describe("Testing Validate", function () {
 
 		var context = {
 			BL: BL,
@@ -505,54 +505,78 @@ describe("Testing secrets.js", function () {
 			opts: {  }
 		};
 
+		beforeEach(() => {
+			context.template = JSON.parse(JSON.stringify(template));
+			context.environmentRecord = environmentRecord;
+			context.errors = [];
+		});
+
 		it("Fail no Secrets in content", function (done) {
 			context.template.content = {};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				assert.ok(context.errors);
 				assert.deepEqual(context.errors[0], {"code": 172, "msg": 'The template does not support deploying secrets'});
-				context.errors = [];
 				done();
 			});
 		});
 
 		it("Fail no Data in Secrets", function (done) {
-			context.template = template;
 			context.template.content.secrets = {};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				assert.ok(context.errors);
 				assert.deepEqual(context.errors[0], {"code": 172, "msg": 'The template does not support deploying secrets'});
-				context.errors = [];
 				done();
 			});
 		});
 
 		it("Fail Data is not of type array", function (done) {
-			context.template = template;
 			context.template.content.secrets.data = {};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				assert.ok(context.errors);
 				assert.deepEqual(context.errors[0], {"code": 172, "msg": 'The template does not support deploying secrets'});
-				context.errors = [];
 				done();
 			});
 		});
 
 		it("Fail no data in Data array", function (done) {
-			context.template = template;
 			context.template.content.secrets.data = [];
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				assert.ok(context.errors);
 				assert.deepEqual(context.errors[0], {"code": 172, "msg": 'The template does not support deploying secrets'});
-				context.errors = [];
+				done();
+			});
+		});
+
+		it("Fail no Inputs in OPTS", function (done) {
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.ok(context.errors);
+				assert.deepEqual(context.errors[0], {"code": 172, "msg": 'Mismatch between the number of inputs provided and the template entries in secrets!'});
+				done();
+			});
+		});
+
+		it("Fail Inputs in OPTS is not of type array", function (done) {
+			context.opts.inputs = {};
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.ok(context.errors);
+				assert.deepEqual(context.errors[0], {"code": 172, "msg": 'Mismatch between the number of inputs provided and the template entries in secrets!'});
+				done();
+			});
+		});
+
+		it("Fail Inputs in OPTS is has no entries", function (done) {
+			context.opts.inputs = [];
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.ok(context.errors);
+				assert.deepEqual(context.errors[0], {"code": 172, "msg": 'Mismatch between the number of inputs provided and the template entries in secrets!'});
 				done();
 			});
 		});
 
 		it("Success Validation", function (done) {
-			context.template = template;
+			context.opts.inputs = [{"name": "mike"}];
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
-				console.log(context.errors);
-				process.exit();
+				assert.deepEqual(context.errors.length, 0);
 				done();
 			});
 		});
