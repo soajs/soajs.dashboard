@@ -164,7 +164,7 @@ var template = {
 				}
 			]
 		},
-		"tenants": {
+		"tenant": {
 			"data": [
 				{
 					"code": "MIKE",
@@ -302,7 +302,7 @@ var template = {
 						readOnly: true
 					}
 				},
-				tenants: {
+				tenant: {
 					ui: {
 						readOnly: true
 					}
@@ -487,7 +487,7 @@ var errorTemplate = {
 				}
 			]
 		},
-		"tenants": {
+		"tenant": {
 			"data": [
 				{
 					"code": "MIKE",
@@ -595,7 +595,7 @@ var errorTemplate = {
 						"readOnly": true
 					}
 				},
-				"tenants": {
+				"tenant": {
 					"ui": {
 						"readOnly": true
 					}
@@ -691,7 +691,7 @@ describe("testing status.js", function () {
 	describe("testing resumeDeployment", function () {
 		it("Success", function (done) {
 			stubStatusUtils(null);
-			req.soajs.inputmaskData= {
+			req.soajs.inputmaskData = {
 				resume: true
 			};
 			utils.resumeDeployment(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)), function (err, body) {

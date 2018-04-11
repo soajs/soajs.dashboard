@@ -75,6 +75,7 @@ var req = {
 				return {
 					validate: function () {
 						return {
+							valid: true,
 							errors: []
 						};
 					}
@@ -111,8 +112,13 @@ var mongoStub = {
 	}
 };
 var BL = {
-	customRegistry :{},
-	model: mongoStub
+	customRegistry: {},
+	model: mongoStub,
+	cloud: {
+		secrets: {
+			module: {}
+		}
+	}
 };
 var template = {
 	"type": "_template",
@@ -488,22 +494,32 @@ var environmentRecord = {
 
 var lib = {
 	initBLModel : function(module, modelName, cb){
+		return cb(null, {
+			add : function (context, req, data, cb) {
+				return cb(null, true);
+			},
+			delete : function (context, req, data, cb) {
+				return cb(null, true);
+			}
+		});
+	},
+	checkReturnError: function(req, {}, {}, cb){
 		return cb(null, true);
 	}
+};
+
+var context = {
+	BL: BL,
+	environmentRecord: {},
+	template: {},
+	config: config,
+	errors: [],
+	opts: {}
 };
 
 describe("Testing secrets.js", function () {
 
 	describe("Testing Validate", function () {
-
-		var context = {
-			BL: BL,
-			environmentRecord: {},
-			template: {},
-			config: config,
-			errors: [],
-			opts: {  }
-		};
 
 		beforeEach(() => {
 			context.template = JSON.parse(JSON.stringify(template));
@@ -512,6 +528,7 @@ describe("Testing secrets.js", function () {
 		});
 
 		it("Fail no Secrets in content", function (done) {
+
 			context.template.content = {};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				assert.ok(context.errors);
@@ -573,6 +590,22 @@ describe("Testing secrets.js", function () {
 			});
 		});
 
+		it("Success Validation No Name in Data", function (done) {
+			context.template.content.secrets.data = [ { "nothing": "nothing" } ];
+			context.opts.inputs = [{"name": "mike"}];
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.deepEqual(context.errors.length, 0);
+				done();
+			});
+		});
+
+		it("Success Validationinput data is not object", function (done) {
+			context.opts.inputs = ["test"];
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			});
+		});
+
 		it("Success Validation", function (done) {
 			context.opts.inputs = [{"name": "mike"}];
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
@@ -580,13 +613,197 @@ describe("Testing secrets.js", function () {
 				done();
 			});
 		});
+
+		it("Success Validation kuberentes deployment", function (done) {
+			context.environmentRecord.deployer.selected = "container.kubernetes.local";
+			context.config = config;
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.deepEqual(context.errors.length, 0);
+				done();
+			});
+		});
+
+		it("Success Validation with errors", function (done) {
+			context.opts.inputs = [{"name": "mike"}];
+			req.soajs.validator = {
+				Validator: function () {
+					return {
+						validate: function () {
+							return {
+								errors: [{error: 'msg'}]
+							};
+						}
+					};
+				}
+			};
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				req.soajs.validator = {
+					Validator: function () {
+						return {
+							validate: function () {
+								return {
+									errors: []
+								};
+							}
+						};
+					}
+				};
+				done();
+			});
+		});
 	});
 
-	describe.skip("Testing Deploy", function () {
+	describe("Testing Deploy", function () {
+
+		beforeEach(() => {
+			context.template = JSON.parse(JSON.stringify(template));
+			context.environmentRecord = environmentRecord;
+			context.errors = [];
+		});
+
+		it("Success Previously Completed", function (done) {
+
+			context.opts.stage = "deployments";
+			context.opts.group = "steps";
+			context.opts.stepPath = "secrets";
+
+			context.template.deploy.deployments.steps.secrets.status = { "done": {} } ;
+
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.deepEqual(err, null);
+				assert.deepEqual(body, true);
+				done();
+			});
+		});
+
+		it("Success No Secrets to Create", function (done) {
+
+			context.opts.stage = "deployments";
+			context.opts.group = "steps";
+			context.opts.stepPath = "secrets";
+
+			context.template.content.secrets.data = [];
+
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			});
+		});
+
+		it("Success Previously Processed", function (done) {
+
+			context.opts.stage = "deployments";
+			context.opts.group = "steps";
+			context.opts.stepPath = "secrets";
+
+			context.template.deploy.deployments.steps.secrets.status = { "data": { "name": "mike" } } ;
+
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.deepEqual(err, null);
+				assert.deepEqual(body, true);
+				done();
+			});
+		});
+
+		it("Success Deploy", function (done) {
+
+			context.opts.stage = "deployments";
+			context.opts.group = "steps";
+			context.opts.stepPath = "secrets";
+
+			context.opts.inputs = [{"name": "mike"}];
+
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.deepEqual(err, null);
+				assert.deepEqual(body, true);
+				done();
+			});
+		});
 
 	});
 
-	describe.skip("Testing Rollback", function () {
+	describe("Testing Rollback", function () {
+
+		beforeEach(() => {
+			context.template = JSON.parse(JSON.stringify(template));
+			context.environmentRecord = environmentRecord;
+			context.errors = [];
+		});
+
+		it("Success Rollback No Status", function (done) {
+
+			context.opts.stage = "deployments";
+			context.opts.group = "steps";
+			context.opts.stepPath = "secrets";
+
+			context.opts.inputs = [{"name": "mike"}];
+
+			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.deepEqual(err, null);
+				assert.deepEqual(body, true);
+				done();
+			});
+		});
+
+		it("Success Rollback status not done", function (done) {
+
+			context.opts.stage = "deployments";
+			context.opts.group = "steps";
+			context.opts.stepPath = "secrets";
+
+			context.opts.inputs = [{"name": "mike"}];
+			context.template.deploy.deployments.steps.secrets.status = {  } ;
+			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.deepEqual(err, null);
+				assert.deepEqual(body, true);
+				done();
+			});
+		});
+
+		it("Success Rollback", function (done) {
+
+			context.opts.stage = "deployments";
+			context.opts.group = "steps";
+			context.opts.stepPath = "secrets";
+
+			context.opts.inputs = [{"name": "mike"}];
+
+			context.template.deploy.deployments.steps.secrets.status = { "done": {}, "data": { "name": "mike" } } ;
+
+			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.deepEqual(err, null);
+				assert.deepEqual(body, true);
+				done();
+			});
+		});
+
+		it("Success Rollback with error", function (done) {
+			context.opts.stage = "deployments";
+			context.opts.group = "steps";
+			context.opts.stepPath = "secrets";
+
+			context.opts.inputs = [{"name": "mike"}];
+
+			context.template.deploy.deployments.steps.secrets.status = { "done": {}, "data": { "name": "mike" } } ;
+			lib = {
+				initBLModel : function(module, modelName, cb){
+					return cb(null, {
+						add : function (context, req, data, cb) {
+							return cb(null, true);
+						},
+						delete : function (context, req, data, cb) {
+							return cb(true);
+						}
+					});
+				},
+				checkReturnError: function(req, {}, {}, cb){
+					return cb(null, true);
+				}
+			};
+			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
+				assert.deepEqual(body, true);
+				done();
+			});
+		});
 
 	});
 });

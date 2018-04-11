@@ -2,7 +2,7 @@
 var async = require("async");
 var helper = require("../../../../helper.js");
 var config = require("../../../../../config.js");
-var utils = helper.requireModule('./lib/environment/drivers/repos.js');
+var utils = helper.requireModule('./lib/environment/drivers/resources.js');
 
 var req = {
 	soajs: {
@@ -86,7 +86,9 @@ var mongoStub = {
 	}
 };
 var BL = {
-	customRegistry :{},
+	customRegistry :{
+		module : {}
+	},
 	model: mongoStub,
 	cd : {
 		module : {}
@@ -98,6 +100,12 @@ var BL = {
 		services :{
 			module :{}
 		},
+		resources :{
+			module :{}
+		}
+	},
+	resources: {
+		module : {}
 	}
 };
 var template = {
@@ -491,7 +499,16 @@ var lib = {
 			},
 			deleteService : function (context, req, data, cb) {
 				return cb(true);
-			}
+			},
+			addResource: function (context, req, data, cb) {
+				return cb(null, {_id: "1"});
+			},
+			setConfig: function (context, req, data, cb) {
+				return cb(null, true);
+			},
+			deleteResource: function (context, req, data, cb) {
+				return cb(true);
+			},
 		});
 	},
 	checkReturnError: function(req, {}, {}, cb){
@@ -499,7 +516,7 @@ var lib = {
 	}
 };
 var context = {};
-describe("testing repos.js", function () {
+describe("testing resources.js", function () {
 	
 	describe("testing validate", function () {
 		
@@ -507,47 +524,53 @@ describe("testing repos.js", function () {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
-				template: {
-					content : {}
-				},
+				template: {content :{}},
 				config: config,
 				errors: [],
 				opts:  {
 					"stage": "deployments",
 					"group": "steps",
-					"stepPath": "deployments.repo.controller",
+					"stepPath": "deployments.resources.nginx",
 					"section": [
 						"deployments",
-						"repo",
-						"controller"
+						"resources",
+						"nginx"
 					],
 					"inputs": [
 						{
-							"name": "controller",
-							"options": {
-								"deployConfig": {
-									"replication": {
-										"mode": "replicated",
-										"replicas": 1
+							"name": "nginx",
+							"type": "server",
+							"category": "nginx",
+							"locked": false,
+							"shared": false,
+							"plugged": false,
+							"config": null,
+							"deploy": {
+								"options": {
+									"deployConfig": {
+										"replication": {
+											"mode": "global"
+										},
+										"memoryLimit": 524288000
 									},
-									"memoryLimit": 524288000
+									"custom": {
+										"sourceCode": {},
+										"secrets": [
+											{
+												"name": "mike",
+												"mountPath": "/etc/soajs/certs",
+												"type": "certificate"
+											}
+										],
+										"name": "mynginx",
+										"type": "server"
+									},
+									"recipe": "5ab4d65bc261bdb38a9fe363",
+									"env": "MIKE"
 								},
-								"gitSource": {
-									"owner": "soajs",
-									"repo": "soajs.controller",
-									"branch": "master",
-									"commit": "468588b0a89e55020f26b805be0ff02e0f31a7d8"
-								},
-								"custom": {
-									"sourceCode": {},
-									"name": "controller",
-									"type": "service"
-								},
-								"recipe": "5ab4d65bc261bdb38a9fe363",
-								"env": "MIKE"
-							},
-							"deploy": true,
-							"type": "custom"
+								"deploy": true,
+								"type": "custom"
+							}
 						}
 					]
 				}
@@ -567,11 +590,11 @@ describe("testing repos.js", function () {
 				opts:  {
 					"stage": "deployments",
 					"group": "steps",
-					"stepPath": "deployments.repo.controller",
+					"stepPath": "deployments.resources.nginx",
 					"section": [
 						"deployments",
-						"repo",
-						"controller"
+						"resources",
+						"nginx"
 					],
 					"inputs": [
 					
@@ -594,11 +617,11 @@ describe("testing repos.js", function () {
 				opts:  {
 					"stage": "deployments",
 					"group": "steps",
-					"stepPath": "deployments.repo.controller",
+					"stepPath": "deployments.resources.nginx",
 					"section": [
 						"deployments",
-						"repo",
-						"controller"
+						"resources",
+						"nginx"
 					],
 					"inputs": [
 						"1"
@@ -620,39 +643,115 @@ describe("testing repos.js", function () {
 				opts:  {
 					"stage": "deployments",
 					"group": "steps",
-					"stepPath": "deployments.repo.controller",
+					"stepPath": "deployments.resources.nginx",
 					"section": [
 						"deployments",
-						"repo",
-						"controller"
+						"resources",
+						"nginx"
 					],
 					"inputs": [
 						{
-							"name": "controller",
-							"options": {
-								"deployConfig": {
-									"replication": {
-										"mode": "replicated",
-										"replicas": 1
+							"name": "nginx",
+							"type": "server",
+							"category": "nginx",
+							"locked": false,
+							"shared": false,
+							"plugged": false,
+							"config": null,
+							"deploy": {
+								"options": {
+									"deployConfig": {
+										"replication": {
+											"mode": "global"
+										},
+										"memoryLimit": 524288000
 									},
-									"memoryLimit": 524288000
+									"custom": {
+										"sourceCode": {},
+										"secrets": [
+											{
+												"name": "mike",
+												"mountPath": "/etc/soajs/certs",
+												"type": "certificate"
+											}
+										],
+										"name": "mynginx",
+										"type": "server"
+									},
+									"recipe": "5ab4d65bc261bdb38a9fe363",
+									"env": "MIKE"
 								},
-								"gitSource": {
-									"owner": "soajs",
-									"repo": "soajs.controller",
-									"branch": "master",
-									"commit": "468588b0a89e55020f26b805be0ff02e0f31a7d8"
+								"deploy": true,
+								"type": "custom"
+							}
+						}
+					]
+				}
+			};
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
+		
+		it("success with limit", function (done) {
+			context.template.content.deployments.resources.nginx.limit = 1;
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
+		
+		it("success with sharedEnv", function (done) {
+			context = {
+				BL: BL,
+				environmentRecord: environmentRecord,
+				template: JSON.parse(JSON.stringify(template)),
+				config: config,
+				errors: [],
+				opts:  {
+					"stage": "deployments",
+					"group": "steps",
+					"stepPath": "deployments.resources.nginx",
+					"section": [
+						"deployments",
+						"resources",
+						"nginx"
+					],
+					"inputs": [
+						{
+							"name": "nginx",
+							"type": "server",
+							"category": "nginx",
+							"locked": false,
+							"shared": false,
+							"plugged": false,
+							"config": null,
+							"sharedEnv": true,
+							"deploy": {
+								"options": {
+									"deployConfig": {
+										"replication": {
+											"mode": "global"
+										},
+										"memoryLimit": 524288000
+									},
+									"custom": {
+										"sourceCode": {},
+										"secrets": [
+											{
+												"name": "mike",
+												"mountPath": "/etc/soajs/certs",
+												"type": "certificate"
+											}
+										],
+										"name": "mynginx",
+										"type": "server"
+									},
+									"recipe": "5ab4d65bc261bdb38a9fe363",
+									"env": "MIKE"
 								},
-								"custom": {
-									"sourceCode": {},
-									"name": "controller",
-									"type": "service"
-								},
-								"recipe": "5ab4d65bc261bdb38a9fe363",
-								"env": "MIKE"
-							},
-							"deploy": true,
-							"type": "custom"
+								"deploy": true,
+								"type": "custom"
+							}
 						}
 					]
 				}
@@ -672,39 +771,47 @@ describe("testing repos.js", function () {
 				opts:  {
 					"stage": "deployments",
 					"group": "steps",
-					"stepPath": "deployments.repo.controller",
+					"stepPath": "deployments.resources.nginx",
 					"section": [
 						"deployments",
-						"repo",
-						"controller"
+						"resources",
+						"nginx"
 					],
 					"inputs": [
 						{
-							"name": "controller",
-							"options": {
-								"deployConfig": {
-									"replication": {
-										"mode": "replicated",
-										"replicas": 1
+							"name": "nginx",
+							"type": "server",
+							"category": "nginx",
+							"locked": false,
+							"shared": false,
+							"plugged": false,
+							"config": null,
+							"deploy": {
+								"options": {
+									"deployConfig": {
+										"replication": {
+											"mode": "global"
+										},
+										"memoryLimit": 524288000
 									},
-									"memoryLimit": 524288000
+									"custom": {
+										"sourceCode": {},
+										"secrets": [
+											{
+												"name": "mike",
+												"mountPath": "/etc/soajs/certs",
+												"type": "certificate"
+											}
+										],
+										"name": "mynginx",
+										"type": "server"
+									},
+									"recipe": "5ab4d65bc261bdb38a9fe363",
+									"env": "MIKE"
 								},
-								"gitSource": {
-									"owner": "soajs",
-									"repo": "soajs.controller",
-									"branch": "master",
-									"commit": "468588b0a89e55020f26b805be0ff02e0f31a7d8"
-								},
-								"custom": {
-									"sourceCode": {},
-									"name": "controller",
-									"type": "service"
-								},
-								"recipe": "5ab4d65bc261bdb38a9fe363",
-								"env": "MIKE"
-							},
-							"deploy": true,
-							"type": "custom"
+								"deploy": true,
+								"type": "custom"
+							}
 						}
 					]
 				}
@@ -729,49 +836,57 @@ describe("testing repos.js", function () {
 	
 	describe("testing deploy", function () {
 		
-		it("success repos already deployed", function (done) {
+		it("success resources already deployed", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts:   {
 					"stage": "deployments",
 					"group": "steps",
-					"stepPath": "deployments.repo.controller",
+					"stepPath": "deployments.resources.nginx",
 					"section": [
 						"deployments",
-						"repo",
-						"controller"
+						"resources",
+						"nginx"
 					],
 					"inputs": [
 						{
-							"name": "controller",
-							"options": {
-								"deployConfig": {
-									"replication": {
-										"mode": "replicated",
-										"replicas": 1
+							"name": "nginx",
+							"type": "server",
+							"category": "nginx",
+							"locked": false,
+							"shared": false,
+							"plugged": false,
+							"config": null,
+							"deploy": {
+								"options": {
+									"deployConfig": {
+										"replication": {
+											"mode": "global"
+										},
+										"memoryLimit": 524288000
 									},
-									"memoryLimit": 524288000
+									"custom": {
+										"sourceCode": {},
+										"secrets": [
+											{
+												"name": "mike",
+												"mountPath": "/etc/soajs/certs",
+												"type": "certificate"
+											}
+										],
+										"name": "mynginx",
+										"type": "server"
+									},
+									"recipe": "5ab4d65bc261bdb38a9fe363",
+									"env": "MIKE"
 								},
-								"gitSource": {
-									"owner": "soajs",
-									"repo": "soajs.controller",
-									"branch": "master",
-									"commit": "468588b0a89e55020f26b805be0ff02e0f31a7d8"
-								},
-								"custom": {
-									"sourceCode": {},
-									"name": "controller",
-									"type": "service"
-								},
-								"recipe": "5ab4d65bc261bdb38a9fe363",
-								"env": "MIKE"
-							},
-							"deploy": true,
-							"type": "custom"
+								"deploy": true,
+								"type": "custom"
+							}
 						}
 					]
 				}
@@ -783,8 +898,70 @@ describe("testing repos.js", function () {
 				done();
 			})
 		});
+		
+		it("success resources with shared env", function (done) {
+			context = {
+				BL: BL,
+				environmentRecord: environmentRecord,
+				template: JSON.parse(JSON.stringify(template)),
+				config: config,
+				errors: [],
+				opts:   {
+					"stage": "deployments",
+					"group": "steps",
+					"stepPath": "deployments.resources.nginx",
+					"section": [
+						"deployments",
+						"resources",
+						"nginx"
+					],
+					"inputs": [
+						{
+							"name": "nginx",
+							"type": "server",
+							"category": "nginx",
+							"locked": false,
+							"shared": false,
+							"plugged": false,
+							"sharedEnv": true,
+							"config": null,
+							"deploy": {
+								"options": {
+									"deployConfig": {
+										"replication": {
+											"mode": "global"
+										},
+										"memoryLimit": 524288000
+									},
+									"custom": {
+										"sourceCode": {},
+										"secrets": [
+											{
+												"name": "mike",
+												"mountPath": "/etc/soajs/certs",
+												"type": "certificate"
+											}
+										],
+										"name": "mynginx",
+										"type": "server"
+									},
+									"recipe": "5ab4d65bc261bdb38a9fe363",
+									"env": "MIKE"
+								},
+								"deploy": true,
+								"type": "custom"
+							}
+						}
+					]
+				}
+			};
+			delete context.template.deploy.deployments.steps["deployments.repo.controller"].status;
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
 
-		it("success repos", function (done) {
+		it("success resources no status", function (done) {
 			context.template.deploy.deployments.steps["deployments.repo.controller"].status = {
 				done: false
 			};
@@ -793,142 +970,108 @@ describe("testing repos.js", function () {
 			})
 		});
 		
-		it("success repos not controller", function (done) {
+		it("success resources with shared env", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts:   {
 					"stage": "deployments",
 					"group": "steps",
-					"stepPath": "deployments.repo.controller",
+					"stepPath": "deployments.resources.nginx",
 					"section": [
 						"deployments",
-						"repo",
-						"urac"
+						"resources",
+						"nginx"
 					],
 					"inputs": [
 						{
-							"name": "urac",
-							"options": {
-								"deployConfig": {
-									"replication": {
-										"mode": "replicated",
-										"replicas": 1
+							"name": "nginx",
+							"type": "server",
+							"category": "nginx",
+							"locked": false,
+							"shared": false,
+							"plugged": false,
+							"sharedEnv": true,
+							"config": null,
+							"deploy": {
+								"options": {
+									"deployConfig": {
+										"replication": {
+											"mode": "global"
+										},
+										"memoryLimit": 524288000
 									},
-									"memoryLimit": 524288000
+									"custom": {
+										"sourceCode": {},
+										"secrets": [
+											{
+												"name": "mike",
+												"mountPath": "/etc/soajs/certs",
+												"type": "certificate"
+											}
+										],
+										"name": "mynginx",
+										"type": "server"
+									},
+									"recipe": "5ab4d65bc261bdb38a9fe363",
+									"env": "MIKE"
 								},
-								"gitSource": {
-									"owner": "soajs",
-									"repo": "soajs.controller",
-									"branch": "master",
-									"commit": "468588b0a89e55020f26b805be0ff02e0f31a7d8"
-								},
-								"custom": {
-									"sourceCode": {},
-									"name": "controller",
-									"type": "service"
-								},
-								"recipe": "5ab4d65bc261bdb38a9fe363",
-								"env": "MIKE"
-							},
-							"deploy": true,
-							"type": "custom"
+								"deploy": true,
+								"type": "custom"
+							}
 						}
 					]
 				}
 			};
-			context.template.deploy.database.pre.custom_registry.status = {
-				done: false,
-				data: [
-					{
-						id: '1',
-						mode: "replicated"
-					},
-					{
-						id: '2',
-						mode: "replicated"
-					},
-				]
-			};
+			delete context.template.deploy.deployments.steps["deployments.repo.controller"].status;
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
 			})
 		});
 		
-		it("success repos not controller plus version", function (done) {
+		it("success resources with deploy inputs empty ", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts:   {
 					"stage": "deployments",
 					"group": "steps",
-					"stepPath": "deployments.repo.controller",
+					"stepPath": "deployments.resources.nginx",
 					"section": [
 						"deployments",
-						"repo",
-						"urac"
+						"resources",
+						"nginx"
 					],
 					"inputs": [
 						{
-							"name": "urac",
-							"options": {
-								"deployConfig": {
-									"replication": {
-										"mode": "replicated",
-										"replicas": 1
-									},
-									"memoryLimit": 524288000
-								},
-								"gitSource": {
-									"owner": "soajs",
-									"repo": "soajs.controller",
-									"branch": "master",
-									"commit": "468588b0a89e55020f26b805be0ff02e0f31a7d8"
-								},
-								"custom": {
-									"sourceCode": {},
-									"name": "controller",
-									"type": "service"
-								},
-								"recipe": "5ab4d65bc261bdb38a9fe363",
-								"env": "MIKE"
-							},
-							"deploy": true,
-							"type": "custom",
-							"version": "1"
+							"name": "nginx",
+							"type": "server",
+							"category": "nginx",
+							"locked": false,
+							"shared": false,
+							"plugged": false,
+							"sharedEnv": true,
+							"config": null,
+							"deploy": {}
 						}
 					]
 				}
-			};
-			context.template.deploy.database.pre.custom_registry.status = {
-				done: false,
-				data: [
-					{
-						id: '1',
-						mode: "replicated"
-					},
-					{
-						id: '2',
-						mode: "replicated"
-					},
-				]
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
 			})
 		});
 		
-
 	});
 
 	describe("testing rollback", function () {
-		it("success repos no status", function (done) {
+		it("success resources no status", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: {},
@@ -938,50 +1081,59 @@ describe("testing repos.js", function () {
 				opts: {
 					"stage": "deployments",
 					"group": "steps",
-					"stepPath": "deployments.repo.controller",
+					"stepPath": "deployments.resources.nginx",
 					"section": [
 						"deployments",
-						"repo",
-						"controller"
+						"resources",
+						"nginx"
 					],
 					"inputs": [
 						{
-							"name": "controller",
-							"options": {
-								"deployConfig": {
-									"replication": {
-										"mode": "replicated",
-										"replicas": 1
+							"name": "nginx",
+							"type": "server",
+							"category": "nginx",
+							"locked": false,
+							"shared": false,
+							"plugged": false,
+							"sharedEnv": true,
+							"config": null,
+							"deploy": {
+								"options": {
+									"deployConfig": {
+										"replication": {
+											"mode": "global"
+										},
+										"memoryLimit": 524288000
 									},
-									"memoryLimit": 524288000
+									"custom": {
+										"sourceCode": {},
+										"secrets": [
+											{
+												"name": "mike",
+												"mountPath": "/etc/soajs/certs",
+												"type": "certificate"
+											}
+										],
+										"name": "mynginx",
+										"type": "server"
+									},
+									"recipe": "5ab4d65bc261bdb38a9fe363",
+									"env": "MIKE"
 								},
-								"gitSource": {
-									"owner": "soajs",
-									"repo": "soajs.controller",
-									"branch": "master",
-									"commit": "468588b0a89e55020f26b805be0ff02e0f31a7d8"
-								},
-								"custom": {
-									"sourceCode": {},
-									"name": "controller",
-									"type": "service"
-								},
-								"recipe": "5ab4d65bc261bdb38a9fe363",
-								"env": "MIKE"
-							},
-							"deploy": true,
-							"type": "custom"
+								"deploy": true,
+								"type": "custom"
+							}
 						}
 					]
 				}
 			};
-			delete  context.template.deploy.deployments.steps["deployments.repo.controller"].status;
+			delete  context.template.deploy.deployments.steps["deployments.resources.nginx"].status;
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
 			})
 		});
 		
-		it("success repos not done", function (done) {
+		it("success resources not done", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -991,44 +1143,53 @@ describe("testing repos.js", function () {
 				opts:  {
 					"stage": "deployments",
 					"group": "steps",
-					"stepPath": "deployments.repo.controller",
+					"stepPath": "deployments.resources.nginx",
 					"section": [
 						"deployments",
-						"repo",
-						"controller"
+						"resources",
+						"nginx"
 					],
 					"inputs": [
 						{
-							"name": "controller",
-							"options": {
-								"deployConfig": {
-									"replication": {
-										"mode": "replicated",
-										"replicas": 1
+							"name": "nginx",
+							"type": "server",
+							"category": "nginx",
+							"locked": false,
+							"shared": false,
+							"plugged": false,
+							"sharedEnv": true,
+							"config": null,
+							"deploy": {
+								"options": {
+									"deployConfig": {
+										"replication": {
+											"mode": "global"
+										},
+										"memoryLimit": 524288000
 									},
-									"memoryLimit": 524288000
+									"custom": {
+										"sourceCode": {},
+										"secrets": [
+											{
+												"name": "mike",
+												"mountPath": "/etc/soajs/certs",
+												"type": "certificate"
+											}
+										],
+										"name": "mynginx",
+										"type": "server"
+									},
+									"recipe": "5ab4d65bc261bdb38a9fe363",
+									"env": "MIKE"
 								},
-								"gitSource": {
-									"owner": "soajs",
-									"repo": "soajs.controller",
-									"branch": "master",
-									"commit": "468588b0a89e55020f26b805be0ff02e0f31a7d8"
-								},
-								"custom": {
-									"sourceCode": {},
-									"name": "controller",
-									"type": "service"
-								},
-								"recipe": "5ab4d65bc261bdb38a9fe363",
-								"env": "MIKE"
-							},
-							"deploy": true,
-							"type": "custom"
+								"deploy": true,
+								"type": "custom"
+							}
 						}
 					]
 				}
 			};
-			context.template.deploy.deployments.steps["deployments.repo.controller"].status = {
+			context.template.deploy.deployments.steps["deployments.resources.nginx"].status = {
 				done: false
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
@@ -1036,54 +1197,63 @@ describe("testing repos.js", function () {
 			})
 		});
 		
-		it("success repos ", function (done) {
+		it("success resources no data ", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: {},
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts: {
+				opts:  {
 					"stage": "deployments",
 					"group": "steps",
-					"stepPath": "deployments.repo.controller",
+					"stepPath": "deployments.resources.nginx",
 					"section": [
 						"deployments",
-						"repo",
-						"controller"
+						"resources",
+						"nginx"
 					],
 					"inputs": [
 						{
-							"name": "controller",
-							"options": {
-								"deployConfig": {
-									"replication": {
-										"mode": "replicated",
-										"replicas": 1
+							"name": "nginx",
+							"type": "server",
+							"category": "nginx",
+							"locked": false,
+							"shared": false,
+							"plugged": false,
+							"sharedEnv": true,
+							"config": null,
+							"deploy": {
+								"options": {
+									"deployConfig": {
+										"replication": {
+											"mode": "global"
+										},
+										"memoryLimit": 524288000
 									},
-									"memoryLimit": 524288000
+									"custom": {
+										"sourceCode": {},
+										"secrets": [
+											{
+												"name": "mike",
+												"mountPath": "/etc/soajs/certs",
+												"type": "certificate"
+											}
+										],
+										"name": "mynginx",
+										"type": "server"
+									},
+									"recipe": "5ab4d65bc261bdb38a9fe363",
+									"env": "MIKE"
 								},
-								"gitSource": {
-									"owner": "soajs",
-									"repo": "soajs.controller",
-									"branch": "master",
-									"commit": "468588b0a89e55020f26b805be0ff02e0f31a7d8"
-								},
-								"custom": {
-									"sourceCode": {},
-									"name": "controller",
-									"type": "service"
-								},
-								"recipe": "5ab4d65bc261bdb38a9fe363",
-								"env": "MIKE"
-							},
-							"deploy": true,
-							"type": "custom"
+								"deploy": true,
+								"type": "custom"
+							}
 						}
 					]
 				}
 			};
-			context.template.deploy.deployments.steps["deployments.repo.controller"].status = {
+			context.template.deploy.deployments.steps["deployments.resources.nginx"].status = {
 				done: true
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
@@ -1091,19 +1261,14 @@ describe("testing repos.js", function () {
 			})
 		});
 		
-		it("success repos with data", function (done) {
-			context.template.deploy.deployments.steps["deployments.repo.controller"].status = {
+		it("success resources with data", function (done) {
+			context.template.deploy.deployments.steps["deployments.resources.nginx"].status = {
 				done: true,
-				data: [
-					{
-						id: '1',
-						mode: "replicated"
-					},
-					{
-						id: '2',
-						mode: "replicated"
-					},
-				]
+				data: {
+					id: '1',
+					mode: "replicated",
+					db: "123"
+				}
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
