@@ -1,10 +1,8 @@
 "use strict";
-var assert = require("assert");
 var async = require("async");
 var helper = require("../../../../helper.js");
 var config = require("../../../../../config.js");
 var utils = helper.requireModule('./lib/environment/drivers/customReg.js');
-var sinon = require('sinon');
 
 var req = {
 	soajs: {
@@ -722,6 +720,7 @@ describe("testing customReg.js", function () {
 	});
 
 	describe("testing rollback", function () {
+		
 		it("success custom_registry  ", function (done) {
 			context = {
 				BL: BL,
