@@ -87,7 +87,7 @@ describe("testing predefinedSteps.js", function () {
 		
 		it("Success tenants deploy", function (done) {
 			stubStatusUtils();
-			utils.tenants.deploy(req, context, function (error, body) {
+			utils.tenant.deploy(req, context, function (error, body) {
 				assert.ok(body);
 				sinon.restore(statusUtils);
 				done();
@@ -97,7 +97,7 @@ describe("testing predefinedSteps.js", function () {
 		
 		it("Success tenants rollback", function (done) {
 			stubStatusUtils();
-			utils.tenants.rollback(req, context, function (error, body) {
+			utils.tenant.rollback(req, context, function (error, body) {
 				assert.ok(body);
 				sinon.restore(statusUtils);
 				done();

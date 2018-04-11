@@ -161,7 +161,7 @@ var template = {
 				}
 			]
 		},
-		"tenants": {
+		"tenant": {
 			"data": [
 				{
 					"code": "MIKE",
@@ -299,7 +299,7 @@ var template = {
 						readOnly: true
 					}
 				},
-				tenants: {
+				tenant: {
 					ui: {
 						readOnly: true
 					}
