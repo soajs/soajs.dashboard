@@ -4,7 +4,6 @@ var helper = require("../../../../helper.js");
 var config = require("../../../../../config.js");
 var utils = helper.requireModule('./lib/environment/drivers/products.js');
 
-
 var req = {
 	soajs: {
 		registry: {
