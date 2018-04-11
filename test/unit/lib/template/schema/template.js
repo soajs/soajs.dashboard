@@ -17,7 +17,7 @@ let template = {
             ],
             "deployment": [
                 {
-                    "name": "DAAS Service Recipe",
+                    "name": "DAAS Service Recipe1",
                     "recipe": {
                         "deployOptions": {},
                         "buildOptions": {}
@@ -52,6 +52,291 @@ let template = {
                         "domain": "soajs.org",
                         "protocol": "https",
                         "port": 443
+                    }
+                }
+            ]
+        },
+
+        "endpoints": {
+            "data": [
+                {
+                    "type" : "service",
+                    "models" : {
+                        "path" : "ToBeSetInEp",
+                        "name" : "soap"
+                    },
+                    "injection" : true,
+                    "serviceGroup" : "soapEp",
+                    "serviceName" : "test",
+                    "servicePort" : 1111,
+                    "serviceVersion" : 1,
+                    "requestTimeout" : 50,
+                    "requestTimeoutRenewal" : 5,
+                    "authentications" : [
+                        {
+                            "name" : "None",
+                            "category" : "N/A"
+                        },
+                        {
+                            "name" : "soap",
+                            "category" : "soapbasicauth",
+                            "isDefault" : true
+                        }
+                    ],
+                    "prerequisites" : {
+
+                    },
+                    "swaggerInput" : "",
+                    "schema" : {
+                        "post" : {
+                            "/GetDatabases" : {
+                                "_apiInfo" : {
+                                    "l" : "List the databases available on the MI Server.",
+                                    "group" : "granta_group"
+                                },
+                                "imfv" : {
+                                    "commonFields" : [
+
+                                    ],
+                                    "custom" : {
+
+                                    }
+                                }
+                            },
+                            "/GetTables" : {
+                                "_apiInfo" : {
+                                    "l" : "List the tables contained in a particular MI Database.",
+                                    "group" : "granta_group"
+                                },
+                                "imfv" : {
+                                    "commonFields" : [
+
+                                    ],
+                                    "custom" : {
+                                        "tableFilter" : {
+                                            "required" : false,
+                                            "source" : [
+                                                "params.tableFilter",
+                                                "query.tableFilter",
+                                                "body.tableFilter"
+                                            ],
+                                            "validation" : {
+                                                "type" : "string",
+                                                "enum" : [
+                                                    "NoFilter",
+                                                    "MaterialsTablesOnly",
+                                                    "ProcessesTablesOnly",
+                                                    "SubstancesTablesOnly",
+                                                    "LegislationsTablesOnly",
+                                                    "TransportTypesTablesOnly",
+                                                    "RegionsTablesOnly",
+                                                    "EndOfLifeOptionsTablesOnly",
+                                                    "EnergyConversionOptionsTablesOnly",
+                                                    "CoatingsTablesOnly",
+                                                    "PartsTablesOnly",
+                                                    "InHouseTablesOnly",
+                                                    "SequenceSpecificationsTablesOnly",
+                                                    "ElementsTablesOnly",
+                                                    "UniverseTablesOnly",
+                                                    "ProducersTablesOnly",
+                                                    "ShapeTablesOnly",
+                                                    "ReferenceTablesOnly",
+                                                    "MobileUseTypesTablesOnly"
+                                                ]
+                                            }
+                                        },
+                                        "dbKey" : {
+                                            "required" : false,
+                                            "source" : [
+                                                "params.dbKey",
+                                                "query.dbKey",
+                                                "body.dbKey"
+                                            ],
+                                            "validation" : {
+                                                "type" : "string"
+                                            }
+                                        },
+                                        "attributeSelectors" : {
+                                            "required" : false,
+                                            "source" : [
+                                                "params.attributeSelectors",
+                                                "query.attributeSelectors",
+                                                "body.attributeSelectors"
+                                            ],
+                                            "validation" : {
+                                                "type" : "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "errors" : {
+                        "400" : "invalid input",
+                        "401" : "invalid id",
+                        "402" : "store is empty"
+                    },
+                    "defaultAuthentication" : "Granta"
+                },
+                {
+                    "type" : "service",
+                    "models" : {
+                        "path" : "setInEndpoint",
+                        "name" : "rest"
+                    },
+                    "injection" : true,
+                    "serviceGroup" : "books",
+                    "serviceName" : "test2",
+                    "servicePort" : 1112,
+                    "serviceVersion" : 1,
+                    "requestTimeout" : 30,
+                    "requestTimeoutRenewal" : 5,
+                    "oauth" : true,
+                    "extKeyRequired" : true,
+                    "authentications" : [
+                        {
+                            "name" : "None",
+                            "category" : "N/A",
+                            "isDefault" : true
+                        }
+                    ],
+                    "defaultAuthentication" : "None",
+                    "prerequisites" : {
+
+                    },
+                    "swaggerInput" : "swagger: '2.0'\ninfo:\n    version: 1.0.0\n    title: magazines\nhost: localhost\nbasePath: /magazines\nschemes:\n    - http\npaths:\n    /list:\n        get:\n            tags:\n                - magazines\n            summary: 'get all magazines'\n            operationId: getallmagazines\n            parameters:\n                -\n                    name: start\n                    required: true\n                    in: query\n                    type: integer\n                -\n                    name: limit\n                    required: true\n                    in: query\n                    type: integer\n    /:\n        get:\n            tags:\n                - magazines\n            summary: 'get one magazine'\n            operationId: getonemagazine\n            parameters:\n                -\n                    $ref: '#/parameters/id'\n        post:\n            tags:\n                - magazines\n            summary: 'Add a new magazine'\n            operationId: Addanewmagazine\n            parameters:\n                -\n                    $ref: '#/parameters/data'\n        delete:\n            tags:\n                - magazines\n            summary: 'delete magazine'\n            operationId: deletemagazine\n            parameters:\n                -\n                    $ref: '#/parameters/id'\n        put:\n            tags:\n                - magazines\n            summary: 'Update an existing magazine'\n            operationId: Updateanexistingmagazine\n            parameters:\n                -\n                    $ref: '#/parameters/id'\n                -\n                    $ref: '#/parameters/data'\nparameters:\n    id:\n        name: id\n        required: true\n        in: path\n        type: string\n    data:\n        name: data\n        required: true\n        in: body\n        schema:\n            type: object\n            properties:\n                title:\n                    type: string\n                number:\n                    type: integer\n                date:\n                    type: string\n            required:\n                - title\n                - number\n                - date\n",
+                    "schema" : {
+                        "commonFields" : {
+                            "id" : {
+                                "required" : true,
+                                "source" : [
+                                    "params.id"
+                                ],
+                                "validation" : {
+                                    "type" : "string"
+                                }
+                            },
+                            "data" : {
+                                "required" : true,
+                                "source" : [
+                                    "body.data"
+                                ],
+                                "validation" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "title" : {
+                                            "required" : true,
+                                            "type" : "string"
+                                        },
+                                        "number" : {
+                                            "required" : true,
+                                            "type" : "integer"
+                                        },
+                                        "date" : {
+                                            "required" : true,
+                                            "type" : "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "get" : {
+                            "/list" : {
+                                "_apiInfo" : {
+                                    "group" : "magazines",
+                                    "l" : "get all magazines"
+                                },
+                                "imfv" : {
+                                    "custom" : {
+                                        "start" : {
+                                            "required" : true,
+                                            "source" : [
+                                                "query.start"
+                                            ],
+                                            "validation" : {
+                                                "type" : "integer"
+                                            }
+                                        },
+                                        "limit" : {
+                                            "required" : true,
+                                            "source" : [
+                                                "query.limit"
+                                            ],
+                                            "validation" : {
+                                                "type" : "integer"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "/" : {
+                                "_apiInfo" : {
+                                    "l" : "get one magazine",
+                                    "group" : "magazines"
+                                },
+                                "imfv" : {
+                                    "commonFields" : [
+                                        "id"
+                                    ],
+                                    "custom" : {
+
+                                    }
+                                }
+                            }
+                        },
+                        "post" : {
+                            "/" : {
+                                "_apiInfo" : {
+                                    "group" : "magazines",
+                                    "l" : "Add a new magazine"
+                                },
+                                "imfv" : {
+                                    "custom" : {
+
+                                    },
+                                    "commonFields" : [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        },
+                        "delete" : {
+                            "/" : {
+                                "_apiInfo" : {
+                                    "group" : "magazines",
+                                    "l" : "delete magazine"
+                                },
+                                "imfv" : {
+                                    "custom" : {
+
+                                    },
+                                    "commonFields" : [
+                                        "id"
+                                    ]
+                                }
+                            }
+                        },
+                        "put" : {
+                            "/" : {
+                                "_apiInfo" : {
+                                    "group" : "magazines",
+                                    "l" : "Update an existing magazine"
+                                },
+                                "imfv" : {
+                                    "custom" : {
+
+                                    },
+                                    "commonFields" : [
+                                        "id",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "errors" : {
+
                     }
                 }
             ]
@@ -156,42 +441,21 @@ let template = {
                     "name": "controller",
                     "type": "service",
                     "category": "soajs",
+                    "gitSource" :{
+                        "provider" : "test",
+                        "owner" : "test",
+                        "repo" : "test/test"
+                    },
                     "deploy": {
                         "recipes": {
-                            "available": ["SOAJS Controller Recipe"], //reduce available recipes to what is restricted by this list
+                            "available": ["DAAS Service Recipe1"], //reduce available recipes to what is restricted by this list
+                            "default" : 'DAAS Service Recipe1'
                         },
                         "memoryLimit": 500,
                         "mode": "replicated",
                         "replicas": 1,
                         "cpu": 0.5
                     }
-                },
-                "urac": {
-                    "label": "User Registration & ACL",
-                    "name": "urac",
-                    "type": "service",
-                    "category": "soajs",
-                    "deploy": {
-                        "recipes": ["SOAJS Service Recipe"],
-                        "memoryLimit": 500,
-                        "mode": "replicated",
-                        "replicas": 1,
-                        "cpu": 0.5
-                    }
-                },
-                "my_service": {
-                    "label": "My Custom Made Service",
-                    "name": "my_service",
-                    "type": "service",
-                    "category": "soajs",
-                    "deploy": {
-                        "recipes": ["SOAJS Service Recipe"],
-                        "memoryLimit": 500,
-                        "mode": "replicated",
-                        "replicas": 1,
-                        "cpu": 0.5
-                    },
-                    "strategy": "update"
                 }
             },
             "resources": {
@@ -202,8 +466,8 @@ let template = {
                     "ui": "${REF:resources/drivers/server/nginx}",
                     "deploy": {
                         "recipes": {
-                            "available": ["Nginx Recipe with SSL", "Nginx Recipe"],
-                            "default": "Nginx Recipe with SSL"
+                            "available" : ["DAAS Service Recipe1"],
+                            "default" : "DAAS Service Recipe1"
                         },
                         "memoryLimit": 500,
                         "mode": "global",
