@@ -476,6 +476,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				var data2 = util.cloneObj(validEnvRecord);
 				data2.code = 'STG';
 				data2.services.config.session.proxy = "true";
+				data2.templateId = "5acf46c4af4cd3a45f21e1eb";
 				delete data2._id;
 				var params = {
 					form: {
@@ -484,13 +485,14 @@ describe("DASHBOARD Integration Tests:", function () {
 								code: "STG",
 							},
 							deploy: {
-								selectedDriver : 'docker'
+								// selectedDriver : 'docker'
 							},
 							controller: {}
 						},
 						data: data2,
 					}
 				};
+
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
 					assert.ok(body.data);
 					done();
@@ -501,6 +503,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				var data3 = util.cloneObj(validEnvRecord);
 				data3.code = 'PROD';
 				data3.services.config.session.proxy = "false";
+				data3.templateId = "5acf46c4af4cd3a45f21e1eb";
 				var params = {
 					form: {
 						template: {
@@ -508,7 +511,7 @@ describe("DASHBOARD Integration Tests:", function () {
 								code: "PROD",
 							},
 							deploy: {
-								selectedDriver : 'docker'
+								// selectedDriver : 'docker'
 							}
 						},
 						data: data3
@@ -523,6 +526,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			it("success - will add testKubLocal environment", function (done) {
 				var data4 = util.cloneObj(qaEnvRecord);
 				data4.code = 'testKubLocal';
+				data4.templateId = "5acf46c4af4cd3a45f21e1eb";
 				data4.deploy = {
 					"type": "container",
 					"selectedDriver" : 'kubernetes',
@@ -541,7 +545,7 @@ describe("DASHBOARD Integration Tests:", function () {
 								code: "testKubLocal",
 							},
 							deploy: {
-								selectedDriver : 'kubernetes'
+								// selectedDriver : 'kubernetes'
 							}
 						},
 						data: data4
@@ -556,6 +560,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			it("success - will add testKubRemote environment", function (done) {
 				var data5 = util.cloneObj(qaEnvRecord);
 				data5.code = 'testKubRemote';
+				data5.templateId = "5acf46c4af4cd3a45f21e1eb";
 				data5.deploy = {
 					"type": "container",
 					"selectedDriver" : 'kubernetes',
@@ -579,7 +584,7 @@ describe("DASHBOARD Integration Tests:", function () {
 								code: "testKubRemote",
 							},
 							deploy: {
-								selectedDriver : 'kubernetes'
+								// selectedDriver : 'kubernetes'
 							}
 						},
 						data: data5
@@ -594,6 +599,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			it("success - will add testDockerLocal environment", function (done) {
 				var data6 = util.cloneObj(qaEnvRecord);
 				data6.code = 'testDockerLocal';
+				data6.templateId = "5acf46c4af4cd3a45f21e1eb";
 				data6.deploy = {
 					"type": "container",
 					"selectedDriver" : 'docker',
@@ -616,7 +622,7 @@ describe("DASHBOARD Integration Tests:", function () {
 								code: "testDockerLocal",
 							},
 							deploy: {
-								selectedDriver : 'docker'
+								// selectedDriver : 'docker'
 							}
 						},
 						data: data6
@@ -631,6 +637,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			it("success - will add testDockerRemote environment", function (done) {
 				var data7 = util.cloneObj(qaEnvRecord);
 				data7.code = 'testDockerRemote';
+				data7.templateId = "5acf46c4af4cd3a45f21e1eb";
 				data7.deploy = {
 					"type": "container",
 					"selectedDriver" : 'docker',
@@ -655,7 +662,7 @@ describe("DASHBOARD Integration Tests:", function () {
 								code: "testDockerRemote",
 							},
 							deploy: {
-								selectedDriver : 'docker'
+								// selectedDriver : 'docker'
 							}
 						},
 						data: data7
@@ -675,7 +682,7 @@ describe("DASHBOARD Integration Tests:", function () {
 								code: "testDockerRemote",
 							},
 							deploy: {
-								selectedDriver : 'docker'
+								// selectedDriver : 'docker'
 							}
 						},
 						data: {
@@ -697,15 +704,15 @@ describe("DASHBOARD Integration Tests:", function () {
 								code: "testDockerRemote",
 							},
 							deploy: {
-								selectedDriver : 'docker'
+								// selectedDriver : 'docker'
 							}
 						},
 						data: validEnvRecord
 					}
 				};
+				params.form.data.templateId = "5acf46c4af4cd3a45f21e1eb";
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
 					assert.deepEqual(body.errors.details[0], {"code": 403, "message": errorCodes[403]});
-
 					done();
 				});
 			});
@@ -720,6 +727,7 @@ describe("DASHBOARD Integration Tests:", function () {
 					var tester = util.cloneObj(validEnvRecord);
 					delete tester.profile;
 					delete tester._id;
+					delete tester.templateId;
 					assert.deepEqual(envRecord, tester);
 					mongo.findOne('environment', {'code': 'QA'}, function (error, qaRecord) {
 						assert.ifError(error);

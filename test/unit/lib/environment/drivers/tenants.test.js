@@ -1,34 +1,8 @@
 "use strict";
-var assert = require("assert");
 var async = require("async");
 var helper = require("../../../../helper.js");
 var config = require("../../../../../config.js");
 var utils = helper.requireModule('./lib/environment/drivers/tenants.js');
-var sinon = require('sinon');
-
-function stubStatusUtils(error) {
-	sinon
-		.stub(statusUtils, 'custom_registry')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'products')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'tenants')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'secrets')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'repos')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'resources')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'thirdPartStep')
-		.yields(error, true);
-}
 
 var req = {
 	soajs: {
@@ -135,6 +109,9 @@ var BL = {
 	},
 	products: {
 		module: {}
+	},
+	tenants: {
+		module: {}
 	}
 };
 var template = {
@@ -204,12 +181,85 @@ var template = {
 					"code": "MIKE",
 					"name": "Mike Tenant",
 					"description": "Mike Tenant Description",
+					"oauth": {
+						"secret": "skdasldf",
+						"redirectURI": "",
+						"grants": [
+							"passwo34234rd",
+							"refresh_token"
+						]
+					},
 					"applications": [
 						{
 							"product": "MIKE",
 							"package": "MIKE_MAIN",
 							"description": "Mike main application",
 							"_TTL": 2160000.0,
+							"acl": {},
+							"keys": [
+								{
+									"extKeys": [
+										{
+											"device": {},
+											"geo": {},
+											"dashboardAccess": false,
+											"expDate": null
+										}
+									],
+									"config": {
+										"urac": {
+											link : {
+												"addUser": "http://%domain%/#/setNewPassword",
+											}
+										}
+									}
+								}
+							]
+						},
+						{
+							"product": "MIKE",
+							"package": "MIKE_USER",
+							"description": "Mike Logged In user Application",
+							"_TTL": 2160000.0,
+							"acl": {},
+							"keys": [
+								{
+									"key": "38145c67717c73d3febd16df38abf311",
+									"extKeys": [
+										{
+											"expDate": 1523441769359,
+											"extKey": "123123",
+											"device": null,
+											"geo": null,
+											"dashboardAccess": true,
+											"env": "DASHBOARD"
+										}
+									],
+									"config": {
+										"dev": {
+											"oauth": {
+												"loginMode": "urac"
+											},
+											"mail": {},
+											"urac": {}
+										}
+									}
+								}
+							]
+						}
+					]
+				},
+				{
+					"code": "MIKE2",
+					"name": "Mike Tenant 2",
+					"description": "Mike Tenant Description",
+					"applications": [
+						{
+							"product": "MIKE",
+							"package": "MIKE_MAIN",
+							"description": "Mike main application",
+							"_TTL": 2160000.0,
+							"acl": {},
 							"keys": [
 								{
 									"extKeys": [
@@ -231,18 +281,28 @@ var template = {
 							"package": "MIKE_USER",
 							"description": "Mike Logged In user Application",
 							"_TTL": 2160000.0,
+							"acl": {},
 							"keys": [
 								{
+									"key": "38145c67717c73d3febd16df38abf311",
 									"extKeys": [
 										{
-											"device": {},
-											"geo": {},
+											"expDate": 1523441769359,
+											"extKey": "123123",
+											"device": null,
+											"geo": null,
 											"dashboardAccess": true,
-											"expDate": null
+											"env": "DASHBOARD"
 										}
 									],
 									"config": {
-										"c": "d"
+										"dev": {
+											"oauth": {
+												"loginMode": "urac"
+											},
+											"mail": {},
+											"urac": {}
+										}
 									}
 								}
 							]
@@ -442,7 +502,11 @@ var template = {
 											}
 										],
 										name: 'mynginx',
-										type: 'server'
+										type: 'server',
+										ports: [{
+											name: "https",
+											port: 80
+										}]
 									},
 									recipe: '5ab4d65bc261bdb38a9fe363',
 									env: 'MIKE'
@@ -458,9 +522,118 @@ var template = {
 		}
 	}
 };
+let tenantRecord = {
+	"_id": "1",
+	"oauth": {
+		"secret": "secret",
+		"redirectUri": "",
+		"grants": [
+			"password",
+			"refresh_token"
+		]
+	},
+	"code": "MIKE",
+	"name": "Dashboard Tenant",
+	
+	"description": "Mike Tenant Description",
+	"applications": [
+		{
+			"product": 'RAGH',
+			"package": 'RAGH_MAIN',
+			"appId": "2222",
+			"description": 'Mike second application',
+			"_TTL": 2160000,
+			"keys": [
+				{
+					"key": "38145c67717c73d3febd16df38abf311",
+					"extKeys": [
+						{
+							"expDate": 1523441769359,
+							"extKey": "123123",
+							"device": null,
+							"geo": null,
+							"dashboardAccess": true,
+							"env": "DASHBOARD"
+						},
+						{
+							"expDate": 1523441769359,
+							"extKey": "123122131",
+							"device": null,
+							"geo": null,
+							"dashboardAccess": true,
+							"env": "DEV"
+						}
+					],
+					"config": {
+						"dev": {
+							"oauth": {
+								"loginMode": "urac"
+							},
+							"mail": {},
+							"urac": {}
+						}
+					}
+				}
+			]
+		},
+		{
+			"product": 'MIKE',
+			"package": 'MIKE_USER',
+			"description": 'Mike Logged In user Application',
+			"appId": "33333",
+			"_TTL": 2160000,
+			"keys": [
+				{
+					"key": "38145c67717c73d3febd16df38abf311",
+					"extKeys": [
+						{
+							"expDate": 1523441769359,
+							"extKey": "123123",
+							"device": null,
+							"geo": null,
+							"dashboardAccess": true,
+							"env": "DASHBOARD"
+						}
+					],
+					"config": {
+						"dev": {
+							"oauth": {
+								"loginMode": "urac"
+							},
+							"mail": {},
+							"urac": {}
+						}
+					}
+				},
+				{
+					"key": "1231",
+					"extKeys": [
+						{
+							"expDate": 1523441769359,
+							"extKey": "123123",
+							"device": null,
+							"geo": null,
+							"dashboardAccess": true,
+							"env": "DASHBOARD"
+						}
+					],
+					"config": {
+						"dev": {
+							"oauth": {
+								"loginMode": "urac"
+							},
+							"mail": {},
+							"urac": {}
+						}
+					}
+				}
+			]
+		}
+	]
+};
 var environmentRecord = {
 	_id: '5a58d942ace01a5325fa3e4c',
-	code: 'DASHBORAD',
+	code: 'DASHBOARD',
 	deployer: {
 		"type": "container",
 		"selected": "container.docker.local",
@@ -491,6 +664,8 @@ var environmentRecord = {
 			}
 		}
 	},
+	domain: "dashboard.com",
+	sitePrefix: "site",
 	dbs: {
 		clusters: {
 			oneCluster: {
@@ -514,53 +689,25 @@ var lib = {
 				return cb(null, true);
 			},
 			get: function (context, req, data, cb) {
-				return cb(null, {
-					name: "1",
-					_id: "1",
-					code: "1"
-				});
+				return cb(null, tenantRecord);
 			},
 			delete: function (context, req, data, cb) {
 				return cb(null, true);
 			},
-			saveConfig: function (context, req, data, cb) {
+			addApplication: function (context, req, data, cb) {
 				return cb(null, true);
 			},
-			deployService: function (context, req, data, cb) {
-				return cb(null, {
-					service: {
-						id: "1"
-					}
-				});
-			},
-			deleteService: function (context, req, data, cb) {
-				return cb(true);
-			},
-			addResource: function (context, req, data, cb) {
-				return cb(null, {_id: "1"});
-			},
-			setConfig: function (context, req, data, cb) {
+			saveOAuth: function (context, code, message, req, data,  cb) {
 				return cb(null, true);
 			},
-			updatePackage: function (context, req, data, cb) {
+			createApplicationKey: function (context, req, provision, data, cb) {
 				return cb(null, true);
 			},
-			addPackage: function (context, req, data, cb) {
+			addApplicationExtKeys: function (context, soajsCore, req, data, cb) {
 				return cb(null, true);
 			},
-			getPackage: function (context, req, data, cb) {
-				return cb(null, {
-					_id: "1",
-					name: "1",
-					description: "1",
-					_TTL: "1",
-					code: "1",
-					acl: {}
-				});
-			},
-			
-			deleteResource: function (context, req, data, cb) {
-				return cb(true);
+			updateApplicationConfig: function (context, req, data, cb) {
+				return cb(null, true);
 			},
 		});
 	},
@@ -580,10 +727,12 @@ describe("testing tenants.js", function () {
 				template: {content: {}},
 				config: config,
 				errors: [],
-				opts: { stage: 'database',
+				opts: {
+					stage: 'database',
 					group: 'steps',
 					stepPath: 'tenant',
-					section: 'tenant' }
+					section: 'tenant'
+				}
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
@@ -610,7 +759,7 @@ describe("testing tenants.js", function () {
 		});
 	});
 	
-	describe.skip("testing deploy", function () {
+	describe("testing deploy", function () {
 		
 		it("success products already deployed", function (done) {
 			context = {
@@ -622,11 +771,11 @@ describe("testing tenants.js", function () {
 				opts: {
 					stage: 'database',
 					group: 'steps',
-					stepPath: 'productization',
-					section: 'productization'
+					stepPath: 'tenant',
+					section: 'tenant'
 				}
 			};
-			context.template.deploy.database.steps["productization"].status = {
+			context.template.deploy.database.steps["tenant"].status = {
 				done: true
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
@@ -634,7 +783,7 @@ describe("testing tenants.js", function () {
 			})
 		});
 		
-		it("success products with a status", function (done) {
+		it("success tenants with no data entries", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -644,19 +793,17 @@ describe("testing tenants.js", function () {
 				opts: {
 					stage: 'database',
 					group: 'steps',
-					stepPath: 'productization',
-					section: 'productization'
+					stepPath: 'tenant',
+					section: 'tenant'
 				}
 			};
-			context.template.deploy.database.steps["productization"].status = {
-				done: false
-			};
+			context.template.content.tenant.data = [];
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
 			})
 		});
 		
-		it("success products with Product entry already created", function (done) {
+		it("success products with tenant entry already created", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -666,11 +813,11 @@ describe("testing tenants.js", function () {
 				opts: {
 					stage: 'database',
 					group: 'steps',
-					stepPath: 'productization',
-					section: 'productization'
+					stepPath: 'tenant',
+					section: 'tenant'
 				}
 			};
-			context.template.deploy.database.steps["productization"].status = {
+			context.template.deploy.database.steps["tenant"].status = {
 				done: false,
 				data: [
 					{
@@ -686,26 +833,6 @@ describe("testing tenants.js", function () {
 			})
 		});
 		
-		it("success products with no entries", function (done) {
-			context = {
-				BL: BL,
-				environmentRecord: environmentRecord,
-				template: JSON.parse(JSON.stringify(template)),
-				config: config,
-				errors: [],
-				opts: {
-					stage: 'database',
-					group: 'steps',
-					stepPath: 'productization',
-					section: 'productization'
-				}
-			};
-			context.template.content.productization.data = [];
-			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
-				done();
-			})
-		});
-		
 		it("success products with a package", function (done) {
 			context = {
 				BL: BL,
@@ -716,10 +843,11 @@ describe("testing tenants.js", function () {
 				opts: {
 					stage: 'database',
 					group: 'steps',
-					stepPath: 'productization',
-					section: 'productization'
+					stepPath: 'tenant',
+					section: 'tenant'
 				}
 			};
+			delete context.template.deploy.database.steps["tenant"].status;
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
 			})
@@ -730,127 +858,33 @@ describe("testing tenants.js", function () {
 				initBLModel: function (module, modelName, cb) {
 					return cb(null, {
 						add: function (context, req, data, cb) {
-							return cb(null, true);
+							return cb(null, "123");
 						},
 						get: function (context, req, data, cb) {
-							return cb(null, {
-								name: "1",
-								_id: "1",
-								code: "1"
-							});
-						},
-						delete: function (context, req, data, cb) {
-							return cb(null, true);
-						},
-						saveConfig: function (context, req, data, cb) {
-							return cb(null, true);
-						},
-						deployService: function (context, req, data, cb) {
-							return cb(null, {
-								service: {
-									id: "1"
-								}
-							});
-						},
-						deleteService: function (context, req, data, cb) {
-							return cb(true);
-						},
-						addResource: function (context, req, data, cb) {
-							return cb(null, {_id: "1"});
-						},
-						setConfig: function (context, req, data, cb) {
-							return cb(null, true);
-						},
-						updatePackage: function (context, req, data, cb) {
-							return cb(null, true);
-						},
-						addPackage: function (context, req, data, cb) {
-							return cb(null, true);
-						},
-						getPackage: function (context, req, data, cb) {
-							return cb(null, null);
-						},
-						deleteResource: function (context, req, data, cb) {
-							return cb(true);
-						},
-					});
-				},
-				checkReturnError: function (req, {}, {}, cb) {
-					return cb(null, true);
-				}
-			};
-			context = {
-				BL: BL,
-				environmentRecord: environmentRecord,
-				template: JSON.parse(JSON.stringify(template)),
-				config: config,
-				errors: [],
-				opts: {
-					stage: 'database',
-					group: 'steps',
-					stepPath: 'productization',
-					section: 'productization'
-				}
-			};
-			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
-				done();
-			})
-		});
-		
-		it("success products with no product found", function (done) {
-			lib = {
-				initBLModel: function (module, modelName, cb) {
-					return cb(null, {
-						add: function (context, req, data, cb) {
-							return cb(null, "555");
-						},
-						get: function (context, req, data, cb) {
-							if (req.soajs.inputmaskData.id === "555") {
-								return cb(null, {
-									_id: "2",
-									name: "2",
-									description: "2",
-									_TTL: "2",
-									code: "2",
-									acl: {}
-								});
-							} else {
+							if (req.soajs.inputmaskData.id === "123"){
+								return cb(null, tenantRecord);
+							}
+							else{
 								return cb(null, null);
 							}
 						},
 						delete: function (context, req, data, cb) {
 							return cb(null, true);
 						},
-						saveConfig: function (context, req, data, cb) {
+						addApplication: function (context, req, data, cb) {
 							return cb(null, true);
 						},
-						deployService: function (context, req, data, cb) {
-							return cb(null, {
-								service: {
-									id: "1"
-								}
-							});
-						},
-						deleteService: function (context, req, data, cb) {
-							return cb(true);
-						},
-						addResource: function (context, req, data, cb) {
-							return cb(null, {_id: "1"});
-						},
-						setConfig: function (context, req, data, cb) {
+						saveOAuth: function (context, code, message, req, data,  cb) {
 							return cb(null, true);
 						},
-						updatePackage: function (context, req, data, cb) {
+						createApplicationKey: function (context, req, provision, data, cb) {
 							return cb(null, true);
 						},
-						addPackage: function (context, req, data, cb) {
+						addApplicationExtKeys: function (context, soajsCore, req, data, cb) {
 							return cb(null, true);
 						},
-						getPackage: function (context, req, data, cb) {
-							return cb(null, null);
-						},
-						deleteResource: function (context, req, data, cb) {
-							return cb(true);
+						updateApplicationConfig: function (context, req, data, cb) {
+							return cb(null, true);
 						},
 					});
 				},
@@ -867,8 +901,8 @@ describe("testing tenants.js", function () {
 				opts: {
 					stage: 'database',
 					group: 'steps',
-					stepPath: 'productization',
-					section: 'productization'
+					stepPath: 'tenant',
+					section: 'tenant'
 				}
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
@@ -878,9 +912,9 @@ describe("testing tenants.js", function () {
 		
 	});
 	
-	describe.skip("testing rollback", function () {
+	describe("testing rollback", function () {
 		
-		it("success products no status", function (done) {
+		it("success tenants no status", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -890,17 +924,17 @@ describe("testing tenants.js", function () {
 				opts: {
 					stage: 'database',
 					group: 'steps',
-					stepPath: 'productization',
-					section: 'productization'
+					stepPath: 'tenant',
+					section: 'tenant'
 				}
 			};
-			delete context.template.deploy.database.steps["productization"].status;
+			delete context.template.deploy.database.steps["tenant"].status;
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
 			})
 		});
 		
-		it("success products not done", function (done) {
+		it("success tenants not done", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -910,11 +944,11 @@ describe("testing tenants.js", function () {
 				opts: {
 					stage: 'database',
 					group: 'steps',
-					stepPath: 'productization',
-					section: 'productization'
+					stepPath: 'tenant',
+					section: 'tenant'
 				}
 			};
-			context.template.deploy.database.steps["productization"].status = {
+			context.template.deploy.database.steps["tenant"].status = {
 				done: false
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
@@ -922,7 +956,7 @@ describe("testing tenants.js", function () {
 			})
 		});
 		
-		it("success products ", function (done) {
+		it("success tenants ", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -932,11 +966,11 @@ describe("testing tenants.js", function () {
 				opts: {
 					stage: 'database',
 					group: 'steps',
-					stepPath: 'productization',
-					section: 'productization'
+					stepPath: 'tenant',
+					section: 'tenant'
 				}
 			};
-			context.template.deploy.database.steps["productization"].status = {
+			context.template.deploy.database.steps["tenant"].status = {
 				done: true
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
@@ -944,14 +978,14 @@ describe("testing tenants.js", function () {
 			})
 		});
 		
-		it("success products with no entries", function (done) {
-			context.template.content.productization.data = [];
+		it("success tenants with no entries", function (done) {
+			context.template.content.tenant.data = [];
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
 			})
 		});
 		
-		it("success products with no product", function (done) {
+		it("success with tenant found", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -961,11 +995,11 @@ describe("testing tenants.js", function () {
 				opts: {
 					stage: 'database',
 					group: 'steps',
-					stepPath: 'productization',
-					section: 'productization'
+					stepPath: 'tenant',
+					section: 'tenant'
 				}
 			};
-			context.template.deploy.database.steps["productization"].status = {
+			context.template.deploy.database.steps["tenant"].status = {
 				done: true
 			};
 			lib = {
@@ -975,75 +1009,26 @@ describe("testing tenants.js", function () {
 							return cb(null, true);
 						},
 						get: function (context, req, data, cb) {
-							return cb(null, {
-								"_id": "1",
-								"code": "TPROD",
-								"name": "Test Product",
-								"description": "this is a description for test product",
-								"packages": [
-									{
-										"code": "TPROD_BASIC",
-										"name": "basic package",
-										"description": "this is a description for test product basic package",
-										"acl": {
-											"urac": {}
-										},
-										"_TTL": 86400000
-									},
-									{
-										"code": "TPROD_EXAMPLE03",
-										"name": "example03 package",
-										"description": "this is a description for test product example03 package",
-										"acl": {
-											"urac": {},
-											"example03": {}
-										},
-										"_TTL": 86400000
-									}
-								]
-							});
+							
+							return cb(null, tenantRecord);
 						},
 						delete: function (context, req, data, cb) {
 							return cb(null, true);
 						},
-						saveConfig: function (context, req, data, cb) {
+						addApplication: function (context, req, data, cb) {
 							return cb(null, true);
 						},
-						deployService: function (context, req, data, cb) {
-							return cb(null, {
-								service: {
-									id: "1"
-								}
-							});
-						},
-						deleteService: function (context, req, data, cb) {
-							return cb(true);
-						},
-						addResource: function (context, req, data, cb) {
-							return cb(null, {_id: "1"});
-						},
-						setConfig: function (context, req, data, cb) {
+						saveOAuth: function (context, code, message, req, data,  cb) {
 							return cb(null, true);
 						},
-						updatePackage: function (context, req, data, cb) {
+						createApplicationKey: function (context, req, provision, data, cb) {
 							return cb(null, true);
 						},
-						addPackage: function (context, req, data, cb) {
+						addApplicationExtKeys: function (context, soajsCore, req, data, cb) {
 							return cb(null, true);
 						},
-						getPackage: function (context, req, data, cb) {
-							return cb(null, {
-								_id: "1",
-								name: "1",
-								description: "1",
-								_TTL: "1",
-								code: "1",
-								acl: {}
-							});
-						},
-						
-						deleteResource: function (context, req, data, cb) {
-							return cb(true);
+						updateApplicationConfig: function (context, req, data, cb) {
+							return cb(null, true);
 						},
 					});
 				},
@@ -1102,6 +1087,9 @@ describe("testing tenants.js", function () {
 				},
 				products: {
 					module: {}
+				},
+				tenants: {
+					module: {}
 				}
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
@@ -1109,7 +1097,7 @@ describe("testing tenants.js", function () {
 			})
 		});
 		
-		it("success products with no product and no acl", function (done) {
+		it("success with no applications", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -1119,11 +1107,11 @@ describe("testing tenants.js", function () {
 				opts: {
 					stage: 'database',
 					group: 'steps',
-					stepPath: 'productization',
-					section: 'productization'
+					stepPath: 'tenant',
+					section: 'tenant'
 				}
 			};
-			context.template.deploy.database.steps["productization"].status = {
+			context.template.deploy.database.steps["tenant"].status = {
 				done: true
 			};
 			lib = {
@@ -1133,70 +1121,26 @@ describe("testing tenants.js", function () {
 							return cb(null, true);
 						},
 						get: function (context, req, data, cb) {
-							return cb(null, {
-								"_id": "1",
-								"code": "TPROD",
-								"name": "Test Product",
-								"description": "this is a description for test product",
-								"packages": [
-									{
-										"code": "TPROD_BASIC",
-										"name": "basic package",
-										"description": "this is a description for test product basic package",
-										"acl": {},
-										"_TTL": 86400000
-									},
-									{
-										"code": "TPROD_EXAMPLE03",
-										"name": "example03 package",
-										"description": "this is a description for test product example03 package",
-										"acl": {},
-										"_TTL": 86400000
-									}
-								]
-							});
+							tenantRecord.applications.shift();
+							return cb(null, tenantRecord);
 						},
 						delete: function (context, req, data, cb) {
 							return cb(null, true);
 						},
-						saveConfig: function (context, req, data, cb) {
+						addApplication: function (context, req, data, cb) {
 							return cb(null, true);
 						},
-						deployService: function (context, req, data, cb) {
-							return cb(null, {
-								service: {
-									id: "1"
-								}
-							});
-						},
-						deleteService: function (context, req, data, cb) {
-							return cb(true);
-						},
-						addResource: function (context, req, data, cb) {
-							return cb(null, {_id: "1"});
-						},
-						setConfig: function (context, req, data, cb) {
+						saveOAuth: function (context, code, message, req, data,  cb) {
 							return cb(null, true);
 						},
-						updatePackage: function (context, req, data, cb) {
+						createApplicationKey: function (context, req, provision, data, cb) {
 							return cb(null, true);
 						},
-						addPackage: function (context, req, data, cb) {
+						addApplicationExtKeys: function (context, soajsCore, req, data, cb) {
 							return cb(null, true);
 						},
-						getPackage: function (context, req, data, cb) {
-							return cb(null, {
-								_id: "1",
-								name: "1",
-								description: "1",
-								_TTL: "1",
-								code: "1",
-								acl: {}
-							});
-						},
-						
-						deleteResource: function (context, req, data, cb) {
-							return cb(true);
+						updateApplicationConfig: function (context, req, data, cb) {
+							return cb(null, true);
 						},
 					});
 				},
@@ -1254,6 +1198,9 @@ describe("testing tenants.js", function () {
 					module: {}
 				},
 				products: {
+					module: {}
+				},
+				tenants: {
 					module: {}
 				}
 			};
