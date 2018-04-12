@@ -76,7 +76,8 @@ let catalog = {
             ],
             "labels": {
                 "soajs.test": "true"
-            }
+            },
+            "certificates": "none"
         }
     }
 };
