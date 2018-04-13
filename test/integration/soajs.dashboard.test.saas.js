@@ -392,12 +392,13 @@ describe("DASHBOARD Saas Integration Tests:", function () {
 				});
 			});
 		});
-		
+
 		describe("add environment tests", function () {
 			it("success - will add TEST environment - SaaS", function (done) {
 				var data2 = util.cloneObj(validEnvRecord);
 				data2.code = 'TEST';
 				data2.services.config.session.proxy = "true";
+				data2.templateId = "5acf46c4af4cd3a45f21e2ea";
 				delete data2._id;
 				var params = {
 					form: {
@@ -411,7 +412,7 @@ describe("DASHBOARD Saas Integration Tests:", function () {
 								https: 30443
 							},
 							deploy: {
-								selectedDriver: 'docker'
+								// selectedDriver: 'docker'
 							}
 						},
 						data: data2
@@ -448,7 +449,7 @@ describe("DASHBOARD Saas Integration Tests:", function () {
 				});
 			});
 		});
-		
+
 	});
 
 });
