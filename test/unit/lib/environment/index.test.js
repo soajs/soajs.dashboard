@@ -52,13 +52,13 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-				
+
 			},
 			error: function (data) {
-				
+
 			},
 			info: function (data) {
-				
+
 			}
 		},
 		inputmaskData: {},
@@ -251,7 +251,7 @@ var input =  {
 						}
 				}
 		}
-	
+
 }
 
 var res = {};
@@ -261,16 +261,16 @@ var config = {
 var deployer = {
 	listServices: function (options, cb) {
 		var services = [
-		
+
 		];
-		
+
 		return cb(null, services);
 	},
 
     createNameSpace: function (options, cb) {
         return cb(null, true);
     }
-	
+
 };
 var mongoStub = {
 	checkForMongo: function (soajs) {
@@ -320,7 +320,7 @@ var mongoStub = {
 };
 
 it("Init environment model", function (done) {
-	
+
 	utils.init('mongo', function (error, body) {
 		assert.ok(body);
 		environment = body;
@@ -330,11 +330,11 @@ it("Init environment model", function (done) {
 });
 
 describe("testing index.js", function () {
-	
+
 	beforeEach(() => {
 		environment.model = mongoStub;
 	});
-	
+
 	afterEach(function (done) {
 		done();
 	});
@@ -357,19 +357,67 @@ describe("testing index.js", function () {
 		});
 
 	});
-	
+
 	describe("testing add environment", function () {
-		
+
 		it("Success add", function (done) {
 			req.soajs.inputmaskData = input;
 			stubStatusUtils();
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, {
+					template: {
+						"name": "SOAJS Microservices Environment",
+						"description": "This template will create an environment with SOAJS API Gateway configured, deployed & ready to use. You can leverage this environment to deploy microservices.",
+						"link": "https://soajsorg.atlassian.net/wiki/spaces/DSBRD/pages/400588803/SOAJS+Microservices+Environment",
+						"logo": "modules/dashboard/templates/images/soajs.png",
+						"content": {
+							"deployments": {
+								"repo": {
+									"controller": {
+										"label": "SOAJS API Gateway",
+										"name": "controller",
+										"type": "service",
+										"category": "soajs",
+										"gitSource": {
+											"provider": "github",
+											"owner": "soajs",
+											"repo": "soajs.controller"
+										},
+										"deploy": {
+											"recipes": {
+												"available": [],
+												"default": "SOAJS API Gateway Recipe"
+											},
+											"memoryLimit": 500,
+											"mode": "replicated",
+											"replicas": 1
+										}
+									}
+								}
+							}
+						}
+					}
+				});
+			};
+ 			req.soajs.validator = {
+				Validator: function () {
+					return {
+						validate: function (boolean) {
+							return {
+								valid: true,
+								errors: []
+							};
+						}
+					};
+				}
+			};
 			environment.add(config, req, res, function (error, body) {
 				assert.ok(body);
 				sinon.restore(status);
 				done();
 			});
 		});
-		
+
 		it("Success add previous", function (done) {
 			req.soajs.inputmaskData = input;
 			req.soajs.inputmaskData.data.soajsFrmwrk = true;
@@ -386,7 +434,7 @@ describe("testing index.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Fail validating inputs", function (done) {
 			req.soajs.inputmaskData = input;
 			sinon
@@ -410,11 +458,11 @@ describe("testing index.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing getDeploymentStatus", function () {
-		
+
 		it("Success environment has been deployment - activate", function (done) {
 			req.soajs.inputmaskData = {
 				code: 'MIKE',
@@ -433,7 +481,7 @@ describe("testing index.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Success environment has been deployment - activate", function (done) {
 			req.soajs.inputmaskData = {
 				code: 'MIKE',
@@ -448,7 +496,7 @@ describe("testing index.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Success ", function (done) {
 			req.soajs.inputmaskData = {
 				code: 'MIKE',
@@ -461,7 +509,7 @@ describe("testing index.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Success with id", function (done) {
 			req.soajs.inputmaskData = {
 				id: '1234',
@@ -641,7 +689,7 @@ describe("testing index.js", function () {
 			mongoStub.saveEntry = function (soajs, opts, cb) {
 				cb(null, true);
 			};
-			
+
 			req.soajs.inputmaskData.env = 'qa';
 			req.soajs.inputmaskData.driver = 'local';
 			req.soajs.inputmaskData.config = {
@@ -650,13 +698,13 @@ describe("testing index.js", function () {
 						perService: false
 					}
 			};
-			
+
 			environment.updateDeployerConfig(config, req, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-		
+
 	});
-	
+
 });

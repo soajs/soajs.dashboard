@@ -138,6 +138,17 @@ const lib = {
 describe("Testing daemon", function () {
 
     it("Success - check daemonGroup -- invalid template", function (done) {
+        req.soajs.validator = {
+            Validator: function () {
+                return {
+                    validate: function () {
+                        return {
+                            errors: []
+                        }
+                    }
+                };
+            }
+        };
         daemonIndex.check(req, context, lib, async, mongoStub, function (result, error) {
             done();
         });
