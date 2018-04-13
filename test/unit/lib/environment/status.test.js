@@ -336,7 +336,95 @@ var template = {
 			}
 		},
 		deployments: {
-			pre: {},
+			pre: {
+				"infra.cluster.deploy": {
+					"imfv" : [
+						{
+							"command":{
+								"method" : "post",
+								"routeName" : "/bridge/executeDriver",
+								"data" : {
+									"type" : "infra",
+									"name" : "google",
+									"driver" : "google",
+									"command" : "deployCluster",
+									"project" : "demo",
+									"options" : {
+										"region" : "us-east1-b",
+										"workernumber" : 3,
+										"workerflavor" : "n1-standard-2",
+										"regionLabel" : "us-east1-b",
+										"technology" : "kubernetes",
+										"envCode" : "PORTAL"
+									}
+								}
+							},
+							"check" : {
+								"id" : {
+									"type" : "string",
+									"required": true
+								}
+							}
+						},
+						{
+							"recursive" : {
+								"max" : 5,
+								"delay": 300
+							},
+							"check" : {
+								"id" : {
+									"type" : "string",
+									"required": true
+								},
+								"ip" : {
+									"type" : "string",
+									"required": true
+								}
+							},
+							"command": {
+								"method" : "post",
+								"routeName" : "/bridge/executeDriver",
+								"data" : {
+									"type" : "infra",
+									"name" : "google",
+									"driver" : "google",
+									"command" : "getDeployClusterStatus",
+									"project" : "demo",
+									"options" : {
+										"envCode" : "PORTAL"
+									}
+								}
+							}
+						}
+					],
+					"status": {
+						"done": true,
+						"data": {
+							"id": "kaza",
+							"ip": "kaza",
+							"dns": { "a":"b" }
+						},
+						"rollback" : {
+							"command":{
+								"method" : "post",
+								"routeName" : "/bridge/executeDriver",
+								"params": {},
+								"data" : {
+									"type" : "infra",
+									"name" : "google",
+									"driver" : "google",
+									"command" : "deleteCluster",
+									"project" : "demo",
+									"options" : {
+										"envCode" : "PORTAL",
+										"force" : true
+									}
+								}
+							}
+						}
+					},
+				}
+			},
 			steps: {
 				secrets: {
 					imfv: [
@@ -422,7 +510,49 @@ var template = {
 					]
 				}
 			},
-			post: {}
+			post: {
+				"infra.dns": {
+					"imfv": [
+						{
+							"recursive" : {
+								"max" : 5,
+								"delay": 300
+							},
+							"check" : {
+								"dns" : {
+									"type" : "object",
+									"required": true
+								},
+								"ip" : {
+									"type" : "string",
+									"required": true
+								}
+							},
+							"command": {
+								"method" : "post",
+								"routeName" : "/bridge/executeDriver",
+								"data" : {
+									"type" : "infra",
+									"name" : "google",
+									"driver" : "google",
+									"command" : "getDNSInfo",
+									"project" : "demo",
+									"options" : {
+										"envCode" : "PORTAL"
+									}
+								}
+							}
+						}
+					],
+					"status": {
+						"done": true,
+						"data": {
+							"ip": "kaza",
+							"dns": { "a":"b" }
+						}
+					},
+				}
+			}
 		}
 	}
 };

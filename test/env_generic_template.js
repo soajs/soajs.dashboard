@@ -561,7 +561,7 @@ let template = {
 								"env" : "DEV"
 							},
 							"deploy" : true,
-							"type" : "custom"
+							"type" : "service"
 						}
 					],
 					"status": {
