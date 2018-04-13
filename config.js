@@ -4552,12 +4552,26 @@ module.exports = {
 					"l": "Delete Environment",
 					"group": "Environment"
 				},
-				"commonFields": ['id', 'soajs_project'],
+				"commonFields": ['soajs_project'],
 				"force": {
 					"source": ['query.force'],
 					"required": true, "default": false,
 					"validation": {"type": "boolean"}
-				}
+				},
+				'code': {
+					'source': ['query.code'],
+					'required': false,
+					'validation': {
+						'type': 'string'
+					}
+				},
+				'id': {
+					'source': ['query.id'],
+					'required': false,
+					'validation': {
+						'type': 'string'
+					}
+				},
 			},
 			
 			"/environment/dbs/delete": {
