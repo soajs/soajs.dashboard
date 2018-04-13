@@ -148,6 +148,27 @@ let template = {
 				}
 			]
 		},
+
+		"daemonGroups" : {
+			"data" : [{
+				"groupName" : "test",
+                "daemon": "helloDaemon",
+                "status": 1,
+				"processing" : "parallel",
+                "interval": 1800000,
+				"order": ["test"],
+				"solo" : false,
+                "jobs": {
+                    "hello": {
+                        "type": "global",
+                        "serviceConfig": {
+                            "mike": "test"
+                        },
+                        "tenantExtKeys": []
+                    }
+                }
+            }]
+		},
 		
 		"deployments": {
 			"repo": {
@@ -164,7 +185,7 @@ let template = {
 						"mode": "replicated",
 						"replicas": 1,
 						"cpu": 0.5
-					}
+					},
 				},
 				"urac": {
 					"label": "User Registration & ACL",
@@ -181,8 +202,9 @@ let template = {
 				},
 				"my_service": {
 					"label": "My Custom Made Service",
-					"name": "my_service",
-					"type": "service",
+					"name": "test",
+					"type": "daemon",
+					"group" : "test",
 					"category": "soajs",
 					"deploy": {
 						"recipes": ["SOAJS Service Recipe"],

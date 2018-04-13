@@ -57,6 +57,27 @@ let template = {
             ]
         },
 
+        "daemonGroups" : {
+            "data" : [{
+                "groupName" : "test",
+                "daemon": "helloDaemon",
+                "status": 1,
+                "processing" : "parallel",
+                "interval": 1800000,
+                "order": ["test"],
+                "solo" : false,
+                "jobs": {
+                    "hello": {
+                        "type": "global",
+                        "serviceConfig": {
+                            "mike": "test"
+                        },
+                        "tenantExtKeys": []
+                    }
+                }
+            }]
+        },
+
         "endpoints": {
             "data": [
                 {
@@ -436,16 +457,12 @@ let template = {
 
         "deployments": {
             "repo": {
-                "controller": {
-                    "label": "SOAJS API Gateway",
-                    "name": "controller",
-                    "type": "service",
+                "my_service": {
+                    "label": "My Custom Made Service",
+                    "name": "test",
+                    "type": "daemon",
+                    "group" : "test",
                     "category": "soajs",
-                    "gitSource" :{
-                        "provider" : "test",
-                        "owner" : "test",
-                        "repo" : "test/test"
-                    },
                     "deploy": {
                         "recipes": {
                             "available": ["DAAS Service Recipe1"], //reduce available recipes to what is restricted by this list
@@ -455,7 +472,13 @@ let template = {
                         "mode": "replicated",
                         "replicas": 1,
                         "cpu": 0.5
-                    }
+                    },
+                    "gitSource" : {
+                        "owner" : 'test',
+                        "provider": 'test',
+                        "repo": 'test/test',
+                    },
+                    "strategy": "update"
                 }
             },
             "resources": {
@@ -682,27 +705,6 @@ let template = {
                 }
             },
             "steps": {
-                "secrets": {
-                    "nginx-certs": {
-                        "imfv": [
-                            {
-                                "name": "nginx-certs",
-                                "namespace": "soajs",
-                                "type": "Generic",
-                                "data": "something in secret",
-                            }
-                        ],
-                        "status": {
-                            "done": true,
-                            "data": [
-                                {
-                                    "name": "nginx-certs",
-                                    "namespace": "soajs"
-                                }
-                            ]
-                        }
-                    }
-                },
 
                 "deployments.resources.local": {
                     "imfv": [
