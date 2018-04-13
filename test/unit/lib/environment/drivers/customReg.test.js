@@ -468,7 +468,7 @@ var lib = {
 				return cb(null, true);
 			},
 			delete : function (context, req, data, cb) {
-				return cb(null, true);
+				return cb(true);
 			}
 		});
 	},
@@ -563,12 +563,68 @@ describe("testing customReg.js", function () {
 			})
 		});
 		
-		it("fail no custom_registry data with no name in all inputs", function (done) {
-			//stubStatusUtils(null);
+		it("fail no custom_registry data with no name in all templates", function (done) {
 			context.template.content = {
 				custom_registry : {
 					data : [
 						{
+							test: 1
+						},
+						{
+							test: 2
+						},
+						{
+							test: 3
+						}
+					]
+				}
+			};
+			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
+		
+		it("fail no custom_registry data with no name in all inputs", function (done) {
+			context.opts = {
+				"stage": "database",
+				"group": "pre",
+				"stepPath": "custom_registry",
+				"section": "custom_registry",
+				"inputs": [
+					{
+						
+						"locked": true,
+						"plugged": false,
+						"shared": true,
+						"value": {
+							"test1": true
+						}
+					},
+					{
+						
+						"locked": true,
+						"plugged": false,
+						"shared": true,
+						"value": {
+							"test2": true
+						}
+					},
+					{
+						
+						"locked": true,
+						"plugged": false,
+						"shared": true,
+						"value": {
+							"test3": true
+						}
+					}
+				]
+			};
+			context.template.content = {
+				custom_registry : {
+					data : [
+						{
+							name: 1,
 							test: 1
 						},
 						{
@@ -716,12 +772,61 @@ describe("testing customReg.js", function () {
 				done();
 			})
 		});
+		
+		it("success custom_registry with malformed inputs", function (done) {
+			context.template.content = {
+				custom_registry : {
+					data : [
+						{
+							test: 1
+						},
+						{
+							test: 2
+						},
+						{
+							test: 3
+						}
+					]
+				}
+			};
+			context.template.deploy.database.pre.custom_registry.status = {
+				done: false,
+				data: [
+					{
+						
+						value:
+							{
+								apiPrefix: 'cloud-api',
+								domain: 'herrontech.com',
+								protocol: 'https',
+								port: 443
+							}
+					},
+					{
+						value: 'string value here ...'
+					},
+					{
+						
+						value:
+							{
+								apiPrefix: 'dashboard-api',
+								domain: 'soajs.org',
+								protocol: 'https',
+								port: 443
+							}
+					}
+				]
+			};
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
 
 	});
 
 	describe("testing rollback", function () {
 		
-		it("success custom_registry  ", function (done) {
+		it("success custom_registry with no status ", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: {},
@@ -769,7 +874,58 @@ describe("testing customReg.js", function () {
 			})
 		});
 		
-		it("success custom_registry ", function (done) {
+		it("success custom_registry with status not done", function (done) {
+			context = {
+				BL: BL,
+				environmentRecord: {},
+				template: JSON.parse(JSON.stringify(template)),
+				config: config,
+				errors: [],
+				opts: {
+					"stage": "database",
+					"group": "pre",
+					"stepPath": "custom_registry",
+					"section": "custom_registry",
+					"inputs": [
+						{
+							"name": "ciConfig",
+							"locked": true,
+							"plugged": false,
+							"shared": true,
+							"value": {
+								"test1": true
+							}
+						},
+						{
+							"name": "ciConfig2",
+							"locked": true,
+							"plugged": false,
+							"shared": true,
+							"value": {
+								"test2": true
+							}
+						},
+						{
+							"name": "ciConfig3",
+							"locked": true,
+							"plugged": false,
+							"shared": true,
+							"value": {
+								"test3": true
+							}
+						}
+					]
+				}
+			};
+			context.template.deploy.database.pre.custom_registry.status = {
+				done: false
+			};
+			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
+				done();
+			})
+		});
+		
+		it("success custom_registry with status and done", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: {},

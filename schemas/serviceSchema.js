@@ -400,6 +400,14 @@ var apiMethodSchema = {
 							"additionalProperties": { "type": "object" }
 						}
 					}
+				},
+				"_authorization": {
+					"type": "string",
+					"required": false
+				},
+				"mw": {
+					"type": "string",
+					"required": false
 				}
 			},
 			"additionalProperties": false
