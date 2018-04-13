@@ -1838,7 +1838,8 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "object",
-						"properties": environmentSchema
+						"properties": environmentSchema,
+						"additionalProperties": false
 					}
 				},
 				"template": {
