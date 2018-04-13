@@ -467,7 +467,7 @@ module.exports = [
 					},
 					"mongo": {
 						"label": "Mongo",
-						"type": "server",
+						"type": "cluster",
 						"category": "mongo",
 						"ui": "${REF:resources/drivers/server/mongo}",
 						"deploy": {
