@@ -7,6 +7,7 @@ function getGitDriver (config, cbMain, cb) {
 		gitDriver = require(path);
 	}
 	catch (e) {
+		console.log(e);
 		gitDriver = null;
 	}
 	if (!gitDriver) {
