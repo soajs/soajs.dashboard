@@ -27,7 +27,7 @@ var environment = {
 		"required": false,
 		"type": "boolean"
 	},
-	"soajsFrmwrk": {
+	"tKeyPass": {
 		"required": false,
 		"type": "boolean"
 	},
