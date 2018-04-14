@@ -29,7 +29,7 @@ var environment = {
 	},
 	"tKeyPass": {
 		"required": false,
-		"type": "boolean"
+		"type": "string"
 	},
 	"cookiesecret": {
 		"required": false,
