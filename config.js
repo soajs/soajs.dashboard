@@ -3222,7 +3222,7 @@ module.exports = {
 				"namespace": {
 					"source": ['body.namespace'],
 					"required": false,
-					"validation": {"type": "string", "required": true}
+					"validation": {"type": "string", "required": false}
 				},
 				"data": {
 					"source": ['body.data'],
