@@ -91,6 +91,7 @@ module.exports = {
 				"productization": commonContentSchema,
 				"tenant": commonContentSchema,
 				"secrets": commonContentSchema,
+				"daemonGroups": commonContentSchema,
 				"deployments": {
 					"type": "object",
 					"required": false,
