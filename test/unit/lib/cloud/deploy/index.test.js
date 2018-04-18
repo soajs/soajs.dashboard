@@ -311,13 +311,13 @@ describe("testing deploy.js", function () {
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
-			
-			deploy.deployService(config, req.soajs, deployer, function (error, body) {
+
+			deploy.deployService(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-		
+
 		it("Fail deployService port outside range", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				var catalogRecord = {
@@ -445,13 +445,13 @@ describe("testing deploy.js", function () {
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
-			
-			deploy.deployService(config, req.soajs, deployer, function (error, body) {
+
+			deploy.deployService(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-		
+
 		it("Success deployService. soajs", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				var catalogRecord = {
@@ -576,12 +576,12 @@ describe("testing deploy.js", function () {
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
 
-			deploy.deployService(config, req.soajs, deployer, function (error, body) {
+			deploy.deployService(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-		
+
 		it("Success deploy Nginx server", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				var catalogRecord = {
@@ -718,8 +718,65 @@ describe("testing deploy.js", function () {
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
-			
-			deploy.deployService(config, req.soajs, deployer, function (error, body) {
+
+			deployer.inspectService = function (opts, cb) {
+				return cb(null, {
+					"service": {
+						"id": "dashboard-nginx",
+						"version": "1157",
+						"name": "dashboard-nginx",
+						"namespace": "soajs",
+						"labels": {
+						},
+						"env": [
+							"SOAJS_NX_API_HTTPS: true",
+							"SOAJS_NX_SITE_HTTPS: true"
+						],
+						"resources": {
+							"limits": {}
+						},
+						"ports": [
+							{
+								"protocol": "TCP",
+								"target": 80,
+								"published": 30080,
+								"preserveClientIP": true
+							},
+							{
+								"protocol": "TCP",
+								"target": 443,
+								"published": 30443,
+								"preserveClientIP": true
+							}
+						]
+					},
+					"tasks": [
+						{
+							"id": "dashboard-nginx-j9qdc",
+							"version": "1155",
+							"name": "dashboard-nginx-j9qdc",
+							"ref": {
+								"service": {
+									"name": "dashboard-nginx",
+									"id": "dashboard-nginx"
+								},
+								"node": {
+									"id": "minikube"
+								},
+								"container": {
+									"id": "312eb18f3e0abf010ddba97e74e9a34be9c0105f97b0e5396a78f18237871d5a"
+								}
+							},
+							"status": {
+								"ts": "2018-04-18T11:43:18Z",
+								"state": "running"
+							}
+						}
+					]
+				});
+			};
+
+			deploy.deployService(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});

@@ -186,16 +186,16 @@ describe("testing services.js", function () {
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.serviceId = '123';
 
-			services.deleteService(config, req.soajs, deployer, function (error, body) {
+			services.deleteService(config, req, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 
 	});
-	
+
 	describe("testing checkResource", function () {
-		
+
 		before("init", function (done) {
 			deployer.listKubeServices = function (options, cb) {
 				var kubeServices = [
