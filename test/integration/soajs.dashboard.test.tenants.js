@@ -3070,6 +3070,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					]);
 					delete record.applications;
+					delete record.currentKeyId;
 					assert.deepEqual(record, {
 						"code": "TSTN",
 						"name": "test tenant",
