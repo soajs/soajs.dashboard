@@ -242,6 +242,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			"code": "QA",
 			"description":  "this is the QA environment",
 			"domain": "api.QA.com",
+			"profile": "single",
 			"deployer": {
 				"type": "container",
 				"selected": "container.kubernetes.local",
@@ -504,6 +505,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				data3.code = 'PROD';
 				data3.services.config.session.proxy = "false";
 				data3.templateId = "5acf46c4af4cd3a45f21e1eb";
+				delete data3._id;
 				var params = {
 					form: {
 						template: {
@@ -711,6 +713,7 @@ describe("DASHBOARD Integration Tests:", function () {
 					}
 				};
 				params.form.data.templateId = "5acf46c4af4cd3a45f21e1eb";
+				delete params.form.data._id;
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
 					assert.deepEqual(body.errors.details[0], {"code": 403, "message": errorCodes[403]});
 					done();
@@ -965,7 +968,7 @@ describe("DASHBOARD Integration Tests:", function () {
 					qs: {}
 				};
 				executeMyRequest(params, 'environment/delete', 'delete', function (body) {
-					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: id"});
+					assert.deepEqual(body.errors.details[0], {"code": 405, "message": "Invalid environment id provided"});
 					done();
 				});
 			});
@@ -975,7 +978,7 @@ describe("DASHBOARD Integration Tests:", function () {
 					qs: {'id': 'aaaabbcdddd'}
 				};
 				executeMyRequest(params, 'environment/delete', 'delete', function (body) {
-					assert.deepEqual(body.errors.details[0], {"code": 405, "message": errorCodes[405]});
+					assert.deepEqual(body.errors.details[0], {"code": 405, "message": "Error: Argument passed in must be a single String of 12 bytes or a string of 24 hex characters"});
 					done();
 				});
 			});
