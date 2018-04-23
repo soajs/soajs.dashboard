@@ -143,7 +143,7 @@ describe("Testing daemon", function () {
                 return {
                     validate: function () {
                         return {
-                            errors: []
+                            errors: ["error1","error2"]
                         }
                     }
                 };
@@ -216,6 +216,26 @@ describe("Testing daemon", function () {
             }
         ];
         daemonIndex.save(req, context, lib, async, mongoStub, function (result, error) {
+            done();
+        });
+    });
+
+    it ("Success - save template without daemon groups", function (done) {
+        let newTemplate = JSON.parse(JSON.stringify(template));
+        newTemplate.content.daemonGroups = [];
+        context.template = newTemplate;
+
+        daemonIndex.save(req, context, lib, async, mongoStub, function (result, error) {
+            done();
+        });
+    });
+
+    it ("Success - check template without daemon groups", function (done) {
+        let newTemplate = JSON.parse(JSON.stringify(template));
+        newTemplate.content.daemonGroups = [];
+        context.template = newTemplate;
+
+        daemonIndex.check(req, context, lib, async, mongoStub, function (result, error) {
             done();
         });
     });

@@ -336,4 +336,21 @@ describe("Testing endpointIndex", function () {
         });
     });
 
+    it("Fail - check endpoint -- invalid template", function (done) {
+        req.soajs.validator = {
+            Validator: function () {
+                return {
+                    validate: function () {
+                        return {
+                            errors: ["this is an error for test"]
+                        }
+                    }
+                };
+            }
+        };
+
+        endpointIndex.check(req, context, lib, async, mongoStub, function (result, error) {
+            done();
+        });
+    });
 });

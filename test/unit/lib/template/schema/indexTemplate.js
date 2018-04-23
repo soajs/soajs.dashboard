@@ -17,107 +17,21 @@ let template = {
             ],
             "deployment": [
                 {
-                    "name": "DAAS Service Recipe2",
+                    "name": "DAAS Service Recipe1",
                     "recipe": {
-                        "deployOptions": {
-                            "image": {
-                                "prefix": "soajsorg",
-                                "name": "nginx",
-                                "tag": "latest",
-                                "pullPolicy": "IfNotPresent"
-                            },
-                            "sourceCode": {
-                                "configuration": {
-                                    "label" : "test",
-                                    "repo": "",
-                                    "branch": "",
-                                    "required": false
+                        "deployOptions": {},
+                        "buildOptions": {
+                            "env" : {
+                                "test" :{
+                                    "type" : "static",
+                                    "value" : ""
                                 },
-                                "custom": {
-                                    "label": "Attach Custom UI",
-                                    "repo": "test",
-                                    "branch" : "test",
-                                    "type": "server",
-                                    "required": false
+                                "test1" :{
+                                    "type" : "userInput",
+                                    "value" : ""
                                 }
-                            },
-                            "readinessProbe": {
-                                "httpGet": {
-                                    "path": "/",
-                                    "port": "http"
-                                },
-                                "initialDelaySeconds": 5,
-                                "timeoutSeconds": 2,
-                                "periodSeconds": 5,
-                                "successThreshold": 1,
-                                "failureThreshold": 3
-                            },
-                            "container": {
-                                "workingDir": "/opt/soajs/deployer/" //container working directory
-                            },
-                            "voluming": [
-                                {
-                                    docker: {
-                                        volume: {
-                                            "Type" : "test",
-                                            "Source": "soajs_log_volume",
-                                            "Target": "/var/log/soajs/"
-                                        }
-                                    },
-                                    kubernetes: {
-                                        volume: {
-                                            "name": "soajs-log-volume",
-                                            "hostPath": {
-                                                "path": "/var/log/soajs/"
-                                            }
-                                        },
-                                        volumeMount: {
-                                            "mountPath": "/var/log/soajs/",
-                                            "name": "soajs-log-volume"
-                                        }
-                                    }
-                                },
-                                {
-                                    docker: {
-                                        volume: {
-                                            "Type": "test",
-                                            "ReadOnly": true,
-                                            "Source": "/var/run/docker.sock",
-                                            "Target": "/var/run/docker.sock"
-                                        }
-                                    }
-                                },
-                                {
-                                    docker: {
-                                        volume: {
-                                            "Type": "volume",
-                                            "Source": "soajs_certs_volume",
-                                            "Target": "/var/certs/soajs/"
-                                        }
-                                    }
-                                }
-                            ],
-                            "ports": [
-                                {
-                                    "name": "http",
-                                    "target": 80,
-                                    "preserveClientIP": true
-                                },
-                                {
-                                    "name": "http",
-                                    "target": 80,
-                                    "isPublished": true,
-                                    "preserveClientIP": true
-                                },
-                                {
-                                    "name": "https",
-                                    "target": 443,
-                                    "isPublished": true,
-                                    "preserveClientIP": true
-                                }
-                            ]
-                        },
-                        "buildOptions": {}
+                            }
+                        }
                     },
                     "type": "service",
                     "subtype": "soajs",
@@ -798,7 +712,7 @@ let template = {
                 }
             },
             "post": {
-                "deployments.resources.external": {
+                "deployments__dot__resources__dot__external": {
                     "imfv": [
                         {
                             "name": "localmongo",
@@ -827,7 +741,7 @@ let template = {
 
         "deployments": {
             "pre": {
-                "infra.cluster.deploy": {
+                "infra__dot__cluster__dot__deploy": {
                     "imfv" : [
                         {
                             "command":{
@@ -917,7 +831,7 @@ let template = {
             },
             "steps": {
 
-                "deployments.resources.local": {
+                "deployments__dot__resources__dot__local": {
                     "imfv": [
                         {
                             "name": "localmongo",
@@ -1009,7 +923,7 @@ let template = {
                     }
                 },
 
-                "deployments.repo.urac": {
+                "deployments__dot__repo__dot__urac": {
                     "imfv": [
                         {
                             "name": "urac",

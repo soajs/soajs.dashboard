@@ -27,6 +27,54 @@ let mongoStub = {
                 "recipe": "sudo something",
                 "sha": "1234"
             };
+            if (opts.collection === 'products') {
+                ciRecord = [
+                    {
+                        "_id": '5aba44bfad30ac676a02d5ee',
+                        "code": "DSBRD",
+                        "name": "test product updated",
+                        "description": "this is a dummy updated description",
+                        "packages": [
+                            {
+                                "code": "TPROD_BASIC",
+                                "name": "basic package 2",
+                                "description": "this is a dummy updated description",
+                                "acl": {},
+                                "_TTL": 86400000
+                            }
+                        ]
+                    },
+                    {
+                        "_id": '5aba44bfad30ac676a02d5ee',
+                        "code": "TPROD1",
+                        "name": "test 1  product updated",
+                        "description": "this is a dummy updated description",
+                        "packages": [
+                            {
+                                "code": "TPROD_BASIC1",
+                                "name": "basic package 2",
+                                "description": "this is a dummy updated description",
+                                "acl": {},
+                                "_TTL": 86400000
+                            }
+                        ]
+                    },
+                    {
+                        "_id": '5aba44bfad30ac676a02d5ee',
+                        "code": "DSBRD",
+                        "name": "test 1  product updated",
+                        "description": "this is a dummy updated description",
+                        "packages": [
+                            {
+                                "code": "DSBRD_USER",
+                                "name": "basic package 2",
+                                "description": "this is a dummy updated description",
+                                "acl": {},
+                                "_TTL": 86400000
+                            }
+                        ]
+                    }]
+            }
             if (opts.collection === 'environment') {
                 let environments = [
                     {
@@ -145,8 +193,63 @@ describe("Testing productization", function () {
         });
     });
 
+    it("Success - Check tenant", function (done) {
+        let newTemplate = JSON.parse(JSON.stringify(template));
+        newTemplate.content['productization'].data = [
+            {
+                "code": "DSBRD",
+                "name": "Portal Product",
+                "description": "Portal Product Description",
+                "packages": [
+                    {
+                        "code": "DSBRD_USER",
+                        "name": "Basic Package",
+                        "description": "Basic Package Description",
+                        "TTL": 6 * 36000 * 1000,
+                        "acl": {
+                            "oauth": {},
+                            "urac": {},
+                            "daas": {}
+                        }
+                    }
+                ]
+            },
+            {
+                "code": "DSBRD1",
+                "name": "Portal Product",
+                "description": "Portal Product Description",
+                "packages": [
+                    {
+                        "code": "DSBRD_USER",
+                        "name": "Basic Package",
+                        "description": "Basic Package Description",
+                        "TTL": 6 * 36000 * 1000,
+                        "acl": {
+                            "oauth": {},
+                            "urac": {},
+                            "daas": {}
+                        }
+                    }
+                ]
+            },
+        ];
+        context.template = newTemplate;
+        tenantIndex.check(req, context, lib, async, mongoStub, function (result, error) {
+            done();
+        });
+    });
+
     it("Success - Check tenant - no tenant record", function (done) {
-        context.template.content.tenant.data = [];
+        let newTemplate = JSON.parse(JSON.stringify(template));
+        newTemplate.content['productization'].data = [];
+        tenantIndex.check(req, context, lib, async, mongoStub, function (result, error) {
+            done();
+        });
+    });
+
+    it("Success - Check tenant - no result", function (done) {
+        let newTemplate = JSON.parse(JSON.stringify(template));
+        newTemplate.content['productization'].data = [];
         tenantIndex.check(req, context, lib, async, mongoStub, function (result, error) {
             done();
         });
