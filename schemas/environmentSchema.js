@@ -57,22 +57,6 @@ var environment = {
 	"templateId": {
 		"required": true,
 		"type": "string"
-	},
-	"profile": {
-		"required": true,
-		"type": "string"
-	},
-	"dbs": {
-		"required": true,
-		"type": "object"
-	},
-	"deployer": {
-		"required": true,
-		"type": "object"
-	},
-	"services": {
-		"required": true,
-		"type": "object"
 	}
 };
 
