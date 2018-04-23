@@ -122,7 +122,7 @@ var req = {
 var res = {
     'writeHead' : function (ts, opts) {
 	},
-	
+
 	'on' : function (data) {
     },
 
