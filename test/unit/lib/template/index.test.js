@@ -6,7 +6,6 @@ var helper = require("../../../helper.js");
 var utils = helper.requireModule('./lib/templates/index.js');
 var mongoModel = helper.requireModule('./models/mongo.js');
 let helpers = helper.requireModule('./lib/templates/helper.js');
-let document = require('./downloads/Test');
 let template = require('./schema/indexTemplate.js');
 let counter = 0;
 let context = {
@@ -123,7 +122,7 @@ var req = {
 var res = {
     'writeHead' : function (ts, opts) {
 	},
-	
+
 	'on' : function (data) {
     },
 
