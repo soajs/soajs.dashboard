@@ -252,7 +252,7 @@ describe("Testing Catalog Functionality", function() {
                 done();
             });
         });
-        
+
         it("Fail - Add an catalog with invalid custom branch", function (done) {
 
             catalog.name = "testInvalidType";
@@ -358,7 +358,7 @@ describe("Testing Catalog Functionality", function() {
             executeMyRequest(params, "catalog/recipes/add", 'post', function (result) {
                 catalog.recipe.deployOptions.ports = [];
                 assert.ok(result);
-                assert.deepEqual(result.errors.details[0].code, 826);
+                assert.deepEqual(result.errors.details[0].code, 824);
                 done();
             });
         });

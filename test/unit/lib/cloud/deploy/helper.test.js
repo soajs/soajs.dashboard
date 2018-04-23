@@ -23,6 +23,47 @@ var mongoStub = {
 	switchConnection: function(soajs) {
 	}
 };
+var req = {
+	soajs: {
+		registry: {
+			coreDB: {
+				provision: {}
+			}
+		},
+		log: {
+			debug: function (data) {
+
+			},
+			error: function (data) {
+
+			},
+			info: function (data) {
+
+			}
+		},
+		inputmaskData: {},
+		validator: {
+			Validator: function () {
+				return {
+					validate: function (boolean) {
+						if (boolean) {
+							//valid
+							return {
+								errors: []
+							};
+						}
+						else {
+							//invalid
+							return {
+								errors: [{error: 'msg'}]
+							};
+						}
+					}
+				};
+			}
+		}
+	}
+};
 var deployer = helper.deployer;
 
 describe("testing deploy.js", function () {
@@ -487,7 +528,7 @@ describe("testing deploy.js", function () {
             };
         });
         it("Success deployContainer", function (done) {
-            helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
+            helpers.deployContainer(config, context, req, soajs, deployer, BL, function (error, body) {
                 done();
             });
         });
@@ -535,7 +576,7 @@ describe("testing deploy.js", function () {
             };
 
 
-            helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
+            helpers.deployContainer(config, context, req, soajs, deployer, BL, function (error, body) {
                 done();
             });
         });
@@ -554,7 +595,7 @@ describe("testing deploy.js", function () {
                     }
                 }
             };
-            helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
+            helpers.deployContainer(config, context, req, soajs, deployer, BL, function (error, body) {
                 done();
             });
         });
@@ -597,7 +638,7 @@ describe("testing deploy.js", function () {
                     "failureThreshold": 5
                 }
             };
-            helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
+            helpers.deployContainer(config, context, req, soajs, deployer, BL, function (error, body) {
                 done();
             });
         });
@@ -616,7 +657,7 @@ describe("testing deploy.js", function () {
                     isKubernetes: true
                 }
             };
-            helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
+            helpers.deployContainer(config, context, req, soajs, deployer, BL, function (error, body) {
                 done();
             });
         });
@@ -634,7 +675,7 @@ describe("testing deploy.js", function () {
                     isKubernetes: true
                 }
             };
-            helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
+            helpers.deployContainer(config, context, req, soajs, deployer, BL, function (error, body) {
                 done();
             });
         });
@@ -661,7 +702,7 @@ describe("testing deploy.js", function () {
                 }
             };
             delete context.catalog.recipe.buildOptions.args;
-            helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
+            helpers.deployContainer(config, context, req, soajs, deployer, BL, function (error, body) {
                 done();
             });
         });

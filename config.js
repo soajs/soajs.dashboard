@@ -2368,7 +2368,7 @@ module.exports = {
 									"properties": {
 										"name": {"type": "string", "required": true},
 										"type": {"type": "string", "required": false},
-										"mountPath": {"type": "string", "required": false}
+										"mountPath": {"type": "string", "required": true}
 									}
 								}
 							},

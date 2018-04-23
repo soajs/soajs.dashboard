@@ -51,7 +51,7 @@ var environment = {
 		"required": false,
 		"type": "object",
 		"propeties": {
-		
+
 		}
 	},
 	"templateId": {

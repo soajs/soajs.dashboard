@@ -466,7 +466,7 @@ describe("testing index.js", function () {
 		it("Success environment has been deployment - activate", function (done) {
 			req.soajs.inputmaskData = {
 				code: 'MIKE',
-				//rollback: false,
+				rollback: true,
 				activate: true,
 				resume: true,
 			};
@@ -485,7 +485,7 @@ describe("testing index.js", function () {
 		it("Success environment has been deployment - activate", function (done) {
 			req.soajs.inputmaskData = {
 				code: 'MIKE',
-				//rollback: false,
+				rollback: true,
 				activate: false,
 				resume: true,
 			};
@@ -500,7 +500,7 @@ describe("testing index.js", function () {
 		it("Success ", function (done) {
 			req.soajs.inputmaskData = {
 				code: 'MIKE',
-				//rollback: false,
+				rollback: true,
 				activate: true,
 				resume: true,
 			};
@@ -513,7 +513,7 @@ describe("testing index.js", function () {
 		it("Success with id", function (done) {
 			req.soajs.inputmaskData = {
 				id: '1234',
-				//rollback: false,
+				rollback: true,
 				activate: true,
 				resume: true,
 			};

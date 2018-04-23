@@ -950,6 +950,14 @@ describe("testing products.js", function () {
 						add: function (context, req, data, cb) {
 							return cb(null, true);
 						},
+						model: {
+							saveEntry: function (soajs, opts, cb) {
+								return cb(null, true);
+							},
+							removeEntry: function (soajs, opts, cb) {
+								return cb(null, true);
+							}
+						},
 						get: function (context, req, data, cb) {
 							return cb(null, {
 								"_id": "1",
@@ -1107,6 +1115,14 @@ describe("testing products.js", function () {
 					return cb(null, {
 						add: function (context, req, data, cb) {
 							return cb(null, true);
+						},
+						model: {
+							saveEntry: function (soajs, opts, cb) {
+								return cb(null, true);
+							},
+							removeEntry: function (soajs, opts, cb) {
+								return cb(null, true);
+							}
 						},
 						get: function (context, req, data, cb) {
 							return cb(null, {

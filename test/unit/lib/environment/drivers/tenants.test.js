@@ -1005,11 +1005,15 @@ describe("testing tenants.js", function () {
 			lib = {
 				initBLModel: function (module, modelName, cb) {
 					return cb(null, {
+						model: {
+							saveEntry: function (soajs, opts, cb) {
+								return cb(null, true);
+							},
+						},
 						add: function (context, req, data, cb) {
 							return cb(null, true);
 						},
 						get: function (context, req, data, cb) {
-							
 							return cb(null, tenantRecord);
 						},
 						delete: function (context, req, data, cb) {
@@ -1117,6 +1121,11 @@ describe("testing tenants.js", function () {
 			lib = {
 				initBLModel: function (module, modelName, cb) {
 					return cb(null, {
+						model: {
+							removeEntry: function (soajs, opts, cb) {
+								return cb(null, true);
+							},
+						},
 						add: function (context, req, data, cb) {
 							return cb(null, true);
 						},

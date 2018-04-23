@@ -905,7 +905,7 @@ describe("testing hosts deployment", function () {
 		it("fail - service not found", function (done) {
 			deleteService({ env: 'DEV', id: '123123123', mode: 'replicated' }, function (body) {
 				assert.ok(body.errors);
-				assert.deepEqual(body.errors.details[0].code, 553);
+				assert.deepEqual(body.errors.details[0].code, 550);
 				done();
 			});
 		});
