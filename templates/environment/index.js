@@ -17,7 +17,7 @@ module.exports = [
 		"link": "https://soajsorg.atlassian.net/wiki/spaces/DSBRD/pages/400588803/SOAJS+Microservices+Environment",
 		"logo": "modules/dashboard/templates/images/soajs.png",
 		"restriction": {
-			"type": ["container"]
+			"deployment": ["container"]
 		},
 		"content": {
 			"deployments": {
@@ -62,7 +62,7 @@ module.exports = [
 		"link": "https://soajsorg.atlassian.net/wiki/spaces/DSBRD/pages/400424978/NGINX+SOAJS+Microservices+Environment",
 		"logo": "modules/dashboard/templates/images/soajs-nginx.png",
 		"restriction": {
-			"type": ["container"]
+			"deployment": ["container"]
 		},
 		"content": {
 			"deployments": {
@@ -125,7 +125,7 @@ module.exports = [
 		"link": "https://soajsorg.atlassian.net/wiki/spaces/DSBRD/pages/400457732/SOAJS+Portal+Environment",
 		"logo": "modules/dashboard/templates/images/soajs-portal.png",
 		"restriction": {
-			"type": ["container"]
+			"deployment": ["container"]
 		},
 		"content": {
 			"productization": {
