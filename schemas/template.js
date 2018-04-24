@@ -46,6 +46,39 @@ let commonDeploySchema = {
 	}
 };
 
+let templateRestrictionSchema = {
+	"type": "object",
+	"required": false,
+	"properties": {
+		"deployment": {
+			"type": "array",
+			"items": {
+				"type": "string",
+				"enum": ["container", "vm", "manual"]
+			},
+			"required": false,
+			"uniqueItems": true
+		},
+		"driver": {
+			"type": "array",
+			"items": {
+				"type": "string" //container.docker | container.kubernetes ....
+			},
+			"required": false,
+			"uniqueItems": true
+		},
+		"infra": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			},
+			"required": false,
+			"uniqueItems": true
+		}
+	},
+	"additionalProperties": false
+};
+
 module.exports = {
 	"type": "object",
 	"required": true,
@@ -117,6 +150,7 @@ module.exports = {
 				}
 			}
 		},
+		"restriction": templateRestrictionSchema,
 		"deploy": {
 			"type": "object",
 			"required": false,
