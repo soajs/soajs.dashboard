@@ -16,6 +16,9 @@ module.exports = [
 		"description": "This template will create an environment with SOAJS API Gateway configured, deployed & ready to use. You can leverage this environment to deploy microservices.",
 		"link": "https://soajsorg.atlassian.net/wiki/spaces/DSBRD/pages/400588803/SOAJS+Microservices+Environment",
 		"logo": "modules/dashboard/templates/images/soajs.png",
+		"restriction": {
+			"deployment": ["container"]
+		},
 		"content": {
 			"deployments": {
 				"repo": {
@@ -58,6 +61,9 @@ module.exports = [
 		"description": "This template will create an environment with Nginx & SOAJS API Gateway configured, deployed & ready to use. You can leverage this environment to deploy microservices & static content.",
 		"link": "https://soajsorg.atlassian.net/wiki/spaces/DSBRD/pages/400424978/NGINX+SOAJS+Microservices+Environment",
 		"logo": "modules/dashboard/templates/images/soajs-nginx.png",
+		"restriction": {
+			"deployment": ["container"]
+		},
 		"content": {
 			"deployments": {
 				"repo": {
@@ -119,6 +125,9 @@ module.exports = [
 		"link": "https://soajsorg.atlassian.net/wiki/spaces/DSBRD/pages/400457732/SOAJS+Portal+Environment",
 		"logo": "modules/dashboard/templates/images/soajs-portal.png",
 		"reusable": false,
+		"restriction": {
+			"deployment": ["container"]
+		},
 		"content": {
 			"productization": {
 				"data": [
