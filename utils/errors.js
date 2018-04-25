@@ -82,6 +82,9 @@ var errors = {
 	"482": "Requested template does not exist!",
 	"483": "Error exporting endpoints. Some of the resources associated with your endpoints were not found!",
 	
+	"490": "Invalid Infra Provider Id Provided",
+	"491": "This provider still has registered deployments. Remove them first before you deactivate the account.",
+	
 	"500": "This record is locked. You cannot delete it",
 	"501": "This record is locked. You cannot modify or delete it",
 	"502": "Invalid resource name/id provided",

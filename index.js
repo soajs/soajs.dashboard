@@ -52,6 +52,9 @@ var dashboardBL = {
 		model: require('./models/git.js')
 	},
 	cloud: {
+		infra: {
+			module: require("./lib/cloud/infra/index.js")
+		},
 		service: {
 			module: require("./lib/cloud/services/index.js")
 		},
@@ -3145,6 +3148,80 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.cloud.secrets.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.delete(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Infra Providers
+	 */
+	
+	/**
+	 * List activated Infra Providers
+	 */
+	service.get("/infra", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.list(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Activate new infra provider
+	 */
+	service.post("/infra", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.activate(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * modify infra provider connection settings
+	 */
+	service.put("/infra", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.modify(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * deactivate infra provider
+	 */
+	service.delete("/infra", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.deactivate(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * delete deployment from infra provider
+	 */
+	service.delete("/infra/deployment", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.removeDeployment(config, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

@@ -1734,6 +1734,14 @@ module.exports = {
 						"type": "string"
 					}
 				}
+			},
+			
+			"/infra": {
+				"_apiInfo": {
+					"l": "List Infra Providers",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project'],
 			}
 			
 		},
@@ -3232,6 +3240,35 @@ module.exports = {
 					}
 				}
 			},
+			
+			"/infra": {
+				"_apiInfo": {
+					"l": "Connect Infra Providers",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project'],
+				"label": {
+					"source": ['body.label'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"name": {
+					"source": ['body.name'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"api": {
+					"source": ['body.api'],
+					"required": true,
+					"validation": {
+						"type": "object"
+					}
+				}
+			}
 		},
 		
 		"put": {
@@ -4535,6 +4572,21 @@ module.exports = {
 						"type": "string"
 					}
 				}
+			},
+			
+			"/infra": {
+				"_apiInfo": {
+					"l": "Modify Infra Providers Connection",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project', 'id'],
+				"api": {
+					"source": ['body.api'],
+					"required": true,
+					"validation": {
+						"type": "object"
+					}
+				}
 			}
 		},
 		
@@ -4889,6 +4941,29 @@ module.exports = {
 				'commonFields': ['soajs_project', 'namespace', 'env'],
 				"name": {
 					"source": ['query.name'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
+			"/infra": {
+				"_apiInfo": {
+					"l": "Deactivate Infra Providers",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project', 'id']
+			},
+			
+			"/infra/deployment": {
+				"_apiInfo": {
+					"l": "Deactivate Infra Providers",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project', 'id'],
+				"deploymentId": {
+					"source": ['query.deploymentId'],
 					"required": true,
 					"validation": {
 						"type": "string"
