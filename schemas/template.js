@@ -87,6 +87,7 @@ module.exports = {
 		"description": {"type": "string", "required": true},
 		"logo": {"type": "string", "required": false},
 		"link": {"type": "string", "required": false, "format": "uri"},
+		"reusable" : {"type": "boolean", "required": false},
 		"content": {
 			"type": "object",
 			"required": false,

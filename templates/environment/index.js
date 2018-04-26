@@ -124,6 +124,7 @@ module.exports = [
 		"description": "This templates will create an environment with SOAJS PORTAL (SOAJS API Gateway, URAC, oAuth & Nginx) configured, deployed and ready to use.",
 		"link": "https://soajsorg.atlassian.net/wiki/spaces/DSBRD/pages/400457732/SOAJS+Portal+Environment",
 		"logo": "modules/dashboard/templates/images/soajs-portal.png",
+		"reusable": false,
 		"restriction": {
 			"deployment": ["container"]
 		},
