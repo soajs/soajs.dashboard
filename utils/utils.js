@@ -89,9 +89,6 @@ module.exports = {
 
 		options.model = BL.model;
 
-		//switch strategy name to follow drivers convention
-		if (options.strategy === 'docker') options.strategy = 'swarm';
-
 		return options;
 	},
 
