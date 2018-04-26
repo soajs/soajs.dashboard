@@ -12,7 +12,7 @@ module.exports = {
 			"cpuLimit": {"required": false, "type": "string"},
 			"isKubernetes": {"required": false, "type": "boolean"},
 			"replication": {
-				"required": true,
+				"required": false,
 				"type": "object",
 				"properties": {
 					"mode": {
