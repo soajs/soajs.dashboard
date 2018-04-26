@@ -2,6 +2,7 @@
 var soajsUtils = require("soajs").utils;
 var async = require('async');
 var tenantsColName = 'tenants';
+var infraColName = 'infra';
 
 module.exports = {
 
@@ -165,6 +166,26 @@ module.exports = {
 			}
 
 			return cb(null, false);
+		});
+	},
+	
+	getInfra: function (soajs, model, infra, cb){
+		if (!infra) {
+			soajs.log.error('No infra provided');
+			return cb(null, false);
+		}
+		var opts = {
+			collection: infraColName,
+			conditions: {
+				_id: infra // todo check this
+			}
+		};
+		
+		model.findEntry(soajs, opts, function (error, infra) {
+			if (error) {
+				return cb(error);
+			}
+			return cb(null, infra);
 		});
 	}
 };

@@ -1538,6 +1538,22 @@ service.init(function () {
 	});
 	
 	/**
+	 * List all Vms deployed in a region
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/cloud/vm/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.listVms(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
 	 * Redeploy a running service
 	 * @param {String} API route
 	 * @param {Function} API middleware

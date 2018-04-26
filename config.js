@@ -1073,6 +1073,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key', 'soajs_project']
 			},
+			
 			/*
 			 * This API will return the env where a service is deployed.
 			 * it takes the service name and renders an object having the following form :
@@ -1124,6 +1125,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
+			
 			"/hosts/awareness": {
 				"_apiInfo": {
 					"l": "Get Controller Hosts",
@@ -1131,6 +1133,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'env']
 			},
+			
 			"/cloud/services/list": {
 				"_apiInfo": {
 					"l": "List Cloud Services",
@@ -1199,6 +1202,21 @@ module.exports = {
 				},
 				"namespace": {
 					"source": ['query.namespace'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
+			"/cloud/vm/list": {
+				"_apiInfo": {
+					"l": "List Cloud Virtual Machines",
+					"group": "Services"
+				},
+				'commonFields': ['soajs_project'],
+				"location": {
+					"source": ['query.location'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -4823,7 +4841,21 @@ module.exports = {
 				},
 				"mode": {
 					"source": ['query.mode'],
-					"required": true,
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"location": {
+					"source": ['query.location'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"type": {
+					"source": ['query.type'],
+					"required": false,
 					"validation": {
 						"type": "string"
 					}
