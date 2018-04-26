@@ -1464,7 +1464,7 @@ describe("mongo check db", function () {
                 "domain": "api.myDomain.com",
                 "apiPrefix": "api",
                 "sitePrefix": "site",
-                "description": "this is a dummy updated description",
+                "description": "this is a dummy description",
                 "dbs": {
                     "config": {
                         "prefix": ""
