@@ -85,10 +85,9 @@ module.exports = {
 		envRecord.serviceConfig = serviceConfig;
 		delete envRecord.coreDB.registryLocation;
 		
-		options.soajs = { registry: envRecord };
-
+		options.soajs = soajs;
+		options.soajs.registry = envRecord;
 		options.model = BL.model;
-
 		return options;
 	},
 
