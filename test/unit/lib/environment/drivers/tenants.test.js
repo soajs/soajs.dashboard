@@ -35,13 +35,13 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-			
+
 			},
 			error: function (data) {
-			
+
 			},
 			info: function (data) {
-			
+
 			}
 		},
 		inputmaskData: {},
@@ -472,7 +472,7 @@ var template = {
 						}
 					],
 					"status": {}
-					
+
 				},
 				'deployments.resources.nginx': {
 					imfv: [
@@ -534,7 +534,7 @@ let tenantRecord = {
 	},
 	"code": "MIKE",
 	"name": "Dashboard Tenant",
-	
+
 	"description": "Mike Tenant Description",
 	"applications": [
 		{
@@ -717,9 +717,9 @@ var lib = {
 };
 var context = {};
 describe("testing tenants.js", function () {
-	
+
 	describe("testing validate", function () {
-		
+
 		it("fail does not support deploying tenants", function (done) {
 			context = {
 				BL: BL,
@@ -738,7 +738,7 @@ describe("testing tenants.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success", function (done) {
 			context = {
 				BL: BL,
@@ -758,9 +758,9 @@ describe("testing tenants.js", function () {
 			})
 		});
 	});
-	
+
 	describe("testing deploy", function () {
-		
+
 		it("success products already deployed", function (done) {
 			context = {
 				BL: BL,
@@ -782,7 +782,7 @@ describe("testing tenants.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success tenants with no data entries", function (done) {
 			context = {
 				BL: BL,
@@ -802,7 +802,7 @@ describe("testing tenants.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success products with tenant entry already created", function (done) {
 			context = {
 				BL: BL,
@@ -832,7 +832,7 @@ describe("testing tenants.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success products with a package", function (done) {
 			context = {
 				BL: BL,
@@ -852,21 +852,16 @@ describe("testing tenants.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success products with no package found", function (done) {
 			lib = {
 				initBLModel: function (module, modelName, cb) {
 					return cb(null, {
 						add: function (context, req, data, cb) {
-							return cb(null, "123");
+							return cb(null, tenantRecord);
 						},
 						get: function (context, req, data, cb) {
-							if (req.soajs.inputmaskData.id === "123"){
-								return cb(null, tenantRecord);
-							}
-							else{
-								return cb(null, null);
-							}
+							return cb(null,tenantRecord);
 						},
 						delete: function (context, req, data, cb) {
 							return cb(null, true);
@@ -909,11 +904,11 @@ describe("testing tenants.js", function () {
 				done();
 			})
 		});
-		
+
 	});
-	
+
 	describe("testing rollback", function () {
-		
+
 		it("success tenants no status", function (done) {
 			context = {
 				BL: BL,
@@ -933,7 +928,7 @@ describe("testing tenants.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success tenants not done", function (done) {
 			context = {
 				BL: BL,
@@ -955,8 +950,46 @@ describe("testing tenants.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success tenants ", function (done) {
+			lib = {
+				initBLModel: function (module, modelName, cb) {
+					return cb(null, {
+						model: {
+							saveEntry: function (soajs, opts, cb) {
+								return cb(null, true);
+							},
+						},
+						add: function (context, req, data, cb) {
+							return cb(null, tenantRecord);
+						},
+						get: function (context, req, data, cb) {
+							return cb(null,tenantRecord);
+						},
+						delete: function (context, req, data, cb) {
+							return cb(null, true);
+						},
+						addApplication: function (context, req, data, cb) {
+							return cb(null, true);
+						},
+						saveOAuth: function (context, code, message, req, data,  cb) {
+							return cb(null, true);
+						},
+						createApplicationKey: function (context, req, provision, data, cb) {
+							return cb(null, true);
+						},
+						addApplicationExtKeys: function (context, soajsCore, req, data, cb) {
+							return cb(null, true);
+						},
+						updateApplicationConfig: function (context, req, data, cb) {
+							return cb(null, true);
+						},
+					});
+				},
+				checkReturnError: function (req, {}, {}, cb) {
+					return cb(null, true);
+				}
+			};
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -977,14 +1010,14 @@ describe("testing tenants.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success tenants with no entries", function (done) {
 			context.template.content.tenant.data = [];
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
 			})
 		});
-		
+
 		it("success with tenant found", function (done) {
 			context = {
 				BL: BL,
@@ -1100,7 +1133,7 @@ describe("testing tenants.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success with no applications", function (done) {
 			context = {
 				BL: BL,
