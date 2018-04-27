@@ -1545,7 +1545,7 @@ service.init(function () {
 	service.get("/cloud/vm/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.listVms(config, req.soajs, deployer, function (error, data) {
+				BL.listVMs(config, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -1610,6 +1610,22 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.maintenance(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Perform maintenance operations on services deployed in container mode
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/cloud/vms/maintenance", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.maintenanceVM(config, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

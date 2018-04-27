@@ -254,6 +254,7 @@ var errors = {
 	"829": "Replication type is required!",
 	
 	"840": "Missing Virtual Machine parameters.",
+	"841": "No Admin Authentication method was provided.",
 	
 	"850": "The simulator returned an error",
 	"851": "Invalid YAML code provided",

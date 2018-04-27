@@ -1222,7 +1222,7 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"infra": {
+				"infraAccountId": {
 					"source": ['query.infra'],
 					"required": true,
 					"validation": {
@@ -2200,7 +2200,7 @@ module.exports = {
 					"group": "Daemons"
 				},
 				'commonFields': ['soajs_project',
-					'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
+					'groupName', 'daemon', 'maicronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
 				'type': {
 					"required": true,
 					"source": ["body.type"],
@@ -2292,14 +2292,22 @@ module.exports = {
 								}
 							},
 							"location": {"required": false, "type": "string"},
-							"infra": {"required": false, "type": "string"},
+							"infraAccountId": {"required": false, "type": "string"},
 							"type": {"required": false, "type": "string"},
 							"vmConfiguration": {
 								"required": false,
 								"type": "object",
 								"properties": {
-									"flavor": {"required": false, "type": "string"},
-									"adminAccess": {"required": false, "type": "string"},
+									"flavor": {"required": true, "type": "string"},
+									"adminAccess": {
+										"required": true,
+										"type": "object",
+										"properties": {
+											"username": {"required": true, "type": "string"},
+											"password": {"required": false, "type": "string"},
+											"token": {"required": false, "type": "string"}
+										}
+									},
 								}
 							},
 						}
@@ -2535,6 +2543,57 @@ module.exports = {
 					"validation": {
 						"type": "string",
 						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats', 'reloadDaemonConf']
+					}
+				}
+			},
+			
+			"/cloud/vm/maintenance": {
+				"_apiInfo": {
+					"l": "Perform A Maintenance Operation on a Deployed Virtual Machine",
+					"group": "HA Cloud"
+				},
+				"commonFields": ['soajs_project'],
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"location": {
+					"source": ['body.location'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"name": {
+					"source": ['body.name'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"groupName": {
+					"source": ['body.groupName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"infraAccountId": {
+					"source": ['body.infraAccountId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"operation": {
+					"source": ['body.operation'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["startVM", "powerOffVM", "restartVM"]
 					}
 				}
 			},
@@ -4873,7 +4932,7 @@ module.exports = {
 				},
 				"technology": {
 					"source": ['query.technology'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string"
 					}
