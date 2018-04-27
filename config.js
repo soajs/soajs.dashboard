@@ -4943,6 +4943,13 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				"groupName": {
+					"source": ['query.groupName'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
 			
