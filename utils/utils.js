@@ -47,30 +47,35 @@ module.exports = {
 	 * @param {Object} soajs
 	 * @returns {Object} options
 	 */
-	buildDeployerOptions: function (envRecord, soajs, BL) {
+	buildDeployerOptions: function (envRecord, soajs, BL, deployment) {
 		var options = {};
 		var envDeployer = envRecord.deployer;
 
 		if (!envDeployer) return null;
 		if (Object.keys(envDeployer).length === 0) return null;
 		if (!envDeployer.type || !envDeployer.selected) return null;
-		if (envDeployer.type === 'manual') return null;
-
-		var selected = envDeployer.selected.split('.');
-
-		options.strategy = selected[1];
-		options.driver = selected[1] + '.' + selected[2];
-		options.env = envRecord.code.toLowerCase();
-
-		if (options.strategy === 'kubernetes' && soajs.inputmaskData.namespace) {
-			//if a namespace is specified, add user set namespace to override the registry config
-			options.namespace = soajs.inputmaskData.namespace;
+		if (envDeployer.type === 'manual') {
+			if (!deployment || !!deployment.technology === 'vm'){
+				return null;
+			}
 		}
-
-		for (var i = 0; i < selected.length; i++) {
-			envDeployer = envDeployer[selected[i]];
+		else {
+			var selected = envDeployer.selected.split('.');
+			
+			options.strategy = selected[1];
+			options.driver = selected[1] + '.' + selected[2];
+			options.env = envRecord.code.toLowerCase();
+			
+			if (options.strategy === 'kubernetes' && soajs.inputmaskData.namespace) {
+				//if a namespace is specified, add user set namespace to override the registry config
+				options.namespace = soajs.inputmaskData.namespace;
+			}
+			
+			for (var i = 0; i < selected.length; i++) {
+				envDeployer = envDeployer[selected[i]];
+			}
 		}
-
+		
 		options.deployerConfig = envDeployer;
 		
 		var serviceConfig = soajsUtils.cloneObj(envRecord.services.config);
@@ -162,26 +167,6 @@ module.exports = {
 			}
 
 			return cb(null, false);
-		});
-	},
-	
-	getInfra: function (soajs, model, infra, cb){
-		if (!infra) {
-			soajs.log.error('No infra provided');
-			return cb(null, false);
-		}
-		var opts = {
-			collection: infraColName,
-			conditions: {
-				_id: infra // todo check this
-			}
-		};
-		
-		model.findEntry(soajs, opts, function (error, infra) {
-			if (error) {
-				return cb(error);
-			}
-			return cb(null, infra);
 		});
 	}
 };

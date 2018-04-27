@@ -1221,6 +1221,13 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				"infra": {
+					"source": ['query.infra'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
 			
@@ -2273,7 +2280,7 @@ module.exports = {
 							"cpuLimit": {"required": false, "type": "string"},
 							"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
 							"replication": {
-								"required": true,
+								"required": false,
 								"type": "object",
 								"properties": {
 									"mode": {
@@ -2283,7 +2290,18 @@ module.exports = {
 									},
 									"replicas": {"required": false, "type": "number", "minimum": 1}
 								}
-							}
+							},
+							"location": {"required": false, "type": "string"},
+							"infra": {"required": false, "type": "string"},
+							"type": {"required": false, "type": "string"},
+							"vmConfiguration": {
+								"required": false,
+								"type": "object",
+								"properties": {
+									"flavor": {"required": false, "type": "string"},
+									"adminAccess": {"required": false, "type": "string"},
+								}
+							},
 						}
 					}
 				},
@@ -4853,8 +4871,15 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"type": {
-					"source": ['query.type'],
+				"technology": {
+					"source": ['query.technology'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"infraAccountId": {
+					"source": ['query.infraAccount'],
 					"required": false,
 					"validation": {
 						"type": "string"
