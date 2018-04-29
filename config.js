@@ -1073,6 +1073,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key', 'soajs_project']
 			},
+			
 			/*
 			 * This API will return the env where a service is deployed.
 			 * it takes the service name and renders an object having the following form :
@@ -1124,6 +1125,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
+			
 			"/hosts/awareness": {
 				"_apiInfo": {
 					"l": "Get Controller Hosts",
@@ -1131,6 +1133,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'env']
 			},
+			
 			"/cloud/services/list": {
 				"_apiInfo": {
 					"l": "List Cloud Services",
@@ -1199,6 +1202,28 @@ module.exports = {
 				},
 				"namespace": {
 					"source": ['query.namespace'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
+			"/cloud/vm/list": {
+				"_apiInfo": {
+					"l": "List Cloud Virtual Machines",
+					"group": "Services"
+				},
+				'commonFields': ['soajs_project'],
+				"location": {
+					"source": ['query.location'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"infraAccountId": {
+					"source": ['query.infra'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -2175,7 +2200,7 @@ module.exports = {
 					"group": "Daemons"
 				},
 				'commonFields': ['soajs_project',
-					'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
+					'groupName', 'daemon', 'maicronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
 				'type': {
 					"required": true,
 					"source": ["body.type"],
@@ -2255,7 +2280,7 @@ module.exports = {
 							"cpuLimit": {"required": false, "type": "string"},
 							"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
 							"replication": {
-								"required": true,
+								"required": false,
 								"type": "object",
 								"properties": {
 									"mode": {
@@ -2265,7 +2290,26 @@ module.exports = {
 									},
 									"replicas": {"required": false, "type": "number", "minimum": 1}
 								}
-							}
+							},
+							"location": {"required": false, "type": "string"},
+							"infraAccountId": {"required": false, "type": "string"},
+							"type": {"required": false, "type": "string"},
+							"vmConfiguration": {
+								"required": false,
+								"type": "object",
+								"properties": {
+									"flavor": {"required": true, "type": "string"},
+									"adminAccess": {
+										"required": true,
+										"type": "object",
+										"properties": {
+											"username": {"required": true, "type": "string"},
+											"password": {"required": false, "type": "string"},
+											"token": {"required": false, "type": "string"}
+										}
+									},
+								}
+							},
 						}
 					}
 				},
@@ -2499,6 +2543,57 @@ module.exports = {
 					"validation": {
 						"type": "string",
 						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats', 'reloadDaemonConf']
+					}
+				}
+			},
+			
+			"/cloud/vm/maintenance": {
+				"_apiInfo": {
+					"l": "Perform A Maintenance Operation on a Deployed Virtual Machine",
+					"group": "HA Cloud"
+				},
+				"commonFields": ['soajs_project'],
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"location": {
+					"source": ['body.location'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"name": {
+					"source": ['body.name'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"groupName": {
+					"source": ['body.groupName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"infraAccountId": {
+					"source": ['body.infraAccountId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"operation": {
+					"source": ['body.operation'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["startVM", "powerOffVM", "restartVM"]
 					}
 				}
 			},
@@ -4823,7 +4918,35 @@ module.exports = {
 				},
 				"mode": {
 					"source": ['query.mode'],
-					"required": true,
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"location": {
+					"source": ['query.location'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"technology": {
+					"source": ['query.technology'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"infraAccountId": {
+					"source": ['query.infraAccount'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"groupName": {
+					"source": ['query.groupName'],
+					"required": false,
 					"validation": {
 						"type": "string"
 					}
