@@ -1767,6 +1767,21 @@ module.exports = {
 					"group": "Infra Providers"
 				},
 				'commonFields': ['soajs_project'],
+			},
+			
+			"/infra/template/download": {
+				"_apiInfo": {
+					"l": "Download Infra as Code Template",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project', 'id'],
+				"templateId": {
+					"source": ['query.templateId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
 			}
 			
 		},
@@ -3363,6 +3378,29 @@ module.exports = {
 						"type": "object"
 					}
 				}
+			},
+			
+			"/infra/template": {
+				"_apiInfo": {
+					"l": "Add Infra as Code Template",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project', 'id'],
+				"template": {
+					"source": ['body.template'],
+					"required": true,
+					"validation": {
+						"type": "object"
+					}
+				}
+			},
+			
+			"/infra/template/upload": {
+				"_apiInfo": {
+					"l": "Update Infra as Code Template",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project', 'id']
 			}
 		},
 		
@@ -4682,6 +4720,21 @@ module.exports = {
 						"type": "object"
 					}
 				}
+			},
+			
+			"/infra/template": {
+				"_apiInfo": {
+					"l": "Update Infra as Code Template",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project', 'id'],
+				"template": {
+					"source": ['body.template'],
+					"required": true,
+					"validation": {
+						"type": "object"
+					}
+				}
 			}
 		},
 		
@@ -5087,6 +5140,21 @@ module.exports = {
 				'commonFields': ['soajs_project', 'id'],
 				"deploymentId": {
 					"source": ['query.deploymentId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
+			"/infra/template": {
+				"_apiInfo": {
+					"l": "Remove Template from Infra Providers",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project', 'id'],
+				"templateId": {
+					"source": ['query.templateId'],
 					"required": true,
 					"validation": {
 						"type": "string"

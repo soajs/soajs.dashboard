@@ -3262,6 +3262,76 @@ service.init(function () {
 	});
 	
 	/**
+	 * delete template from infra provider
+	 */
+	service.delete("/infra/template", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.removeTemplate(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * add template from infra provider
+	 */
+	service.post("/infra/template", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.addTemplate(config, req.soajs, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * upload template for infra provider to remote infra cloud CDN
+	 */
+	service.post("/infra/template/upload", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.uploadTemplate(config, req, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * download template from infra provider remote cloud CDN
+	 */
+	service.get("/infra/template/download", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.downloadTemplate(config, req.soajs, deployer, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * update template from infra provider
+	 */
+	service.put("/infra/template", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.updateTemplate(config, req.soajs, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
 	 * Service Start
 	 */
 	service.start();
