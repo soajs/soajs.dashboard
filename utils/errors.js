@@ -250,7 +250,12 @@ var errors = {
 	"825": "Invalid or no environment deployer settings detected. Make sure you are running in container mode",
 	"826": "Invalid port schema provided!",
 	"827": "Invalid volume schema provided!",
-
+	"828": "Container mode is required!",
+	"829": "Replication type is required!",
+	
+	"840": "Missing Virtual Machine parameters.",
+	"841": "No Admin Authentication method was provided.",
+	
 	"850": "The simulator returned an error",
 	"851": "Invalid YAML code provided",
 	"852": "Error Cleaning up generated Service Code",
