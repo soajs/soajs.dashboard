@@ -12,6 +12,15 @@ module.exports = {
 			"type": {"type": "string", "required": true},
 			"subtype": {"type": "string", "required": false},
 			"description": {"type": "string", "required": true},
+            "restriction": {
+                "type": "object",
+				"required" : false,
+                "properties": {
+                    "deployment": {"type": "array", 'required' : false},
+                    "driver": {"type": "array", 'required' : false},
+                    "infra": {"type": "array", 'required' : false}
+				}
+            },
 			"recipe": {
 				"type": "object",
 				"required": true,
