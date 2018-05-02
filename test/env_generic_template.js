@@ -440,25 +440,23 @@ let template = {
 				}
 			},
 			"steps": {
-				"secrets": {
-					"nginx-certs": {
-						"imfv": [
+				"deployments.secrets.nginx": {
+					"imfv": [
+						{
+							"name": "nginx-certs",
+							"namespace": "soajs",
+							"type": "Generic",
+							"data": "something in secret",
+						}
+					],
+					"status": {
+						"done": true,
+						"data": [
 							{
 								"name": "nginx-certs",
-								"namespace": "soajs",
-								"type": "Generic",
-								"data": "something in secret",
+								"namespace": "soajs"
 							}
-						],
-						"status": {
-							"done": true,
-							"data": [
-								{
-									"name": "nginx-certs",
-									"namespace": "soajs"
-								}
-							]
-						}
+						]
 					}
 				},
 				
