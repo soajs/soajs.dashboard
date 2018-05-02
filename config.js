@@ -1215,16 +1215,9 @@ module.exports = {
 					"group": "Services"
 				},
 				'commonFields': ['soajs_project'],
-				"location": {
-					"source": ['query.location'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"infraAccountId": {
-					"source": ['query.infra'],
-					"required": true,
+				"env": {
+					"source": ['query.env'],
+					"required": false,
 					"validation": {
 						"type": "string"
 					}
