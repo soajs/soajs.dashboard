@@ -1773,6 +1773,13 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				"technology": {
+					"source": ['query.technology'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
 			
