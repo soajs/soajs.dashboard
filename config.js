@@ -1767,6 +1767,35 @@ module.exports = {
 					"group": "Infra Providers"
 				},
 				'commonFields': ['soajs_project'],
+				"envCode": {
+					"source": ['query.envCode'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"technology": {
+					"source": ['query.technology'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
+			"/infra/cluster": {
+				"_apiInfo": {
+					"l": "Get Cluster From Infra Provider",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project', 'id'],
+				"envCode": {
+					"source": ['query.envCode'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
 			},
 			
 			"/infra/template/download": {
@@ -3401,6 +3430,28 @@ module.exports = {
 					"group": "Infra Providers"
 				},
 				'commonFields': ['soajs_project', 'id']
+			},
+			
+			"/infra/cluster/scale": {
+				"_apiInfo": {
+					"l": "Scale Cluster at Infra Provider",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project', 'id'],
+				"envCode": {
+					"source": ['query.envCode'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"number": {
+					"source": ['body.number'],
+					"required": true,
+					"validation": {
+						"type": "number"
+					}
+				}
 			}
 		},
 		

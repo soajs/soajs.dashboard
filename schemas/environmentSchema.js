@@ -57,6 +57,10 @@ var environment = {
 	"templateId": {
 		"required": true,
 		"type": "string"
+	},
+	"infraId": {
+		"required": false,
+		"type": "string"
 	}
 };
 
