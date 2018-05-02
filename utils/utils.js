@@ -54,16 +54,20 @@ module.exports = {
 		if (!envDeployer) return null;
 		if (Object.keys(envDeployer).length === 0) return null;
 		if (!envDeployer.type || !envDeployer.selected) return null;
-		if (envDeployer.type === 'manual') {
-			if (!deployment || !!deployment.technology === 'vm'){
-				return null;
-			}
+		
+		if (envDeployer.type === 'manual' && (!deployment || deployment.technology !== 'vm')) {
+			return null;
 		}
 		else {
 			var selected = envDeployer.selected.split('.');
+			if(selected && selected.length > 0){
+				options.strategy = selected[1];
+				options.driver = selected[1] + '.' + selected[2];
+			}
+			else{
+				options.driver = envDeployer.type;
+			}
 			
-			options.strategy = selected[1];
-			options.driver = selected[1] + '.' + selected[2];
 			options.env = envRecord.code.toLowerCase();
 			
 			if (options.strategy === 'kubernetes' && soajs.inputmaskData.namespace) {

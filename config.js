@@ -2335,8 +2335,8 @@ module.exports = {
 									"replicas": {"required": false, "type": "number", "minimum": 1}
 								}
 							},
-							"location": {"required": false, "type": "string"},
-							"infraAccountId": {"required": false, "type": "string"},
+							"region": {"required": false, "type": "string"},
+							"infra": {"required": false, "type": "string"},
 							"type": {"required": false, "type": "string"},
 							"vmConfiguration": {
 								"required": false,
