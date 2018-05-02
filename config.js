@@ -1767,6 +1767,28 @@ module.exports = {
 					"group": "Infra Providers"
 				},
 				'commonFields': ['soajs_project'],
+				"envCode": {
+					"source": ['query.envCode'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
+			"/infra/cluster": {
+				"_apiInfo": {
+					"l": "Get Cluster From Infra Provider",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project', 'id'],
+				"envCode": {
+					"source": ['query.envCode'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
 			},
 			
 			"/infra/template/download": {
