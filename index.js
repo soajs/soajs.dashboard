@@ -3247,7 +3247,6 @@ service.init(function () {
 		});
 	});
 	
-	
 	/**
 	 * Get cluster information from Infra Provider
 	 */
@@ -3255,6 +3254,20 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.getCluster(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Get cluster information from Infra Provider
+	 */
+	service.post("/infra/cluster/scale", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.scaleCluster(config, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

@@ -1791,7 +1791,7 @@ module.exports = {
 				'commonFields': ['soajs_project', 'id'],
 				"envCode": {
 					"source": ['query.envCode'],
-					"required": false,
+					"required": true,
 					"validation": {
 						"type": "string"
 					}
@@ -3430,6 +3430,28 @@ module.exports = {
 					"group": "Infra Providers"
 				},
 				'commonFields': ['soajs_project', 'id']
+			},
+			
+			"/infra/cluster/scale": {
+				"_apiInfo": {
+					"l": "Scale Cluster at Infra Provider",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project', 'id'],
+				"envCode": {
+					"source": ['query.envCode'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"number": {
+					"source": ['body.number'],
+					"required": true,
+					"validation": {
+						"type": "number"
+					}
+				}
 			}
 		},
 		
