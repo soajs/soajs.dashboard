@@ -3820,6 +3820,13 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				"status": {
+					"source": ['body.status'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
 				"config": {
 					"source": ['body.config'],
 					"required": true,
