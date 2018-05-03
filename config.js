@@ -36,30 +36,30 @@ module.exports = {
 		"hashIterations": 1024,
 		"seedLength": 32
 	},
-	
+
 	"expDateTTL": 86400000,
 	"ncpLimit": 16,
-	
+
 	"profileLocation": process.env.SOAJS_PROFILE_LOC || "/opt/soajs/FILES/profiles/",
-	
+
 	"images": {
 		"nginx": 'nginx',
 		"services": "soajs"
 	},
-	
+
 	"templates": {
 		"path": __dirname + '/templates/'
 	},
-	
+
 	"network": 'soajsnet',
-	
+
 	"imagesDir": "/opt/soajs/deployer/",
-	
+
 	"kubeNginx": {
 		"minPort": 0,
 		"maxPort": 2767
 	},
-	
+
 	"docker": {
 		"url": "https://hub.docker.com/v2/repositories/%organization%/%imagename%/tags/"
 	},
@@ -68,15 +68,15 @@ module.exports = {
 		"dynamicCatalogVariables": ['$SOAJS_NX_CONTROLLER_IP_N', '$SOAJS_MONGO_IP_N', '$SOAJS_MONGO_PORT_N'],
 		"clustersList": ['mysql', 'sql', "mongo", 'mongodb', "es", 'elasticsearch']
 	},
-	
+
 	"tokens": {
 		"dotValue": ".",
 		"dotToken": "__dot__",
 		"dotRegexString": "\\."
 	},
-	
+
 	"dashboardClusterResourceName": "dash_cluster",
-	
+
 	"gitAccounts": {
 		"bitbucket": {
 			apiDomain: 'https://api.bitbucket.org/1.0',
@@ -135,9 +135,9 @@ module.exports = {
 			"repoConfigsFolder": __dirname + '/repoConfigs'
 		}
 	},
-	
+
 	"errors": require("./utils/errors"),
-	
+
 	"schema": {
 		"commonFields": {
 			"soajs_project": {
@@ -368,13 +368,13 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"extKeyRequired": {
 				"source": ['body.extKeyRequired'],
 				"required": true,
 				"validation": {"type": "boolean"}
 			},
-			
+
 			"urac": {
 				"required": true,
 				"source": ["body.urac"],
@@ -431,7 +431,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			'jobs': {
 				'source': ['body.jobs'],
 				'required': true,
@@ -481,7 +481,7 @@ module.exports = {
 					'type': 'text'
 				}
 			},
-			
+
 			'status': {
 				'source': ['body.status'],
 				'required': true,
@@ -592,7 +592,7 @@ module.exports = {
 				}
 			}
 		},
-		
+
 		"get": {
 			"/cd/ledger": {
 				"_apiInfo": {
@@ -610,7 +610,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'env']
 			},
-			
+
 			"/environment": {
 				_apiInfo: {
 					"l": "Get Environment",
@@ -632,7 +632,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/templates": {
 				_apiInfo: {
 					"l": "Get Templates",
@@ -648,7 +648,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/templates/upgrade": {
 				_apiInfo: {
 					"l": "Upgrade Old Templates",
@@ -656,7 +656,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-			
+
 			"/environment/status": {
 				_apiInfo: {
 					"l": "Get/Set Environment Deployment Status",
@@ -699,7 +699,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/list": {
 				_apiInfo: {
 					"l": "List Environments",
@@ -715,7 +715,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/profile": {
 				_apiInfo: {
 					"l": "Get Profile",
@@ -723,7 +723,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-			
+
 			"/environment/dbs/list": {
 				_apiInfo: {
 					"l": "List Environment Databases",
@@ -731,7 +731,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'env']
 			},
-			
+
 			"/resources/list": {
 				_apiInfo: {
 					"l": "List Available Resources",
@@ -740,7 +740,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'env']
 			},
-			
+
 			"/resources/get": {
 				_apiInfo: {
 					"l": "Get One Resource",
@@ -762,7 +762,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/resources/upgrade": {
 				_apiInfo: {
 					"l": "Upgrade Resources to latest version",
@@ -771,7 +771,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'env']
 			},
-			
+
 			"/resources/config": {
 				_apiInfo: {
 					"l": "Get Resources Deploy Configuration",
@@ -779,7 +779,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-			
+
 			"/customRegistry/list": {
 				_apiInfo: {
 					"l": "List Custom Registry Entries",
@@ -804,7 +804,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/customRegistry/get": {
 				_apiInfo: {
 					"l": "Get Custom Registry Entry",
@@ -826,7 +826,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/platforms/list": {
 				_apiInfo: {
 					"l": "List Environment Platforms",
@@ -834,7 +834,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'env']
 			},
-			
+
 			"/product/list": {
 				_apiInfo: {
 					"l": "List Products",
@@ -843,7 +843,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-			
+
 			"/product/get": {
 				_apiInfo: {
 					"l": "Get Product",
@@ -867,7 +867,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/product/packages/list": {
 				_apiInfo: {
 					"l": "List Product Packages",
@@ -875,7 +875,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'soajs_project']
 			},
-			
+
 			"/product/packages/get": {
 				_apiInfo: {
 					"l": "Get Product Package",
@@ -899,7 +899,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/permissions/get": {
 				_apiInfo: {
 					"l": "Get Tenant Security Permissions",
@@ -915,7 +915,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/tenant/list": {
 				_apiInfo: {
 					"l": "List Tenants",
@@ -939,7 +939,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/tenant/get": {
 				_apiInfo: {
 					"l": "Get Tenant",
@@ -961,7 +961,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/tenant/oauth/list": {
 				_apiInfo: {
 					"l": "Get Tenant oAuth Configuration",
@@ -969,7 +969,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'soajs_project']
 			},
-			
+
 			"/tenant/oauth/users/list": {
 				_apiInfo: {
 					"l": "List Tenant oAuth Users",
@@ -977,7 +977,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'soajs_project']
 			},
-			
+
 			"/tenant/application/list": {
 				_apiInfo: {
 					"l": "List Tenant Applications",
@@ -985,7 +985,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'soajs_project']
 			},
-			
+
 			"/tenant/application/key/list": {
 				_apiInfo: {
 					"l": "List Tenant Application Keys",
@@ -993,7 +993,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'soajs_project']
 			},
-			
+
 			"/tenant/application/key/ext/list": {
 				_apiInfo: {
 					"l": "List Tenant Application External Keys",
@@ -1001,7 +1001,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'key', 'soajs_project']
 			},
-			
+
 			"/tenant/application/key/config/list": {
 				_apiInfo: {
 					"l": "List Tenant Application Key Configuration",
@@ -1009,7 +1009,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'key', 'soajs_project']
 			},
-			
+
 			"/tenant/db/keys/list": {
 				_apiInfo: {
 					"l": "List Dashboard Tenant Keys",
@@ -1017,7 +1017,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-			
+
 			"/settings/tenant/get": {
 				_apiInfo: {
 					"l": "Get Tenant",
@@ -1025,7 +1025,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-			
+
 			"/settings/tenant/oauth/list": {
 				_apiInfo: {
 					"l": "Get Tenant oAuth Configuration",
@@ -1033,7 +1033,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-			
+
 			"/settings/tenant/oauth/users/list": {
 				_apiInfo: {
 					"l": "List Tenant oAuth Users",
@@ -1041,7 +1041,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-			
+
 			"/settings/tenant/application/list": {
 				_apiInfo: {
 					"l": "List Tenant Applications",
@@ -1049,7 +1049,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-			
+
 			"/settings/tenant/application/key/list": {
 				_apiInfo: {
 					"l": "List Tenant Application Keys",
@@ -1057,7 +1057,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'soajs_project']
 			},
-			
+
 			"/settings/tenant/application/key/ext/list": {
 				_apiInfo: {
 					"l": "List Tenant Application External Keys",
@@ -1065,7 +1065,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key', 'soajs_project']
 			},
-			
+
 			"/settings/tenant/application/key/config/list": {
 				_apiInfo: {
 					"l": "List Tenant Application Key Configuration",
@@ -1073,7 +1073,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key', 'soajs_project']
 			},
-			
+
 			/*
 			 * This API will return the env where a service is deployed.
 			 * it takes the service name and renders an object having the following form :
@@ -1100,7 +1100,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/daemons/groupConfig/serviceConfig/list": {
 				_apiInfo: {
 					"l": "List Service Configuration",
@@ -1108,7 +1108,7 @@ module.exports = {
 				},
 				'commonFields': ['id', 'jobName', 'soajs_project']
 			},
-			
+
 			"/daemons/groupConfig/tenantExtKeys/list": {
 				_apiInfo: {
 					"l": "List Job's External Keys",
@@ -1116,7 +1116,7 @@ module.exports = {
 				},
 				'commonFields': ['id', 'jobName', 'soajs_project']
 			},
-			
+
 			"/hosts/list": {
 				_apiInfo: {
 					"l": "List Hosts",
@@ -1125,7 +1125,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
-			
+
 			"/hosts/awareness": {
 				"_apiInfo": {
 					"l": "Get Controller Hosts",
@@ -1133,7 +1133,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'env']
 			},
-			
+
 			"/cloud/services/list": {
 				"_apiInfo": {
 					"l": "List Cloud Services",
@@ -1141,7 +1141,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
-			
+
 			"/cloud/nodes/list": {
 				"_apiInfo": {
 					"l": "List HA Cloud Nodes",
@@ -1149,7 +1149,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
-			
+
 			"/cloud/services/instances/logs": {
 				"_apiInfo": {
 					"l": "Get Service Container Logs",
@@ -1178,7 +1178,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/namespaces/list": {
 				"_apiInfo": {
 					"l": "List Available Namespaces",
@@ -1186,7 +1186,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
-			
+
 			"/cloud/resource": {
 				"_apiInfo": {
 					"l": "Check if resource is Deployed",
@@ -1208,7 +1208,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/vm/list": {
 				"_apiInfo": {
 					"l": "List Cloud Virtual Machines",
@@ -1223,7 +1223,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/metrics/services": {
 				"_apiInfo": {
 					"l": "List Services Metrics",
@@ -1231,7 +1231,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
-			
+
 			"/cloud/metrics/nodes": {
 				"_apiInfo": {
 					"l": "List Nodes Metrics",
@@ -1239,7 +1239,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
-			
+
 			"/catalog/recipes/list": {
 				"_apiInfo": {
 					"l": "List Catalog Recipes",
@@ -1254,7 +1254,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/catalog/recipes/get": {
 				"_apiInfo": {
 					"l": "Get a Catalog",
@@ -1277,7 +1277,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/catalog/recipes/upgrade": {
 				"_apiInfo": {
 					"l": "Upgrade Catalog Recipes to latest Version",
@@ -1285,7 +1285,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project']
 			},
-			
+
 			"/cd": {
 				"_apiInfo": {
 					"l": "Get CD Configuration",
@@ -1293,7 +1293,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project']
 			},
-			
+
 			"/cd/updates": {
 				"_apiInfo": {
 					"l": "Get Update Notification Ledger",
@@ -1301,7 +1301,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
-			
+
 			"/ci": {
 				"_apiInfo": {
 					"l": "Get CI Accounts",
@@ -1330,7 +1330,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/ci/providers": {
 				"_apiInfo": {
 					"l": "Get CI Providers",
@@ -1352,7 +1352,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/ci/recipe/download": {
 				"_apiInfo": {
 					"l": "Download CI Recipe",
@@ -1360,7 +1360,7 @@ module.exports = {
 				},
 				"commonFields": ["id", 'soajs_project']
 			},
-			
+
 			"/ci/script/download": {
 				"_apiInfo": {
 					"l": "Download CI Script",
@@ -1375,7 +1375,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/ci/status": {
 				"_apiInfo": {
 					"l": "Turn On/Off Repository CI",
@@ -1411,7 +1411,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/ci/settings": {
 				"_apiInfo": {
 					"l": "Get CI Repository Settings & Environment Variables",
@@ -1440,7 +1440,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/ci/repo/remote/config": {
 				"_apiInfo": {
 					"l": "Get the CI configuration file of the repository from provider",
@@ -1476,7 +1476,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/ci/repo/builds": {
 				"_apiInfo": {
 					"l": "Get the CI Latest Repository Build Per Branch",
@@ -1505,7 +1505,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/gitAccounts/accounts/list": {
 				"_apiInfo": {
 					"l": "List Git Accounts",
@@ -1528,7 +1528,7 @@ module.exports = {
 					}
 				},
 			},
-			
+
 			"/gitAccounts/getRepos": {
 				"_apiInfo": {
 					"l": "Get Repositories",
@@ -1573,7 +1573,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/gitAccounts/getBranches": {
 				"_apiInfo": {
 					"l": "Get Repository Branches",
@@ -1609,7 +1609,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			/*
 			 * this API will get the content and the url of any file located on a specific
 			 * github/bitbucket account for a certain repo.
@@ -1664,7 +1664,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/apiBuilder/list": {
 				"_apiInfo": {
 					"l": "List Endpoints",
@@ -1680,7 +1680,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/apiBuilder/get": {
 				"_apiInfo": {
 					"l": "Get Endpoint",
@@ -1701,7 +1701,7 @@ module.exports = {
 					"validation": {"type": "string"}
 				}
 			},
-			
+
 			"/apiBuilder/publish": {
 				"_apiInfo": {
 					"l": "Publish endpoint apis",
@@ -1722,7 +1722,7 @@ module.exports = {
 					"validation": {"type": "string"}
 				}
 			},
-			
+
 			"/apiBuilder/getResources": {
 				"_apiInfo": {
 					"l": "Get Resources",
@@ -1730,7 +1730,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-			
+
 			"/secrets/list": {
 				"_apiInfo": {
 					"l": "List Available Secrets",
@@ -1738,7 +1738,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'namespace', 'env']
 			},
-			
+
 			"/secrets/get": {
 				"_apiInfo": {
 					"l": "Get One Secret",
@@ -1753,7 +1753,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/infra": {
 				"_apiInfo": {
 					"l": "List Infra Providers",
@@ -1775,7 +1775,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/infra/cluster": {
 				"_apiInfo": {
 					"l": "Get Cluster From Infra Provider",
@@ -1790,7 +1790,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/infra/template/download": {
 				"_apiInfo": {
 					"l": "Download Infra as Code Template",
@@ -1805,11 +1805,11 @@ module.exports = {
 					}
 				}
 			}
-			
+
 		},
-		
+
 		"post": {
-			
+
 			"/templates/import": {
 				_apiInfo: {
 					"l": "Import Templates",
@@ -1831,7 +1831,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/templates/export": {
 				_apiInfo: {
 					"l": "Export Templates",
@@ -1873,7 +1873,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/services/list": {
 				_apiInfo: {
 					"l": "List Services",
@@ -1896,7 +1896,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/add": {
 				_apiInfo: {
 					"l": "Add Environment",
@@ -1928,7 +1928,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/dbs/add": {
 				_apiInfo: {
 					"l": "Add Environment Database",
@@ -1973,7 +1973,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/resources/add": {
 				_apiInfo: {
 					"l": "Add New Resource",
@@ -1989,7 +1989,7 @@ module.exports = {
 				},
 				"resource": resourceSchema
 			},
-			
+
 			"/customRegistry/add": {
 				_apiInfo: {
 					"l": "Add New Custom Registry Entry",
@@ -2005,7 +2005,7 @@ module.exports = {
 				},
 				"customRegEntry": customRegEntrySchema
 			},
-			
+
 			"/product/add": {
 				_apiInfo: {
 					"l": "Add Product",
@@ -2023,7 +2023,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/product/packages/add": {
 				_apiInfo: {
 					"l": "Add Product Package",
@@ -2041,7 +2041,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/tenant/add": {
 				_apiInfo: {
 					"l": "Add Tenant",
@@ -2074,7 +2074,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/tenant/oauth/add": {
 				_apiInfo: {
 					"l": "Add Tenant oAuth Configuration",
@@ -2082,7 +2082,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'secret', 'redirectURI', 'oauthType', 'availableEnv', 'soajs_project']
 			},
-			
+
 			"/tenant/oauth/users/add": {
 				_apiInfo: {
 					"l": "Add Tenant oAuth User",
@@ -2090,7 +2090,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'userId', 'password', 'soajs_project']
 			},
-			
+
 			"/tenant/application/add": {
 				_apiInfo: {
 					"l": "Add Tenant Application",
@@ -2098,7 +2098,7 @@ module.exports = {
 				},
 				"commonFields": ['id', '_TTL', 'description', 'acl', 'productCode', 'packageCode', 'soajs_project']
 			},
-			
+
 			"/tenant/application/key/add": {
 				_apiInfo: {
 					"l": "Add Tenant Application Key",
@@ -2106,7 +2106,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'soajs_project']
 			},
-			
+
 			"/tenant/application/key/ext/add": {
 				_apiInfo: {
 					"l": "Add Tenant Application External Key",
@@ -2129,7 +2129,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/tenant/application/key/ext/delete": { //TODO: should be delete, remove params passed in body and change its method
 				_apiInfo: {
 					"l": "Delete Tenant Application External Key",
@@ -2144,7 +2144,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/tenant/acl/get": { //TODO: should be changed from post to get
 				_apiInfo: {
 					"l": "Get Current Tenant Access Level",
@@ -2152,7 +2152,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'soajs_project']
 			},
-			
+
 			"/settings/tenant/oauth/add": {
 				_apiInfo: {
 					"l": "Add Tenant oAuth Configuration",
@@ -2160,7 +2160,7 @@ module.exports = {
 				},
 				"commonFields": ['secret', 'redirectURI', 'oauthType', 'availableEnv', 'soajs_project']
 			},
-			
+
 			"/settings/tenant/oauth/users/add": {
 				_apiInfo: {
 					"l": "Add Tenant oAuth User",
@@ -2168,7 +2168,7 @@ module.exports = {
 				},
 				"commonFields": ['userId', 'password', 'soajs_project']
 			},
-			
+
 			"/settings/tenant/application/key/add": {
 				_apiInfo: {
 					"l": "Add Tenant Application Key",
@@ -2176,7 +2176,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'soajs_project']
 			},
-			
+
 			"/settings/tenant/application/key/ext/add": {
 				_apiInfo: {
 					"l": "Add Tenant Application External Key",
@@ -2199,7 +2199,7 @@ module.exports = {
 					}
 				},
 			},
-			
+
 			"/settings/tenant/application/key/ext/delete": { //TODO: should be delete, remove params passed in body and change its method
 				_apiInfo: {
 					"l": "Delete Tenant Application External Key",
@@ -2214,7 +2214,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/daemons/groupConfig/list": {
 				_apiInfo: {
 					"l": "List Daemon Group Configuration",
@@ -2230,7 +2230,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/daemons/groupConfig/add": {
 				_apiInfo: {
 					"l": "Add Daemon Group Configuration",
@@ -2247,7 +2247,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/daemons/list": {
 				_apiInfo: {
 					"l": "List Daemons",
@@ -2270,7 +2270,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/services/soajs/deploy": {
 				"_apiInfo": {
 					"l": "Deploy A New SOAJS Service",
@@ -2478,7 +2478,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/plugins/deploy": {
 				"_apiInfo": {
 					"l": "Deploy A Custom Resource",
@@ -2501,7 +2501,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/nodes/add": {
 				"_apiInfo": {
 					"l": "Add HA Cloud Node",
@@ -2539,7 +2539,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/services/maintenance": {
 				"_apiInfo": {
 					"l": "Perform A Maintenance Operation on a Deployed Service",
@@ -2583,7 +2583,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/vm/maintenance": {
 				"_apiInfo": {
 					"l": "Perform A Maintenance Operation on a Deployed Virtual Machine",
@@ -2627,7 +2627,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/catalog/recipes/add": {
 				"_apiInfo": {
 					"l": "Add New Catalog",
@@ -2636,7 +2636,7 @@ module.exports = {
 				"commonFields": ['soajs_project'],
 				"catalog": catalogSchema
 			},
-			
+
 			"/ci/provider": {
 				"_apiInfo": {
 					"l": "Activate CI Provider",
@@ -2686,7 +2686,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/ci/recipe": {
 				"_apiInfo": {
 					"l": "Add New CI Recipe",
@@ -2715,7 +2715,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cd": {
 				"_apiInfo": {
 					"l": "Save CD Configuration for a specific Service",
@@ -2762,7 +2762,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cd/pause": {
 				"_apiInfo": {
 					"l": "Pause CD Configuration",
@@ -2782,7 +2782,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cd/deploy": {
 				"_apiInfo": {
 					"l": "Trigger CD Deployment",
@@ -2846,7 +2846,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/gitAccounts/login": {
 				"_apiInfo": {
 					"l": "Github Login",
@@ -2917,7 +2917,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/gitAccounts/repo/activate": {
 				"_apiInfo": {
 					"l": "Activate Repository",
@@ -2967,7 +2967,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/swagger/simulate": {
 				"_apiInfo": {
 					"l": "Api simulation service",
@@ -2992,9 +2992,9 @@ module.exports = {
 						}
 					}
 				}
-				
+
 			},
-			
+
 			"/swagger/generate": {
 				"_apiInfo": {
 					"l": "Generate Service via Swagger",
@@ -3102,7 +3102,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/swagger/generateExistingService": {
 				"_apiInfo": {
 					"l": "Regenerate Service via Swagger",
@@ -3118,7 +3118,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/apiBuilder/add": {
 				"_apiInfo": {
 					"l": "Add Endpoint",
@@ -3231,7 +3231,7 @@ module.exports = {
 					"validation": serviceSchema.contract
 				}
 			},
-			
+
 			"/apiBuilder/authentication/update": {
 				"_apiInfo": {
 					"l": "Update Route Authentication Method",
@@ -3267,7 +3267,7 @@ module.exports = {
 					"validation": {"type": "string"}
 				}
 			},
-			
+
 			"/apiBuilder/convertSwaggerToImfv": {
 				"_apiInfo": {
 					"l": "Convert Swagger String To an IMFV Soajs Object",
@@ -3295,7 +3295,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/apiBuilder/convertImfvToSwagger": {
 				"_apiInfo": {
 					"l": "Convert IMFV Soajs Object to a Swagger String",
@@ -3325,7 +3325,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/secrets/add": {
 				"_apiInfo": {
 					"l": "Add Secret",
@@ -3365,7 +3365,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/infra": {
 				"_apiInfo": {
 					"l": "Connect Infra Providers",
@@ -3394,7 +3394,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/infra/template": {
 				"_apiInfo": {
 					"l": "Add Infra as Code Template",
@@ -3409,7 +3409,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/infra/template/upload": {
 				"_apiInfo": {
 					"l": "Update Infra as Code Template",
@@ -3417,7 +3417,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'id']
 			},
-			
+
 			"/infra/cluster/scale": {
 				"_apiInfo": {
 					"l": "Scale Cluster at Infra Provider",
@@ -3440,7 +3440,7 @@ module.exports = {
 				}
 			}
 		},
-		
+
 		"put": {
 			"/services/settings/update": {
 				"_apiInfo": {
@@ -3477,7 +3477,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cd/ledger/read": {
 				"_apiInfo": {
 					"l": "Mark as read",
@@ -3515,7 +3515,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cd/action": {
 				"_apiInfo": {
 					"l": "Take Action",
@@ -3639,7 +3639,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/update": {
 				_apiInfo: {
 					"l": "Update Environment",
@@ -3705,7 +3705,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/key/update": {
 				_apiInfo: {
 					"l": "Update Environment Tenant Key Security",
@@ -3727,7 +3727,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/dbs/update": {
 				_apiInfo: {
 					"l": "Update Environment Database",
@@ -3770,7 +3770,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/dbs/updatePrefix": {
 				_apiInfo: {
 					"l": "Update Environment Databases Prefix",
@@ -3783,7 +3783,7 @@ module.exports = {
 					"validation": {"type": "string", "required": false}
 				}
 			},
-			
+
 			"/resources/update": {
 				_apiInfo: {
 					"l": "Update Resource",
@@ -3799,7 +3799,7 @@ module.exports = {
 				},
 				"resource": resourceSchema
 			},
-			
+
 			"/resources/config/update": {
 				_apiInfo: {
 					"l": "Set Resource Deploy Configuration",
@@ -3844,7 +3844,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/customRegistry/update": {
 				_apiInfo: {
 					"l": "Update Custom Registry Entry",
@@ -3860,7 +3860,7 @@ module.exports = {
 				},
 				"customRegEntry": customRegEntrySchema
 			},
-			
+
 			"/customRegistry/upgrade": {
 				_apiInfo: {
 					"l": "Upgrade To New Custom Registry",
@@ -3868,7 +3868,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'env']
 			},
-			
+
 			"/environment/platforms/deployer/update": {
 				_apiInfo: {
 					"l": "Change Deployer Type",
@@ -3891,7 +3891,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/product/update": {
 				_apiInfo: {
 					"l": "Update Product",
@@ -3899,7 +3899,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'name', 'description', 'soajs_project']
 			},
-			
+
 			"/product/packages/update": {
 				_apiInfo: {
 					"l": "Update Product Package",
@@ -3915,7 +3915,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/tenant/update": {
 				_apiInfo: {
 					"l": "Update Tenant",
@@ -3939,7 +3939,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/tenant/oauth/update": {
 				_apiInfo: {
 					"l": "Update Tenant oAuth Configuration",
@@ -3947,7 +3947,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'secret', 'redirectURI', 'oauthType', 'availableEnv', 'soajs_project']
 			},
-			
+
 			"/tenant/oauth/users/update": {
 				_apiInfo: {
 					"l": "Update Tenant oAuth User",
@@ -3969,7 +3969,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/tenant/application/update": {
 				_apiInfo: {
 					"l": "Update Tenant Application",
@@ -3985,7 +3985,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'id', 'appId', 'description', 'acl', 'productCode', 'packageCode', 'clearAcl']
 			},
-			
+
 			"/tenant/application/key/ext/update": {
 				_apiInfo: {
 					"l": "Update Tenant Application External Key",
@@ -4000,7 +4000,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/tenant/application/key/config/update": {
 				_apiInfo: {
 					"l": "Update Tenant Application Key Configuration",
@@ -4008,7 +4008,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'key', 'envCode', 'config', 'soajs_project']
 			},
-			
+
 			"/settings/tenant/update": {
 				_apiInfo: {
 					"l": "Update Tenant",
@@ -4025,7 +4025,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/settings/tenant/oauth/update": {
 				_apiInfo: {
 					"l": "Update Tenant oAuth Configuration",
@@ -4033,7 +4033,7 @@ module.exports = {
 				},
 				"commonFields": ['secret', 'redirectURI', 'oauthType', 'availableEnv', 'soajs_project']
 			},
-			
+
 			"/settings/tenant/oauth/users/update": {
 				_apiInfo: {
 					"l": "Update Tenant oAuth User",
@@ -4055,7 +4055,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/settings/tenant/application/key/ext/update": {
 				_apiInfo: {
 					"l": "Update Tenant Application External Key",
@@ -4070,7 +4070,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/settings/tenant/application/key/config/update": {
 				_apiInfo: {
 					"l": "Update Tenant Application Key Configuration",
@@ -4078,7 +4078,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key', 'envCode', 'config', 'soajs_project']
 			},
-			
+
 			"/daemons/groupConfig/update": {
 				_apiInfo: {
 					"l": "Update Daemon Group Configuration",
@@ -4094,7 +4094,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/daemons/groupConfig/serviceConfig/update": {
 				_apiInfo: {
 					"l": "Update Service Configuration",
@@ -4116,7 +4116,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/daemons/groupConfig/tenantExtKeys/update": {
 				_apiInfo: {
 					"l": "Update Job's External Keys",
@@ -4138,7 +4138,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/nodes/update": {
 				"_apiInfo": {
 					"l": "Update HA Cloud Node",
@@ -4168,7 +4168,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/nodes/tag": {
 				"_apiInfo": {
 					"l": "Update HA Cloud Node Tag",
@@ -4190,7 +4190,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/services/scale": {
 				"_apiInfo": {
 					"l": "Scale HA Service",
@@ -4220,7 +4220,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/services/redeploy": {
 				"_apiInfo": {
 					"l": "Redeploy HA Service",
@@ -4284,7 +4284,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/services/autoscale": {
 				"_apiInfo": {
 					"l": "Autoscale Services",
@@ -4331,7 +4331,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/services/autoscale/config": {
 				"_apiInfo": {
 					"l": "Configure Environment Autoscaling",
@@ -4369,7 +4369,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/catalog/recipes/update": {
 				"_apiInfo": {
 					"l": "Update Catalog",
@@ -4385,7 +4385,7 @@ module.exports = {
 				},
 				"catalog": catalogSchema
 			},
-			
+
 			"/gitAccounts/repo/sync": {
 				"_apiInfo": {
 					"l": "Deactivate Repository",
@@ -4428,7 +4428,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/ci/provider": {
 				"_apiInfo": {
 					"l": "Deactivate CI Provider",
@@ -4450,7 +4450,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/ci/recipe": {
 				"_apiInfo": {
 					"l": "Edit CI Recipe",
@@ -4479,7 +4479,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/ci/settings": {
 				"_apiInfo": {
 					"l": "Update CI Repository Settings",
@@ -4529,7 +4529,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/gitAccounts/repo/deactivate": {
 				"_apiInfo": {
 					"l": "Deactivate Repository",
@@ -4558,7 +4558,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/apiBuilder/edit": {
 				"_apiInfo": {
 					"l": "Edit Endpoint",
@@ -4711,7 +4711,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/apiBuilder/updateSchemas": {
 				"_apiInfo": {
 					"l": "Update Endpoint's Schemas",
@@ -4750,7 +4750,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/infra": {
 				"_apiInfo": {
 					"l": "Modify Infra Providers Connection",
@@ -4765,7 +4765,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/infra/template": {
 				"_apiInfo": {
 					"l": "Update Infra as Code Template",
@@ -4781,7 +4781,7 @@ module.exports = {
 				}
 			}
 		},
-		
+
 		"delete": {
 			"/templates": {
 				_apiInfo: {
@@ -4790,7 +4790,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'id']
 			},
-			
+
 			"/environment/delete": {
 				_apiInfo: {
 					"l": "Delete Environment",
@@ -4817,7 +4817,7 @@ module.exports = {
 					}
 				},
 			},
-			
+
 			"/environment/dbs/delete": {
 				_apiInfo: {
 					"l": "Delete Environment Database",
@@ -4830,7 +4830,7 @@ module.exports = {
 					"validation": {"type": "string", "required": true}
 				}
 			},
-			
+
 			"/resources/delete": {
 				_apiInfo: {
 					"l": "Delete a resource",
@@ -4845,7 +4845,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/customRegistry/delete": {
 				_apiInfo: {
 					"l": "Delete A Custom Registry Entry",
@@ -4860,7 +4860,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/product/delete": {
 				_apiInfo: {
 					"l": "Delete Product",
@@ -4882,7 +4882,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/product/packages/delete": {
 				_apiInfo: {
 					"l": "Delete Product Package",
@@ -4898,7 +4898,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/tenant/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant",
@@ -4920,7 +4920,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/tenant/oauth/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant oAuth Configuration",
@@ -4928,7 +4928,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'soajs_project']
 			},
-			
+
 			"/tenant/oauth/users/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant oAuth User",
@@ -4936,7 +4936,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'uId', 'soajs_project']
 			},
-			
+
 			"/tenant/application/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant Application",
@@ -4944,7 +4944,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'soajs_project']
 			},
-			
+
 			"/tenant/application/key/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant Application Key",
@@ -4952,7 +4952,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'key', 'soajs_project']
 			},
-			
+
 			"/settings/tenant/oauth/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant oAuth Configuration",
@@ -4960,7 +4960,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-			
+
 			"/settings/tenant/oauth/users/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant oAuth User",
@@ -4968,7 +4968,7 @@ module.exports = {
 				},
 				"commonFields": ['uId', 'soajs_project']
 			},
-			
+
 			"/settings/tenant/application/key/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant Application Key",
@@ -4976,7 +4976,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key', 'soajs_project']
 			},
-			
+
 			"/daemons/groupConfig/delete": {
 				_apiInfo: {
 					"l": "Delete Daemon Group Configuration",
@@ -4984,7 +4984,7 @@ module.exports = {
 				},
 				'commonFields': ['id', 'soajs_project']
 			},
-			
+
 			"/cloud/nodes/remove": {
 				"_apiInfo": {
 					"l": "Remove HA Cloud Node",
@@ -4999,7 +4999,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/services/delete": {
 				"_apiInfo": {
 					"l": "Delete HA Service",
@@ -5035,14 +5035,14 @@ module.exports = {
 					}
 				},
 				"infraAccountId": {
-					"source": ['query.infraAccount'],
+					"source": ['query.infraAccountId'],
 					"required": false,
 					"validation": {
 						"type": "string"
 					}
 				}
 			},
-			
+
 			"/cloud/namespaces/delete": {
 				"_apiInfo": {
 					"l": "Delete a Namespace",
@@ -5057,7 +5057,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/catalog/recipes/delete": {
 				"_apiInfo": {
 					"l": "Delete a Catalog",
@@ -5080,7 +5080,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/ci/recipe": {
 				"_apiInfo": {
 					"l": "Delete CI Recipe",
@@ -5088,7 +5088,7 @@ module.exports = {
 				},
 				"commonFields": ["id", 'soajs_project']
 			},
-			
+
 			"/gitAccounts/logout": {
 				"_apiInfo": {
 					"l": "Github Logout",
@@ -5124,7 +5124,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/apiBuilder/delete": {
 				"_apiInfo": {
 					"l": "Delete Endpoint",
@@ -5145,7 +5145,7 @@ module.exports = {
 					"validation": {"type": "string"}
 				}
 			},
-			
+
 			"/secrets/delete": {
 				_apiInfo: {
 					"l": "Delete Secret",
@@ -5160,7 +5160,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/infra": {
 				"_apiInfo": {
 					"l": "Deactivate Infra Providers",
@@ -5168,7 +5168,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'id']
 			},
-			
+
 			"/infra/deployment": {
 				"_apiInfo": {
 					"l": "Deactivate Infra Providers",
@@ -5183,7 +5183,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/infra/template": {
 				"_apiInfo": {
 					"l": "Remove Template from Infra Providers",
