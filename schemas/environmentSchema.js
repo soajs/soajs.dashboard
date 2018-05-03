@@ -7,7 +7,7 @@ var environment = {
 		"format": "alphanumeric"
 	},
 	"description": {
-		"required": true,
+		"required": false,
 		"type": "string"
 	},
 	"domain": {
