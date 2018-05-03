@@ -32,6 +32,9 @@ module.exports = {
 			if(data.error.message && typeof data.error.message === 'string'){
 				msg = data.error.message;
 			}
+			if(!msg && data.error.msg && typeof data.error.msg === 'string'){
+				msg = data.error.msg;
+			}
 			return mainCb({ "code": (data && data.code) ? data.code : 404 , "msg": msg });
 		} else {
 			if (cb) {
