@@ -3281,7 +3281,7 @@ service.init(function () {
 	service.delete("/infra/deployment", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.removeDeployment(config, req.soajs, deployer, function (error, data) {
+				BL.removeDeployment(config, req, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
