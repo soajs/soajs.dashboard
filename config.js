@@ -2611,13 +2611,6 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"groupName": {
-					"source": ['body.groupName'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
 				"infraAccountId": {
 					"source": ['body.infraAccountId'],
 					"required": true,
@@ -5036,13 +5029,6 @@ module.exports = {
 				},
 				"infraAccountId": {
 					"source": ['query.infraAccount'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"groupName": {
-					"source": ['query.groupName'],
 					"required": false,
 					"validation": {
 						"type": "string"
