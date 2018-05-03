@@ -249,7 +249,7 @@ var errors = {
 	"821": "You are not allowed you remove a manager node. You need to demote it to worker first",
  	"822": "Unable to update environments' deployer. However, the node was updated successfully",
  	"823": "Update operations are not permitted for clusters that that composed of a single node",
-	"824": "The port chosen for Nginx is outside the range of valid exposed ports (0 , 2767)",
+	"824": "The port chosen is outside the range of valid exposed ports (0 , 2767)",
 	"825": "Invalid or no environment deployer settings detected. Make sure you are running in container mode",
 	"826": "Invalid port schema provided!",
 	"827": "Invalid volume schema provided!",
