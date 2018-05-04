@@ -294,21 +294,19 @@ var swagger = {
 	 */
 	"parseYaml": function (yamlContent, context, callback) {
 		var jsonAPISchema;
-		
 		try {
 			jsonAPISchema = yamljs.parse(yamlContent);
 		}
 		catch (e) {
-			return callback({"code": 851, "msg": e.message});
+			return callback({ "code": 851, "msg": e.message });
 		}
-		
 		try {
 			swagger.validateYaml(jsonAPISchema);
 		}
 		catch (e) {
-			return callback({"code": 173, "msg": e.message});
+			return callback({ "code": 173, "msg": e.message });
 		}
-		
+
 		context.yaml = jsonAPISchema;
 		
 		swagger.preMapApisValidation(jsonAPISchema, function (errorDescription) {
@@ -335,7 +333,7 @@ var swagger = {
 							errMsgs.push(oneError.stack);
 						});
 						
-						return callback({"code": 172, "msg": new Error(errMsgs.join(" - ")).message});
+						return callback({ "code": 172, "msg": new Error(errMsgs.join(" - ")).message });
 					}
 				});
 			}
@@ -432,6 +430,11 @@ var swagger = {
 		
 		let pathsKeys = Object.keys(paths);
 		pathsKeys.forEach(function (eachPath) {
+			let pathFix = eachPath.toString();
+			if (pathFix.indexOf('/') === -1) {
+				pathFix = '/' + pathFix;
+			}
+
 			let methods = paths[eachPath];
 			let methodsKeys = Object.keys(methods);
 			
@@ -442,10 +445,10 @@ var swagger = {
 					all_apis[eachMethod] = {};
 				}
 				
-				all_apis[eachMethod][eachPath] = {
+				all_apis[eachMethod][pathFix] = {
 					_apiInfo: {}
 				};
-				let newSoajsApi = all_apis[eachMethod][eachPath];
+				let newSoajsApi = all_apis[eachMethod][pathFix];
 				
 				let params = apiData.parameters;
 				
@@ -457,7 +460,7 @@ var swagger = {
 		
 		// todo: convert errors
 		
-		return cb({"schema": all_apis, "errors": all_errors});
+		return cb({ "schema": all_apis, "errors": all_errors });
 	}
 };
 

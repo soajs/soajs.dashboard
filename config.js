@@ -2839,8 +2839,12 @@ module.exports = {
 						"items": {
 							"type": "object",
 							"properties": {
-								"serviceName": {"type": "string", "required": true},
-								"serviceVersion": {"type": "number", "minimum": 1, "required": false}
+								"serviceName": {
+									"type": "string", "required": true
+								},
+								"serviceVersion": {
+									"type": "number", "minimum": 1, "required": false
+								}
 							}
 						}
 					}
@@ -3136,7 +3140,10 @@ module.exports = {
 				"serviceName": {
 					"source": ['query.serviceName', 'body.serviceName'],
 					"required": true,
-					"validation": {"type": "string"}
+					"validation": {
+						"type": "string",
+						"pattern": /^[a-z0-9\-]+$/
+					}
 				},
 				"serviceGroup": {
 					"source": ['query.serviceGroup', 'body.serviceGroup'],
@@ -4581,7 +4588,10 @@ module.exports = {
 				"serviceName": {
 					"source": ['query.serviceName', 'body.serviceName'],
 					"required": true,
-					"validation": {"type": "string"}
+					"validation": {
+						"type": "string",
+						"pattern": /^[a-z0-9\-]+$/
+					}
 				},
 				"serviceGroup": {
 					"source": ['query.serviceGroup', 'body.serviceGroup'],
