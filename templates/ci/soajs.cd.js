@@ -31,8 +31,8 @@ var utils = {
 			}
 
 			var repoSlug = process.env.TRAVIS_REPO_SLUG.split("/");
-			gitOwner = repoSlug[0].toLowerCase();
-			gitRepo = repoSlug[1].toLowerCase();
+			gitOwner = repoSlug[0];
+			gitRepo = repoSlug[1];
 			gitBranch = process.env.TRAVIS_BRANCH.toLowerCase();
 			gitCommit = process.env.TRAVIS_COMMIT;
 		}
