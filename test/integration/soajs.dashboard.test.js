@@ -22,6 +22,7 @@ var uracMongo = new Mongo(uracConfig);
 var AuthValue;
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 var qaEnvRecord;
+var stgEnvRecord;
 // /tenant/application/acl/get
 function executeMyRequest(params, apiPath, method, cb) {
 	requester(apiPath, method, params, function (error, body) {
@@ -68,6 +69,7 @@ describe("DASHBOARD Integration Tests:", function () {
 	var expDateValue = new Date().toISOString();
 	var envId;
 	var qaID;
+	var stgID;
 	after(function (done) {
 		mongo.closeDb();
 		done();
@@ -476,8 +478,12 @@ describe("DASHBOARD Integration Tests:", function () {
 			it("success - will add STG environment", function (done) {
 				var data2 = util.cloneObj(validEnvRecord);
 				data2.code = 'STG';
-				data2.services.config.session.proxy = "true";
-				data2.templateId = "5acf46c4af4cd3a45f21e1eb";
+
+				data2.templateId = "5acf46c4af4cd3a45f21e2ea";
+				delete data2.profile;
+				delete data2.dbs;
+				delete data2.deployer;
+				delete data2.services;
 				delete data2._id;
 				var params = {
 					form: {
@@ -503,8 +509,12 @@ describe("DASHBOARD Integration Tests:", function () {
 			it("success - will add PROD environment", function (done) {
 				var data3 = util.cloneObj(validEnvRecord);
 				data3.code = 'PROD';
-				data3.services.config.session.proxy = "false";
-				data3.templateId = "5acf46c4af4cd3a45f21e1eb";
+
+				data3.templateId = "5acf46c4af4cd3a45f21e2ea";
+				delete data3.profile;
+				delete data3.dbs;
+				delete data3.deployer;
+				delete data3.services;
 				delete data3._id;
 				var params = {
 					form: {
@@ -528,17 +538,21 @@ describe("DASHBOARD Integration Tests:", function () {
 			it("success - will add testKubLocal environment", function (done) {
 				var data4 = util.cloneObj(qaEnvRecord);
 				data4.code = 'testKubLocal';
-				data4.templateId = "5acf46c4af4cd3a45f21e1eb";
-				data4.deploy = {
-					"type": "container",
-					"selectedDriver" : 'kubernetes',
-					"deployment" : {
-						"kubernetes" : {
-							"kubernetesremote": false,
-							"local": {}
-						}
-					}
-				};
+				data4.templateId = "5acf46c4af4cd3a45f21e2ea";
+				// data4.deploy = {
+				// 	"type": "container",
+				// 	"selectedDriver" : 'kubernetes',
+				// 	"deployment" : {
+				// 		"kubernetes" : {
+				// 			"kubernetesremote": false,
+				// 			"local": {}
+				// 		}
+				// 	}
+				// };
+				delete data4.profile;
+				delete data4.dbs;
+				delete data4.deployer;
+				delete data4.services;
 				delete data4._id;
 				var params = {
 					form: {
@@ -562,22 +576,25 @@ describe("DASHBOARD Integration Tests:", function () {
 			it("success - will add testKubRemote environment", function (done) {
 				var data5 = util.cloneObj(qaEnvRecord);
 				data5.code = 'testKubRemote';
-				data5.templateId = "5acf46c4af4cd3a45f21e1eb";
-				data5.deploy = {
-					"type": "container",
-					"selectedDriver" : 'kubernetes',
-					"deployment" : {
-						"kubernetes" : {
-							"kubernetesremote": true,
-							"port": 30000,
-							"nginxDeployType": 30443,
-							"NS": "34344",
-							"perService": "token",
-							"token": "1234"
-						}
-					}
-				};
-
+				data5.templateId = "5acf46c4af4cd3a45f21e2ea";
+				// data5.deploy = {
+				// 	"type": "container",
+				// 	"selectedDriver" : 'kubernetes',
+				// 	"deployment" : {
+				// 		"kubernetes" : {
+				// 			"kubernetesremote": true,
+				// 			"port": 30000,
+				// 			"nginxDeployType": 30443,
+				// 			"NS": "34344",
+				// 			"perService": "token",
+				// 			"token": "1234"
+				// 		}
+				// 	}
+				// };
+				delete data5.profile;
+				delete data5.dbs;
+				delete data5.deployer;
+				delete data5.services;
 				delete data5._id;
 				var params = {
 					form: {
@@ -601,7 +618,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			it("success - will add testDockerLocal environment", function (done) {
 				var data6 = util.cloneObj(qaEnvRecord);
 				data6.code = 'testDockerLocal';
-				data6.templateId = "5acf46c4af4cd3a45f21e1eb";
+				data6.templateId = "5acf46c4af4cd3a45f21e2ea";
 				data6.deploy = {
 					"type": "container",
 					"selectedDriver" : 'docker',
@@ -616,6 +633,10 @@ describe("DASHBOARD Integration Tests:", function () {
 						}
 					}
 				};
+				delete data6.profile;
+				delete data6.dbs;
+				delete data6.deployer;
+				delete data6.services;
 				delete data6._id;
 				var params = {
 					form: {
@@ -639,7 +660,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			it("success - will add testDockerRemote environment", function (done) {
 				var data7 = util.cloneObj(qaEnvRecord);
 				data7.code = 'testDockerRemote';
-				data7.templateId = "5acf46c4af4cd3a45f21e1eb";
+				data7.templateId = "5acf46c4af4cd3a45f21e2ea";
 				data7.deploy = {
 					"type": "container",
 					"selectedDriver" : 'docker',
@@ -656,6 +677,10 @@ describe("DASHBOARD Integration Tests:", function () {
 					sessionName: "sessionName",
 					sessionSecret: "sessionSecret"
 				};
+				delete data7.profile;
+				delete data7.dbs;
+				delete data7.deployer;
+				delete data7.services;
 				delete data7._id;
 				var params = {
 					form: {
@@ -699,6 +724,29 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 
 			it('fail - environment exists', function (done) {
+				var data1 = util.cloneObj(validEnvRecord)
+				data1.deploy = {
+					"type": "container",
+					"selectedDriver" : 'docker',
+					"deployment" : {
+						"docker" : {
+							"dockerremote": true,
+							"externalPort": 11111,
+							"internalPort": 22222,
+							"network": "soajsnet"
+						}
+					},
+					soajsFrmwrk : true,
+					cookiesecret : "secret",
+					sessionName: "sessionName",
+					sessionSecret: "sessionSecret"
+				};
+				data1.templateId = "5acf46c4af4cd3a45f21e2ea";
+				delete data1.profile;
+				delete data1.dbs;
+				delete data1.deployer;
+				delete data1.services;
+				delete data1._id;
 				var params = {
 					form: {
 						template: {
@@ -709,11 +757,9 @@ describe("DASHBOARD Integration Tests:", function () {
 								// selectedDriver : 'docker'
 							}
 						},
-						data: validEnvRecord
+						data: data1
 					}
 				};
-				params.form.data.templateId = "5acf46c4af4cd3a45f21e1eb";
-				delete params.form.data._id;
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
 					assert.deepEqual(body.errors.details[0], {"code": 403, "message": errorCodes[403]});
 					done();
@@ -731,6 +777,7 @@ describe("DASHBOARD Integration Tests:", function () {
 					delete tester.profile;
 					delete tester._id;
 					delete tester.templateId;
+
 					assert.deepEqual(envRecord, tester);
 					mongo.findOne('environment', {'code': 'QA'}, function (error, qaRecord) {
 						assert.ifError(error);
@@ -739,7 +786,16 @@ describe("DASHBOARD Integration Tests:", function () {
 						delete qaRecord.profile;
 						assert.ok(qaRecord);
 						qaEnvRecord = qaRecord;
-						done();
+
+						mongo.findOne('environment', {'code': 'STG'}, function (error, stgRecord) {
+							assert.ifError(error);
+							stgID = stgRecord._id.toString();
+							delete stgRecord._id;
+							delete stgRecord.profile;
+							assert.ok(stgRecord);
+							stgEnvRecord = stgRecord;
+							done();
+						});
 					});
 				});
 			});
@@ -750,7 +806,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				var data2 = util.cloneObj(validEnvRecord);
 				data2.services.config.session.proxy = "true";
 				var params = {
-					qs: {"id": envId},
+					qs: {"id": stgID},
 					form: {
 						"domain": "api.myDomain.com",
 						"profile": data2.profile,
@@ -796,7 +852,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				var data2 = util.cloneObj(validEnvRecord);
 				data2.services.config.session.proxy = "false";
 				var params = {
-					qs: {"id": envId},
+					qs: {"id": stgID},
 					form: {
 						"domain": "api.myDomain.com",
 						"profile": data2.profile,
@@ -840,7 +896,7 @@ describe("DASHBOARD Integration Tests:", function () {
 
 			it("success - will update environment", function (done) {
 				var params = {
-					qs: {"id": envId},
+					qs: {"id": stgID},
 					form: {
 						"domain": "api.myDomain.com",
 						"profile": validEnvRecord.profile,
@@ -899,13 +955,15 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 
 			it('fail - invalid environment id provided', function (done) {
+				var data5 = util.cloneObj(validEnvRecord);
+				data5.services.config.session.proxy = "true";
 				var params = {
 					qs: {"id": "aaaabbbbccc"},
 					form: {
-						"domain": validEnvRecord.profile,
-						"profile": validEnvRecord.profile,
+						"domain": data5.profile,
+						"profile": data5.profile,
 						"description": 'this is a dummy description',
-						"services": validEnvRecord.services,
+						"services": data5.services,
 						"sensitive": true,
 						"deployer": {
 							"type" : "manual",
@@ -947,6 +1005,7 @@ describe("DASHBOARD Integration Tests:", function () {
 					envId = envRecord._id.toString();
 					delete envRecord._id;
 					delete envRecord.profile;
+
 					if(envRecord.services && envRecord.services.config && envRecord.services.config.session) {
 						delete envRecord.services.config.session.proxy;
 					}
@@ -955,6 +1014,7 @@ describe("DASHBOARD Integration Tests:", function () {
 					tester.description = "this is a dummy updated description";
 					delete tester.services.config.session.proxy;
 					delete tester.profile;
+
 					assert.deepEqual(envRecord.services, tester.services);
 					done();
 				});
