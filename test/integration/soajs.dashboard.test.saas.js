@@ -399,6 +399,10 @@ describe("DASHBOARD Saas Integration Tests:", function () {
 				data2.code = 'TEST';
 				data2.services.config.session.proxy = "true";
 				data2.templateId = "5acf46c4af4cd3a45f21e2ea";
+				delete data2.profile;
+				delete data2.deployer;
+				delete data2.dbs;
+				delete data2.services;
 				delete data2._id;
 				var params = {
 					form: {
