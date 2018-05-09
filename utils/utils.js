@@ -73,7 +73,8 @@ module.exports = {
 			
 			options.env = envRecord.code.toLowerCase();
 			
-			if (options.strategy === 'kubernetes' && soajs.inputmaskData.namespace) {
+			// if (options.strategy === 'kubernetes' && soajs.inputmaskData.namespace) {
+			if (soajs.inputmaskData.namespace) {
 				//if a namespace is specified, add user set namespace to override the registry config
 				options.namespace = soajs.inputmaskData.namespace;
 			}
@@ -175,5 +176,35 @@ module.exports = {
 
 			return cb(null, false);
 		});
+	},
+	
+	/**
+	 * Extrac a deployment from an infra record based on the environment in it
+	 * @param infra
+	 * @param env
+	 * @returns {*}
+	 */
+	getDeploymentFromInfra : (infra, env) =>{
+		let infraStack, info, index;
+		for (let i = 0; i < infra.deployments.length; i++) {
+			let oneStack = infra.deployments[i];
+			if (oneStack.environments.indexOf(env.toUpperCase()) !== -1) {
+				infraStack = oneStack;
+				index = i;
+				break;
+			}
+		}
+		
+		if (!infraStack) {
+			return null;
+		}
+		
+		let environments = [];
+		if (infraStack.environments) {
+			infraStack.environments.forEach((oneEnv) => {
+				environments.push({code: oneEnv.toUpperCase()});
+			});
+		}
+		return [infraStack, environments, index];
 	}
 };

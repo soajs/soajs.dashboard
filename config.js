@@ -578,17 +578,45 @@ module.exports = {
 				}
 			},
 			"env": {
-				'source': ['query.env'],
+				'source': ['query.env', 'body.env'],
 				'required': true,
 				'validation': {
 					'type': 'string'
 				}
 			},
 			"namespace": {
-				'source': ['query.namespace'],
+				'source': ['query.namespace', 'body.namespace'],
 				'required': false,
 				'validation': {
 					'type': 'string'
+				}
+			},
+			"infraId": {
+				'source': ['query.infraId', 'body.infraId'],
+				'required': false,
+				'validation': {
+					'type': 'string'
+				}
+			},
+			"mode": {
+				'source': ['query.mode', 'body.mode'],
+				'required': false,
+				'validation': {
+					'type': 'string'
+				}
+			},
+			"serviceId": {
+				"source": ['query.serviceId', 'body.serviceId'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"technology": {
+				"source": ['query.technology', 'body.technology'],
+				"required": false,
+				"validation": {
+					"type": "string"
 				}
 			}
 		},
@@ -5015,42 +5043,7 @@ module.exports = {
 					"l": "Delete HA Service",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['soajs_project', 'env', 'namespace'],
-				"serviceId": {
-					"source": ['query.serviceId'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"mode": {
-					"source": ['query.mode'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"location": {
-					"source": ['query.location'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"technology": {
-					"source": ['query.technology'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"infraAccountId": {
-					"source": ['query.infraAccountId'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				}
+				'commonFields': ['soajs_project', 'env', 'serviceId', 'namespace', 'mode', 'infraId', 'technology']
 			},
 
 			"/cloud/namespaces/delete": {
