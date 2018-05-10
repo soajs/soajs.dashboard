@@ -1183,19 +1183,20 @@ module.exports = {
 					"l": "Get Service Container Logs",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['soajs_project', 'env', 'namespace'],
-				"serviceId": {
-					"source": ['query.serviceId'],
-					"required": true,
+				'commonFields': ['soajs_project', 'env', 'namespace', 'serviceId', 'infraId', 'technology'],
+				"taskId": {
+					"source": ['query.taskId'],
+					"required": false,
 					"validation": {
 						"type": "string"
 					}
 				},
-				"taskId": {
-					"source": ['query.taskId'],
-					"required": true,
+				'filter': {
+					"source": ['body.filter'],
+					"required": false,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats', 'reloadDaemonConf']
 					}
 				},
 				"follow": {
@@ -2573,21 +2574,7 @@ module.exports = {
 					"l": "Perform A Maintenance Operation on a Deployed Service",
 					"group": "HA Cloud"
 				},
-				"commonFields": ['soajs_project', 'namespace'],
-				"env": {
-					"source": ['body.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"serviceId": {
-					"source": ['body.serviceId'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
+				"commonFields": ['soajs_project', 'namespace', 'env', 'serviceId', 'infraId', 'technology'],
 				"serviceName": {
 					"source": ['body.serviceName'],
 					"required": true,
@@ -2608,50 +2595,6 @@ module.exports = {
 					"validation": {
 						"type": "string",
 						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats', 'reloadDaemonConf']
-					}
-				}
-			},
-
-			"/cloud/vm/maintenance": {
-				"_apiInfo": {
-					"l": "Perform A Maintenance Operation on a Deployed Virtual Machine",
-					"group": "HA Cloud"
-				},
-				"commonFields": ['soajs_project'],
-				"env": {
-					"source": ['body.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"location": {
-					"source": ['body.location'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"name": {
-					"source": ['body.name'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"infraAccountId": {
-					"source": ['body.infraAccountId'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"operation": {
-					"source": ['body.operation'],
-					"required": true,
-					"validation": {
-						"type": "string",
-						"enum": ["startVM", "powerOffVM", "restartVM"]
 					}
 				}
 			},

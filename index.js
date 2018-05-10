@@ -1602,22 +1602,6 @@ service.init(function () {
 	});
 
 	/**
-	 * Perform maintenance operations on services deployed in container mode
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.post("/cloud/vm/maintenance", function (req, res) {
-		initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.maintenanceVM(config, req.soajs, deployer, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-
-	/**
 	 * Get container logs
 	 * @param {String} API route
 	 * @param {Function} API middleware
