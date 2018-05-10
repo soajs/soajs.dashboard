@@ -59,7 +59,7 @@ module.exports = {
 		if (!envDeployer.type || !envDeployer.selected) return null;
 		
 		if (envDeployer.type === 'manual' && (!deployment || deployment.technology !== 'vm')) {
-			return null;
+			options.env = process.env.SOAJS_ENV.toLowerCase();
 		}
 		else {
 			var selected = envDeployer.selected.split('.');
