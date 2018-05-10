@@ -1458,22 +1458,6 @@ service.init(function () {
 	});
 
 	/**
-	 * Update the tag of a node
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.put("/cloud/nodes/tag", function (req, res) {
-		initBLModel(req, res, dashboardBL.cloud.nodes.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.tagNode(config, req.soajs, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-
-	/**
 	 * List all services per environment deployed in container mode
 	 * @param {String} API route
 	 * @param {Function} API middleware

@@ -4204,28 +4204,6 @@ module.exports = {
 				}
 			},
 
-			"/cloud/nodes/tag": {
-				"_apiInfo": {
-					"l": "Update HA Cloud Node Tag",
-					"group": "HA Cloud"
-				},
-				'commonFields': ['soajs_project'],
-				"id": {
-					"source": ['body.id'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"tag": {
-					"source": ['body.tag'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
-			},
-
 			"/cloud/services/scale": {
 				"_apiInfo": {
 					"l": "Scale HA Service",
