@@ -1481,7 +1481,7 @@ service.init(function () {
 	service.post("/cloud/services/soajs/deploy", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.deploy.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.deployService(config, req, req.soajs, deployer, function (error, data) {
+				BL.deployService(config, req, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -1545,7 +1545,7 @@ service.init(function () {
 	service.put("/cloud/services/redeploy", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.deploy.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.redeployService(config, req, req.soajs, deployer, function (error, data) {
+				BL.redeployService(config, req, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
