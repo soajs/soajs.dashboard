@@ -3393,7 +3393,28 @@ module.exports = {
 					"l": "Update Infra as Code Template",
 					"group": "Infra Providers"
 				},
-				'commonFields': ['soajs_project', 'id']
+				'commonFields': ['soajs_project'],
+				"inputs": {
+					"source": ['body.inputs'],
+					"required": false,
+					"validation": {
+						"type": "object"
+					}
+				},
+				"display": {
+					"source": ['body.display'],
+					"required": false,
+					"validation": {
+						"type": "object"
+					}
+				},
+				"name": {
+					"source": ['body.name'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
 			},
 
 			"/infra/cluster/scale": {
