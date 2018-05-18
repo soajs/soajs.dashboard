@@ -3291,7 +3291,6 @@ service.init(function () {
 	service.post("/infra/template/upload", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				console.log('wissamiousssss', req.soajs.inputmaskData);
 				//upload complimentary inputs&display file
 				if (req.soajs.inputmaskData && Object.keys(req.soajs.inputmaskData).length > 0) {
 					BL.uploadTemplateInputsFile(config, req, req.soajs, deployer, function (error, data) {
