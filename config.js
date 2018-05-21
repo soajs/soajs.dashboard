@@ -5141,6 +5141,13 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				"templateName": {
+					"source": ['query.templateName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
 				}
 			}
 		}
