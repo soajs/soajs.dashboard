@@ -3329,10 +3329,20 @@ service.init(function () {
 	service.put("/infra/template", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.updateTemplate(config, req.soajs, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
+				if (req.soajs.inputmaskData.template.location === 'local') {
+					//check if template is local
+					BL.updateTemplate(config, req.soajs, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
+				}
+				else {
+					//else template is external
+					BL.uploadTemplate(config, req, req.soajs, deployer, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
+				}
 			});
 		});
 	});

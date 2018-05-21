@@ -4758,6 +4758,27 @@ module.exports = {
 					"validation": {
 						"type": "object"
 					}
+				},
+				"inputs": {
+					"source": ['body.inputs'],
+					"required": false,
+					"validation": {
+						"type": "object"
+					}
+				},
+				"display": {
+					"source": ['body.display'],
+					"required": false,
+					"validation": {
+						"type": "object"
+					}
+				},
+				"name": {
+					"source": ['body.name'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
 				}
 			}
 		},
