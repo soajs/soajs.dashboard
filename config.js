@@ -4779,6 +4779,13 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				"technology": {
+					"source": ['body.technology'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
 				}
 			}
 		},
