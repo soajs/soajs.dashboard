@@ -3398,7 +3398,7 @@ module.exports = {
 					"source": ['body.inputs'],
 					"required": false,
 					"validation": {
-						"type": "object"
+						"type": "array"
 					}
 				},
 				"display": {
