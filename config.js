@@ -3398,7 +3398,7 @@ module.exports = {
 					"source": ['body.inputs'],
 					"required": false,
 					"validation": {
-						"type": "object"
+						"type": "array"
 					}
 				},
 				"display": {
@@ -4757,34 +4757,6 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "object"
-					}
-				},
-				"inputs": {
-					"source": ['body.inputs'],
-					"required": false,
-					"validation": {
-						"type": "object"
-					}
-				},
-				"display": {
-					"source": ['body.display'],
-					"required": false,
-					"validation": {
-						"type": "object"
-					}
-				},
-				"name": {
-					"source": ['body.name'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"technology": {
-					"source": ['body.technology'],
-					"required": false,
-					"validation": {
-						"type": "string"
 					}
 				}
 			}
