@@ -769,7 +769,7 @@ module.exports = {
 				"commonFields": ['soajs_project', 'env']
 			},
 
-			"/resources/list": {
+			"/resources": {
 				_apiInfo: {
 					"l": "List Available Resources",
 					"group": "Resources",
