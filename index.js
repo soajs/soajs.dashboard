@@ -542,6 +542,17 @@ service.init(function () {
 			});
 		});
 	});
+	
+	service.post("/resources/:id", function (req, res) {
+		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.addEditResource(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
 
 	/**
 	 * Delete a resource

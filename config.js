@@ -2027,6 +2027,62 @@ module.exports = {
 				},
 				"resource": resourceSchema
 			},
+			
+			"/resources/:id": { // add new
+				_apiInfo: {
+					"l": "Add / Edit Resource",
+					"group": "Resources"
+				},
+				'commonFields': ['soajs_project'],
+				"id": {
+					"source": ['params.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"resource": resourceSchema,
+				
+				// cicd stuff + resourceName
+				"status": {
+					"source": ['body.status'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"config": {
+					"source": ['body.config'],
+					"required": true,
+					"validation": {
+						"type": "object",
+						"default": {},
+						"properties": {
+							"deploy": {"type": "boolean", "required": true},
+							"options": {
+								"type": "object",
+								"required": false,
+								"properties": resourceDeployConfigSchema
+							}
+						}
+					}
+				}
+				
+				
+				
+				
+				
+				
+				
+				
+			},
 
 			"/customRegistry/add": {
 				_apiInfo: {
