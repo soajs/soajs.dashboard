@@ -618,6 +618,15 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			
+			"logs": {
+				"source": ['query.logs', 'body.logs'],
+				"required": true,
+				"default": false,
+				"validation": {
+					"type": "boolean"
+				}
 			}
 		},
 
@@ -636,7 +645,7 @@ module.exports = {
 						'minimum': 0
 					}
 				},
-				"commonFields": ['soajs_project', 'env']
+				"commonFields": ['soajs_project', 'env', "logs"]
 			},
 
 			"/environment": {
@@ -3482,7 +3491,7 @@ module.exports = {
 					"l": "Mark as read",
 					"group": "Continuous Delivery"
 				},
-				"commonFields": ['soajs_project'],
+				"commonFields": ['soajs_project', "logs"],
 				"data": {
 					"required": true,
 					"source": ["body.data"],
