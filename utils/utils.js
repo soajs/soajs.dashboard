@@ -208,33 +208,5 @@ module.exports = {
 			});
 		}
 		return [infraStack, environments, index];
-	},
-	
-	/**
-	 * Function that updates Ledger
-	 * @param  {Object}   soajs
-	 * @param  {Object}   env
-	 * @param  {Object}   ledgerEntry
-	 * @param  {Object}   BL
-	 * @param  {Function} cb
-	 * @return {*}
-	 */
-	updateLedger: (soajs, env, ledgerEntry, BL, cb) =>{
-		ledgerEntry.env = env;
-		ledgerEntry.read = false;
-		ledgerEntry.ts = new Date().getTime();
-		let opts = {
-			collection: ledgerColName,
-			record: ledgerEntry //todo: need to double check that this is returned sa7
-		};
-		soajs.log.debug("Registering new entry in ledger");
-		BL.model.insertEntry(soajs, opts, (error) => {
-			if (error) {
-				soajs.log.error(error);
-			}
-			if (cb && typeof cb === 'function'){
-				return cb(error, true);
-			}
-		});
 	}
 };
