@@ -7,6 +7,8 @@ var status = helper.requireModule('./lib/templates/helper.js');
 var async = require('async');
 let template = require('./schema/newTemplate.js');
 
+let templatesTest = require('./schema/templates.js');
+
 function stubStatusUtils(error) {
 	sinon
 		.stub(status, 'ci')
@@ -345,7 +347,8 @@ describe("testing helper.js", function () {
 
 	describe("testing helper", function () {
 
-		describe("checkMandatory", function () {
+		describe("checkMandatoryTemplateSchema", function () {
+
 			it("Success checkMandatory ", function (done) {
 				req.soajs.validator = {
 					validate: function () {
@@ -370,6 +373,52 @@ describe("testing helper.js", function () {
 				};
 
 				status.checkMandatoryTemplateSchema(req, test, lib, context, req.soajs.validator, 40000, function (result, error) {
+					done();
+				});
+			});
+
+			it("check for container restrictions", function (done) {
+				let context1 = {
+					config: configAll,
+					template: templatesTest.test1,
+					errors: [],
+					dbData: {
+						ci: ["testing"]
+					}
+				};
+
+				req.soajs.validator = {
+					validate: function () {
+						return {
+							valid: true
+						}
+					}
+				};
+
+				status.checkMandatoryTemplateSchema(req, test, lib, context1, req.soajs.validator, 40000, function (result, error) {
+					done();
+				});
+			});
+			
+			it("check for VM restrictions", function (done) {
+				let context1 = {
+					config: configAll,
+					template: templatesTest.test2,
+					errors: [],
+					dbData: {
+						ci: ["testing"]
+					}
+				};
+				
+				req.soajs.validator = {
+					validate: function () {
+						return {
+							valid: true
+						}
+					}
+				};
+				
+				status.checkMandatoryTemplateSchema(req, test, lib, context1, req.soajs.validator, 40000, function (result, error) {
 					done();
 				});
 			});

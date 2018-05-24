@@ -1062,7 +1062,7 @@ let template = {
                             "ip": "kaza",
                             "dns": { "a":"b" }
                         }
-                    },
+                    }
                 }
             }
         }
