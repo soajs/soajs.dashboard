@@ -775,7 +775,14 @@ module.exports = {
 					"group": "Resources",
 					"groupMain": true
 				},
-				"commonFields": ['soajs_project', 'env']
+				"commonFields": ['soajs_project', 'env'],
+                "envType": {
+                    "source": ['query.envType'],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+                }
 			},
 
 			"/resources/get": {
@@ -4855,7 +4862,7 @@ module.exports = {
 				}
 			},
 
-			"/resources/delete": {
+			"/resources": {
 				_apiInfo: {
 					"l": "Delete a resource",
 					"group": "Resources"
@@ -4864,6 +4871,42 @@ module.exports = {
 				"id": {
 					"source": ['query.id'],
 					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceId": {
+					"source": ['query.serviceId'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"name": {
+					"source": ['query.name'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"envCode": {
+					"source": ['query.envCode'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"config": {
+					"source": ['query.config'],
+					"required": false,
+                    "validation": {
+                        "type": "string",
+                    },
+
+				},
+				"resourceName": {
+					"source": ['query.resourceName'],
+					"required": false,
 					"validation": {
 						"type": "string"
 					}

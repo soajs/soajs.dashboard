@@ -559,15 +559,17 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.delete("/resources/delete", function (req, res) {
-		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.deleteResource(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
+	service.delete("/resources", function (req, res) {
+        initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (serviceBL) {
+            initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+                checkConnection(BL, req, res, function () {
+                    BL.deleteResource(config, req, res, serviceBL, function (error, data) {
+                        BL.model.closeConnection(req.soajs);
+                        return res.json(req.soajs.buildResponse(error, data));
+                    });
+                });
+            });
+        });
 	});
 
 	/**
