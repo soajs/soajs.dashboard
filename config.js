@@ -775,7 +775,14 @@ module.exports = {
 					"group": "Resources",
 					"groupMain": true
 				},
-				"commonFields": ['soajs_project', 'env']
+				"commonFields": ['soajs_project', 'env'],
+                "envType": {
+                    "source": ['query.envType'],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+                }
 			},
 
 			"/resources/get": {
