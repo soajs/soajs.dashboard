@@ -650,7 +650,7 @@ let template = {
                             "shared": true,
                             "value": {
                                 "test": true
-                            },
+                            }
                         },
                         {
                             "name": "ciConfig2",
@@ -659,7 +659,7 @@ let template = {
                             "shared": true,
                             "value": {
                                 "test": true
-                            },
+                            }
                         },
                         {
                             "name": "ciConfig3",
@@ -668,7 +668,7 @@ let template = {
                             "shared": true,
                             "value": {
                                 "test": true
-                            },
+                            }
                         }
                     ],
                     "status": {
@@ -685,7 +685,7 @@ let template = {
                             }
                         ]
                     }
-                },
+                }
             },
             "steps": {
                 "productization": {
@@ -724,7 +724,7 @@ let template = {
                             }
                         ]
                     }
-                },
+                }
             }
         },
 
@@ -815,7 +815,7 @@ let template = {
                                 }
                             }
                         }
-                    },
+                    }
                 }
             },
             "steps": {
@@ -1051,7 +1051,7 @@ let template = {
                             "ip": "kaza",
                             "dns": { "a":"b" }
                         }
-                    },
+                    }
                 }
             }
         }
