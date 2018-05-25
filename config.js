@@ -618,15 +618,6 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
-			},
-			
-			"logs": {
-				"source": ['query.logs', 'body.logs'],
-				"required": true,
-				"default": false,
-				"validation": {
-					"type": "boolean"
-				}
 			}
 		},
 
@@ -645,7 +636,7 @@ module.exports = {
 						'minimum': 0
 					}
 				},
-				"commonFields": ['soajs_project', 'env', "logs"]
+				"commonFields": ['soajs_project', 'env']
 			},
 
 			"/environment": {
@@ -3638,7 +3629,28 @@ module.exports = {
 					"l": "Update Infra as Code Template",
 					"group": "Infra Providers"
 				},
-				'commonFields': ['soajs_project', 'id']
+				'commonFields': ['soajs_project'],
+				"inputs": {
+					"source": ['body.inputs'],
+					"required": false,
+					"validation": {
+						"type": "array"
+					}
+				},
+				"display": {
+					"source": ['body.display'],
+					"required": false,
+					"validation": {
+						"type": "object"
+					}
+				},
+				"name": {
+					"source": ['body.name'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
 			},
 
 			"/infra/cluster/scale": {
@@ -3706,7 +3718,7 @@ module.exports = {
 					"l": "Mark as read",
 					"group": "Continuous Delivery"
 				},
-				"commonFields": ['soajs_project', "logs"],
+				"commonFields": ['soajs_project'],
 				"data": {
 					"required": true,
 					"source": ["body.data"],
@@ -5397,6 +5409,13 @@ module.exports = {
 				'commonFields': ['soajs_project', 'id'],
 				"templateId": {
 					"source": ['query.templateId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"templateName": {
+					"source": ['query.templateName'],
 					"required": true,
 					"validation": {
 						"type": "string"

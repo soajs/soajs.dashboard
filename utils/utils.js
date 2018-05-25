@@ -1,18 +1,17 @@
 'use strict';
-var soajsUtils = require("soajs").utils;
-var async = require('async');
-var tenantsColName = 'tenants';
-var infraColName = 'infra';
-
+const soajsUtils = require("soajs").utils;
+const async = require('async');
+const tenantsColName = 'tenants';
+const ledgerColName = 'ledger';
 module.exports = {
 
 	/**
 	 * Check if error is available and return it in response, else return callback function
 	 *
 	 * @param {Object} soajs
-	 * @param {Callback Function} mainCb
+	 * @param {Function} mainCb
 	 * @param {Object} data
-	 * @param {Callback Function} cb
+	 * @param {Function} cb
 	 */
 	checkErrorReturn: function (soajs, mainCb, data, cb) {
 		if (data.error) {
@@ -48,6 +47,8 @@ module.exports = {
 	 *
 	 * @param {Object} envRecord
 	 * @param {Object} soajs
+	 * @param {Object} BL
+	 * @param {Object} deployment
 	 * @returns {Object} options
 	 */
 	buildDeployerOptions: function (envRecord, soajs, BL, deployment) {
@@ -108,9 +109,9 @@ module.exports = {
 	 * Get an evironment record from data store
 	 *
 	 * @param {Object} soajs
+	 * @param {Object} model
 	 * @param {String} code
-	 * @param {Object} BL
-	 * @param {Callback Function} cb
+	 * @param {Function} cb
 	 */
 	getEnvironment: function (soajs, model, code, cb) {
 		var opts = {
@@ -149,6 +150,7 @@ module.exports = {
 	/**
 	 * Function that checks if current logged in user belongs to group owner
 	 * @param  {Object}   soajs
+	 * @param  {model}   soajs
 	 * @param  {Function} cb
 	 * @return {void}
 	 */
@@ -179,7 +181,7 @@ module.exports = {
 	},
 	
 	/**
-	 * Extrac a deployment from an infra record based on the environment in it
+	 * Extract a deployment from an infra record based on the environment in it
 	 * @param infra
 	 * @param env
 	 * @returns {*}
