@@ -2055,6 +2055,13 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				"deployType" : {
+                    "source": ['body.deployType'],
+                    "required": false,
+                    "validation": {
+                        "type": "string"
+                    }
+				},
 				"resource": resourceSchema,
 				
 				// cicd stuff + resourceName
