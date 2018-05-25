@@ -544,18 +544,20 @@ service.init(function () {
 	});
 	
 	service.post("/resources/:id", function (req, res) {
-        initBLModel(req, res, dashboardBL.cloud.deploy.module, dbModel, function (deployBL) {
-            initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
-                checkConnection(BL, req, res, function () {
-                    BL.addEditResource(config, req, res, deployBL, function (error, data) {
-                        BL.model.closeConnection(req.soajs);
-                        return res.json(req.soajs.buildResponse(error, data));
-                    });
-                });
-            });
+		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (serviceBL) {
+			initBLModel(req, res, dashboardBL.cloud.deploy.module, dbModel, function (deployBL) {
+				initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+					checkConnection(BL, req, res, function () {
+						BL.addEditResource(config, req, res, deployBL, serviceBL, function (error, data) {
+							BL.model.closeConnection(req.soajs);
+							return res.json(req.soajs.buildResponse(error, data));
+						});
+					});
+				});
+			});
 		});
 	});
-
+	
 	/**
 	 * Delete a resource
 	 * @param {String} API route
