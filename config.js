@@ -760,13 +760,20 @@ module.exports = {
 				"commonFields": ['soajs_project', 'env']
 			},
 
-			"/resources/list": {
+			"/resources": {
 				_apiInfo: {
 					"l": "List Available Resources",
 					"group": "Resources",
 					"groupMain": true
 				},
-				"commonFields": ['soajs_project', 'env']
+				"commonFields": ['soajs_project', 'env'],
+                "envType": {
+                    "source": ['query.envType'],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+                }
 			},
 
 			"/resources/get": {
@@ -2017,6 +2024,235 @@ module.exports = {
 					}
 				},
 				"resource": resourceSchema
+			},
+			
+			"/resources/:id": { // add new
+				_apiInfo: {
+					"l": "Add / Edit Resource",
+					"group": "Resources"
+				},
+				'commonFields': ['soajs_project'],
+				"id": {
+					"source": ['params.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"deployType" : {
+                    "source": ['body.deployType'],
+                    "required": false,
+                    "validation": {
+                        "type": "string"
+                    }
+				},
+				"resource": resourceSchema,
+				
+				// cicd stuff + resourceName
+				"status": {
+					"source": ['body.status'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"config": {
+					"source": ['body.config'],
+					"required": true,
+					"validation": {
+						"type": "object",
+						"default": {},
+						"properties": {
+							"deploy": {"type": "boolean", "required": true},
+							"options": {
+								"type": "object",
+								"required": false,
+								"properties": resourceDeployConfigSchema
+							}
+						}
+					}
+				},
+				
+				// deploy: required: recipe, deployConfig
+				"recipe": {
+					"source": ['body.recipe'],
+					"required": false,
+					"validation": {
+						"required": true,
+						"type": "string"
+					}
+				},
+				"deployConfig": {
+					"required": false,
+					"source": ['body.deployConfig'],
+					"validation": {
+						"type": "object",
+						"required": true,
+						"properties": {
+							"memoryLimit": {"required": false, "type": "number", "default": 209715200},
+							"cpuLimit": {"required": false, "type": "string"},
+							"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
+							"replication": {
+								"required": false,
+								"type": "object",
+								"properties": {
+									"mode": {
+										"required": true,
+										"type": "string",
+										"enum": ['replicated', 'global', 'deployment', 'daemonset']
+									},
+									"replicas": {"required": false, "type": "number", "minimum": 1}
+								}
+							},
+							"region": {"required": false, "type": "string"},
+							"infra": {"required": false, "type": "string"},
+							"type": {"required": false, "type": "string"},
+							"vmConfiguration": {
+								"required": false,
+								"type": "object",
+								"properties": {
+									"flavor": {"required": true, "type": "string"},
+									"adminAccess": {
+										"required": true,
+										"type": "object",
+										"properties": {
+											"username": {"required": true, "type": "string"},
+											"password": {"required": false, "type": "string"},
+											"token": {"required": false, "type": "string"}
+										}
+									},
+								}
+							},
+						}
+					}
+				},
+				"custom": {
+					"source": ["body.custom"],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"required": false,
+						"properties": {
+							"sourceCode": {
+								"type": "object",
+								"required": false,
+								"properties": {
+									"custom": {
+										"type": "object",
+										"required": false,
+										"properties": {
+											"repo": {"type": "string", "required": true},
+											"branch": {"type": "string", "required": true},
+											"commit": {"type": "string", "required": false},
+											"path": {"type": "string", "required": false}
+										}
+									}
+								}
+							},
+							"image": {
+								"type": "object",
+								"required": false,
+								"properties": {
+									"prefix": {"required": false, "type": "string"},
+									"name": {"required": false, "type": "string"},
+									"tag": {"required": false, "type": "string"},
+								}
+							},
+							"env": {
+								"type": "object",
+								"required": false,
+								"additionalProperties": {"type": "string"}
+							},
+							"type": {
+								"required": true,
+								"type": "string"
+							},
+							"resourceId": {
+								"required": false,
+								"type": "string"
+							},
+							"name": {
+								"required": false,
+								"type": "string",
+								"pattern": /[a-z0-9]{1,61}/
+							},
+							"version": {
+								"required": false,
+								"type": "number",
+								"minimum": 1
+							},
+							"daemonGroup": {
+								"required": false,
+								"type": "string"
+							},
+							"gc": {
+								"required": false,
+								"type": "object",
+								"properties": {
+									"gcName": {"required": true, "type": "string"},
+									"gcVersion": {"required": true, "type": "number", "minimum": 1}
+								}
+							},
+							"secrets": {
+								"type": "array",
+								"required": false,
+								"items": {
+									"type": "object",
+									"required": true,
+									"properties": {
+										"name": {"type": "string", "required": true},
+										"type": {"type": "string", "required": false},
+										"mountPath": {"type": "string", "required": true}
+									}
+								}
+							},
+							"ports": {
+								"type": "array",
+								"required": false,
+								"uniqueItems": true,
+								"items": {
+									"type": "object",
+									"required": true,
+									"properties": {
+										"name": {"type": "string", "required": true},
+										"port": {"type": "number", "required": false, "min": 1, "max": 2766 }
+									}
+								}
+							}
+						}
+					}
+				},
+				
+				// rebuild : required:  serviceId, mode, action
+				"serviceId": {
+					"source": ['body.serviceId'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"mode": {
+					"source": ['body.mode'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"action": {
+					"source": ['body.action'],
+					"required": false,
+					"validation": {
+						"type": "string",
+						"enum": ['redeploy', 'rebuild']
+					}
+				}
 			},
 
 			"/customRegistry/add": {
@@ -4811,7 +5047,7 @@ module.exports = {
 				}
 			},
 
-			"/resources/delete": {
+			"/resources": {
 				_apiInfo: {
 					"l": "Delete a resource",
 					"group": "Resources"
@@ -4820,6 +5056,42 @@ module.exports = {
 				"id": {
 					"source": ['query.id'],
 					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceId": {
+					"source": ['query.serviceId'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"name": {
+					"source": ['query.name'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"envCode": {
+					"source": ['query.envCode'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"config": {
+					"source": ['query.config'],
+					"required": false,
+                    "validation": {
+                        "type": "string",
+                    },
+
+				},
+				"resourceName": {
+					"source": ['query.resourceName'],
+					"required": false,
 					"validation": {
 						"type": "string"
 					}

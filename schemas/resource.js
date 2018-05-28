@@ -4,7 +4,7 @@ module.exports = {
     "validation": {
         "type": "object",
         "required": true,
-        "additionalProperties": false,
+        "additionalProperties": true,
         "properties": {
             "name": { "type": "string", "required": true , "pattern": /[a-z0-9]{1,61}/},
             "type": { "type": "string", "required": true, "enum": [ 'cluster', 'server', 'cdn', 'system', 'authorization', 'other' ] },
