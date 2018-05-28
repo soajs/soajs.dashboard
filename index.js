@@ -482,15 +482,17 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.get("/resources/list", function (req, res) {
-		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.listResources(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
+	service.get("/resources", function (req, res) {
+        initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (serviceBL) {
+            initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+                checkConnection(BL, req, res, function () {
+                    BL.listResources(config, req, res, serviceBL, function (error, data) {
+                        BL.model.closeConnection(req.soajs);
+                        return res.json(req.soajs.buildResponse(error, data));
+                    });
+                });
+            });
+        });
 	});
 
 	/**
@@ -540,21 +542,38 @@ service.init(function () {
 			});
 		});
 	});
-
+	
+	service.post("/resources/:id", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (serviceBL) {
+			initBLModel(req, res, dashboardBL.cloud.deploy.module, dbModel, function (deployBL) {
+				initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+					checkConnection(BL, req, res, function () {
+						BL.addEditResource(config, req, res, deployBL, serviceBL, function (error, data) {
+							BL.model.closeConnection(req.soajs);
+							return res.json(req.soajs.buildResponse(error, data));
+						});
+					});
+				});
+			});
+		});
+	});
+	
 	/**
 	 * Delete a resource
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.delete("/resources/delete", function (req, res) {
-		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.deleteResource(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
+	service.delete("/resources", function (req, res) {
+        initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (serviceBL) {
+            initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+                checkConnection(BL, req, res, function () {
+                    BL.deleteResource(config, req, res, serviceBL, function (error, data) {
+                        BL.model.closeConnection(req.soajs);
+                        return res.json(req.soajs.buildResponse(error, data));
+                    });
+                });
+            });
+        });
 	});
 
 	/**
