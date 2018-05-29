@@ -120,6 +120,9 @@ var BL = {
 		},
 		resources :{
 			module :{}
+		},
+		infra : {
+            module : {}
 		}
 	},
 	resources: {
@@ -628,6 +631,19 @@ var environmentRecord = {
 	services: {},
 	profile: ''
 };
+var infraRecord = {
+        "_id":'5af2b621a0e17acc56000001',
+        "name": "test",
+        "technologies": [
+            "test"
+        ],
+        "templates": [
+            "local"
+        ],
+        "label": "test",
+        "deployments": []
+    };
+
 
 var lib = {
 	initBLModel : function(module, modelName, cb){
@@ -658,6 +674,69 @@ var lib = {
 			deleteResource: function (context, req, data, cb) {
 				return cb(true);
 			},
+            list : function (config, soajs, deployer, cb) {
+                return cb(null, true);
+            },
+            activate : function (config, soajs, deployer, cb) {
+                return cb(true);
+            },
+            modify : function (config, soajs, deployer, cb) {
+                return cb(null, true);
+            },
+            deactivate : function (config, soajs, deployer, cb) {
+                return cb(null, {service: {
+                    id: "1"
+                }});
+            },
+            removeDeployment : function (config, soajs, deployer, cb) {
+                return cb(null, true);
+            },
+            getDeployClusterStatus: function (config, soajs, req ,deployer, cbMain) {
+                return cbMain(null, true);
+            },
+            deployCluster: function (config, soajs, deployer,req, cb) {
+                return cb(null, true);
+            },
+            getRegions: function (config, soajs, deployer, cb) {
+                return cb(true);
+            },
+
+            scaleCluster: function (config, soajs, deployer, cb) {
+                return cb(true);
+            },
+            removeEnvFromDeployment: function (config, soajs, req, deployer, cb) {
+                return cb(true);
+            },
+            getCluster: function (config, soajs, deployer, cb) {
+                return cb(true);
+            },
+            updateCluster: function (config, soajs, deployer, cb) {
+                return cb(true);
+            },
+            publishPorts: function (config, soajs, deployer, cb) {
+                return cb(true);
+            },
+            getDNSInfo: function (config, soajs, deployer, cb) {
+                return cb(true);
+            },
+            removeTemplate: function (config, soajs, deployer, cb) {
+                return cb(true);
+            },
+            addTemplate: function (config, soajs, deployer, cb) {
+                return cb(true);
+            },
+            updateTemplate: function (config, soajs, deployer, cb) {
+                return cb(true);
+            },
+            uploadTemplate: function (config, soajs, deployer, cb) {
+                return cb(true);
+            },
+            uploadTemplateInputsFile: function (config, soajs, deployer, cb) {
+                return cb(true);
+            },
+            downloadTemplate: function (config, soajs, deployer, cb) {
+                return cb(true);
+            },
 		});
 	},
 	checkReturnError: function(req, {}, {}, cb){
@@ -674,6 +753,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -775,6 +855,7 @@ describe("testing infra.js", function () {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
@@ -789,25 +870,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs": [
 						{
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "deployCluster",
-									"project": "demo",
-									"options": {
-										"region": "us-east1-b",
-										"workernumber": 3,
-										"workerflavor": "n1-standard-2",
-										"regionLabel": "us-east1-b",
-										"technology": "kubernetes",
-										"envCode": "PORTAL"
-									}
-								}
-							},
+							"command": "getDeployClusterStatus",
 							"check": {
 								"id": {
 									"type": "string",
@@ -817,8 +880,8 @@ describe("testing infra.js", function () {
 						},
 						{
 							"recursive": {
-								"max": 5,
-								"delay": 300
+								"max": 0,
+								"delay": 0
 							},
 							"check": {
 								"id": {
@@ -830,20 +893,7 @@ describe("testing infra.js", function () {
 									"required": true
 								}
 							},
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "getDeployClusterStatus",
-									"project": "demo",
-									"options": {
-										"envCode": "PORTAL"
-									}
-								}
-							}
+							"command": "getDeployClusterStatus",
 						}
 					]
 				}
@@ -851,6 +901,7 @@ describe("testing infra.js", function () {
 			context.template.deploy.deployments.pre["infra.cluster.deploy"].status = {
 				done: true
 			};
+			console.log( "wossiill" ); // ToDelete #2del
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
 			})
@@ -861,6 +912,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -874,28 +926,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs": [
 						{
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "deployCluster",
-									"project": "demo",
-									"options": {
-										"region": "us-east1-b",
-										"workernumber": 3,
-										"workerflavor": "n1-standard-2",
-										"regionLabel": "us-east1-b",
-										"technology": "kubernetes",
-										"envCode": "PORTAL"
-									}
-								},
-								params: {
-									test: "test"
-								}
-							},
+							"command": "deployCluster",
 							"check": {
 								"id": {
 									"type": "string",
@@ -904,10 +935,10 @@ describe("testing infra.js", function () {
 							}
 						},
 						{
-							"recursive": {
-								"max": 5,
-								"delay": 300
-							},
+							// "recursive": {
+							// 	"max": 5,
+							// 	"delay": 1
+							// },
 							"check": {
 								"id": {
 									"type": "string",
@@ -918,20 +949,7 @@ describe("testing infra.js", function () {
 									"required": true
 								}
 							},
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "getDeployClusterStatus",
-									"project": "demo",
-									"options": {
-										"envCode": "PORTAL"
-									}
-								}
-							}
+							"command": "deployCluster"
 						}
 					]
 				}
@@ -966,6 +984,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -979,7 +998,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs": [
 						{
-							"command": {},
+							"command": '',
 							"check": {
 								"id": {
 									"type": "string",
@@ -1002,20 +1021,7 @@ describe("testing infra.js", function () {
 									"required": true
 								}
 							},
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "getDeployClusterStatus",
-									"project": "demo",
-									"options": {
-										"envCode": "PORTAL"
-									}
-								}
-							}
+							"command": 'deployCluster'
 						}
 					]
 				}
@@ -1050,6 +1056,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -1063,25 +1070,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs": [
 						{
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "deployCluster",
-									"project": "demo",
-									"options": {
-										"region": "us-east1-b",
-										"workernumber": 3,
-										"workerflavor": "n1-standard-2",
-										"regionLabel": "us-east1-b",
-										"technology": "kubernetes",
-										"envCode": "PORTAL"
-									}
-								}
-							},
+							"command": "deployCluster",
 							"check": {
 								"id": {
 									"type": "string",
@@ -1111,7 +1100,7 @@ describe("testing infra.js", function () {
 									"type": "infra",
 									"name": "google",
 									"driver": "google",
-									"command": "getDeployClusterStatus",
+									"command": "deployCluster",
 									"project": "demo",
 									"options": {
 										"envCode": "PORTAL"
@@ -1152,6 +1141,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -1165,25 +1155,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs": [
 						{
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "deployCluster",
-									"project": "demo",
-									"options": {
-										"region": "us-east1-b",
-										"workernumber": 3,
-										"workerflavor": "n1-standard-2",
-										"regionLabel": "us-east1-b",
-										"technology": "kubernetes",
-										"envCode": "PORTAL"
-									}
-								}
-							},
+							"command": "deployCluster",
 							"check": {
 								"id": {
 									"type": "string",
@@ -1228,6 +1200,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -1241,25 +1214,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs": [
 						{
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "deployCluster",
-									"project": "demo",
-									"options": {
-										"region": "us-east1-b",
-										"workernumber": 3,
-										"workerflavor": "n1-standard-2",
-										"regionLabel": "us-east1-b",
-										"technology": "kubernetes",
-										"envCode": "PORTAL"
-									}
-								}
-							},
+							"command": "deployCluster",
 							"check": {
 								"id": {
 									"type": "string",
@@ -1315,6 +1270,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -1328,25 +1284,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs": [
 						{
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "deployCluster",
-									"project": "demo",
-									"options": {
-										"region": "us-east1-b",
-										"workernumber": 3,
-										"workerflavor": "n1-standard-2",
-										"regionLabel": "us-east1-b",
-										"technology": "kubernetes",
-										"envCode": "PORTAL"
-									}
-								}
-							},
+							"command": "deployCluster",
 							"check": {
 								"id": {
 									"type": "string",
@@ -1402,6 +1340,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -1415,25 +1354,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs":
 						{
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "deployCluster",
-									"project": "demo",
-									"options": {
-										"region": "us-east1-b",
-										"workernumber": 3,
-										"workerflavor": "n1-standard-2",
-										"regionLabel": "us-east1-b",
-										"technology": "kubernetes",
-										"envCode": "PORTAL"
-									}
-								}
-							},
+							"command": "deployCluster",
 							"check": {
 								"id": {
 									"type": "string",
@@ -1477,6 +1398,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -1521,6 +1443,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -1570,6 +1493,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -1583,25 +1507,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs": [
 						{
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "deployCluster",
-									"project": "demo",
-									"options": {
-										"region": "us-east1-b",
-										"workernumber": 3,
-										"workerflavor": "n1-standard-2",
-										"regionLabel": "us-east1-b",
-										"technology": "kubernetes",
-										"envCode": "PORTAL"
-									}
-								}
-							},
+							"command": "deployCluster",
 							"check": {
 								"id": {
 									"type": "string",
@@ -1628,6 +1534,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -1641,25 +1548,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs": [
 						{
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "deployCluster",
-									"project": "demo",
-									"options": {
-										"region": "us-east1-b",
-										"workernumber": 3,
-										"workerflavor": "n1-standard-2",
-										"regionLabel": "us-east1-b",
-										"technology": "kubernetes",
-										"envCode": "PORTAL"
-									}
-								}
-							},
+							"command": "deployCluster",
 							"check": {
 								"id": {
 									"type": "string",
@@ -1677,6 +1566,8 @@ describe("testing infra.js", function () {
 			context.template.deploy.deployments.pre["infra.cluster.deploy"].status = {
 				done: false
 			};
+
+            console.log( context.opts.inputs ); // ToDelete #2del
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				nock.cleanAll();
 				done();
@@ -1688,6 +1579,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -1701,25 +1593,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs": [
 						{
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "deployCluster",
-									"project": "demo",
-									"options": {
-										"region": "us-east1-b",
-										"workernumber": 3,
-										"workerflavor": "n1-standard-2",
-										"regionLabel": "us-east1-b",
-										"technology": "kubernetes",
-										"envCode": "PORTAL"
-									}
-								}
-							},
+							"command": "deployCluster",
 							"check": {
 								"id": {
 									"type": "string",
@@ -1749,6 +1623,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -1762,25 +1637,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs": [
 						{
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "deployCluster",
-									"project": "demo",
-									"options": {
-										"region": "us-east1-b",
-										"workernumber": 3,
-										"workerflavor": "n1-standard-2",
-										"regionLabel": "us-east1-b",
-										"technology": "kubernetes",
-										"envCode": "PORTAL"
-									}
-								}
-							},
+							"command": "deployCluster",
 							"check": {
 								"id": {
 									"type": "string",
@@ -1820,6 +1677,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -1833,25 +1691,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs": [
 						{
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "deployCluster",
-									"project": "demo",
-									"options": {
-										"region": "us-east1-b",
-										"workernumber": 3,
-										"workerflavor": "n1-standard-2",
-										"regionLabel": "us-east1-b",
-										"technology": "kubernetes",
-										"envCode": "PORTAL"
-									}
-								}
-							},
+							"command": "deployCluster",
 							"check": {
 								"id": {
 									"type": "string",
@@ -1896,6 +1736,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -1909,25 +1750,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs": [
 						{
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "deployCluster",
-									"project": "demo",
-									"options": {
-										"region": "us-east1-b",
-										"workernumber": 3,
-										"workerflavor": "n1-standard-2",
-										"regionLabel": "us-east1-b",
-										"technology": "kubernetes",
-										"envCode": "PORTAL"
-									}
-								}
-							},
+							"command": "deployCluster",
 							"check": {
 								"id": {
 									"type": "string",
@@ -1972,6 +1795,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -1985,25 +1809,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs": [
 						{
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "deployCluster",
-									"project": "demo",
-									"options": {
-										"region": "us-east1-b",
-										"workernumber": 3,
-										"workerflavor": "n1-standard-2",
-										"regionLabel": "us-east1-b",
-										"technology": "kubernetes",
-										"envCode": "PORTAL"
-									}
-								}
-							},
+							"command": "deployCluster",
 							"check": {
 								"id": {
 									"type": "string",
@@ -2048,6 +1854,7 @@ describe("testing infra.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
 				config: config,
 				errors: [],
 				opts:  {
@@ -2061,25 +1868,7 @@ describe("testing infra.js", function () {
 					],
 					"inputs": [
 						{
-							"command": {
-								"method": "post",
-								"routeName": "/bridge/executeDriver",
-								"data": {
-									"type": "infra",
-									"name": "google",
-									"driver": "google",
-									"command": "deployCluster",
-									"project": "demo",
-									"options": {
-										"region": "us-east1-b",
-										"workernumber": 3,
-										"workerflavor": "n1-standard-2",
-										"regionLabel": "us-east1-b",
-										"technology": "kubernetes",
-										"envCode": "PORTAL"
-									}
-								}
-							},
+							"command": "deployCluster",
 							"check": {
 								"id": {
 									"type": "string",
