@@ -336,6 +336,13 @@ describe("testing git.js", function () {
 		});
 
 		it("success getHAFile", function (done) {
+			
+			deployer.execute = function (in1, in2, in3, cb) {
+				return cb(null, {
+					env : ['SOAJS_GIT_BRANCH']
+				});
+			};
+			
 			req.soajs.inputmaskData = {
 				"env": "dev",
 				"serviceName": "serviceName",
@@ -390,6 +397,7 @@ describe("testing git.js", function () {
 				};
 				return cb(null, service)
 			};
+			
 			lib.getHaFile("account", config, req, gitDriver, deployer, helpers, gitModel, function (error, body) {
 				done();
 			})
