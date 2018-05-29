@@ -527,22 +527,6 @@ service.init(function () {
 		});
 	});
 
-	/**
-	 * Add new resource
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.post("/resources/add", function (req, res) {
-		initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.addResource(config, req, res, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-	
 	service.post("/resources/:id", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (serviceBL) {
 			initBLModel(req, res, dashboardBL.cloud.deploy.module, dbModel, function (deployBL) {
