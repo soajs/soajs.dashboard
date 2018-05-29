@@ -2010,22 +2010,6 @@ module.exports = {
 				}
 			},
 
-			"/resources/add": {
-				_apiInfo: {
-					"l": "Add New Resource",
-					"group": "Resources"
-				},
-				'commonFields': ['soajs_project'],
-				"env": {
-					"source": ['body.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"resource": resourceSchema
-			},
-			
 			"/resources/:id": { // add new
 				_apiInfo: {
 					"l": "Add / Edit Resource",
