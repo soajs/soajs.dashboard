@@ -74,7 +74,7 @@ var mongoStub = {
 				},
 				services: {
 					config :{
-					
+
 					}
 				}
 			};
@@ -86,7 +86,7 @@ var mongoStub = {
 		cb(null, true);
 	},
 	switchConnection: function (soajs) {
-	
+
 	}
 };
 
@@ -199,6 +199,32 @@ describe("testing autoscale.js", function() {
 
 		it("success - update autoscalers", function(done) {
 			req.soajs.inputmaskData.action = 'update';
+			deployer = {
+				execute: function(driverOptions, method, methodOptions, cb) {
+					if (method === 'getAutoscaler'){
+						return cb(null, {
+							replicas: {
+								min: 1,
+								max: 3
+							},
+							metrics: {
+								cpu: {
+									percent: 50
+								}
+							}
+						});
+					}
+					else if (method === 'updateAutoscaler') {
+						return cb(null, true);
+					}
+					else if (method === 'createAutoscaler') {
+						return cb(null, true);
+					}
+					else if (method === 'deleteAutoscaler') {
+						return cb(null, true);
+					}
+				},
+			}
 			autoscale.set(config, req.soajs, deployer, function(error) {
 				assert.ifError(error);
 				done();
@@ -214,27 +240,67 @@ describe("testing autoscale.js", function() {
 		});
 
 		it("fail - update autoscalers, driver error", function(done) {
-			deployer.getAutoscaler = function(options, cb) {
-				return cb({code: 600}); //dummy error
-			};
+			deployer = {
+				execute: function(driverOptions, method, methodOptions, cb) {
+					if (method === 'getAutoscaler'){
+						return cb(null, {
+							replicas: {
+								min: 1,
+								max: 3
+							},
+							metrics: {
+								cpu: {
+									percent: 50
+								}
+							}
+						});
+					}
+					else if (method === 'updateAutoscaler') {
+						return cb({code: 677, error: "Unable to update autoscaler"}, 677);
+					}
+					else if (method === 'createAutoscaler') {
+						return cb(null, true);
+					}
+					else if (method === 'deleteAutoscaler') {
+						return cb(null, true);
+					}
+				},
+			}
 
 			req.soajs.inputmaskData.action = 'update';
 			autoscale.set(config, req.soajs, deployer, function(error) {
 				assert.ok(error);
-				assert.deepEqual(error.code, 600);
+				assert.deepEqual(error.code, 677);
 				done();
 			});
 		});
 
 		it("fail - turn off autoscalers, driver error", function(done) {
-			deployer.getAutoscaler = function(options, cb) {
-				return cb({code: 600}); //dummy error
-			};
+			deployer = {
+				execute: function(driverOptions, method, methodOptions, cb) {
+					if (method === 'getAutoscaler'){
+						return cb(null, {
+							replicas: {
+								min: 1,
+								max: 3
+							},
+							metrics: {
+								cpu: {
+									percent: 50
+								}
+							}
+						});
+					}
+					else if (method === 'deleteAutoscaler') {
+						return cb({code: 678, error: "Unable to delete autoscaler"}, 678);
+					}
+				},
+			}
 
 			req.soajs.inputmaskData.action = 'turnOff';
 			autoscale.set(config, req.soajs, deployer, function(error) {
 				assert.ok(error);
-				assert.deepEqual(error.code, 600);
+				assert.deepEqual(error.code, 678);
 				done();
 			});
 		});

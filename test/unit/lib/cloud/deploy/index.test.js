@@ -144,9 +144,23 @@ var envRecord = {
 	},
 	services: {
 		config: {
-		
+
 		}
-	}
+	},
+	deployments: [
+		{
+			"technology": "docker",
+			"options": {
+				"zone": "local"
+			},
+			"environments": [
+				"DCKR"
+			],
+			"loadBalancers": {},
+			"name": "htlocalmggdiohh06wiu",
+			"id": "htlocalmggdiohh06wiu"
+		}
+	]
 };
 
 describe("testing deploy.js", function () {
@@ -180,7 +194,7 @@ describe("testing deploy.js", function () {
 
 	// "deployService": function (config, soajs, registry, deployer, cbMain) {
 	describe("deployService", function () {
-		
+
 		it("Fail deployService ports mismatch", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				var catalogRecord = {
@@ -239,7 +253,7 @@ describe("testing deploy.js", function () {
 						}
 					}
 				};
-				
+
 				var tenantRecord = {
 					"_id": '551286bce603d7e01ab1688e',
 					"oauth": {},
@@ -279,7 +293,7 @@ describe("testing deploy.js", function () {
 						}
 					]
 				};
-				
+
 				if (opts.collection === 'catalogs') {
 					return cb(null, catalogRecord);
 				}
@@ -288,7 +302,7 @@ describe("testing deploy.js", function () {
 				}
 				return cb(null, envRecord);
 			};
-			
+
 			req.soajs.registry = envRecord;
 			req.soajs.registry.coreDB = {
 				provision: {
@@ -296,7 +310,7 @@ describe("testing deploy.js", function () {
 					"credentials": {}
 				}
 			};
-			
+
 			req.soajs.inputmaskData = {
 				deployConfig: {
 					replication: {
@@ -312,7 +326,19 @@ describe("testing deploy.js", function () {
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
 
-			deploy.deployService(config, req, req.soajs, deployer, function (error, body) {
+			deployer = {
+				execute: function(driverOptions, method, methodOptions, cb) {
+					if (method === 'manageResources'){
+						return cb(null, true);
+					}
+					else {
+						return cb(null, true);
+					}
+				},
+			}
+
+			deploy.deployService(config, req, deployer, function (error, body) {
+				process.exit();
 				assert.ok(error);
 				done();
 			});
@@ -370,7 +396,7 @@ describe("testing deploy.js", function () {
 						}
 					}
 				};
-				
+
 				var tenantRecord = {
 					"_id": '551286bce603d7e01ab1688e',
 					"oauth": {},
@@ -410,19 +436,19 @@ describe("testing deploy.js", function () {
 						}
 					]
 				};
-				
+
 				if (opts.collection === 'catalogs') {
 					return cb(null, catalogRecord);
 				}
 				if(opts.collection === 'tenants'){
 					return cb(null, tenantRecord);
 				}
-				
+
 				let kubeEnvRecord = JSON.parse(JSON.stringify(envRecord, null, 2));
 				kubeEnvRecord.deployer.selected = "container.kubernetes.local";
 				return cb(null, kubeEnvRecord);
 			};
-			
+
 			req.soajs.registry = envRecord;
 			req.soajs.registry.coreDB = {
 				provision: {
@@ -430,7 +456,7 @@ describe("testing deploy.js", function () {
 					"credentials": {}
 				}
 			};
-			
+
 			req.soajs.inputmaskData = {
 				deployConfig: {
 					replication: {
@@ -646,7 +672,7 @@ describe("testing deploy.js", function () {
 						}
 					}
 				};
-				
+
 				var tenantRecord = {
 					"_id": '551286bce603d7e01ab1688e',
 					"oauth": {},
@@ -686,7 +712,7 @@ describe("testing deploy.js", function () {
 						}
 					]
 				};
-				
+
 				if (opts.collection === 'catalogs') {
 					return cb(null, catalogRecord);
 				}
@@ -695,7 +721,7 @@ describe("testing deploy.js", function () {
 				}
 				return cb(null, envRecord);
 			};
-			
+
 			req.soajs.registry = envRecord;
 			req.soajs.registry.coreDB = {
 				provision: {
@@ -703,7 +729,7 @@ describe("testing deploy.js", function () {
 					"credentials": {}
 				}
 			};
-			
+
 			req.soajs.inputmaskData = {
 				deployConfig: {
 					replication: {
