@@ -901,7 +901,7 @@ describe("testing infra.js", function () {
 			context.template.deploy.deployments.pre["infra.cluster.deploy"].status = {
 				done: true
 			};
-			console.log( "wossiill" ); // ToDelete #2del
+			
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
 			})
