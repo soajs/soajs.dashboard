@@ -18,7 +18,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 		assert.ok(body);
 		return cb(body);
 	});
-	
+
 	function requester(apiName, method, params, cb) {
 		let options = {
 			uri: 'http://localhost:4000/dashboard/' + apiName,
@@ -28,7 +28,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 			},
 			json: true
 		};
-		
+
 		if (params.headers) {
 			for (let h in params.headers) {
 				if (params.headers.hasOwnProperty(h)) {
@@ -36,15 +36,15 @@ function executeMyRequest(params, apiPath, method, cb) {
 				}
 			}
 		}
-		
+
 		if (params.form) {
 			options.body = params.form;
 		}
-		
+
 		if (params.qs) {
 			options.qs = params.qs;
 		}
-		
+
 		request[method](options, function (error, response, body) {
 			assert.ifError(error);
 			assert.ok(body);
@@ -54,12 +54,12 @@ function executeMyRequest(params, apiPath, method, cb) {
 }
 
 describe("DASHBOARD TESTS: API Builder", function () {
-	
+
 	let sampleID = '';
 	let sampleEndpointID = '';
 	let ImfvSchema;
 	let swaggerInput = fs.readFileSync(__dirname + "/swagger-no-response.test.yaml", "utf8").toString();
-	
+
 	it("Success - will list endpoints", function (done) {
 		let params = {
 			qs: {
@@ -73,7 +73,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-	
+
 	it("Success - will get endpoint", function (done) {
 		let params = {
 			qs: {
@@ -86,12 +86,12 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-	
+
 	it("Success - will add services 1", function (done) {
 		let params = {
 			form: {
 				mainType: "services",
-				serviceName: "testService1",
+				serviceName: "testservice1",
 				serviceGroup: "testGroup1",
 				servicePort: 1337,
 				serviceVersion: 1,
@@ -115,12 +115,12 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-	
+
 	it("Success - will add endpoint 2", function (done) {
 		let params = {
 			form: {
 				mainType: "endpoints",
-				serviceName: "testService2",
+				serviceName: "testservice2",
 				serviceGroup: "testGroup2",
 				servicePort: 1347,
 				serviceVersion: 1,
@@ -136,7 +136,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-	
+
 	it("Fail - try to publish without schemas", function (done) {
 		let params = {
 			qs: {
@@ -149,14 +149,14 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-	
-	
+
+
 	it("Success - will edit endpoint", function (done) {
 		let params = {
 			form: {
 				id: sampleID,
 				mainType: "services",
-				serviceName: "newTestService",
+				serviceName: "newtesttervice",
 				serviceGroup: "newTestGroup",
 				servicePort: 6666,
 				serviceVersion: 1,
@@ -179,16 +179,16 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-	
+
 	it("Success - will get getResources", function (done) {
 		let params = {};
-		
+
 		executeMyRequest(params, 'apiBuilder/getResources', 'get', function (body) {
 			assert.ok(body.data);
 			done();
 		});
 	});
-	
+
 	it("Success - will update route authentication method", function (done) {
 		let params = {
 			qs: {
@@ -204,7 +204,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-	
+
 	it("Success - will convert Swagger string to an IMFV SOAJS object", function (done) {
 		let params = {
 			qs: {
@@ -220,7 +220,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-	
+
 	it("Success - will convert IMFV SOAJS object to a Swagger string", function (done) {
 		let params = {
 			qs: {
@@ -236,13 +236,13 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-	
+
 	it("Success - will update endpoint's schemas 1", function (done) {
 		let params = {
 			qs: {
 				mainType: "endpoints",
 				endpointId: sampleEndpointID,
-				
+
 			},
 			form: {
 				schemas: ImfvSchema,
@@ -254,7 +254,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-	
+
 	it("Success - Publish endpoint", function (done) {
 		let params = {
 			qs: {
@@ -267,7 +267,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-	
+
 	it("Success - will update endpoint's schemas 2", function (done) {
 		let params = {
 			qs: {
@@ -310,7 +310,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-	
+
 	it("Success - will delete endpoint", function (done) {
 		let params = {
 			qs: {
@@ -323,7 +323,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-	
+
 	// it.skip("Success - delete ep", function (done) {
 	// 	let params = {
 	// 		qs: {
@@ -373,6 +373,6 @@ describe("DASHBOARD TESTS: API Builder", function () {
 	// 		});
 	// 	});
 	// });
-	
-	
+
+
 });
