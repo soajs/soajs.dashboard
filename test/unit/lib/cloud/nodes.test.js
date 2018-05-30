@@ -125,7 +125,13 @@ describe("testing nodes.js", function () {
 		
 		it("success", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				cb(null, envRecord);
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}else if (opts.collection === 'infra') {
+					return cb(null, helper.infraRecord);
+				}else{
+					return cb(null, {});
+				}
 			};
 			req.soajs.inputmaskData.env = 'dev';
 			nodes.listNodes(config, req.soajs, deployer, function (error, body) {

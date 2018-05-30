@@ -182,20 +182,20 @@ module.exports = function (grunt) {
 					// 'test/unit/*.js',
 					// 'test/unit/**/*.js'
 					
-					// 'test/unit/lib/apiBuilder/*.js',    // ok
-					// 'test/unit/lib/catalog/*.js',       // ok
-					'test/unit/lib/cd/*.js',            // 6  // etien
-					// 'test/unit/lib/ci/*.js',            // ok
-					'test/unit/lib/cloud/**/*.js',      // 35 // wiss
-					// 'test/unit/lib/daemons/*.js',       // ok
-					'test/unit/lib/environment/**/*.js',// 53 // kassouf
-					'test/unit/lib/git/*.js',           // 1  // etien
-					'test/unit/lib/hosts/*.js',         // 5  // etien
-					// 'test/unit/lib/product/*.js',       // ok
-					// 'test/unit/lib/services/*.js',      // ok
-					// 'test/unit/lib/swagger/*.js',       // ok
-					// 'test/unit/lib/template/*.js',      // ok
-					// 'test/unit/lib/tenant/*.js'         // ok
+					// 'test/unit/lib/apiBuilder/*.js',
+					// 'test/unit/lib/catalog/*.js',
+					// 'test/unit/lib/cd/*.js',
+					// 'test/unit/lib/ci/*.js',
+					// 'test/unit/lib/cloud/**/*.js',
+					// 'test/unit/lib/daemons/*.js',
+					// 'test/unit/lib/environment/**/*.js',
+					// 'test/unit/lib/git/*.js',
+					// 'test/unit/lib/hosts/*.js',
+					// 'test/unit/lib/product/*.js',
+					// 'test/unit/lib/services/*.js',
+					// 'test/unit/lib/swagger/*.js',
+					// 'test/unit/lib/template/*.js',
+					// 'test/unit/lib/tenant/*.js'
 				]
 			},
 			integration: {
@@ -204,7 +204,7 @@ module.exports = function (grunt) {
 					timeout: 90000
 				},
 				src: [
-					// 'test/integration/_server.test.js'
+					'test/integration/_server.test.js'
 				]
 			},
 			saas: {

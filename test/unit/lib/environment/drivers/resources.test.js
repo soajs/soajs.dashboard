@@ -503,6 +503,9 @@ var lib = {
 			addResource: function (context, req, data, cb) {
 				return cb(null, {_id: "1"});
 			},
+			addEditResource: function (config, req, res, serviceBL, mainCb) {
+				return mainCb(null, true);
+			},
 			setConfig: function (context, req, data, cb) {
 				return cb(null, true);
 			},

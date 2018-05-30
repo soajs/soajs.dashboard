@@ -119,8 +119,11 @@ describe("testing services.js", function () {
 		mongoStub.findEntry = function (soajs, opts, cb) {
 			if (opts.collection === 'environment') {
 				return cb(null, envRecord);
+			}else if (opts.collection === 'infra') {
+				return cb(null, helper.infraRecord);
+			}else{
+				return cb(null, {});
 			}
-			return cb(null, {});
 		};
 
 	});
@@ -231,7 +234,7 @@ describe("testing services.js", function () {
 				return cb(null, []);
 			};
 			req.soajs.inputmaskData.env = 'dev';
-			req.soajs.inputmaskData.resource = 'heapster';
+			req.soajs.inputmaskData.resource = 'heapsterx';
 			req.soajs.inputmaskData.namespace = 'kube-system';
 			services.checkResource(config, req.soajs, deployer, function (error, result) {
 				assert.ok(result);

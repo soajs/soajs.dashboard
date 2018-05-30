@@ -6,6 +6,7 @@ var maintenance;
 var config = {
 	errors: {}
 };
+
 var req = {
 	soajs: {
 		servicesConfig: {
@@ -56,6 +57,20 @@ var mongoStub = {
 var envRecord = {
 	_id: '',
 	code: 'DEV',
+	deployments: [
+		{
+			"technology": "docker",
+			"options": {
+				"zone": "local"
+			},
+			"environments": [
+				"DCKR"
+			],
+			"loadBalancers": {},
+			"name": "htlocalmggdiohh06wiu",
+			"id": "htlocalmggdiohh06wiu"
+		}
+	],
 	deployer: {
 		"type": "container",
 		"selected": "container.docker.local",
@@ -161,8 +176,11 @@ describe("testing maintenance.js", function () {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
+				}else if (opts.collection === 'infra') {
+					return cb(null, helper.infraRecord);
+				}else{
+					return cb(null, {});
 				}
-				return cb(null, {});
 			};
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'service';
@@ -179,8 +197,11 @@ describe("testing maintenance.js", function () {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
+				}else if (opts.collection === 'infra') {
+					return cb(null, helper.infraRecord);
+				}else{
+					return cb(null, {});
 				}
-				return cb(null, {});
 			};
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'daemon';
