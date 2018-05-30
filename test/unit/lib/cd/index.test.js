@@ -35,6 +35,9 @@ var mongoStub = {
 	},
 	closeConnection: function (soajs) {
 		return true;
+	},
+	countEntries: function (soajs, options, cb) {
+		return cb();
 	}
 };
 var registry = {
