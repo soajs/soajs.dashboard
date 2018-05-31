@@ -2038,7 +2038,7 @@ module.exports = {
                     }
 				},
 				"resource": resourceSchema,
-				
+
 				// cicd stuff + resourceName
 				"status": {
 					"source": ['body.status'],
@@ -2063,7 +2063,7 @@ module.exports = {
 						}
 					}
 				},
-				
+
 				// deploy: required: recipe, deployConfig
 				"recipe": {
 					"source": ['body.recipe'],
@@ -2213,7 +2213,7 @@ module.exports = {
 						}
 					}
 				},
-				
+
 				// rebuild : required:  serviceId, mode, action
 				"serviceId": {
 					"source": ['body.serviceId'],
@@ -2486,7 +2486,7 @@ module.exports = {
 					"group": "Daemons"
 				},
 				'commonFields': ['soajs_project',
-					'groupName', 'daemon', 'maicronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
+					'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
 				'type': {
 					"required": true,
 					"source": ["body.type"],
