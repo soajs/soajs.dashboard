@@ -2525,7 +2525,7 @@ module.exports = {
 					"l": "Deploy A New SOAJS Service",
 					"group": "HA Cloud"
 				},
-				"commonFields": ['soajs_project'],
+				"commonFields": ['soajs_project', 'infraId'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
@@ -4423,7 +4423,7 @@ module.exports = {
 					"l": "Redeploy HA Service",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['soajs_project', 'namespace'],
+				'commonFields': ['soajs_project', 'namespace', 'infraId'],
 				"env": {
 					"source": ['body.env'],
 					"required": true,
