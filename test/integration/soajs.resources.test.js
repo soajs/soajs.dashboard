@@ -190,14 +190,15 @@ describe("Testing Resources Functionality", function() {
                 },
                 form: {
                     env: 'dev',
-                    resource: sampleResourceCopy
+                    resource: sampleResourceCopy,
+	                deployType : "save"
                 }
             };
 
-            executeMyRequest(params, 'resources/add', 'post', function(body) {
+            executeMyRequest(params, 'resources/new', 'post', function(body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
-                assert.ok(body.data._id);
+                assert.ok(body.data.id);
                 done();
             });
         });
@@ -209,11 +210,12 @@ describe("Testing Resources Functionality", function() {
                 },
                 form: {
                     env: 'dev',
-                    resource: sampleResourceCopy
+                    resource: sampleResourceCopy,
+	                deployType : "save"
                 }
             };
 
-            executeMyRequest(params, 'resources/add', 'post', function(body) {
+            executeMyRequest(params, 'resources/new', 'post', function(body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], { code: 504, message: errors[504] });
                 done();
@@ -230,19 +232,20 @@ describe("Testing Resources Functionality", function() {
                 },
                 form: {
                     env: 'dev',
-                    resource: sampleResourceCopy
+                    resource: sampleResourceCopy,
+	                deployType : "save"
                 }
             };
 
-            executeMyRequest(params, 'resources/add', 'post', function(body) {
+            executeMyRequest(params, 'resources/new', 'post', function(body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
-                assert.ok(body.data._id);
+                assert.ok(body.data.id);
                 done();
             });
         });
 
-        it("fail - adding resource record with additional parameters", function(done) {
+        it.skip("fail - adding resource record with additional parameters", function(done) { // additional properties currently turned off, for vm
             sampleResourceCopy.invalidInput = { test: true };
 
             params = {
@@ -251,11 +254,12 @@ describe("Testing Resources Functionality", function() {
                 },
                 form: {
                     env: 'dev',
-                    resource: sampleResourceCopy
+                    resource: sampleResourceCopy,
+	                deployType : "save"
                 }
             };
 
-            executeMyRequest(params, 'resources/add', 'post', function(body) {
+            executeMyRequest(params, 'resources/new', 'post', function(body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], { code: 173, message: 'Validation failed for field: resource -> The parameter \'resource\' failed due to: instance additionalProperty \"invalidInput\" exists in instance when not allowed' });
                 done();
@@ -408,11 +412,12 @@ describe("Testing Resources Functionality", function() {
             params = {
                 qs: {
                     access_token: access_token_owner,
-                    env: 'dev'
+                    env: 'dev',
+	                envType : 'manual'
                 }
             };
 
-            executeMyRequest(params, 'resources/list', 'get', function(body) {
+            executeMyRequest(params, 'resources', 'get', function(body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 assert.equal(body.data.length, 2);
@@ -427,11 +432,12 @@ describe("Testing Resources Functionality", function() {
             params = {
                 qs: {
                     access_token: access_token_user1,
-                    env: 'dev'
+                    env: 'dev',
+	                envType : 'manual'
                 }
             };
 
-            executeMyRequest(params, 'resources/list', 'get', function(body) {
+            executeMyRequest(params, 'resources', 'get', function(body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 assert.equal(body.data.length, 2);
@@ -451,11 +457,12 @@ describe("Testing Resources Functionality", function() {
             params = {
                 qs: {
                     access_token: access_token_owner,
-                    env: 'dashboard'
+                    env: 'dashboard',
+	                envType : 'manual'
                 }
             };
 
-            executeMyRequest(params, 'resources/list', 'get', function(body) {
+            executeMyRequest(params, 'resources', 'get', function(body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 assert.equal(body.data.length, 1);
@@ -468,11 +475,12 @@ describe("Testing Resources Functionality", function() {
         it("fail - missing required field", function(done) {
             params = {
                 qs: {
-                    access_token: access_token_owner
+                    access_token: access_token_owner,
+	                envType : 'manual'
                 }
             };
 
-            executeMyRequest(params, 'resources/list', 'get', function(body) {
+            executeMyRequest(params, 'resources', 'get', function(body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], { code: 172, message: 'Missing required field: env' });
                 done();
@@ -492,14 +500,15 @@ describe("Testing Resources Functionality", function() {
                 },
                 form: {
                     env: 'dev',
-                    resource: sampleResourceCopy
+                    resource: sampleResourceCopy,
+	                deployType : "save"
                 }
             };
 
-            executeMyRequest(params, 'resources/add', 'post', function(body) {
+            executeMyRequest(params, 'resources/new', 'post', function(body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
-                assert.ok(body.data._id);
+                assert.ok(body.data.id);
 
                 mongo.findOne('resources', { name: 'cluster3' }, function(error, resourceRecord) {
                     assert.ifError(error);
@@ -517,7 +526,7 @@ describe("Testing Resources Functionality", function() {
                 }
             };
 
-            executeMyRequest(params, 'resources/delete', 'delete', function(body) {
+            executeMyRequest(params, 'resources', 'delete', function(body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], { code: 172, message: 'Missing required field: id' });
                 done();
@@ -533,7 +542,7 @@ describe("Testing Resources Functionality", function() {
                 }
             };
 
-            executeMyRequest(params, 'resources/delete', 'delete', function(body) {
+            executeMyRequest(params, 'resources', 'delete', function(body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], { code: 505, message: errors[505] });
                 done();
@@ -549,7 +558,7 @@ describe("Testing Resources Functionality", function() {
                 }
             };
 
-            executeMyRequest(params, 'resources/delete', 'delete', function(body) {
+            executeMyRequest(params, 'resources', 'delete', function(body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], { code: 506, message: errors[506] });
                 done();
@@ -565,7 +574,7 @@ describe("Testing Resources Functionality", function() {
                 }
             };
 
-            executeMyRequest(params, 'resources/delete', 'delete', function(body) {
+            executeMyRequest(params, 'resources', 'delete', function(body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
@@ -713,11 +722,12 @@ describe("Testing Resources Functionality", function() {
                 },
                 form: {
                     env: 'dev',
-                    resource: sampleResourceCopy
+                    resource: sampleResourceCopy,
+	                deployType : "save"
                 }
             };
 
-            executeMyRequest(params, 'resources/add', 'post', function(body) {
+            executeMyRequest(params, 'resources/new', 'post', function(body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], { code: 989, message: errors[989] });
                 done();
@@ -779,7 +789,7 @@ describe("Testing Resources Functionality", function() {
                 }
             };
 
-            executeMyRequest(params, 'resources/delete', 'delete', function(body) {
+            executeMyRequest(params, 'resources', 'delete', function(body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], { code: 989, message: errors[989] });
                 done();
@@ -790,11 +800,12 @@ describe("Testing Resources Functionality", function() {
             params = {
                 qs: {
                     access_token: access_token_owner,
-                    env: 'dev'
+                    env: 'dev',
+	                envType : 'manual'
                 }
             };
 
-            executeMyRequest(params, 'resources/list', 'get', function(body) {
+            executeMyRequest(params, 'resources', 'get', function(body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
 
@@ -1460,102 +1471,99 @@ describe("mongo check db", function () {
             }
             
             assert.deepEqual(record, {
-                "code": "DEV",
-                "domain": "api.myDomain.com",
-                "apiPrefix": "api",
-                "sitePrefix": "site",
-                "description": "this is a dummy description",
-                "dbs": {
-                    "config": {
-                        "prefix": ""
-                    },
-                    "databases": {
-                        "urac": {
-                            "prefix": null,
-                            "cluster": "cluster1",
-                            "tenantSpecific": true
-                        }
-                    },
-                    "session": {
-                        "prefix": null,
-                        "cluster": "cluster1",
-                        "name": "core_session",
-                        "store": {},
-                        "collection": "sessions",
-                        "stringify": false,
-                        "expireAfter": 1209600000
-                    }
-                },
-                "services": {
-                    "controller": {
-                        "maxPoolSize": 100,
-                        "authorization": true,
-                        "requestTimeout": 30,
-                        "requestTimeoutRenewal": 0
-                    },
-                    "config": {
-                        "awareness": {
-                            "cacheTTL": 36000,
-                            "healthCheckInterval": 5000,
-                            "autoRelaodRegistry": 300000,
-                            "maxLogCount": 5,
-                            "autoRegisterService": true
-                        },
-                        "agent": {
-                            "topologyDir": "/opt/soajs/"
-                        },
-                        "key": {
-                            "algorithm": "aes256",
-                            "password": "new test case password"
-                        },
-                        "logger": {
-                            "level": "fatal",
-                            "formatter": {
-                                "outputMode": "short"
-                            }
-                        },
-                        "cors": {
-                            "enabled": true,
-                            "origin": "*",
-                            "credentials": "true",
-                            "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-                            "headers": "key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type",
-                            "maxage": 1728000
-                        },
-                        "oauth": {
-                            "accessTokenLifetime": 36000,
-                            "refreshTokenLifetime": 36000,
-                            "grants": [
-                                "password",
-                                "refresh_token"
-                            ],
-                            "debug": false
-                        },
-                        "ports": {
-                            "controller": 4000,
-                            "maintenanceInc": 1000,
-                            "randomInc": 100
-                        },
-                        "cookie": {
-                            "secret": "this is a secret sentence"
-                        },
-                        "session": {
-                            "name": "soajsID",
-                            "secret": "this is antoine hage app server",
-                            "rolling": false,
-                            "unset": "keep",
-                            "cookie": {
-                                "path": "/",
-                                "httpOnly": true,
-                                "secure": false,
-                                "domain": "soajs.com",
-                                "maxAge": null
-                            },
-                            "resave": false,
-                            "saveUninitialized": false
-                        }
-                    }
-                }
+	            "code": "DEV",
+	            "locked": true,
+	            "description": "this is the DEV environment",
+	            "dbs": {
+		            "config": {
+			            "prefix": ""
+		            },
+		            "databases": {
+			            "urac": {
+				            "prefix": null,
+				            "cluster": "cluster1",
+				            "tenantSpecific": true
+			            }
+		            },
+		            "session": {
+			            "prefix": null,
+			            "cluster": "cluster1",
+			            "name": "core_session",
+			            "store": {},
+			            "collection": "sessions",
+			            "stringify": false,
+			            "expireAfter": 1209600000
+		            }
+	            },
+	            "services": {
+		            "controller": {
+			            "maxPoolSize": 100,
+			            "authorization": true,
+			            "requestTimeout": 30,
+			            "requestTimeoutRenewal": 0
+		            },
+		            "config": {
+			            "awareness": {
+				            "healthCheckInterval": 500,
+				            "autoRelaodRegistry": 300000,
+				            "maxLogCount": 5,
+				            "autoRegisterService": true
+			            },
+			            "agent": {
+				            "topologyDir": "/opt/soajs/"
+			            },
+			            "key": {
+				            "algorithm": "aes256",
+				            "password": "soajs key lal massa"
+			            },
+			            "logger": {
+				            "level": "fatal",
+				            "formatter": {
+					            "outputMode": "short"
+				            }
+			            },
+			            "cors": {
+				            "enabled": true,
+				            "origin": "*",
+				            "credentials": "true",
+				            "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+				            "headers": "key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type",
+				            "maxage": 1728000
+			            },
+			            "oauth": {
+				            "grants": [
+					            "password",
+					            "refresh_token"
+				            ],
+				            "accessTokenLifetime": 7200,
+				            "refreshTokenLifetime": 1209600,
+				            "debug": false
+			            },
+			            "ports": {
+				            "controller": 4000,
+				            "maintenanceInc": 1000,
+				            "randomInc": 100
+			            },
+			            "cookie": {
+				            "secret": "this is a secret sentence"
+			            },
+			            "session": {
+				            "name": "soajsID",
+				            "secret": "this is antoine hage app server",
+				            "rolling": false,
+				            "unset": "keep",
+				            "cookie": {
+					            "path": "/",
+					            "httpOnly": true,
+					            "secure": false,
+					            "domain": "soajs.com",
+					            "maxAge": null
+				            },
+				            "resave": false,
+				            "saveUninitialized": false
+			            }
+		            }
+	            }
             });
             done();
         });

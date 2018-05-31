@@ -2032,10 +2032,11 @@ module.exports = {
 				},
 				"deployType" : {
                     "source": ['body.deployType'],
-                    "required": false,
-                    "validation": {
-                        "type": "string"
-                    }
+                    "required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["save", "saveAndRebuild", "saveAndDeploy"]
+					}
 				},
 				"resource": resourceSchema,
 				
@@ -2049,7 +2050,7 @@ module.exports = {
 				},
 				"config": {
 					"source": ['body.config'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "object",
 						"default": {},
