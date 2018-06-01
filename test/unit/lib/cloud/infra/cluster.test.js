@@ -148,7 +148,7 @@ describe("testing cloud/infra/cluster.js", function () {
 		});
 		
 		after(function (done) {
-			sinon.restore();
+			sinon.restore(helper);
 			done();
 		});
 		
