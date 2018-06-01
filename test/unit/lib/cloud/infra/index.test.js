@@ -38,47 +38,48 @@ var mongoStub = {
 	switchConnection: function (soajs) {
 	}
 };
+var soajs = {
+	registry: {
+		coreDB: {
+			provision: {}
+		}
+	},
+	log: {
+		debug: function (data) {
 
-var req = {
-	soajs: {
-		registry: {
-			coreDB: {
-				provision: {}
-			}
 		},
-		log: {
-			debug: function (data) {
-				
-			},
-			error: function (data) {
-				
-			},
-			info: function (data) {
-				
-			}
+		error: function (data) {
+
 		},
-		inputmaskData: {},
-		validator: {
-			Validator: function () {
-				return {
-					validate: function (boolean) {
-						if (boolean) {
-							//valid
-							return {
-								errors: []
-							};
-						}
-						else {
-							//invalid
-							return {
-								errors: [{ error: 'msg' }]
-							};
-						}
+		info: function (data) {
+
+		}
+	},
+	inputmaskData: {},
+	validator: {
+		Validator: function () {
+			return {
+				validate: function (boolean) {
+					if (boolean) {
+						//valid
+						return {
+							errors: []
+						};
 					}
-				};
-			}
+					else {
+						//invalid
+						return {
+							errors: [{ error: 'msg' }]
+						};
+					}
+				}
+			};
 		}
 	}
+};
+var req = {
+	query: {},
+	soajs: soajs
 };
 
 describe("testing cloud/infra/index.js", function () {
@@ -139,6 +140,11 @@ describe("testing cloud/infra/index.js", function () {
 		services: {},
 		profile: ''
 	};
+	
+	after(function (done) {
+		sinon.restore();
+		done();
+	});
 	
 	describe("testing init", function () {
 		
@@ -347,10 +353,6 @@ describe("testing cloud/infra/index.js", function () {
 	describe("removeTemplate", function () {
 
 		it("Success removeTemplate", function (done) {
-			sinon
-				.stub(templates, 'removeTemplate')
-				.yields(null, {});
-
 			infra.removeTemplate(config, req.soajs, deployer, function (error, body) {
 				done();
 			});
@@ -361,9 +363,12 @@ describe("testing cloud/infra/index.js", function () {
 	describe("addTemplate", function () {
 
 		it("Success addTemplate", function (done) {
-			sinon
-				.stub(templates, 'addTemplate')
-				.yields(null, {});
+			infra.model.findEntry = function (soajs, opts, cb) {
+				var InfraRecord = {
+					templates: []
+				};
+				cb(null, InfraRecord);
+			};
 
 			infra.addTemplate(config, req.soajs, function (error, body) {
 				done();
@@ -375,10 +380,12 @@ describe("testing cloud/infra/index.js", function () {
 	describe("updateTemplate", function () {
 
 		it("Success updateTemplate", function (done) {
-			sinon
-				.stub(templates, 'updateTemplate')
-				.yields(null, {});
-
+			infra.model.findEntry = function (soajs, opts, cb) {
+				var InfraRecord = {
+					templates: []
+				};
+				cb(null, InfraRecord);
+			};
 			infra.updateTemplate(config, req.soajs, function (error, body) {
 				done();
 			});
@@ -389,11 +396,14 @@ describe("testing cloud/infra/index.js", function () {
 	describe("uploadTemplate", function () {
 
 		it("Success uploadTemplate", function (done) {
-			sinon
-				.stub(templates, 'uploadTemplate')
-				.yields(null, {});
 
-			infra.uploadTemplate(config, req.soajs, deployer, function (error, body) {
+			infra.model.findEntry = function (soajs, opts, cb) {
+				var InfraRecord = {
+					templates: []
+				};
+				cb(null, InfraRecord);
+			};
+			infra.uploadTemplate(config, req, soajs, deployer, function (error, body) {
 				done();
 			});
 		});
@@ -403,11 +413,7 @@ describe("testing cloud/infra/index.js", function () {
 	describe("uploadTemplateInputsFile", function () {
 
 		it("Success uploadTemplateInputsFile", function (done) {
-			sinon
-				.stub(templates, 'uploadTemplateInputsFile')
-				.yields(null, {});
-
-			infra.uploadTemplateInputsFile(config, req.soajs, deployer, function (error, body) {
+			infra.uploadTemplateInputsFile(config, req, soajs, deployer, function (error, body) {
 				done();
 			});
 		});
@@ -417,11 +423,8 @@ describe("testing cloud/infra/index.js", function () {
 	describe("downloadTemplate", function () {
 
 		it("Success downloadTemplate", function (done) {
-			sinon
-				.stub(templates, 'downloadTemplate')
-				.yields(null, {});
-
-			infra.downloadTemplate(config, req.soajs, deployer, {}, function (error, body) {
+			var res = {};
+			infra.downloadTemplate(config, req.soajs, deployer, res, function (error, body) {
 				done();
 			});
 		});

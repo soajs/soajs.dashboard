@@ -1,8 +1,11 @@
 "use strict";
+const sinon = require('sinon');
+
 var assert = require("assert");
 var testHelper = require("../../../../helper.js");
-var infraTemplates = testHelper.requireModule('./lib/cloud/infra/templates.js');
 var config = testHelper.requireModule('./config.js');
+
+var infraTemplates = testHelper.requireModule('./lib/cloud/infra/templates.js');
 var deployer = testHelper.deployer;
 
 var mongoStub = {
@@ -16,6 +19,10 @@ var mongoStub = {
 	},
 	findEntry: function (soajs, opts, cb) {
 		cb(null, {});
+	},
+	findEntries: function (soajs, opts, cb) {
+		var data = [];
+		cb(null, data);
 	},
 	removeEntry: function (soajs, opts, cb) {
 		cb(null, true);
@@ -70,8 +77,12 @@ var soajs = {
 var BL = {
 	model: mongoStub
 };
+var req = {
+	soajs: soajs,
+	query: {}
+};
 
-describe("testing cloud/infra/templates.js", function () {
+describe("testing lib/cloud/infra/templates.js", function () {
 	var envRecord = {
 		code: 'DEV',
 		deployer: {
@@ -126,7 +137,12 @@ describe("testing cloud/infra/templates.js", function () {
 		services: {},
 		profile: ''
 	};
-	
+
+	before(function (done) {
+		sinon.restore();
+		done();
+	});
+
 	describe("getLocalTemplates", function () {
 		var oneInfra = {};
 		it("Success getLocalTemplates", function (done) {
@@ -134,8 +150,103 @@ describe("testing cloud/infra/templates.js", function () {
 				done();
 			});
 		});
-		
+
+		it("Success getLocalTemplates - 2", function (done) {
+			oneInfra._id = '123';
+			oneInfra.templatesTypes = ['local'];
+			infraTemplates.getLocalTemplates(soajs, config, BL, oneInfra, function (error, body) {
+				done();
+			});
+		});
+
 	});
 
-	
+	describe("getRemoteTemplates", function () {
+		var oneInfra = {};
+		var options = {};
+		it("Success getRemoteTemplates", function (done) {
+			infraTemplates.getRemoteTemplates(soajs, config, BL, oneInfra, deployer, options, function (error, body) {
+				done();
+			});
+		});
+
+		it("Success getRemoteTemplates", function (done) {
+			oneInfra.templatesTypes = ['external'];
+			infraTemplates.getRemoteTemplates(soajs, config, BL, oneInfra, deployer, options, function (error, body) {
+				done();
+			});
+		});
+
+	});
+
+	describe("removeTemplate", function () {
+		it("Success removeTemplate", function (done) {
+			console.log('xxxxxxxx');
+			console.log('xxxxxxxx');
+			console.log('xxxxxxxx');
+			infraTemplates.removeTemplate(config, soajs, BL, deployer, function (error, body) {
+				done();
+			});
+		});
+
+	});
+
+	describe("addTemplate", function () {
+		it("Success addTemplate", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				var InfraRecord = {
+					templates: []
+				};
+				cb(null, InfraRecord);
+			};
+			infraTemplates.addTemplate(config, soajs, BL, function (error, body) {
+				done();
+			});
+		});
+
+	});
+
+	describe("updateTemplate", function () {
+		it("Success updateTemplate", function (done) {
+			infraTemplates.updateTemplate(config, soajs, BL, function (error, body) {
+				done();
+			});
+		});
+
+	});
+
+	describe("uploadTemplate", function () {
+		it("Success uploadTemplate", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				var InfraRecord = {
+					templates: []
+				};
+				cb(null, InfraRecord);
+			};
+			infraTemplates.uploadTemplate(config, req, soajs, BL, deployer, function (error, body) {
+				done();
+			});
+		});
+
+	});
+
+	describe("uploadTemplateInputsFile", function () {
+		it("Success uploadTemplateInputsFile", function (done) {
+			infraTemplates.uploadTemplateInputsFile(config, req, soajs, BL, deployer, function (error, body) {
+				done();
+			});
+		});
+
+	});
+
+	describe("downloadTemplate", function () {
+		var res = {};
+		it("Success downloadTemplate", function (done) {
+			infraTemplates.downloadTemplate(config, soajs, BL, deployer, res, function (error, body) {
+				done();
+			});
+		});
+
+	});
+
 });
