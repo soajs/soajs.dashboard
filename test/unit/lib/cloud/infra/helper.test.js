@@ -81,17 +81,11 @@ describe("testing cloud/infra/helper.js", function () {
 	
 	describe("getCommonData", function () {
 		var cbMain = function () {
-			console.log("what?");
+			
 		};
 		
 		it("Fail - getCommonData - Driver undefined Configuration not found!", function (done) {
-			console.log("hey?");
 			helpers.getCommonData(config, soajs, BL, function (error, body) {
-				console.log("----");
-				console.log(error);
-				console.log("----");
-				console.log(body);
-				console.log("----");
 				assert.equal(error.msg, 'Driver undefined Configuration not found!');
 				done();
 			});
@@ -103,7 +97,6 @@ describe("testing cloud/infra/helper.js", function () {
 			soajs.inputmaskData.id = '123';
 			
 			helpers.getCommonData(config, soajs, BL, cbMain, function (error, body) {
-				console.log(error);
 				done();
 			});
 		});

@@ -45,7 +45,7 @@ var soajs = {
 					else {
 						//invalid
 						return {
-							errors: [{ error: 'msg' }]
+							errors: [{error: 'msg'}]
 						};
 					}
 				}
@@ -119,7 +119,7 @@ describe("testing cloud/infra/cluster.js", function () {
 						username: 'username',
 						password: 'password'
 					},
-					servers: [{ port: 123, host: 'host' }]
+					servers: [{port: 123, host: 'host'}]
 				},
 				oneCluster: {
 					servers: []
@@ -136,24 +136,30 @@ describe("testing cloud/infra/cluster.js", function () {
 	};
 	
 	describe("deployCluster", function () {
+		
+		let serviceStub;
+		
 		var InfraRecord = {
 			templates: []
 		};
 		var info = [];
 		before(function (done) {
-			sinon
-				.stub(helper, 'getCommonData')
-				.yields(InfraRecord, envRecord, info);
+			
+			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
+				return cb();
+			});
+			
 			done();
 		});
 		
 		after(function (done) {
-			sinon.restore(helper);
+			serviceStub.restore();
 			done();
 		});
 		
 		it("Success deployCluster", function (done) {
 			soajs.inputmaskData.envCode = 'DEV';
+			soajs.inputmaskData.previousEnvironment = 'DEV';
 			clustersModule.deployCluster(config, req, soajs, BL, deployer, function (error, body) {
 				done();
 			});
