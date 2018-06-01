@@ -421,7 +421,7 @@ describe("testing cloud/infra/index.js", function () {
 				.stub(templates, 'downloadTemplate')
 				.yields(null, {});
 
-			infra.uploadTemplate(config, req.soajs, deployer, {}, function (error, body) {
+			infra.downloadTemplate(config, req.soajs, deployer, {}, function (error, body) {
 				done();
 			});
 		});
