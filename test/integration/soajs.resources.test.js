@@ -1457,7 +1457,7 @@ describe("Testing Databases Functionality", function () {
 
 });
 
-describe("mongo check db", function () {
+describe.skip("mongo check db", function () {
 
     it('asserting environment record', function (done) {
         mongo.findOne('environment', {"code": "DEV"}, function (error, record) {

@@ -179,23 +179,8 @@ module.exports = function (grunt) {
 					timeout: 90000
 				},
 				src: [
-					// 'test/unit/*.js',
-					// 'test/unit/**/*.js'
-					
-					// 'test/unit/lib/apiBuilder/*.js',
-					// 'test/unit/lib/catalog/*.js',
-					// 'test/unit/lib/cd/*.js',
-					// 'test/unit/lib/ci/*.js',
-					// 'test/unit/lib/cloud/**/*.js',
-					// 'test/unit/lib/daemons/*.js',
-					// 'test/unit/lib/environment/**/*.js',
-					// 'test/unit/lib/git/*.js',
-					// 'test/unit/lib/hosts/*.js',
-					// 'test/unit/lib/product/*.js',
-					// 'test/unit/lib/services/*.js',
-					// 'test/unit/lib/swagger/*.js',
-					// 'test/unit/lib/template/*.js',
-					// 'test/unit/lib/tenant/*.js'
+					'test/unit/*.js',
+					'test/unit/**/*.js'
 				]
 			},
 			integration: {
@@ -213,7 +198,7 @@ module.exports = function (grunt) {
 					timeout: 90000
 				},
 				src: [
-					// 'test/integration/_server.saas.test.js'
+					'test/integration/_server.saas.test.js'
 				]
 			}
 		},
