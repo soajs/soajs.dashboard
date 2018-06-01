@@ -103,7 +103,7 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 		});
 	});
 
-	it("Success - list Accounts with variables", function (done) {
+	it.skip("Success - list Accounts with variables", function (done) {
 		var params = {
 			qs: {
 				variables: true
@@ -117,7 +117,7 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 		});
 	});
 
-	it("Success - list Accounts for specific owner", function (done) {
+	it.skip("Success - list Accounts for specific owner", function (done) {
 		var params = {
 			qs: {
 				owner: "soajs",
@@ -218,7 +218,7 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 			done();
 		});
 	});
-	
+
 	it("Success - deactivate provider", function (done) {
 		var params = {
 			form: {
