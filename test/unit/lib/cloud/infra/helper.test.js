@@ -6,6 +6,11 @@ var config = helper.requireModule('./config.js');
 
 var mongoStub = {
 	getDb: function () {
+		return {
+			ObjectId: function (id) {
+				return 123;
+			}
+		};
 	},
 	checkForMongo: function (soajs) {
 		return true;
@@ -43,7 +48,7 @@ describe("testing cloud/infra/helper.js", function () {
 						else {
 							//invalid
 							return {
-								errors: [{ error: 'msg' }]
+								errors: [{error: 'msg'}]
 							};
 						}
 					}
@@ -73,66 +78,32 @@ describe("testing cloud/infra/helper.js", function () {
 	var BL = {
 		model: mongoStub
 	};
-	var envRecord = {
-		code: 'DEV',
-		deployer: {
-			"type": "container",
-			"selected": "container.kubernetes.local",
-			"container": {
-				"docker": {
-					"local": {
-						"socketPath": "/var/run/docker.sock"
-					},
-					"remote": {
-						"nodes": ""
-					}
-				},
-				"kubernetes": {
-					"local": {
-						"nginxDeployType": "",
-						"namespace": {},
-						"auth": {
-							"token": ""
-						}
-					},
-					"remote": {
-						"nginxDeployType": "",
-						"namespace": {},
-						"auth": {
-							"token": ""
-						}
-					}
-				}
-			}
-		},
-		dbs: {
-			clusters: {
-				analy: {
-					credentials: {
-						username: 'username',
-						password: 'password'
-					},
-					servers: [{ port: 123, host: 'host' }]
-				},
-				oneCluster: {
-					servers: []
-				}
-			},
-			config: {
-				session: {
-					cluster: 'oneCluster'
-				}
-			}
-		},
-		services: {},
-		profile: ''
-	};
 	
-	describe.skip("getCommonData", function () {
+	describe("getCommonData", function () {
 		var cbMain = function () {
+			console.log("what?");
 		};
+		
+		it("Fail - getCommonData - Driver undefined Configuration not found!", function (done) {
+			console.log("hey?");
+			helpers.getCommonData(config, soajs, BL, function (error, body) {
+				console.log("----");
+				console.log(error);
+				console.log("----");
+				console.log(body);
+				console.log("----");
+				assert.equal(error.msg, 'Driver undefined Configuration not found!');
+				done();
+			});
+		});
+		
 		it("Success getCommonData", function (done) {
+			soajs.inputmaskData.bypassInfoCheck = true;
+			soajs.inputmaskData.envCode = 'dev';
+			soajs.inputmaskData.id = '123';
+			
 			helpers.getCommonData(config, soajs, BL, cbMain, function (error, body) {
+				console.log(error);
 				done();
 			});
 		});
@@ -140,9 +111,34 @@ describe("testing cloud/infra/helper.js", function () {
 	});
 	
 	describe("getClusterEnvironments", function () {
-		var infra = {};
-		var options = {};
+		
+		let options = {
+			id: 123,
+			previousEnvironment : 'DEV'
+		};
+		
 		it("Success getClusterEnvironments", function (done) {
+			let infra = {
+				deployments: [
+					{
+						id: 123
+					}]
+			};
+			
+			helpers.getClusterEnvironments(infra, options);
+			done();
+		});
+		
+		it("Success getClusterEnvironments", function (done) {
+			
+			let infra = {
+				deployments: [
+					{
+						id: 321,
+						environments : ['DEV']
+					}]
+			};
+			
 			helpers.getClusterEnvironments(infra, options);
 			done();
 		});
