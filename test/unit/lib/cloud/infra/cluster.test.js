@@ -146,7 +146,18 @@ describe("testing cloud/infra/cluster.js", function () {
 		before(function (done) {
 			
 			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
-				return cb();
+				let InfraRecord={
+					deployments : {
+						x3: {
+							environments : []
+						}
+					}
+				};
+				let environmentRecord={};
+				let info=[
+					'x1','x2','x3'
+				];
+				return cb(InfraRecord,environmentRecord,info);
 			});
 			
 			done();
