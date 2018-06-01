@@ -164,7 +164,7 @@ describe("testing lib/cloud/infra/templates.js", function () {
 	describe("getRemoteTemplates", function () {
 		var oneInfra = {};
 		var options = {};
-		it("Success getRemoteTemplates", function (done) {
+		it("Error getRemoteTemplates", function (done) {
 			infraTemplates.getRemoteTemplates(soajs, config, BL, oneInfra, deployer, options, function (error, body) {
 				done();
 			});
@@ -177,13 +177,35 @@ describe("testing lib/cloud/infra/templates.js", function () {
 			});
 		});
 
+		it("Success getRemoteTemplates - 2", function (done) {
+			oneInfra.templatesTypes = ['external'];
+			deployer.execute = function (driverOptions, method, methodOptions, cb) {
+				var templates = [{
+					type: 'inputsAndDisplay'
+				}];
+				return cb(null, templates);
+			};
+			infraTemplates.getRemoteTemplates(soajs, config, BL, oneInfra, deployer, options, function (error, body) {
+				deployer.execute = function (driverOptions, method, methodOptions, cb) {
+					if (method === 'listKubeServices') {
+						return cb(null, [{
+							metadata: {
+								name: 'heapster',
+								namespace: 'kube-system'
+							}
+						}]);
+					} else {
+						return cb(null, []);
+					}
+				};
+				done();
+			});
+		});
+
 	});
 
 	describe("removeTemplate", function () {
 		it("Success removeTemplate", function (done) {
-			console.log('xxxxxxxx');
-			console.log('xxxxxxxx');
-			console.log('xxxxxxxx');
 			infraTemplates.removeTemplate(config, soajs, BL, deployer, function (error, body) {
 				done();
 			});
@@ -232,6 +254,24 @@ describe("testing lib/cloud/infra/templates.js", function () {
 
 	describe("uploadTemplateInputsFile", function () {
 		it("Success uploadTemplateInputsFile", function (done) {
+			soajs.inputmaskData.inputs = [
+				{
+					name: '1'
+				}
+			];
+			soajs.inputmaskData.display = [
+				{
+					name: '1'
+				}
+			];
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				var InfraRecord = {
+					_id: '123',
+					templates: ['external']
+				};
+				cb(null, InfraRecord);
+			};
+
 			infraTemplates.uploadTemplateInputsFile(config, req, soajs, BL, deployer, function (error, body) {
 				done();
 			});
