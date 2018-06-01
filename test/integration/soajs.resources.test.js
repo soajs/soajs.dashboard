@@ -59,6 +59,44 @@ var sampleResource = {
         }
     }
 };
+var sampleResource2 = {
+	"name" : "example",
+	"type" : "cluster",
+	"category" : "mongo",
+	"locked" : false,
+	"plugged" : false,
+	"shared" : false,
+	"config" : {
+		"servers" : [
+			{
+				"host" : "127.0.0.1",
+				"port" : 27017
+			}
+		],
+		"credentials" : {
+			
+		},
+		"URLParam" : {
+			"connectTimeoutMS" : 0,
+			"socketTimeoutMS" : 0,
+			"maxPoolSize" : 5,
+			"wtimeoutMS" : 0,
+			"slaveOk" : true
+		},
+		"extraParam" : {
+			"db" : {
+				"native_parser" : true,
+				"bufferMaxEntries" : 0
+			},
+			"server" : {
+				
+			}
+		},
+		"streaming" : {
+			
+		}
+	}
+};
 
 function executeMyRequest(params, apiPath, method, cb) {
     requester(apiPath, method, params, function (error, body) {
@@ -267,8 +305,170 @@ describe("Testing Resources Functionality", function() {
         });
 
     });
-
-    describe("Testing get resource", function() {
+	
+	describe("Testing add/edit resource, deploy and list deployed", function() {
+		
+		let sample2Id;
+		
+		before(function (done) {
+			
+			mongo.update('environment', {code: 'DEV'}, {
+				'$set': {
+					"deployer": {
+						"manual": {
+							"nodes": ""
+						},
+						"container": {
+							"docker": {
+								"local": {
+									"socketPath": "/var/run/docker.sock"
+								},
+								"remote": {
+									"apiPort": 443,
+									"nodes": "127.0.0.1",
+									"apiProtocol": "https",
+									"auth": {
+										"token": ""
+									}
+								}
+							},
+							"kubernetes": {
+								"local": {
+									"nodes": "",
+									"namespace": {
+										"default": "soajs",
+										"perService": false
+									},
+									"auth": {
+										"token": ""
+									}
+								},
+								"remote": {
+									"nodes": "",
+									"namespace": {
+										"default": "soajs",
+										"perService": false
+									},
+									"auth": {
+										"token": ""
+									}
+								}
+							}
+						},
+						"type": "container",
+						"selected": "container.docker.local"
+					}
+				}
+			}, function (error) {
+				assert.ifError(error);
+				done();
+			});
+		});
+		
+		it("success - will add resource", function (done) {
+			params = {
+				qs: {
+					access_token: access_token_owner
+				},
+				form: {
+					env: 'dev',
+					resource: sampleResource2,
+					deployType: "saveAndDeploy",
+					recipe : '59034e43c69a1b962fc62212', // nginxCatalog
+					deployConfig : {
+						memoryLimit : 209715200,
+						replication : {
+							mode : 'global'
+						}
+					},
+					custom: {
+						type : 'cluster'
+					}
+				}
+			};
+			
+			executeMyRequest(params, 'resources/new', 'post', function (body) {
+				assert.ok(body.result);
+				assert.ok(body.data);
+				assert.ok(body.data.id);
+				
+				sample2Id = body.data.id;
+				
+				done();
+			});
+		});
+		
+		it("success - will edit resource", function (done) {
+			
+			sampleResource2.locked = true;
+			
+			params = {
+				qs: {
+					access_token: access_token_owner
+				},
+				form: {
+					env: 'dev',
+					resource: sampleResource2,
+					deployType: "saveAndDeploy",
+					recipe : '59034e43c69a1b962fc62212', // nginxCatalog
+					deployConfig : {
+						memoryLimit : 209715200,
+						replication : {
+							mode : 'global'
+						}
+					},
+					custom: {
+						type : 'test'
+					}
+				}
+			};
+			
+			executeMyRequest(params, 'resources/'+sample2Id, 'post', function (body) {
+				assert.ok(body.result);
+				done();
+			});
+		});
+		
+		it("success - will list deployed resources ", function(done) {
+			params = {
+				qs: {
+					access_token: access_token_owner,
+					env: 'dev',
+					envType : 'container'
+				}
+			};
+			
+			executeMyRequest(params, 'resources', 'get', function(body) {
+				assert.ok(body.result);
+				assert.ok(body.data);
+				body.data.forEach(function(oneResource) {
+					if(oneResource.name === 'example'){
+						assert.ok(oneResource.isDeployed);
+					}
+				});
+				done();
+			});
+		});
+		
+		it("success - will delete deployed resource", function(done) {
+			params = {
+				qs: {
+					env: 'dev',
+					id: sample2Id,
+					access_token: access_token_owner
+				}
+			};
+			
+			executeMyRequest(params, 'resources', 'delete', function(body) {
+				assert.ok(body.result);
+				assert.ok(body.data);
+				done();
+			});
+		});
+		
+	});
+		
+		describe("Testing get resource", function() {
 
         before("get cluster1 id from resources collection", function(done) {
             mongo.findOne('resources', { name: 'cluster1' }, function(error, resourceRecord) {
