@@ -4,6 +4,8 @@ var testHelper = require("../../../../helper.js");
 var module = testHelper.requireModule('./lib/cloud/infra/index.js');
 var templates = testHelper.requireModule('./lib/cloud/infra/templates.js');
 var clusters = testHelper.requireModule('./lib/cloud/infra/cluster.js');
+var helper = testHelper.requireModule('./lib/cloud/infra/helper.js');
+
 var infra;
 var config = testHelper.requireModule('./config.js');
 var deployer = testHelper.deployer;
@@ -16,6 +18,9 @@ var mongoStub = {
 	},
 	checkForMongo: function (soajs) {
 		return true;
+	},
+	insertEntry: function (soajs, options, cb) {
+		cb(null, {});
 	},
 	validateId: function (soajs, cb) {
 		return cb(null, soajs.inputmaskData.id);
@@ -362,7 +367,7 @@ describe("testing cloud/infra/index.js", function () {
 
 	describe("addTemplate", function () {
 
-		it("Success addTemplate", function (done) {
+		it("Error addTemplate", function (done) {
 			infra.model.findEntry = function (soajs, opts, cb) {
 				var InfraRecord = {
 					templates: []
@@ -375,16 +380,50 @@ describe("testing cloud/infra/index.js", function () {
 			});
 		});
 
+		it("Success addTemplate", function (done) {
+			soajs.inputmaskData.template = {};
+			infra.model.findEntry = function (soajs, opts, cb) {
+				var InfraRecord = {
+					_id: '123',
+					templates: ['local']
+				};
+				cb(null, InfraRecord);
+			};
+
+			infra.addTemplate(config, req.soajs, function (error, body) {
+				done();
+			});
+		});
+
+		it("Success addTemplate -2 ", function (done) {
+			soajs.inputmaskData.template = {
+				inputs: ['1'],
+				display: '1',
+				tags: [],
+				driver: 'aws'
+			};
+			infra.model.findEntry = function (soajs, opts, cb) {
+				var InfraRecord = {
+					_id: '123',
+					templates: ['local']
+				};
+				cb(null, InfraRecord);
+			};
+
+			infra.addTemplate(config, req.soajs, function (error, body) {
+				done();
+			});
+		})
 	});
 
 	describe("updateTemplate", function () {
 
 		it("Success updateTemplate", function (done) {
 			infra.model.findEntry = function (soajs, opts, cb) {
-				var InfraRecord = {
-					templates: []
+				var templateRecord = {
+					location: 'local'
 				};
-				cb(null, InfraRecord);
+				cb(null, templateRecord);
 			};
 			infra.updateTemplate(config, req.soajs, function (error, body) {
 				done();
@@ -395,11 +434,12 @@ describe("testing cloud/infra/index.js", function () {
 
 	describe("uploadTemplate", function () {
 
-		it("Success uploadTemplate", function (done) {
+		it("Error uploadTemplate", function (done) {
 
 			infra.model.findEntry = function (soajs, opts, cb) {
 				var InfraRecord = {
-					templates: []
+					_id: '123',
+					templates: ['external']
 				};
 				cb(null, InfraRecord);
 			};
@@ -413,6 +453,14 @@ describe("testing cloud/infra/index.js", function () {
 	describe("uploadTemplateInputsFile", function () {
 
 		it("Success uploadTemplateInputsFile", function (done) {
+			infra.model.findEntry = function (soajs, opts, cb) {
+				var InfraRecord = {
+					_id: '123',
+					templates: ['external']
+				};
+				cb(null, InfraRecord);
+			};
+
 			infra.uploadTemplateInputsFile(config, req, soajs, deployer, function (error, body) {
 				done();
 			});
@@ -425,6 +473,61 @@ describe("testing cloud/infra/index.js", function () {
 		it("Success downloadTemplate", function (done) {
 			var res = {};
 			infra.downloadTemplate(config, req.soajs, deployer, res, function (error, body) {
+				done();
+			});
+		});
+
+	});
+
+	describe("getRegions", function () {
+		var InfraRecord = {
+			templates: []
+		};
+		var info = [];
+		let serviceStub;
+
+		before(function (done) {
+			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
+				return cb(InfraRecord, envRecord, info);
+			});
+			done();
+		});
+
+		after(function (done) {
+			serviceStub.restore();
+			done();
+		});
+
+		it("Success getRegions", function (done) {
+
+			infra.getRegions(config, soajs, deployer, function (error, body) {
+				done();
+			});
+		});
+
+	});
+
+	describe("publishPorts", function () {
+		var InfraRecord = {
+			templates: []
+		};
+		var info = [];
+		let serviceStub;
+
+		before(function (done) {
+			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
+				return cb(InfraRecord, envRecord, info);
+			});
+			done();
+		});
+
+		after(function (done) {
+			serviceStub.restore();
+			done();
+		});
+
+		it("Success publishPorts", function (done) {
+			infra.publishPorts(config, soajs, deployer, function (error, body) {
 				done();
 			});
 		});
