@@ -375,6 +375,10 @@ describe("testing hosts deployment", function () {
 								"prefix": "soajsorg",
 								"name": "soajs",
 								"tag": "latest"
+							},
+							"container" : {
+								"network" : "soajsnet",
+								"workingDir" : ""
 							}
 						},
 						"buildOptions": {
@@ -495,6 +499,10 @@ describe("testing hosts deployment", function () {
 								"name": "nginx",
 								"tag": "1.0.x"
 							},
+							"container" : {
+								"network" : "soajsnet",
+								"workingDir" : ""
+							},
 							"ports": [
 								{
 									"name": "http",
@@ -582,6 +590,10 @@ describe("testing hosts deployment", function () {
 								"prefix": "soajsorg",
 								"name": "soajs",
 								"tag": "1.0.x-1.0.x"
+							},
+							"container" : {
+								"network" : "soajsnet",
+								"workingDir" : ""
 							}
 						},
 						"buildOptions": {

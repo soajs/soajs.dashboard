@@ -2006,19 +2006,7 @@ describe("DASHBOARD Integration Tests:", function () {
 					done();
 				});
 			});
-			it("fail - will tag node", function (done) {
-				var params = {
-					form:
-						{
-							'id': 'nodeTest',
-							'tag': 'tagTest'
-						}
-				};
-				executeMyRequest(params, 'cloud/nodes/tag', 'put', function (body) {
-					assert.ok(body);
-					done();
-				});
-			});
+			
 			it("fail - will remove node", function (done) {
 				var params = {
 					qs:

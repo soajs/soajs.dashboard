@@ -375,14 +375,29 @@ describe("Testing Resources Functionality", function() {
 					resource: sampleResource2,
 					deployType: "saveAndDeploy",
 					recipe : '59034e43c69a1b962fc62212', // nginxCatalog
-					deployConfig : {
-						memoryLimit : 209715200,
-						replication : {
-							mode : 'global'
+					config: {
+						deploy: true,
+						options: {
+							custom: {
+								type : 'resource',
+								name: sampleResource2.name,
+								loadBalancer: true,
+								"sourceCode": {}
+							},
+							recipe : '59034e43c69a1b962fc62212', // nginxCatalog
+							deployConfig : {
+								memoryLimit : 209715200,
+								replication : {
+									mode : 'global'
+								}
+							},
 						}
 					},
 					custom: {
-						type : 'cluster'
+						type : 'resource',
+						name: sampleResource2.name,
+						loadBalancer: true,
+						"sourceCode": {}
 					}
 				}
 			};
