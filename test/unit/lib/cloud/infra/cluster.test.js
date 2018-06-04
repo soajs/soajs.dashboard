@@ -1,14 +1,16 @@
 "use strict";
-var assert = require("assert");
+let assert = require("assert");
 const nock = require("nock");
 const sinon = require('sinon');
 
-var testHelper = require("../../../../helper.js");
-var clustersModule = testHelper.requireModule('./lib/cloud/infra/cluster.js');
-var helper = testHelper.requireModule('./lib/cloud/infra/helper.js');
-var config = testHelper.requireModule('./config.js');
+let testHelper = require("../../../../helper.js");
+let clustersModule = testHelper.requireModule('./lib/cloud/infra/cluster.js');
+let helper = testHelper.requireModule('./lib/cloud/infra/helper.js');
+let deployIndex = testHelper.requireModule('./lib/cloud/deploy/index.js');
+let utils = testHelper.requireModule('./utils/utils.js');
+let config = testHelper.requireModule('./config.js');
 
-var mongoStub = {
+let mongoStub = {
 	getDb: function () {
 	},
 	checkForMongo: function (soajs) {
@@ -30,8 +32,8 @@ var mongoStub = {
 	}
 };
 
-var deployer = testHelper.deployer;
-var soajs = {
+let deployer = testHelper.deployer;
+let soajs = {
 	validator: {
 		Validator: function () {
 			return {
@@ -70,94 +72,45 @@ var soajs = {
 	},
 	// uracDriver: {},
 	inputmaskData: {},
-	tenant: {}
+	tenant: {},
+	headers: {}
 };
-var BL = {
+let BL = {
 	model: mongoStub
 };
-var req = {
+let req = {
 	soajs: soajs
 };
 
 describe("testing cloud/infra/cluster.js", function () {
-	var envRecord = {
-		code: 'DEV',
-		deployer: {
-			"type": "container",
-			"selected": "container.kubernetes.local",
-			"container": {
-				"docker": {
-					"local": {
-						"socketPath": "/var/run/docker.sock"
-					},
-					"remote": {
-						"nodes": ""
-					}
-				},
-				"kubernetes": {
-					"local": {
-						"nginxDeployType": "",
-						"namespace": {},
-						"auth": {
-							"token": ""
-						}
-					},
-					"remote": {
-						"nginxDeployType": "",
-						"namespace": {},
-						"auth": {
-							"token": ""
-						}
-					}
-				}
-			}
-		},
-		dbs: {
-			clusters: {
-				analy: {
-					credentials: {
-						username: 'username',
-						password: 'password'
-					},
-					servers: [{port: 123, host: 'host'}]
-				},
-				oneCluster: {
-					servers: []
-				}
-			},
-			config: {
-				session: {
-					cluster: 'oneCluster'
-				}
-			}
-		},
-		services: {},
-		profile: ''
-	};
-	
 	describe("deployCluster", function () {
 		
-		let serviceStub;
+		let serviceStub, utilsStub;
 		
-		var InfraRecord = {
+		let InfraRecord = {
 			templates: []
 		};
-		var info = [];
+		let info = [];
 		before(function (done) {
 			
 			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
-				let InfraRecord={
-					deployments : {
+				let InfraRecord = {
+					deployments: {
 						x3: {
-							environments : []
+							environments: []
 						}
 					}
 				};
-				let environmentRecord={};
-				let info=[
-					'x1','x2','x3'
+				let environmentRecord = {};
+				let info = [
+					'x1', 'x2', 'x3'
 				];
-				return cb(InfraRecord,environmentRecord,info);
+				return cb(InfraRecord, environmentRecord, info);
+			});
+			
+			utilsStub = sinon.stub(utils, 'buildDeployerOptions', function (environmentRecord, soajs, BL) {
+				let output = {};
+				return output;
 			});
 			
 			done();
@@ -165,6 +118,7 @@ describe("testing cloud/infra/cluster.js", function () {
 		
 		after(function (done) {
 			serviceStub.restore();
+			utilsStub.restore();
 			done();
 		});
 		
@@ -176,9 +130,78 @@ describe("testing cloud/infra/cluster.js", function () {
 			});
 		});
 		
-		
-		it("Success deployCluster with prev", function (done) {
+		it("Success deployCluster with previousEnvironment", function (done) {
 			soajs.inputmaskData.previousEnvironment = 'STG';
+			clustersModule.deployCluster(config, req, soajs, BL, deployer, function (error, body) {
+				done();
+			});
+		});
+		
+		it("Success deployCluster without previousEnvironment & deployments", function (done) {
+			delete soajs.inputmaskData.previousEnvironment;
+			
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				let output = {
+					deployments: [
+						{
+							environments: 'DEV'
+						}
+					]
+				};
+				
+				cb(null, output);
+			};
+			
+			clustersModule.deployCluster(config, req, soajs, BL, deployer, function (error, body) {
+				done();
+			});
+		});
+		
+		it("Success deployCluster without previousEnvironment & No deployments / doDeploy with local temp", function (done) {
+			delete soajs.inputmaskData.previousEnvironment;
+			
+			serviceStub.restore();
+			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
+				let InfraRecord = {
+					deployments: [],
+					templates: ["local"],
+					_id: "abcdefghijklmnopqrstuvwxyz"
+				};
+				let environmentRecord = {};
+				let info = [
+					'x1', 'x2', 'x3'
+				];
+				return cb(InfraRecord, environmentRecord, info);
+			});
+			
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, null);
+			};
+			
+			clustersModule.deployCluster(config, req, soajs, BL, deployer, function (error, body) {
+				done();
+			});
+		});
+		
+		it("Success deployCluster without previousEnvironment & No deployments / doDeploy without local template", function (done) {
+			delete soajs.inputmaskData.previousEnvironment;
+			
+			serviceStub.restore();
+			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
+				let InfraRecord = {
+					deployments: []
+				};
+				let environmentRecord = {};
+				let info = [
+					'x1', 'x2', 'x3'
+				];
+				return cb(InfraRecord, environmentRecord, info);
+			});
+			
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, null);
+			};
+			
 			clustersModule.deployCluster(config, req, soajs, BL, deployer, function (error, body) {
 				done();
 			});
@@ -186,5 +209,306 @@ describe("testing cloud/infra/cluster.js", function () {
 		
 	});
 	
+	describe("getDeployClusterStatus", function () {
+		
+		let serviceStub, utilsStub, deployIndexStub;
+		
+		before(function (done) {
+			process.env.SOAJS_SAAS = true;
+			
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, {
+					_id: "123"
+				});
+			};
+			
+			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
+				let InfraRecord = {
+					name: 'google',
+					deployments: {
+						x3: {
+							environments: []
+						}
+					}
+				};
+				let environmentRecord = {
+					code: 'DEV'
+				};
+				let info = [
+					'x1', 'x2', 'x3'
+				];
+				return cb(InfraRecord, environmentRecord, info);
+			});
+			
+			utilsStub = sinon.stub(utils, 'buildDeployerOptions', function (environmentRecord, soajs, BL) {
+				let output = {
+					strategy: 'kubernetes'
+				};
+				return output;
+			});
+			
+			deployIndexStub = sinon.stub(deployIndex, 'init', function (modelName, cb) {
+				let deploymentModule = {
+					deployService: function (config, req, deployer, cbMain) {
+						return cbMain(null);
+					}
+				};
+				return cb(null, deploymentModule);
+			});
+			
+			done();
+		});
+		
+		after(function (done) {
+			serviceStub.restore();
+			utilsStub.restore();
+			deployIndexStub.restore();
+			
+			delete process.env.SOAJS_SAAS;
+			
+			done();
+		});
+		
+		it("Success deployCluster", function (done) {
+			clustersModule.getDeployClusterStatus(config, req, soajs, BL, deployer, function (error, body) {
+				done();
+			});
+		});
+		
+		it("Success deployCluster with previous env", function (done) {
+			soajs.inputmaskData.previousEnvironment = 'DEV';
+			soajs.inputmaskData.envCode = 'DEV';
+			
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, {
+					deployer: {
+						selected: 'container.docker.local',
+						container: {
+							docker: {
+								local: {}
+							}
+						}
+					}
+				});
+			};
+			
+			clustersModule.getDeployClusterStatus(config, req, soajs, BL, deployer, function (error, body) {
+				done();
+			});
+		});
+	});
+	
+	describe("getDNSInfo", function () {
+		
+		let serviceStub, utilsStub;
+		
+		before(function (done) {
+			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
+				let InfraRecord = {};
+				let environmentRecord = {
+					code: 'DEV'
+				};
+				let info = [
+					'x1', 'x2', 'x3'
+				];
+				return cb(InfraRecord, environmentRecord, info);
+			});
+			
+			utilsStub = sinon.stub(utils, 'buildDeployerOptions', function (environmentRecord, soajs, BL) {
+				let output = {
+					strategy: 'kubernetes'
+				};
+				return output;
+			});
+			
+			done();
+		});
+		
+		after(function (done) {
+			serviceStub.restore();
+			utilsStub.restore();
+			done();
+		});
+		
+		it("Success getDNSInfo", function (done) {
+			clustersModule.getDNSInfo(config, req, soajs, BL, deployer, function (error, body) {
+				done();
+			});
+		});
+		
+	});
+	
+	describe("scaleCluster", function () {
+		
+		let serviceStub, utilsStub;
+		
+		before(function (done) {
+			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
+				let InfraRecord = {};
+				let environmentRecord = {
+					code: 'DEV'
+				};
+				let info = [
+					'x1', 'x2', 'x3'
+				];
+				return cb(InfraRecord, environmentRecord, info);
+			});
+			
+			utilsStub = sinon.stub(utils, 'buildDeployerOptions', function (environmentRecord, soajs, BL) {
+				let output = {
+					strategy: 'kubernetes'
+				};
+				return output;
+			});
+			
+			done();
+		});
+		
+		after(function (done) {
+			serviceStub.restore();
+			utilsStub.restore();
+			done();
+		});
+		
+		it("Success scaleCluster", function (done) {
+			clustersModule.scaleCluster(config, soajs, BL, deployer, function (error, body) {
+				done();
+			});
+		});
+		
+	});
+	
+	describe("getCluster", function () {
+		
+		let serviceStub, utilsStub;
+		
+		before(function (done) {
+			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
+				let InfraRecord = {};
+				let environmentRecord = {
+					code: 'DEV'
+				};
+				let info = [
+					'x1', 'x2', 'x3'
+				];
+				return cb(InfraRecord, environmentRecord, info);
+			});
+			
+			utilsStub = sinon.stub(utils, 'buildDeployerOptions', function (environmentRecord, soajs, BL) {
+				let output = {
+					strategy: 'kubernetes'
+				};
+				return output;
+			});
+			
+			done();
+		});
+		
+		after(function (done) {
+			serviceStub.restore();
+			utilsStub.restore();
+			done();
+		});
+		
+		it("Success getCluster", function (done) {
+			clustersModule.getCluster(config, soajs, BL, deployer, function (error, body) {
+				done();
+			});
+		});
+		
+	});
+	
+	describe("updateCluster", function () {
+		
+		let serviceStub, utilsStub;
+		
+		before(function (done) {
+			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
+				let InfraRecord = {};
+				let environmentRecord = {
+					code: 'DEV'
+				};
+				let info = [
+					'x1', 'x2', 'x3'
+				];
+				return cb(InfraRecord, environmentRecord, info);
+			});
+			
+			utilsStub = sinon.stub(utils, 'buildDeployerOptions', function (environmentRecord, soajs, BL) {
+				let output = {
+					strategy: 'kubernetes'
+				};
+				return output;
+			});
+			
+			done();
+		});
+		
+		after(function (done) {
+			serviceStub.restore();
+			utilsStub.restore();
+			done();
+		});
+		
+		it("Success updateCluster", function (done) {
+			clustersModule.updateCluster(config, soajs, BL, deployer, function (error, body) {
+				done();
+			});
+		});
+		
+	});
+	
+	describe("removeEnvFromDeployment", function () {
+		
+		let serviceStub, utilsStub;
+		
+		before(function (done) {
+			
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, {
+					deployments : [
+						{
+							environments : ['DEV']
+						}
+					]
+				});
+			};
+			
+			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
+				let InfraRecord = {
+					
+				};
+				let environmentRecord = {
+					code: 'DEV'
+				};
+				let info = [
+					'x1', 'x2', 'x3'
+				];
+				return cb(InfraRecord, environmentRecord, info);
+			});
+			
+			utilsStub = sinon.stub(utils, 'buildDeployerOptions', function (environmentRecord, soajs, BL) {
+				let output = {
+					strategy: 'kubernetes'
+				};
+				return output;
+			});
+			
+			done();
+		});
+		
+		after(function (done) {
+			serviceStub.restore();
+			utilsStub.restore();
+			done();
+		});
+		
+		it("Success removeEnvFromDeployment", function (done) {
+			clustersModule.removeEnvFromDeployment(config, req, soajs, BL, deployer, function (error, body) {
+				done();
+			});
+		});
+		
+	});
 	
 });
