@@ -883,7 +883,7 @@ describe("testing hosts deployment", function () {
             });
         });
 
-        it("success - will redeploy nginx and add custom ui to it", function (done) {
+        it("success - will redeploy nginx", function (done) {
             var params = {
                 qs: {
                     access_token: access_token
@@ -892,7 +892,7 @@ describe("testing hosts deployment", function () {
                     env: 'dev',
                     serviceId: nginxDeployment.id,
                     mode: nginxDeployment.labels['soajs.service.mode'],
-                    action: 'rebuild'
+                    action: 'redeploy'
                 }
             };
 
