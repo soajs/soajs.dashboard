@@ -91,24 +91,8 @@ var mongoStub = {
 };
 
 var deployer = helper.deployer;
-var registry = {
-	loadByEnv: function (options, cb) {
-		// registry.serviceConfig.ports.maintenanceInc
-		var data = {
-			serviceConfig: {
-				ports: {
-					maintenanceInc: 5
-				}
-			}
-		};
-		return cb(null, data);
-	},
-	coreDB: {
-		provision: {}
-	}
-};
 
-describe("testing autoscale.js", function() {
+describe("testing lib/cloud/autoscale/index.js", function() {
 	describe("testing init", function () {
 
 		it("No Model Requested", function (done) {

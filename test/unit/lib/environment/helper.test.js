@@ -31,7 +31,7 @@ let req = {
     }
 };
 
-describe("testing index.js", function () {
+describe("testing lib/environment/helper.js", function () {
 
     describe("testing getDefaultRegistryServicesConfig", function () {
 
@@ -55,7 +55,7 @@ describe("testing index.js", function () {
 
         it("Success -- !data.deploy", function (done) {
             let data = {
-                code : 'dev',
+                code : 'dev'
             };
             let output = helperIndex.prepareEnvRecord(config, data, {}, {});
             assert.ok(output.code);
@@ -214,7 +214,7 @@ describe("testing index.js", function () {
             let certs = [{
                 metadata : {
                     env : {
-                        DEV : ['object1', 'object2'],
+                        DEV : ['object1', 'object2']
                     }
                 }
             }];
@@ -226,7 +226,7 @@ describe("testing index.js", function () {
             let certs = [{
                 metadata : {
                     env : {
-                        DEV : ['object1', 'object2'],
+                        DEV : ['object1', 'object2']
                     }
                 }
             }];

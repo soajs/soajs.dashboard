@@ -82,7 +82,7 @@ let req = {
 	soajs: soajs
 };
 
-describe("testing cloud/infra/cluster.js", function () {
+describe("testing lib/cloud/infra/cluster.js", function () {
 	describe("deployCluster", function () {
 		
 		let serviceStub, utilsStub;

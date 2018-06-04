@@ -804,7 +804,8 @@ var environmentRecord = {
 	services: {},
 	profile: ''
 };
-describe("testing status.js", function () {
+
+describe("testing lib/environment/status.js", function () {
 	
 	describe("testing validateDeploymentInputs", function () {
 		it("Success", function (done) {
@@ -863,9 +864,7 @@ describe("testing status.js", function () {
 	describe("testing checkProgress", function () {
 		it("Success", function (done) {
 			stubStatusUtils(null);
-			req.soajs.inputmaskData= {
-			
-			};
+			req.soajs.inputmaskData = {};
 			utils.checkProgress(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)),{_id:123}, function (err, body) {
 				setTimeout(() => {
 					assert.ok(body);
@@ -876,7 +875,7 @@ describe("testing status.js", function () {
 		});
 		it.skip("Success", function (done) {
 			stubStatusUtils(null);
-			req.soajs.inputmaskData= {
+			req.soajs.inputmaskData = {
 				rollback: true
 			};
 			utils.checkProgress(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)),{_id:123}, function (err, body) {

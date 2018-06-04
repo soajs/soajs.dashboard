@@ -99,7 +99,7 @@ var envRecord = {
 
 var deployer = helper.deployer;
 
-describe("testing metrics.js", function () {
+describe("testing lib/cloud/metrics/index.js", function () {
 	
 	describe("testing init", function () {
 		

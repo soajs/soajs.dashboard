@@ -87,7 +87,7 @@ var req = {
 	soajs: soajs
 };
 
-describe("testing cloud/infra/index.js", function () {
+describe("testing lib/cloud/infra/index.js", function () {
 	var BL = {
 		model: mongoStub
 	};

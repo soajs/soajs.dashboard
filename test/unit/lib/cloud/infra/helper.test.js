@@ -33,7 +33,7 @@ var mongoStub = {
 
 var deployer = helper.deployer;
 
-describe("testing cloud/infra/helper.js", function () {
+describe("testing lib/cloud/infra/helper.js", function () {
 	var soajs = {
 		validator: {
 			Validator: function () {

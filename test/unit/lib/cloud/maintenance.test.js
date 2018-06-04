@@ -112,7 +112,7 @@ var envRecord = {
 
 var deployer = helper.deployer;
 
-describe("testing maintenance.js", function () {
+describe("testing lib/cloud/maintenance/index.js", function () {
 	
 	describe("testing init", function () {
 		
@@ -124,7 +124,6 @@ describe("testing maintenance.js", function () {
 		});
 		
 		it("Model Name not found", function (done) {
-			
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
@@ -132,7 +131,6 @@ describe("testing maintenance.js", function () {
 		});
 		
 		it("Init", function (done) {
-			
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
 				maintenance = body;

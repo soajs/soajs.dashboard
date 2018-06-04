@@ -75,22 +75,7 @@ var mongoStub = {
 };
 
 var deployer = helper.deployer;
-var registry = {
-	loadByEnv: function (options, cb) {
-		// registry.serviceConfig.ports.maintenanceInc
-		var data = {
-			serviceConfig: {
-				ports: {
-					maintenanceInc: 5
-				}
-			}
-		};
-		return cb(null, data);
-	},
-	coreDB: {
-		provision: {}
-	}
-};
+
 var envRecord = {
 	_id: '',
 	code: 'DEV',
@@ -163,7 +148,7 @@ var envRecord = {
 	]
 };
 
-describe("testing deploy.js", function () {
+describe("testing lib/cloud/deploy/index.js", function () {
 
 	describe("testing init", function () {
 

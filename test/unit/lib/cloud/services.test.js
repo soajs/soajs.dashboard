@@ -113,7 +113,7 @@ deployer.listServices = function (options, cb) {
 	return cb(null, arr);
 };
 
-describe("testing services.js", function () {
+describe("testing lib/cloud/services/index.js", function () {
 
 	before(() => {
 		mongoStub.findEntry = function (soajs, opts, cb) {

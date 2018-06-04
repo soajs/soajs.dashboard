@@ -23,50 +23,9 @@ var mongoStub = {
 	switchConnection: function(soajs) {
 	}
 };
-var req = {
-	soajs: {
-		registry: {
-			coreDB: {
-				provision: {}
-			}
-		},
-		log: {
-			debug: function (data) {
-
-			},
-			error: function (data) {
-
-			},
-			info: function (data) {
-
-			}
-		},
-		inputmaskData: {},
-		validator: {
-			Validator: function () {
-				return {
-					validate: function (boolean) {
-						if (boolean) {
-							//valid
-							return {
-								errors: []
-							};
-						}
-						else {
-							//invalid
-							return {
-								errors: [{error: 'msg'}]
-							};
-						}
-					}
-				};
-			}
-		}
-	}
-};
 var deployer = helper.deployer;
 
-describe("testing deploy.js", function () {
+describe("testing lib/cloud/deploy/helper.js", function () {
     var soajs = {
         log: {
             debug: function (data) {
@@ -86,60 +45,7 @@ describe("testing deploy.js", function () {
     var BL = {
         model: mongoStub
     };
-    var envRecord = {
-        code: 'DEV',
-        deployer: {
-            "type": "container",
-            "selected": "container.kubernetes.local",
-            "container": {
-                "docker": {
-                    "local": {
-                        "socketPath": "/var/run/docker.sock"
-                    },
-                    "remote": {
-                        "nodes": ""
-                    }
-                },
-                "kubernetes": {
-                    "local": {
-                        "nginxDeployType": "",
-                        "namespace": {},
-                        "auth": {
-                            "token": ""
-                        }
-                    },
-                    "remote": {
-                        "nginxDeployType": "",
-                        "namespace": {},
-                        "auth": {
-                            "token": ""
-                        }
-                    }
-                }
-            }
-        },
-        dbs: {
-            clusters: {
-                analy: {
-                    credentials: {
-                        username: 'username',
-                        password: 'password'
-                    },
-                    servers: [{port: 123, host: 'host'}]
-                },
-                oneCluster: {
-                    servers: []
-                }
-            },
-            config: {
-                session: {
-                    cluster: 'oneCluster'
-                }
-            }
-        },
-        services: {},
-        profile: ''
-    };
+
     var context = {
         variables: {},
         catalog: {
