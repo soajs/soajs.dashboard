@@ -97,7 +97,9 @@ module.exports = {
 			}
 		}
 		envRecord.serviceConfig = serviceConfig;
-		delete envRecord.coreDB.registryLocation;
+		if(envRecord.coreDB && envRecord.coreDB.registryLocation){
+			delete envRecord.coreDB.registryLocation;
+		}
 		
 		options.soajs = soajs;
 		options.soajs.registry = envRecord;
