@@ -25,6 +25,9 @@ let mongoStub = {
 	removeEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
+	updateEntry : function(soajs, opts, cb) {
+		cb(null, true);
+	},
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
