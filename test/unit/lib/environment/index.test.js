@@ -260,17 +260,16 @@ var config = {
 };
 var deployer = {
 	listServices: function (options, cb) {
-		var services = [
-
-		];
-
+		var services = [];
+		
 		return cb(null, services);
 	},
-
-    createNameSpace: function (options, cb) {
-        return cb(null, true);
-    }
-
+	createNameSpace: function (options, cb) {
+		return cb(null, true);
+	},
+	execute: function (in1, in2, in3, cb) {
+		return cb(null, {});
+	}
 };
 var mongoStub = {
 	checkForMongo: function (soajs) {
@@ -393,6 +392,31 @@ describe("testing index.js", function () {
 											"replicas": 1
 										}
 									}
+								}
+							}
+						}
+					},
+					"deployer": {
+						"type": "container",
+						"selected": "container.kubernetes.local",
+						"container": {
+							"docker": {
+								"local": {
+									"socketPath": "/var/run/docker.sock"
+								},
+								"remote": {
+									"nodes": []
+								}
+							},
+							"kubernetes": {
+								"local": {
+									"namespace": {
+										"default": "test",
+										"perService": false
+									}
+								},
+								"remote": {
+									"nodes": []
 								}
 							}
 						}
@@ -698,7 +722,7 @@ describe("testing index.js", function () {
 						perService: false
 					}
 			};
-
+			
 			environment.updateDeployerConfig(config, req, deployer, function (error, body) {
 				assert.ok(body);
 				done();

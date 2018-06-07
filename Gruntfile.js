@@ -178,21 +178,28 @@ module.exports = function (grunt) {
 					reporter: 'spec',
 					timeout: 90000
 				},
-				src: ['test/unit/*.js', 'test/unit/**/*.js']
+				src: [
+					'test/unit/*.js',
+					'test/unit/**/*.js'
+				]
 			},
 			integration: {
 				options: {
 					reporter: 'spec',
 					timeout: 90000
 				},
-				src: ['test/integration/_server.test.js']
+				src: [
+					'test/integration/_server.test.js'
+				]
 			},
 			saas: {
 				options: {
 					reporter: 'spec',
 					timeout: 90000
 				},
-				src: ['test/integration/_server.saas.test.js']
+				src: [
+					'test/integration/_server.saas.test.js'
+				]
 			}
 		},
 

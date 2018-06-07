@@ -3,7 +3,7 @@ var assert = require("assert");
 var helper = require("../../../helper.js");
 var utils = helper.requireModule('./lib/daemons/index.js');
 
-describe("testing daemons.js", function () {
+describe("testing lib/daemons/index.js", function () {
 	
 	var daemon;
 	var req = {

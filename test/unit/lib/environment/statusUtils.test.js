@@ -150,17 +150,4 @@ describe("testing statusUtils.js", function () {
 			});
 		});
 	});
-	
-	describe("testing thirdPartStep", function () {
-		
-		it("Success", function (done) {
-			sinon.stub(infra, 'rollback').yields(null, true);
-			statusUtils.thirdPartStep(req, context, "rollback", function (error, body) {
-				sinon.restore(infra);
-				assert.ok(body);
-				done();
-			});
-		});
-	});
-	
 });

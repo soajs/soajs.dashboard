@@ -492,7 +492,7 @@ var lib = {
 			saveConfig : function (context, req, data, cb) {
 				return cb(null, true);
 			},
-			deployService : function (config, req, soajs, deployer, cb) {
+			deployService : function (config, req, deployer, cb) {
 				return cb(null, {service: {
 						id: "1"
 					}});
@@ -502,6 +502,9 @@ var lib = {
 			},
 			addResource: function (context, req, data, cb) {
 				return cb(null, {_id: "1"});
+			},
+			addEditResource: function (config, req, res, serviceBL, mainCb) {
+				return mainCb(null, true);
 			},
 			setConfig: function (context, req, data, cb) {
 				return cb(null, true);

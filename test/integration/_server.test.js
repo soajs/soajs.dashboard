@@ -90,7 +90,7 @@ describe("importing sample data", function () {
 			}, 500);
 		});
 	});
-
+	
 	after(function (done) {
 		setTimeout(function () {
 			require("./soajs.dashboard.test.swagger.js");

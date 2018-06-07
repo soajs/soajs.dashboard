@@ -484,7 +484,7 @@ var lib = {
 			saveConfig : function (context, req, data, cb) {
 				return cb(null, true);
 			},
-			deployService : function (config, req, soajs, deployer, cb) {
+			deployService : function (config, req, deployer, cb) {
 				return cb(null, {service: {
 						id: "1"
 					}});
@@ -790,7 +790,7 @@ describe("testing repos.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success repos not controller", function (done) {

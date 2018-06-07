@@ -25,9 +25,6 @@ function stubStatusUtils(error) {
 	sinon
 		.stub(statusUtils, 'resources')
 		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'thirdPartStep')
-		.yields(error, true);
 }
 
 var req = {

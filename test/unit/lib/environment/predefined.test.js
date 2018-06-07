@@ -23,9 +23,6 @@ function stubStatusUtils(error) {
 	sinon
 		.stub(statusUtils, 'resources')
 		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'thirdPartStep')
-		.yields(error, true);
 }
 
 var req = {};
@@ -188,36 +185,6 @@ describe("testing predefinedSteps.js", function () {
 		it("Success resources rollback", function (done) {
 			stubStatusUtils();
 			utils.resources.rollback(req, context, function (error, body) {
-				assert.ok(body);
-				sinon.restore(statusUtils);
-				done();
-			});
-		});
-	});
-	
-	describe("testing thirdPartStep", function () {
-		
-		it("Success thirdPartStep validate", function (done) {
-			stubStatusUtils();
-			utils.thirdPartStep.validate(req, context, function (error, body) {
-				assert.ok(body);
-				sinon.restore(statusUtils);
-				done();
-			});
-		});
-		
-		it("Success thirdPartStep deploy", function (done) {
-			stubStatusUtils();
-			utils.thirdPartStep.deploy(req, context, function (error, body) {
-				assert.ok(body);
-				sinon.restore(statusUtils);
-				done();
-			});
-		});
-		
-		it("Success thirdPartStep rollback", function (done) {
-			stubStatusUtils();
-			utils.thirdPartStep.rollback(req, context, function (error, body) {
 				assert.ok(body);
 				sinon.restore(statusUtils);
 				done();
