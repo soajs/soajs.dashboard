@@ -697,9 +697,6 @@ var lib = {
             deployCluster: function (config, soajs, deployer,req, cb) {
                 return cb(null, true);
             },
-            getRegions: function (config, soajs, deployer, cb) {
-                return cb(true);
-            },
 
             scaleCluster: function (config, soajs, deployer, cb) {
                 return cb(true);
@@ -711,9 +708,6 @@ var lib = {
                 return cb(true);
             },
             updateCluster: function (config, soajs, deployer, cb) {
-                return cb(true);
-            },
-            publishPorts: function (config, soajs, deployer, cb) {
                 return cb(true);
             },
             getDNSInfo: function (config, soajs, deployer, cb) {
