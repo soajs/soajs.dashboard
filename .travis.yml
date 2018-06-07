@@ -1,7 +1,5 @@
 sudo: required
 
-group: deprecated-2017Q2
-
 language: node_js
 
 node_js: 6.9.5
@@ -10,9 +8,6 @@ services:
   - mongodb
   - docker
 
-env:
-  - CXX=g++-4.8
-
 branches:
   only:
     - staging
@@ -20,16 +15,9 @@ branches:
 
 addons:
   apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
   hosts:
     - localhost
     - dev-controller
-
-before_install:
-  - sudo apt-get update && sudo apt-get install sendmail python make g++
 
 before_script:
   - npm install -g grunt-cli

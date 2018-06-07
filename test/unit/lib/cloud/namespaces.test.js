@@ -128,7 +128,7 @@ var envRecordKub = {
 	
 };
 
-describe("testing namespaces.js", function () {
+describe("testing lib/cloud/namespaces/index.js", function () {
 
 	describe("testing init", function () {
 

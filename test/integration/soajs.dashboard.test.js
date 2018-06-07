@@ -1820,7 +1820,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				});
 			});
 
-            it("success - will update the deployer ", function (done) {
+            it.skip("success - will update the deployer ", function (done) {
                 var params = {
                     qs: {
                         env: 'TESTDOCKERLOCAL'
@@ -1940,7 +1940,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				});
 			});
 
-			it("fail - service doesn't exist", function (done) {
+			it.skip("fail - service doesn't exist", function (done) {
 				executeMyRequest({qs: {'service': 'noService'}}, 'services/env/list', 'get', function (body) {
 					assert.equal(body.result, false);
 					done();
@@ -2006,19 +2006,7 @@ describe("DASHBOARD Integration Tests:", function () {
 					done();
 				});
 			});
-			it("fail - will tag node", function (done) {
-				var params = {
-					form:
-						{
-							'id': 'nodeTest',
-							'tag': 'tagTest'
-						}
-				};
-				executeMyRequest(params, 'cloud/nodes/tag', 'put', function (body) {
-					assert.ok(body);
-					done();
-				});
-			});
+			
 			it("fail - will remove node", function (done) {
 				var params = {
 					qs:

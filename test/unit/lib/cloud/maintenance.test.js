@@ -6,6 +6,7 @@ var maintenance;
 var config = {
 	errors: {}
 };
+
 var req = {
 	soajs: {
 		servicesConfig: {
@@ -56,6 +57,20 @@ var mongoStub = {
 var envRecord = {
 	_id: '',
 	code: 'DEV',
+	deployments: [
+		{
+			"technology": "docker",
+			"options": {
+				"zone": "local"
+			},
+			"environments": [
+				"DCKR"
+			],
+			"loadBalancers": {},
+			"name": "htlocalmggdiohh06wiu",
+			"id": "htlocalmggdiohh06wiu"
+		}
+	],
 	deployer: {
 		"type": "container",
 		"selected": "container.docker.local",
@@ -97,7 +112,7 @@ var envRecord = {
 
 var deployer = helper.deployer;
 
-describe("testing maintenance.js", function () {
+describe("testing lib/cloud/maintenance/index.js", function () {
 	
 	describe("testing init", function () {
 		
@@ -109,7 +124,6 @@ describe("testing maintenance.js", function () {
 		});
 		
 		it("Model Name not found", function (done) {
-			
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
@@ -117,7 +131,6 @@ describe("testing maintenance.js", function () {
 		});
 		
 		it("Init", function (done) {
-			
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
 				maintenance = body;
@@ -161,8 +174,11 @@ describe("testing maintenance.js", function () {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
+				}else if (opts.collection === 'infra') {
+					return cb(null, helper.infraRecord);
+				}else{
+					return cb(null, {});
 				}
-				return cb(null, {});
 			};
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'service';
@@ -179,8 +195,11 @@ describe("testing maintenance.js", function () {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
+				}else if (opts.collection === 'infra') {
+					return cb(null, helper.infraRecord);
+				}else{
+					return cb(null, {});
 				}
-				return cb(null, {});
 			};
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'daemon';

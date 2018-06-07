@@ -77,7 +77,7 @@ function checkReturnError(req, mainCb, data, cb) {
 
 function mainCb() {}
 
-describe("testing helper daemons.js", function () {
+describe("testing lib/daemons/helper.js", function () {
 	var soajs = {
 		inputmaskData: {
 			"timeZone": "America/Los_Angeles",
