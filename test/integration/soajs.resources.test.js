@@ -227,13 +227,14 @@ describe("Testing Resources Functionality", function() {
                     access_token: access_token_owner
                 },
                 form: {
+                	id: 'new',
                     env: 'dev',
                     resource: sampleResourceCopy,
 	                deployType : "save"
                 }
             };
 
-            executeMyRequest(params, 'resources/new', 'post', function(body) {
+            executeMyRequest(params, 'resources', 'post', function(body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 assert.ok(body.data.id);
@@ -247,13 +248,14 @@ describe("Testing Resources Functionality", function() {
                     access_token: access_token_owner
                 },
                 form: {
+	                id: 'new',
                     env: 'dev',
                     resource: sampleResourceCopy,
 	                deployType : "save"
                 }
             };
 
-            executeMyRequest(params, 'resources/new', 'post', function(body) {
+            executeMyRequest(params, 'resources', 'post', function(body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], { code: 504, message: errors[504] });
                 done();
@@ -269,13 +271,14 @@ describe("Testing Resources Functionality", function() {
                     access_token: access_token_user1
                 },
                 form: {
+	                id: 'new',
                     env: 'dev',
                     resource: sampleResourceCopy,
 	                deployType : "save"
                 }
             };
 
-            executeMyRequest(params, 'resources/new', 'post', function(body) {
+            executeMyRequest(params, 'resources', 'post', function(body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 assert.ok(body.data.id);
@@ -291,13 +294,14 @@ describe("Testing Resources Functionality", function() {
                     access_token: access_token_owner
                 },
                 form: {
+	                id: 'new',
                     env: 'dev',
                     resource: sampleResourceCopy,
 	                deployType : "save"
                 }
             };
 
-            executeMyRequest(params, 'resources/new', 'post', function(body) {
+            executeMyRequest(params, 'resources', 'post', function(body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], { code: 173, message: 'Validation failed for field: resource -> The parameter \'resource\' failed due to: instance additionalProperty \"invalidInput\" exists in instance when not allowed' });
                 done();
@@ -371,6 +375,7 @@ describe("Testing Resources Functionality", function() {
 					access_token: access_token_owner
 				},
 				form: {
+					id: 'new',
 					env: 'dev',
 					resource: sampleResource2,
 					deployType: "saveAndDeploy",
@@ -402,7 +407,7 @@ describe("Testing Resources Functionality", function() {
 				}
 			};
 			
-			executeMyRequest(params, 'resources/new', 'post', function (body) {
+			executeMyRequest(params, 'resources', 'post', function (body) {
 				// assert.ok(body);
 				// assert.ok(body.data);
 				// assert.ok(body.data.id);
@@ -423,6 +428,7 @@ describe("Testing Resources Functionality", function() {
 					access_token: access_token_owner
 				},
 				form: {
+					id: sample2Id,
 					env: 'dev',
 					resource: sampleResource2,
 					deployType: "saveAndDeploy",
@@ -439,7 +445,7 @@ describe("Testing Resources Functionality", function() {
 				}
 			};
 			
-			executeMyRequest(params, 'resources/'+sample2Id, 'post', function (body) {
+			executeMyRequest(params, 'resources', 'post', function (body) {
 				assert.ok(body);
 				done();
 			});
@@ -714,13 +720,14 @@ describe("Testing Resources Functionality", function() {
                     access_token: access_token_owner
                 },
                 form: {
+	                id: 'new',
                     env: 'dev',
                     resource: sampleResourceCopy,
 	                deployType : "save"
                 }
             };
 
-            executeMyRequest(params, 'resources/new', 'post', function(body) {
+            executeMyRequest(params, 'resources', 'post', function(body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 assert.ok(body.data.id);
@@ -936,13 +943,14 @@ describe("Testing Resources Functionality", function() {
                     access_token: access_token_owner
                 },
                 form: {
+	                id: 'new',
                     env: 'dev',
                     resource: sampleResourceCopy,
 	                deployType : "save"
                 }
             };
 
-            executeMyRequest(params, 'resources/new', 'post', function(body) {
+            executeMyRequest(params, 'resources', 'post', function(body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], { code: 989, message: errors[989] });
                 done();
