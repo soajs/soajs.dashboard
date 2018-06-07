@@ -4,7 +4,6 @@
 'use strict';
 var soajsCore = require("soajs");
 var Mongo = soajsCore.mongo;
-var mongoObj = null;
 
 var soajsUtils = soajsCore.utils;
 
@@ -12,7 +11,6 @@ var servicesCollectionName = 'services';
 var daemonsCollectionName = 'daemons';
 var groupConfigCollectionName = 'daemon_grpconf';
 var environmentCollectionName = 'environment';
-var gridfsCollectionName = 'fs.files';
 var tenantCollectionName = 'tenants';
 var productsCollectionName = 'products';
 var hostsCollectionName = 'hosts';
@@ -25,6 +23,7 @@ var customRegCollection = 'custom_registry';
 var templatesCollection = 'templates';
 var endpointCollections = 'api_builder_endpoints';
 var microservicesCollection = 'api_builder_services';
+var infraCollection = 'api_builder_services';
 
 var firstRun = true;
 var lib = {
@@ -157,6 +156,10 @@ var lib = {
 			soajs.mongoDb.createIndex(microservicesCollection, { serviceName: 1}, errorLogger);
 			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1, servicePort: 1 }, errorLogger);
 			
+			//endpoint collections
+			soajs.mongoDb.createIndex(infraCollection, { 'deployments.environments': 1}, errorLogger);
+			soajs.mongoDb.createIndex(infraCollection, { 'deployments.technology': 1}, errorLogger);
+			
 			firstRun = false;
 		}
 		
@@ -230,6 +233,16 @@ var lib = {
 	
 	"validateCustomId": function (soajs, id, cb) {
 		lib.checkForMongo(soajs);
+		if (!id) {
+			soajs.log.error('No id provided');
+			
+			if (cb) {
+				return cb('no id provided');
+			}
+			else {
+				return null;
+			}
+		}
 		try {
 			id = soajs.mongoDb.ObjectId(id);
 			return ((cb) ? cb(null, id) : id);
