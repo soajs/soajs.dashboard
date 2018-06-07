@@ -50,6 +50,9 @@ let templateRestrictionSchema = {
 	"type": "object",
 	"required": false,
 	"properties": {
+		"allowInfraReuse": {
+			"type": "boolean"
+		},
 		"deployment": {
 			"type": "array",
 			"items": {
@@ -83,11 +86,11 @@ module.exports = {
 	"type": "object",
 	"required": true,
 	"properties": {
-		"name": {"type": "string", "required": true},
-		"description": {"type": "string", "required": true},
-		"logo": {"type": "string", "required": false},
-		"link": {"type": "string", "required": false, "format": "uri"},
-		"reusable" : {"type": "boolean", "required": false},
+		"name": { "type": "string", "required": true },
+		"description": { "type": "string", "required": true },
+		"logo": { "type": "string", "required": false },
+		"link": { "type": "string", "required": false, "format": "uri" },
+		"reusable": { "type": "boolean", "required": false },
 		"content": {
 			"type": "object",
 			"required": false,
