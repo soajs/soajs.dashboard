@@ -395,7 +395,8 @@ describe("testing helper.js", function () {
 					}
 				};
 
-				status.checkMandatoryTemplateSchema(req, test, lib, context1, req.soajs.validator, 40000, function (result, error) {
+				status.checkMandatoryTemplateSchema(req, test, lib, context1, req.soajs.validator, 40000, function (error, result) {
+					assert.deepEqual(context1.template.restriction.deployment, ['container']);
 					done();
 				});
 			});
@@ -418,7 +419,7 @@ describe("testing helper.js", function () {
 					}
 				};
 				
-				status.checkMandatoryTemplateSchema(req, test, lib, context1, req.soajs.validator, 40000, function (result, error) {
+				status.checkMandatoryTemplateSchema(req, test, lib, context1, req.soajs.validator, 40000, function (error, result) {
 					done();
 				});
 			});
