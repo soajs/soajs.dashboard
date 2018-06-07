@@ -2019,6 +2019,7 @@ module.exports = {
 				"id": {
 					"source": ['params.id'],
 					"required": true,
+					"default": "new",
 					"validation": {
 						"type": "string"
 					}
