@@ -302,7 +302,7 @@ var lib = {
 	"switchConnection": function (soajs) {
 		var provision = true;
 		if (process.env.SOAJS_SAAS) {
-			soajs.log.info(soajs.servicesConfig);
+			soajs.log.info(soajs.servicesConfig.SOAJS_SAAS);
 		}
 		if (process.env.SOAJS_SAAS && !soajs.tenant.locked) {
 			if (soajs.servicesConfig && soajs.servicesConfig.SOAJS_SAAS) {
