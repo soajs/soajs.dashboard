@@ -18,6 +18,9 @@ var mongoStub = {
 	validateId: function (soajs, cb) {
 		return cb(null, soajs.inputmaskData.id);
 	},
+	validateCustomId: function (soajs, id, cb) {
+		return cb(null, soajs.inputmaskData.id);
+	},
 	findEntry: function (soajs, opts, cb) {
 		cb(null, {});
 	},
