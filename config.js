@@ -2010,14 +2010,14 @@ module.exports = {
 				}
 			},
 
-			"/resources/:id": { // add new
+			"/resources": { // add new
 				_apiInfo: {
 					"l": "Add / Edit Resource",
 					"group": "Resources"
 				},
 				'commonFields': ['soajs_project'],
 				"id": {
-					"source": ['params.id'],
+					"source": ['query.id'],
 					"required": true,
 					"default": "new",
 					"validation": {

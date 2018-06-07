@@ -527,7 +527,7 @@ service.init(function () {
 		});
 	});
 
-    service.post("/resources/:id", function (req, res) {
+    service.post("/resources", function (req, res) {
         initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (serviceBL) {
             initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
                 checkConnection(BL, req, res, function () {
