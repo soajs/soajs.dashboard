@@ -2017,7 +2017,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project'],
 				"id": {
-					"source": ['query.id'],
+					"source": ['query.id', 'body.id'],
 					"required": true,
 					"default": "new",
 					"validation": {
