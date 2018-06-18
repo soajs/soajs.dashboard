@@ -23,7 +23,7 @@ var customRegCollection = 'custom_registry';
 var templatesCollection = 'templates';
 var endpointCollections = 'api_builder_endpoints';
 var microservicesCollection = 'api_builder_services';
-var infraCollection = 'api_builder_services';
+var infraCollection = 'infra';
 
 var firstRun = true;
 var lib = {
