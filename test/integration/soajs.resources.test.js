@@ -641,7 +641,7 @@ describe("Testing Resources Functionality", function() {
             executeMyRequest(params, 'resources', 'get', function(body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
-                assert.equal(body.data.length, 2);
+	            assert.ok(body.data.length > 0);
                 body.data.forEach(function(oneResource) {
                     assert.ok(oneResource.permission);
                 });
@@ -661,7 +661,7 @@ describe("Testing Resources Functionality", function() {
             executeMyRequest(params, 'resources', 'get', function(body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
-                assert.equal(body.data.length, 2);
+                assert.ok(body.data.length > 0);
                 body.data.forEach(function(oneResource) {
                     if(oneResource.name === 'cluster1') {
                         assert.equal(oneResource.permission, false);
