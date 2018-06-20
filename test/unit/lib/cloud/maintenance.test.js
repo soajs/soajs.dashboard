@@ -213,4 +213,67 @@ describe("testing lib/cloud/maintenance/index.js", function () {
 		});
 		
 	});
+	
+	describe("maintenance VM", function () {
+		it("Success", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				var infraRecord = {
+					"_id": '5b28c5edb53002d7b3b1f0cf',
+					"api": {
+						"clientId": "1",
+						"secret": "1",
+						"domain": "2",
+						"subscriptionId": "36"
+					},
+					"name": "azure",
+					"technologies": [
+						"vm"
+					],
+					"templates": [
+						"local"
+					],
+					"drivers": [
+						"Native",
+						"Terraform"
+					],
+					"label": "Azure Soajs",
+					"deployments": [
+						{
+							"technology": "vm",
+							"options": {
+								"zone": "local"
+							},
+							"environments": [
+								"DEV"
+							],
+							"loadBalancers": {},
+							"name": "htlocalp42pyx0b5lsyt",
+							"id": "htlocalp42pyx0b5lsyt"
+						}
+					]
+				};
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				} else if (opts.collection === 'infra') {
+					return cb(null, infraRecord);
+				} else {
+					return cb(null, {});
+				}
+			};
+			req.soajs.inputmaskData = {
+				
+				"env": "tester",
+				"vmName": "tester-vm",
+				"infraId": "5b28c5edb53002d7b3b1f0cf",
+				"technology": "vm",
+				"operation": "startVM"
+				
+			};
+			maintenance.maintenanceVM(config, req.soajs, deployer, function (error, body) {
+				assert.ok(body);
+				assert.ifError(error);
+				done();
+			});
+		});
+	});
 });

@@ -78,6 +78,9 @@ var dashboardBL = {
 		},
 		secrets: {
 			module: require('./lib/cloud/secrets/index.js')
+		},
+		vm: {
+			module: require('./lib/cloud/vm/index.js')
 		}
 	},
 	templates: {
@@ -1528,9 +1531,25 @@ service.init(function () {
 	 * @param {Function} API middleware
 	 */
 	service.get("/cloud/vm/list", function (req, res) {
-		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (BL) {
+		initBLModel(req, res, dashboardBL.cloud.vm.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.listVMs(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Delete a virtual machine
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.delete("/cloud/vm", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.deleteService(config, req, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -1601,6 +1620,22 @@ service.init(function () {
 			});
 		});
 	});
+	
+	/**
+	 * Perform maintenance operations to a virtual machine
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/cloud/vm/maintenance", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.maintenanceVM(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
 
 	/**
 	 * Get container logs
@@ -1617,6 +1652,22 @@ service.init(function () {
 			});
 		});
 	});
+	
+	/**
+	 *Get virtual machine logs
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	// service.post("/cloud/vm/logs", function (req, res) {
+	// 	initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
+	// 		checkConnection(BL, req, res, function () {
+	// 			BL.getLogs(config, req.soajs, deployer, function (error, data) {
+	// 				BL.model.closeConnection(req.soajs);
+	// 				return res.json(req.soajs.buildResponse(error, data));
+	// 			});
+	// 		});
+	// 	});
+	// });
 
 	/**
 	 * Autoscale one or more services

@@ -368,13 +368,13 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"extKeyRequired": {
 				"source": ['body.extKeyRequired'],
 				"required": true,
 				"validation": {"type": "boolean"}
 			},
-
+			
 			"urac": {
 				"required": true,
 				"source": ["body.urac"],
@@ -431,7 +431,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			'jobs': {
 				'source': ['body.jobs'],
 				'required': true,
@@ -481,7 +481,7 @@ module.exports = {
 					'type': 'text'
 				}
 			},
-
+			
 			'status': {
 				'source': ['body.status'],
 				'required': true,
@@ -2820,7 +2820,30 @@ module.exports = {
 					}
 				}
 			},
-
+			
+			"/cloud/vm/maintenance": {
+				"_apiInfo": {
+					"l": "Perform A Maintenance Operation on a Virtual Machine",
+					"group": "HA Cloud"
+				},
+				"commonFields": ['soajs_project', 'env', 'infraId', 'technology'],
+				"vmName": {
+					"source": ['body.vmName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"operation": {
+					"source": ['body.operation'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["powerOffVM", "startVM", "restartService"]
+					}
+				}
+			},
+			
 			"/catalog/recipes/add": {
 				"_apiInfo": {
 					"l": "Add New Catalog",
@@ -5244,6 +5267,14 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				'commonFields': ['soajs_project', 'env', 'serviceId', 'namespace', 'mode', 'infraId', 'technology']
+			},
+			
+			"/cloud/vm": {
+				"_apiInfo": {
+					"l": "Delete Virtual Machine",
+					"group": "HA Cloud"
+				},
+				'commonFields': ['soajs_project', 'env', 'serviceId', 'infraId', 'technology']
 			},
 
 			"/cloud/namespaces/delete": {
