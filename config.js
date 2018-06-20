@@ -2879,7 +2879,7 @@ module.exports = {
 					}
 				},
 				"technology": {
-					"source": ['query.technology'],
+					"source": ['query.technology', 'body.vmName'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -2897,13 +2897,6 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "number"
-					}
-				},
-				"command": {
-					"source": ['body.command'],
-					"required": true,
-					"validation": {
-						"type": "string"
 					}
 				}
 			},
