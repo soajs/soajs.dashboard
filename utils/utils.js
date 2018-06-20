@@ -2,7 +2,6 @@
 const soajsUtils = require("soajs").utils;
 const async = require('async');
 const tenantsColName = 'tenants';
-const ledgerColName = 'ledger';
 module.exports = {
 
 	/**

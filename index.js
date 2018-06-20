@@ -1658,16 +1658,17 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	// service.post("/cloud/vm/logs", function (req, res) {
-	// 	initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
-	// 		checkConnection(BL, req, res, function () {
-	// 			BL.getLogs(config, req.soajs, deployer, function (error, data) {
-	// 				BL.model.closeConnection(req.soajs);
-	// 				return res.json(req.soajs.buildResponse(error, data));
-	// 			});
-	// 		});
-	// 	});
-	// });
+	service.post("/cloud/vm/logs", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.getLogVM(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
 
 	/**
 	 * Autoscale one or more services

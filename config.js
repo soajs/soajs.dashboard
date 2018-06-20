@@ -2826,7 +2826,21 @@ module.exports = {
 					"l": "Perform A Maintenance Operation on a Virtual Machine",
 					"group": "HA Cloud"
 				},
-				"commonFields": ['soajs_project', 'env', 'infraId', 'technology'],
+				"commonFields": ['soajs_project', 'env'],
+				"infraId": {
+					"source": ['query.infraId', 'body.infraId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"technology": {
+					"source": ['query.technology'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
 				"vmName": {
 					"source": ['body.vmName'],
 					"required": true,
@@ -2840,6 +2854,49 @@ module.exports = {
 					"validation": {
 						"type": "string",
 						"enum": ["powerOffVM", "startVM", "restartService"]
+					}
+				}
+			},
+			
+			"cloud/vm/logs": {
+				"_apiInfo": {
+					"l": "Get Service Container Logs",
+					"group": "HA Cloud"
+				},
+				'commonFields': ['soajs_project', 'env'],
+				"infraId": {
+					"source": ['query.infraId', 'body.infraId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"technology": {
+					"source": ['query.technology'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"vmName": {
+					"source": ['query.vmName', 'body.vmName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'numberOfLines': {
+					"source": ['query.numberOfLines', 'body.numberOfLines'],
+					"required": true,
+					"validation": {
+						"type": "number"
+					}
+				},
+				"command": {
+					"source": ['body.command'],
+					"required": true,
+					"validation": {
+						"type": "string"
 					}
 				}
 			},
