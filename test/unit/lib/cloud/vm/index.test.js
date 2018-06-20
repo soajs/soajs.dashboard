@@ -326,7 +326,7 @@ describe("testing lib/cloud/bm/index.js", function () {
 			services.listVMs(config, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				assert.ifError(error);
-				assert.equal(body.azure.list.length, 3);
+				assert.equal(body.azure.length, 3);
 				done();
 			});
 		});

@@ -1253,7 +1253,14 @@ module.exports = {
 				'commonFields': ['soajs_project'],
 				"env": {
 					"source": ['query.env'],
-					"required": false,
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"infraId": {
+					"source": ['query.infraId'],
+					"required": true,
 					"validation": {
 						"type": "string"
 					}
