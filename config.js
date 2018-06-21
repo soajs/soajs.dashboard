@@ -2856,7 +2856,7 @@ module.exports = {
 					}
 				},
 				"vmName": {
-					"source": ['body.vmName'],
+					"source": ['query.serviceId', 'body.serviceId'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -2907,7 +2907,7 @@ module.exports = {
 					}
 				},
 				"vmName": {
-					"source": ['query.vmName', 'body.vmName'],
+					"source": ['query.serviceId', 'body.serviceId'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -5371,7 +5371,7 @@ module.exports = {
 				}
 			},
 			
-			"/cloud/vm": {
+			"/cloud/vm/instance": {
 				"_apiInfo": {
 					"l": "Delete Virtual Machine",
 					"group": "HA Cloud"
