@@ -1258,6 +1258,13 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				"group": {
+					"source": ['query.group'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
 				"infraId": {
 					"source": ['query.infraId'],
 					"required": true,
@@ -2833,7 +2840,7 @@ module.exports = {
 					"l": "Perform A Maintenance Operation on a Virtual Machine",
 					"group": "HA Cloud"
 				},
-				"commonFields": ['soajs_project', 'env'],
+				"commonFields": ['soajs_project'],
 				"infraId": {
 					"source": ['query.infraId', 'body.infraId'],
 					"required": true,
@@ -2849,7 +2856,7 @@ module.exports = {
 					}
 				},
 				"vmName": {
-					"source": ['body.vmName'],
+					"source": ['query.serviceId', 'body.serviceId'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -2862,6 +2869,20 @@ module.exports = {
 						"type": "string",
 						"enum": ["powerOffVM", "startVM", "restartService"]
 					}
+				},
+				'env':{
+					"source": ['query.env'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'group':{
+					"source": ['query.group'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
 			
@@ -2870,7 +2891,7 @@ module.exports = {
 					"l": "Get Service Container Logs",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['soajs_project', 'env'],
+				'commonFields': ['soajs_project'],
 				"infraId": {
 					"source": ['query.infraId', 'body.infraId'],
 					"required": true,
@@ -2886,7 +2907,7 @@ module.exports = {
 					}
 				},
 				"vmName": {
-					"source": ['query.vmName', 'body.vmName'],
+					"source": ['query.serviceId', 'body.serviceId'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -2899,6 +2920,20 @@ module.exports = {
 						"type": "number",
 						"min": 1,
 						"max": 1000
+					}
+				},
+				'env':{
+					"source": ['query.env'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'group':{
+					"source": ['query.group'],
+					"required": true,
+					"validation": {
+						"type": "string"
 					}
 				}
 			},
@@ -5325,10 +5360,18 @@ module.exports = {
 					"l": "Delete HA Service",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['soajs_project', 'env', 'serviceId', 'namespace', 'mode', 'infraId', 'technology']
+				'commonFields': ['soajs_project', 'env', 'serviceId', 'namespace', 'mode', 'infraId', 'technology'],
+				'group':{
+					"source": ['query.group'],
+					"required": true,
+					"default": "",
+					"validation": {
+						"type": "string"
+					}
+				}
 			},
 			
-			"/cloud/vm": {
+			"/cloud/vm/instance": {
 				"_apiInfo": {
 					"l": "Delete Virtual Machine",
 					"group": "HA Cloud"

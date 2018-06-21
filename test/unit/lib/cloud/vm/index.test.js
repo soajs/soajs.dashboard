@@ -348,12 +348,6 @@ describe("testing lib/cloud/bm/index.js", function () {
 						"settings": {
 							"accelerateDeployment": true
 						},
-						"env": {
-							"test": {
-								"type": "static",
-								"value": "0"
-							},
-						},
 						"cmd": {
 							"deploy": {
 								"command": [

@@ -1546,7 +1546,7 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.delete("/cloud/vm", function (req, res) {
+	service.delete("/cloud/vm/instance", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.deleteService(config, req, deployer, function (error, data) {
