@@ -2865,7 +2865,7 @@ module.exports = {
 				}
 			},
 			
-			"cloud/vm/logs": {
+			"/cloud/vm/logs": {
 				"_apiInfo": {
 					"l": "Get Service Container Logs",
 					"group": "HA Cloud"
@@ -2879,7 +2879,7 @@ module.exports = {
 					}
 				},
 				"technology": {
-					"source": ['query.technology'],
+					"source": ['query.technology', 'body.vmName'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -2894,16 +2894,11 @@ module.exports = {
 				},
 				'numberOfLines': {
 					"source": ['query.numberOfLines', 'body.numberOfLines'],
-					"required": true,
+					"required": false,
 					"validation": {
-						"type": "number"
-					}
-				},
-				"command": {
-					"source": ['body.command'],
-					"required": true,
-					"validation": {
-						"type": "string"
+						"type": "number",
+						"min": 1,
+						"max": 1000
 					}
 				}
 			},
