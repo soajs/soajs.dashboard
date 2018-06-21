@@ -276,6 +276,11 @@ deployer.execute = function (opts, command, options, cb) {
 	return cb(null, resp);
 };
 
+deployer.runCommand = function (opts, command, options, cb) {
+	
+	return cb(null, true);
+};
+
 describe("testing lib/cloud/bm/index.js", function () {
 	
 	before(() => {
@@ -327,6 +332,43 @@ describe("testing lib/cloud/bm/index.js", function () {
 				assert.ok(body);
 				assert.ifError(error);
 				assert.equal(body.azure.length, 3);
+				done();
+			});
+		});
+	});
+	
+	describe("runCommand", function () {
+		
+		it("Success", function (done) {
+			req.soajs.inputmaskData.env = 'tester';
+			req.soajs.inputmaskData.vmName = 'tester-vm';
+			req.soajs.inputmaskData.catalog = {
+				"recipe": {
+					"buildOptions": {
+						"settings": {
+							"accelerateDeployment": true
+						},
+						"env": {
+							"test": {
+								"type": "static",
+								"value": "0"
+							},
+						},
+						"cmd": {
+							"deploy": {
+								"command": [
+									"journalctl -r --lines 10"
+								],
+							}
+						}
+					}
+				}
+			};
+			req.soajs.inputmaskData.infraRecord = infraRecord;
+			
+			services.runCommand(config, req.soajs, deployer, function (error, body) {
+				assert.ok(body);
+				assert.ifError(error);
 				done();
 			});
 		});
