@@ -84,14 +84,10 @@ var soajs = {
 var infraRecord = {
 	"_id": '5b28c5edb53002d7b3b1f0cf',
 	"api": {
-		// "clientId": "1",
-		// "secret": "1",
-		// "domain": "2",
-		// "subscriptionId": "36"
-		clientId :"cca65dcd-3aa3-44d3-81cb-6b57b764be6a",
-		secret:"QY7TMLyoA6Jjzidtduqbn/4Y2mDlyJUbKZ40c6dBTYw=",
-		domain : "608c3255-376b-47a4-8e8e-9291e506d03e",
-		subscriptionId : "d159e994-8b44-42f7-b100-78c4508c34a6"
+		"clientId": "1",
+		"secret": "1",
+		"domain": "2",
+		"subscriptionId": "36"
 	},
 	"name": "azure",
 	"technologies": [
