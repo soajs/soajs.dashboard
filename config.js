@@ -1921,7 +1921,7 @@ module.exports = {
 				},
 				'region': {
 					"source": ['query.region'],
-					"required": false,
+					"required": true,
 					"validation": {
 						"type": "string"
 					}
