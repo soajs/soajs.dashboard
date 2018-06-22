@@ -1531,9 +1531,9 @@ service.init(function () {
 	 * @param {Function} API middleware
 	 */
 	service.post("/cloud/vm", function (req, res) {
-		initBLModel(req, res, dashboardBL.infra.infra.module, dbModel, function (BL) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.deployVM(config, req, deployer, function (error, data) {
+				BL.deployVM(config, req, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -1579,9 +1579,9 @@ service.init(function () {
 	 * @param {Function} API middleware
 	 */
 	service.delete("/cloud/vm", function (req, res) {
-		initBLModel(req, res, dashboardBL.infra.infra.module, dbModel, function (BL) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.destroyVM(config, req, deployer, function (error, data) {
+				BL.destroyVM(config, req, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -1611,9 +1611,9 @@ service.init(function () {
 	 * @param {Function} API middleware
 	 */
 	service.put("/cloud/vm", function (req, res) {
-		initBLModel(req, res, dashboardBL.infra.infra.module, dbModel, function (BL) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.updateVM(config, req, deployer, function (error, data) {
+				BL.updateVM(config, req, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -1627,9 +1627,9 @@ service.init(function () {
 	 * @param {Function} API middleware
 	 */
 	service.get("/cloud/vm/layer/status", function (req, res) {
-		initBLModel(req, res, dashboardBL.infra.infra.module, dbModel, function (BL) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.getDeployVMStatus(config, req, deployer, function (error, data) {
+				BL.getDeployVMStatus(config, req, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

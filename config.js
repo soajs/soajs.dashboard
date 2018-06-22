@@ -2930,7 +2930,7 @@ module.exports = {
 					}
 				},
 				"infraCodeTemplate": {
-					"source": ['body.serviceId'],
+					"source": ['body.infraCodeTemplate'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -5194,7 +5194,7 @@ module.exports = {
 					}
 				},
 				"infraCodeTemplate": {
-					"source": ['body.serviceId'],
+					"source": ['body.infraCodeTemplate'],
 					"required": true,
 					"validation": {
 						"type": "string"
