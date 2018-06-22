@@ -542,7 +542,7 @@ service.init(function () {
             });
         });
     });
-	
+
 	/**
 	 * Delete a resource
 	 * @param {String} API route
@@ -1524,7 +1524,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Create a virtual machine layer
 	 * @param {String} API route
@@ -1540,7 +1540,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List all Vms deployed in a region
 	 * @param {String} API route
@@ -1556,7 +1556,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete a virtual machine
 	 * @param {String} API route
@@ -1572,7 +1572,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete a virtual machine layer
 	 * @param {String} API route
@@ -1604,7 +1604,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update a virtual machine layer
 	 * @param {String} API route
@@ -1620,7 +1620,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Get a virtual machine layer status
 	 * @param {String} API route
@@ -1684,7 +1684,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Perform maintenance operations to a virtual machine
 	 * @param {String} API route
@@ -1716,7 +1716,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 *Get virtual machine logs
 	 * @param {String} API route
@@ -1732,7 +1732,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 
 	/**
 	 * Autoscale one or more services
@@ -3460,6 +3460,20 @@ service.init(function () {
 						return res.json(req.soajs.buildResponse(error, data));
 					});
 				}
+			});
+		});
+	});
+
+	/**
+	 * Get infra extra components
+	 */
+	service.get("/infra/extras", function(req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.getExtras(config, req, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
