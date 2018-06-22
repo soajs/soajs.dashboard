@@ -2992,7 +2992,7 @@ module.exports = {
 					}
 				},
 				"infraCodeTemplate": {
-					"source": ['body.serviceId'],
+					"source": ['body.infraCodeTemplate'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -3005,7 +3005,7 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"name": {
+				"layerName": {
 					"source": ['body.name'],
 					"required": true,
 					"validation": {
@@ -5256,7 +5256,7 @@ module.exports = {
 					}
 				},
 				"infraCodeTemplate": {
-					"source": ['body.serviceId'],
+					"source": ['body.infraCodeTemplate'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -5271,13 +5271,6 @@ module.exports = {
 				},
 				"layerName": {
 					"source": ['query.layerName'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"name": {
-					"source": ['body.name'],
 					"required": true,
 					"validation": {
 						"type": "string"
