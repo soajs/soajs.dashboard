@@ -87,6 +87,7 @@ var errors = {
 	"492": "This provider does not support storing infra as code templates locally",
 	"493": "Unable to update template content, this template is not stored locally",
 	"494": "This provider does not support storing infra as code templates externally",
+	"495": "No Template state provided for this layer",
 	
 	"500": "This record is locked. You cannot delete it",
 	"501": "This record is locked. You cannot modify or delete it",
