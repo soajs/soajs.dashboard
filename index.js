@@ -1524,7 +1524,23 @@ service.init(function () {
 			});
 		});
 	});
-
+	
+	/**
+	 * Create a virtual machine layer
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/cloud/vm", function (req, res) {
+		initBLModel(req, res, dashboardBL.infra.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.deployVM(config, req, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
 	/**
 	 * List all Vms deployed in a region
 	 * @param {String} API route
@@ -1556,6 +1572,22 @@ service.init(function () {
 			});
 		});
 	});
+	
+	/**
+	 * Delete a virtual machine layer
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.delete("/cloud/vm", function (req, res) {
+		initBLModel(req, res, dashboardBL.infra.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.destroyVM(config, req, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
 
 	/**
 	 * Redeploy a running service
@@ -1566,6 +1598,38 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.cloud.deploy.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.redeployService(config, req, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Update a virtual machine layer
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/cloud/vm", function (req, res) {
+		initBLModel(req, res, dashboardBL.infra.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.updateVM(config, req, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Get a virtual machine layer status
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/cloud/vm/layer/status", function (req, res) {
+		initBLModel(req, res, dashboardBL.infra.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.getDeployVMStatus(config, req, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

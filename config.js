@@ -1273,6 +1273,28 @@ module.exports = {
 					}
 				}
 			},
+			
+			"/cloud/vm/layer/status": {
+				"_apiInfo": {
+					"l": "List Cloud Virtual Machines",
+					"group": "Services"
+				},
+				'commonFields': ['soajs_project'],
+				"env": {
+					"source": ['query.env'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"layerName": {
+					"source": ['query.layerName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
 
 			"/cloud/metrics/services": {
 				"_apiInfo": {
@@ -2882,6 +2904,56 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				}
+			},
+			
+			"/cloud/vm": {
+				"_apiInfo": {
+					"l": "Add Virtual Machine Layer",
+					"group": "HA Cloud"
+				},
+				"commonFields": ['soajs_project', 'env'],
+				"infraId": {
+					"source": ['query.infraId', 'body.infraId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"technology": {
+					"source": ['query.technology'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"infraCodeTemplate": {
+					"source": ['body.serviceId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"region": {
+					"source": ['body.region'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"name": {
+					"source": ['body.name'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"specs": {
+					"source": ['body.specs'],
+					"required": true,
+					"validation": {
+						"type": "object"
 					}
 				}
 			},
@@ -5098,7 +5170,64 @@ module.exports = {
 						"type": "object"
 					}
 				}
-			}
+			},
+			
+			"/cloud/vm": {
+				"_apiInfo": {
+					"l": "Add Virtual Machine Layer",
+					"group": "HA Cloud"
+				},
+				"commonFields": ['soajs_project', 'env'],
+				"infraId": {
+					"source": ['query.infraId', 'body.infraId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"technology": {
+					"source": ['query.technology'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"infraCodeTemplate": {
+					"source": ['body.serviceId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"region": {
+					"source": ['body.region'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"layerName": {
+					"source": ['query.layerName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"name": {
+					"source": ['body.name'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"specs": {
+					"source": ['body.specs'],
+					"required": true,
+					"validation": {
+						"type": "object"
+					}
+				}
+			},
 		},
 
 		"delete": {
@@ -5377,6 +5506,35 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				'commonFields': ['soajs_project', 'env', 'serviceId', 'infraId', 'technology']
+			},
+			
+			"/cloud/vm": {
+				"_apiInfo": {
+					"l": "Add Virtual Machine Layer",
+					"group": "HA Cloud"
+				},
+				"commonFields": ['soajs_project', 'env'],
+				"infraId": {
+					"source": ['query.infraId',],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"technology": {
+					"source": ['query.technology'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"layerName": {
+					"source": ['query.layerName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
 			},
 
 			"/cloud/namespaces/delete": {
