@@ -77,6 +77,33 @@ module.exports = {
 
 	"dashboardClusterResourceName": "dash_cluster",
 
+	"infraExtrasList": [ 'osDisks', 'dataDisks', 'loadBalancers', 'networks', 'publicIps', 'securityGroups', 'vmSizes' ],
+	"extrasFunctionMapping": {
+		osDisks: {
+			functionName: 'listDisks',
+			specialInput: { type: 'os' }
+		},
+		dataDisks: {
+			functionName: 'listDisks',
+			specialInput: { type: 'data' }
+		},
+		loadBalancers: {
+			functionName: 'listLoadBalancers'
+		},
+		networks: {
+			functionName: 'listNetworks'
+		},
+		publicIps: {
+			functionName: 'listPublicIps'
+		},
+		securityGroups: {
+			functionName: 'listSecurityGroups'
+		},
+		vmSizes: {
+			functionName: 'listVmSizes'
+		}
+	},
+
 	"gitAccounts": {
 		"bitbucket": {
 			apiDomain: 'https://api.bitbucket.org/1.0',
@@ -368,13 +395,13 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"extKeyRequired": {
 				"source": ['body.extKeyRequired'],
 				"required": true,
 				"validation": {"type": "boolean"}
 			},
-			
+
 			"urac": {
 				"required": true,
 				"source": ["body.urac"],
@@ -431,7 +458,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			'jobs': {
 				'source': ['body.jobs'],
 				'required': true,
@@ -481,7 +508,7 @@ module.exports = {
 					'type': 'text'
 				}
 			},
-			
+
 			'status': {
 				'source': ['body.status'],
 				'required': true,
@@ -1273,7 +1300,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/vm/layer/status": {
 				"_apiInfo": {
 					"l": "List Cloud Virtual Machines",
@@ -1294,7 +1321,7 @@ module.exports = {
 						"type": "string"
 					}
 				}
-				
+
 			},
 
 			"/cloud/metrics/services": {
@@ -1875,6 +1902,41 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				}
+			},
+
+			"/infra/extras": {
+				"_apiInfo": {
+					"l": "Get Extra Compnents From An Infra Provider",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project', 'id'],
+				'envCode': {
+					"source": ['query.envCode'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'region': {
+					"source": ['query.region'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'extras': {
+					"source": ['query.extras'],
+					"required": false,
+					"validation": {
+						"type": "array",
+						"items": {
+							"type": "string",
+							"enum": [ 'osDisks', 'dataDisks', 'loadBalancers', 'networks', 'publicIps', 'securityGroups', 'vmSizes' ]
+						},
+						"minItems": 0,
+						"uniqueItems": true
 					}
 				}
 			}
@@ -2857,7 +2919,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/vm/maintenance": {
 				"_apiInfo": {
 					"l": "Perform A Maintenance Operation on a Virtual Machine",
@@ -2908,7 +2970,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/vm": {
 				"_apiInfo": {
 					"l": "Add Virtual Machine Layer",
@@ -2958,7 +3020,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/vm/logs": {
 				"_apiInfo": {
 					"l": "Get Service Container Logs",
@@ -3010,7 +3072,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/catalog/recipes/add": {
 				"_apiInfo": {
 					"l": "Add New Catalog",
@@ -5172,7 +5234,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/vm": {
 				"_apiInfo": {
 					"l": "Add Virtual Machine Layer",
@@ -5493,7 +5555,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/vm/instance": {
 				"_apiInfo": {
 					"l": "Delete Virtual Machine",
@@ -5501,7 +5563,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env', 'serviceId', 'infraId', 'technology']
 			},
-			
+
 			"/cloud/vm": {
 				"_apiInfo": {
 					"l": "Add Virtual Machine Layer",
