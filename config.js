@@ -1280,20 +1280,21 @@ module.exports = {
 					"group": "Services"
 				},
 				'commonFields': ['soajs_project'],
-				"env": {
-					"source": ['query.env'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
 				"layerName": {
 					"source": ['query.layerName'],
 					"required": true,
 					"validation": {
 						"type": "string"
 					}
+				},
+				"infraId": {
+					"source": ['query.infraId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
 				}
+				
 			},
 
 			"/cloud/metrics/services": {

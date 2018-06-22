@@ -162,9 +162,7 @@ var lib = {
 			soajs.mongoDb.createIndex(infraCollection, { 'deployments.technology': 1}, errorLogger);
 			
 			//templateState collection
-			soajs.mongoDb.createIndex(templateStateCollection, { 'name': 1} , { unique: true }, errorLogger);
-			soajs.mongoDb.createIndex(templateStateCollection, { 'name': 1}, { 'infraCodeTemplate': 1}, { 'env': 1}, errorLogger);
-			soajs.mongoDb.createIndex(templateStateCollection, { 'name': 1}, { 'env': 1}, errorLogger);
+			soajs.mongoDb.createIndex(templateStateCollection, { 'name': 1}, { 'infraId': 1}, { unique: true }, errorLogger);
 			
 			firstRun = false;
 		}
@@ -173,7 +171,7 @@ var lib = {
 	},
 	/**
 	 * Close the mongo connection
-	 * @param {SOAJS Object} soajs
+	 * @param {object} soajs
 	 */
 	"closeConnection": function (soajs) {
 		if (soajs.mongoDb) {
