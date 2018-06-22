@@ -1919,6 +1919,13 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				'group': {
+					"source": ['query.group'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
 				'region': {
 					"source": ['query.region'],
 					"required": true,
