@@ -24,6 +24,7 @@ var templatesCollection = 'templates';
 var endpointCollections = 'api_builder_endpoints';
 var microservicesCollection = 'api_builder_services';
 var infraCollection = 'infra';
+var templateStateCollection = 'vm_layers';
 
 var firstRun = true;
 var lib = {
@@ -148,7 +149,7 @@ var lib = {
 			soajs.mongoDb.createIndex(templatesCollection, { name: 1, type: 1 }, errorLogger);
 			soajs.mongoDb.createIndex(templatesCollection, { expires: 1 }, { expireAfterSeconds: 0 }, errorLogger);
 			
-			//endpoint collections
+			//endpoint collection
 			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1}, errorLogger);
 			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1, servicePort: 1 }, errorLogger);
 			
@@ -156,9 +157,14 @@ var lib = {
 			soajs.mongoDb.createIndex(microservicesCollection, { serviceName: 1}, errorLogger);
 			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1, servicePort: 1 }, errorLogger);
 			
-			//endpoint collections
+			//infra collection
 			soajs.mongoDb.createIndex(infraCollection, { 'deployments.environments': 1}, errorLogger);
 			soajs.mongoDb.createIndex(infraCollection, { 'deployments.technology': 1}, errorLogger);
+			
+			//templateState collection
+			soajs.mongoDb.createIndex(templateStateCollection, { 'name': 1} , { unique: true }, errorLogger);
+			soajs.mongoDb.createIndex(templateStateCollection, { 'name': 1}, { 'infraCodeTemplate': 1}, { 'env': 1}, errorLogger);
+			soajs.mongoDb.createIndex(templateStateCollection, { 'name': 1}, { 'env': 1}, errorLogger);
 			
 			firstRun = false;
 		}
