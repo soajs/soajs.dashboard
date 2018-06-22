@@ -2943,7 +2943,7 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"name": {
+				"layerName": {
 					"source": ['body.name'],
 					"required": true,
 					"validation": {
@@ -5209,13 +5209,6 @@ module.exports = {
 				},
 				"layerName": {
 					"source": ['query.layerName'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"name": {
-					"source": ['body.name'],
 					"required": true,
 					"validation": {
 						"type": "string"
