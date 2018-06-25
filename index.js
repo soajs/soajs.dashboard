@@ -713,7 +713,7 @@ service.init(function () {
 	service.get("/environment/platforms/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.listPlatforms(config, req, res, function (error, data) {
+				BL.listPlatforms(config, req, res, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
