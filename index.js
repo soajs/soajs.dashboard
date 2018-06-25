@@ -736,6 +736,29 @@ service.init(function () {
 			});
 		});
 	});
+	
+	service.post("/environment/platforms/attach", function (req, res) {
+		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.attachContainer(config, req, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	service.delete("/environment/platforms/detach", function (req, res) {
+		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.detachContainer(config, req, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
 
 	/**
 	 * Products features

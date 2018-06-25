@@ -2115,6 +2115,28 @@ module.exports = {
 					}
 				}
 			},
+			
+			"/environment/platforms/attach": {
+				_apiInfo: {
+					"l": "Attach Container Technology",
+					"group": "Environment Platforms"
+				},
+				"commonFields": ['soajs_project'],
+				'env': {
+					'source': ['query.env'],
+					'required': false,
+					'validation': {
+						'type': 'string'
+					}
+				},
+				'data': {
+					'source': ['body.data'],
+					'required': true,
+					'validation': {
+						'type': 'string'
+					}
+				}
+			},
 
 			"/resources": { // add new
 				_apiInfo: {
@@ -5341,7 +5363,22 @@ module.exports = {
 					"validation": {"type": "string", "required": true}
 				}
 			},
-
+			
+			"/environment/platforms/detach": {
+				_apiInfo: {
+					"l": "Detach Container Technology",
+					"group": "Environment Platforms"
+				},
+				"commonFields": ['soajs_project'],
+				'env': {
+					'source': ['query.env'],
+					'required': true,
+					'validation': {
+						'type': 'string'
+					}
+				}
+			},
+			
 			"/resources": {
 				_apiInfo: {
 					"l": "Delete a resource",
