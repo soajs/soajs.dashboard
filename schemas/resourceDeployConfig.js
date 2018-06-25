@@ -20,9 +20,19 @@ module.exports = {
 						"type": "string",
 						"enum": ['replicated', 'global', 'deployment', 'daemonset']
 					},
-					"replicas": {"required": false, "type": "number"}
+					"replicas": {"required": false, "type": "number", "minimum": 1}
 				}
-			}
+			},
+			"region": {"required": false, "type": "string"},
+			"infra": {"required": false, "type": "string"},
+			"type": {"required": true, "type": "string", "enum": ["container", "vm"], "default": "container"},
+			"vmConfiguration": {
+				"required": false,
+				"type": "object",
+				"properties": {
+					"vmLayer": {"required": true, "type": "string"},
+				}
+			},
 		}
 	},
 	"autoScale": {
