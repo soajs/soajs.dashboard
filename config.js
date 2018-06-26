@@ -2238,19 +2238,7 @@ module.exports = {
 							"type": {"required": false, "type": "string"},
 							"vmConfiguration": {
 								"required": false,
-								"type": "object",
-								"properties": {
-									"flavor": {"required": true, "type": "string"},
-									"adminAccess": {
-										"required": true,
-										"type": "object",
-										"properties": {
-											"username": {"required": true, "type": "string"},
-											"password": {"required": false, "type": "string"},
-											"token": {"required": false, "type": "string"}
-										}
-									},
-								}
+								"type": "object"
 							},
 						}
 					}
@@ -2722,16 +2710,7 @@ module.exports = {
 								"required": false,
 								"type": "object",
 								"properties": {
-									"flavor": {"required": true, "type": "string"},
-									"adminAccess": {
-										"required": true,
-										"type": "object",
-										"properties": {
-											"username": {"required": true, "type": "string"},
-											"password": {"required": false, "type": "string"},
-											"token": {"required": false, "type": "string"}
-										}
-									},
+									"vmLayer": {"required": true, "type": "string"},
 								}
 							},
 						}
