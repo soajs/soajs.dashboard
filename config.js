@@ -2133,7 +2133,7 @@ module.exports = {
 					'source': ['body.data'],
 					'required': true,
 					'validation': {
-						'type': 'string'
+						'type': 'object'
 					}
 				}
 			},
