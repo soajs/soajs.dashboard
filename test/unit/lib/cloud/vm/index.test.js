@@ -16,13 +16,13 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-			
+
 			},
 			error: function (data) {
-			
+
 			},
 			info: function (data) {
-			
+
 			}
 		},
 		inputmaskData: {}
@@ -272,17 +272,17 @@ deployer.execute = function (opts, command, options, cb) {
 			"ip": "104.43.151.227"
 		}
 	];
-	
+
 	return cb(null, resp);
 };
 
 deployer.runCommand = function (opts, command, options, cb) {
-	
+
 	return cb(null, true);
 };
 
 describe("testing lib/cloud/bm/index.js", function () {
-	
+
 	before(() => {
 		mongoStub.findEntry = function (soajs, opts, cb) {
 			if (opts.collection === 'environment') {
@@ -295,24 +295,24 @@ describe("testing lib/cloud/bm/index.js", function () {
 		};
 	});
 	describe("testing init", function () {
-		
+
 		it("No Model Requested", function (done) {
 			utils.init(null, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-		
+
 		it("Model Name not found", function (done) {
-			
+
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-		
+
 		it("Init", function (done) {
-			
+
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
 				services = body;
@@ -320,14 +320,14 @@ describe("testing lib/cloud/bm/index.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("list Vms", function () {
-		
+
 		it("Success", function (done) {
 			req.soajs.inputmaskData.env = 'tester';
-			
+
 			services.listVMs(config, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				assert.ifError(error);
@@ -336,9 +336,9 @@ describe("testing lib/cloud/bm/index.js", function () {
 			});
 		});
 	});
-	
+
 	describe("runCommand", function () {
-		
+
 		it("Success", function (done) {
 			req.soajs.inputmaskData.env = 'tester';
 			req.soajs.inputmaskData.vmName = 'tester-vm';
@@ -358,8 +358,8 @@ describe("testing lib/cloud/bm/index.js", function () {
 					}
 				}
 			};
-			req.soajs.inputmaskData.infraRecord = infraRecord;
-			
+			req.soajs.inputmaskData.infra = infraRecord;
+
 			services.runCommand(config, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				assert.ifError(error);
