@@ -15,7 +15,12 @@ module.exports = {
 	checkErrorReturn: function (soajs, mainCb, data, cb) {
 		if (data.error) {
 			if (typeof (data.error) === 'object') {
-				soajs.log.error(data.error);
+				if(data.error.source ==='driver' && data.error.code === 519){
+					soajs.log.debug(data.error);
+				}
+				else{
+					soajs.log.error(data.error);
+				}
 			}
 			
 			if (data.error.source === 'driver') {
