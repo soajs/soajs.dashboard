@@ -39,6 +39,9 @@ var mongoStub = {
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
+	updateEntry: function (soajs, opts, cb) {
+		cb(null, true);
+	},
 	switchConnection: function (soajs) {
 	}
 };
@@ -195,12 +198,12 @@ describe("testing lib/cloud/infra/index.js", function () {
 	var BL = {
 		model: mongoStub
 	};
-	
+
 	after(function (done) {
 		sinon.restore();
 		done();
 	});
-	
+
 	describe("testing init", function () {
 		before(() => {
 			mongoStub.findEntry = function (soajs, opts, cb) {
@@ -223,14 +226,14 @@ describe("testing lib/cloud/infra/index.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Model Name not found", function (done) {
 			module.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-		
+
 		it("Init", function (done) {
 			module.init('mongo', function (error, body) {
 				assert.ok(body);
@@ -239,9 +242,9 @@ describe("testing lib/cloud/infra/index.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("deployVM", function () {
 		it("success ", function (done) {
 			req.soajs.inputmaskData = {
@@ -337,8 +340,8 @@ describe("testing lib/cloud/infra/index.js", function () {
 			});
 		});
 	});
-	
-	describe("updateVM", function () {
+
+	describe("updateVM1", function () {
 		it("success ", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
@@ -433,8 +436,8 @@ describe("testing lib/cloud/infra/index.js", function () {
 			});
 		});
 	});
-	
-	describe("updateVM", function () {
+
+	describe("updateVM2", function () {
 		it("success ", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
@@ -451,7 +454,7 @@ describe("testing lib/cloud/infra/index.js", function () {
 			});
 		});
 	});
-	
+
 	describe("getDeployVMStatus", function () {
 		it("success ", function (done) {
 			req.soajs.inputmaskData = {
