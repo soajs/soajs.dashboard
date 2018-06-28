@@ -74,7 +74,7 @@ var sampleResource2 = {
 			}
 		],
 		"credentials" : {
-			
+
 		},
 		"URLParam" : {
 			"connectTimeoutMS" : 0,
@@ -89,11 +89,11 @@ var sampleResource2 = {
 				"bufferMaxEntries" : 0
 			},
 			"server" : {
-				
+
 			}
 		},
 		"streaming" : {
-			
+
 		}
 	}
 };
@@ -230,7 +230,8 @@ describe("Testing Resources Functionality", function() {
                 	id: 'new',
                     env: 'dev',
                     resource: sampleResourceCopy,
-	                deployType : "save"
+	                deployType : "save",
+                    recipe : '59034e43c69a1b962fc62212'
                 }
             };
 
@@ -251,7 +252,8 @@ describe("Testing Resources Functionality", function() {
 	                id: 'new',
                     env: 'dev',
                     resource: sampleResourceCopy,
-	                deployType : "save"
+	                deployType : "save",
+                    recipe : '59034e43c69a1b962fc62212'
                 }
             };
 
@@ -274,7 +276,8 @@ describe("Testing Resources Functionality", function() {
 	                id: 'new',
                     env: 'dev',
                     resource: sampleResourceCopy,
-	                deployType : "save"
+	                deployType : "save",
+                    recipe : '59034e43c69a1b962fc62212'
                 }
             };
 
@@ -309,13 +312,13 @@ describe("Testing Resources Functionality", function() {
         });
 
     });
-	
+
 	describe("Testing add/edit resource, deploy and list deployed", function() {
-		
+
 		let sample2Id;
-		
+
 		before(function (done) {
-			
+
 			mongo.update('environment', {code: 'DEV'}, {
 				'$set': {
 					"deployer": {
@@ -368,7 +371,7 @@ describe("Testing Resources Functionality", function() {
 				done();
 			});
 		});
-		
+
 		it("success - will add resource", function (done) {
 			params = {
 				qs: {
@@ -406,7 +409,7 @@ describe("Testing Resources Functionality", function() {
 					}
 				}
 			};
-			
+
 			executeMyRequest(params, 'resources', 'post', function (body) {
 				// assert.ok(body);
 				// assert.ok(body.data);
@@ -414,15 +417,15 @@ describe("Testing Resources Functionality", function() {
 				if(body.data && body.data.id){
 					sample2Id = body.data.id;
 				}
-				
+
 				done();
 			});
 		});
-		
+
 		it("success - will edit resource", function (done) {
-			
+
 			sampleResource2.locked = true;
-			
+
 			params = {
 				qs: {
 					access_token: access_token_owner
@@ -444,13 +447,13 @@ describe("Testing Resources Functionality", function() {
 					}
 				}
 			};
-			
+
 			executeMyRequest(params, 'resources', 'post', function (body) {
 				assert.ok(body);
 				done();
 			});
 		});
-		
+
 		it("success - will list deployed resources ", function(done) {
 			params = {
 				qs: {
@@ -459,7 +462,7 @@ describe("Testing Resources Functionality", function() {
 					envType : 'container'
 				}
 			};
-			
+
 			executeMyRequest(params, 'resources', 'get', function(body) {
 				assert.ok(body);
 				// assert.ok(body.data);
@@ -471,7 +474,7 @@ describe("Testing Resources Functionality", function() {
 				done();
 			});
 		});
-		
+
 		it("success - will delete deployed resource", function(done) {
 			params = {
 				qs: {
@@ -480,15 +483,15 @@ describe("Testing Resources Functionality", function() {
 					access_token: access_token_owner
 				}
 			};
-			
+
 			executeMyRequest(params, 'resources', 'delete', function(body) {
 				assert.ok(body);
 				done();
 			});
 		});
-		
+
 	});
-		
+
 		describe("Testing get resource", function() {
 
         before("get cluster1 id from resources collection", function(done) {
@@ -723,7 +726,8 @@ describe("Testing Resources Functionality", function() {
 	                id: 'new',
                     env: 'dev',
                     resource: sampleResourceCopy,
-	                deployType : "save"
+	                deployType : "save",
+                    recipe : '59034e43c69a1b962fc62212'
                 }
             };
 
@@ -857,6 +861,7 @@ describe("Testing Resources Functionality", function() {
                         options: {
                             recipe: '5aafcf3689111c3b2fd7518d',
                             deployConfig: {
+                                type: 'container',
                                 replication: {
                                     mode: 'replicated',
                                     replicas: 1
@@ -946,7 +951,8 @@ describe("Testing Resources Functionality", function() {
 	                id: 'new',
                     env: 'dev',
                     resource: sampleResourceCopy,
-	                deployType : "save"
+	                deployType : "save",
+                    recipe : '59034e43c69a1b962fc62212'
                 }
             };
 
@@ -1692,7 +1698,7 @@ describe.skip("mongo check db", function () {
             if(record.services && record.services.config && record.services.config.session) {
                 delete record.services.config.session.proxy;
             }
-            
+
             assert.deepEqual(record, {
 	            "code": "DEV",
 	            "locked": true,
