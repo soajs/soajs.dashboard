@@ -162,8 +162,8 @@ var lib = {
 			soajs.mongoDb.createIndex(infraCollection, { 'deployments.technology': 1}, errorLogger);
 			
 			//templateState collection
-			soajs.mongoDb.createIndex(templateStateCollection, { 'layerName': 1}, { 'infraId': 1}, { unique: true }, errorLogger);
-			
+			soajs.mongoDb.createIndex(templateStateCollection, { layerName: 1, infraId: 1}, errorLogger);
+			soajs.log.debug("Indexes Updated!");
 			firstRun = false;
 		}
 		

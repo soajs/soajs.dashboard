@@ -5253,10 +5253,10 @@ module.exports = {
 
 			"/cloud/vm": {
 				"_apiInfo": {
-					"l": "Add Virtual Machine Layer",
+					"l": "Modify Virtual Machine Layer",
 					"group": "HA Cloud"
 				},
-				"commonFields": ['soajs_project', 'env'],
+				"commonFields": ['soajs_project', 'id', 'env'],
 				"infraId": {
 					"source": ['query.infraId', 'body.infraId'],
 					"required": true,
@@ -5597,10 +5597,10 @@ module.exports = {
 
 			"/cloud/vm": {
 				"_apiInfo": {
-					"l": "Add Virtual Machine Layer",
+					"l": "Delete Virtual Machine Layer",
 					"group": "HA Cloud"
 				},
-				"commonFields": ['soajs_project', 'env'],
+				"commonFields": ['soajs_project', 'id', 'env'],
 				"infraId": {
 					"source": ['query.infraId',],
 					"required": true,
