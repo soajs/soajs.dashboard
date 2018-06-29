@@ -245,7 +245,7 @@ describe("testing lib/cloud/infra/index.js", function () {
 
 	});
 
-	describe("deployVM", function () {
+	describe.skip("deployVM", function () {
 		it("success ", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
@@ -341,7 +341,7 @@ describe("testing lib/cloud/infra/index.js", function () {
 		});
 	});
 
-	describe("updateVM1", function () {
+	describe.skip("updateVM1", function () {
 		it("success ", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
@@ -437,7 +437,7 @@ describe("testing lib/cloud/infra/index.js", function () {
 		});
 	});
 
-	describe("updateVM2", function () {
+	describe.skip("updateVM2", function () {
 		it("success ", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
@@ -455,7 +455,7 @@ describe("testing lib/cloud/infra/index.js", function () {
 		});
 	});
 
-	describe("getDeployVMStatus", function () {
+	describe.skip("getDeployVMStatus", function () {
 		it("success ", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
