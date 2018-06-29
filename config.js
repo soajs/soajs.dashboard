@@ -1306,7 +1306,7 @@ module.exports = {
 					"l": "List Cloud Virtual Machines",
 					"group": "Services"
 				},
-				'commonFields': ['soajs_project'],
+				'commonFields': ['soajs_project', 'id'],
 				"layerName": {
 					"source": ['query.layerName'],
 					"required": true,
