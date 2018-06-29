@@ -35,13 +35,13 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-			
+
 			},
 			error: function (data) {
-			
+
 			},
 			info: function (data) {
-			
+
 			}
 		},
 		inputmaskData: {},
@@ -383,9 +383,9 @@ var template = {
 						}
 					],
 					"status": {
-					
+
 					}
-					
+
 				},
 				'deployments.resources.nginx': {
 					imfv: [
@@ -509,7 +509,7 @@ var lib = {
 			setConfig: function (context, req, data, cb) {
 				return cb(null, true);
 			},
-			deleteResource: function (context, req, data, cb) {
+			deleteResource: function (config, req, data, serviceBL, cb) {
 				return cb(true);
 			},
 		});
@@ -520,9 +520,9 @@ var lib = {
 };
 var context = {};
 describe("testing resources.js", function () {
-	
+
 	describe("testing validate", function () {
-		
+
 		it("fail does not support deploying repositories", function (done) {
 			context = {
 				BL: BL,
@@ -582,7 +582,7 @@ describe("testing resources.js", function () {
 				done();
 			})
 		});
-		
+
 		it("fail Invalid all inputs ", function (done) {
 			context = {
 				BL: BL,
@@ -600,16 +600,16 @@ describe("testing resources.js", function () {
 						"nginx"
 					],
 					"inputs": [
-					
+
 					]
 				}
 			};
-			
+
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
 			})
 		});
-		
+
 		it("fail bad inputs", function (done) {
 			context = {
 				BL: BL,
@@ -635,7 +635,7 @@ describe("testing resources.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success", function (done) {
 			context = {
 				BL: BL,
@@ -695,14 +695,14 @@ describe("testing resources.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success with limit", function (done) {
 			context.template.content.deployments.resources.nginx.limit = 1;
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
 			})
 		});
-		
+
 		it("success with sharedEnv", function (done) {
 			context = {
 				BL: BL,
@@ -763,7 +763,7 @@ describe("testing resources.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success with errors", function (done) {
 			context = {
 				BL: BL,
@@ -836,9 +836,9 @@ describe("testing resources.js", function () {
 			})
 		});
 	});
-	
+
 	describe("testing deploy", function () {
-		
+
 		it("success resources already deployed", function (done) {
 			context = {
 				BL: BL,
@@ -901,7 +901,7 @@ describe("testing resources.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success resources with shared env", function (done) {
 			context = {
 				BL: BL,
@@ -972,7 +972,7 @@ describe("testing resources.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success resources with shared env", function (done) {
 			context = {
 				BL: BL,
@@ -1034,7 +1034,7 @@ describe("testing resources.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success resources with deploy inputs empty ", function (done) {
 			context = {
 				BL: BL,
@@ -1070,7 +1070,7 @@ describe("testing resources.js", function () {
 				done();
 			})
 		});
-		
+
 	});
 
 	describe("testing rollback", function () {
@@ -1135,7 +1135,7 @@ describe("testing resources.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success resources not done", function (done) {
 			context = {
 				BL: BL,
@@ -1199,7 +1199,7 @@ describe("testing resources.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success resources no data ", function (done) {
 			context = {
 				BL: BL,
@@ -1263,7 +1263,7 @@ describe("testing resources.js", function () {
 				done();
 			})
 		});
-		
+
 		it("success resources with data", function (done) {
 			context.template.deploy.deployments.steps["deployments.resources.nginx"].status = {
 				done: true,
