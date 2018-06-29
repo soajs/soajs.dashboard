@@ -6,45 +6,8 @@ var vm;
 var config = testHelper.requireModule('./config.js');
 var deployer = testHelper.deployer;
 
-const nock = require("nock");
 const sinon = require('sinon');
 
-var mongoStub = {
-	getDb: function () {
-	},
-	checkForMongo: function (soajs) {
-		return true;
-	},
-	insertEntry: function (soajs, options, cb) {
-		cb(null, {});
-	},
-	validateId: function (soajs, cb) {
-		return cb(null, soajs.inputmaskData.id);
-	},
-	validateCustomId: function (soajs, id, cb) {
-		return cb(null, id);
-	},
-	findEntry: function (soajs, opts, cb) {
-		cb(null, {});
-	},
-	findEntries: function (soajs, opts, cb) {
-		var data = [{
-			name: 'one'
-		}];
-		cb(null, data);
-	},
-	removeEntry: function (soajs, opts, cb) {
-		cb(null, true);
-	},
-	saveEntry: function (soajs, opts, cb) {
-		cb(null, true);
-	},
-	updateEntry: function (soajs, opts, cb) {
-		cb(null, true);
-	},
-	switchConnection: function (soajs) {
-	}
-};
 var soajs = {
 	registry: {
 		coreDB: {
@@ -131,9 +94,16 @@ var vm_layers = {
 	"ts": 1529670248943
 };
 var template = {
-	"_id": '5b2ccf5488e807af1f000001',
-	"name": "dynamic-template-loadBalancer",
-	"template": "provider azurerm"
+	"type": "_infra",
+	"infra": "5b28c5edb53002d7b3b1f0cf",
+	"location": "local",
+	"deletable": true,
+	"textMode": true,
+	"driver": "Terraform",
+	"technology": "vm",
+	"name": "template azure ip",
+	"description": "sdasdasdas",
+	"content": "provider"
 };
 var envRecord = {
 	code: 'DEV',
@@ -193,11 +163,62 @@ var req = {
 	query: {},
 	soajs: soajs
 };
-
+var mongoStub = {
+	getDb: function () {
+	},
+	checkForMongo: function (soajs) {
+		return true;
+	},
+	insertEntry: function (soajs, options, cb) {
+		cb(null, [{_id: "123"}]);
+	},
+	validateId: function (soajs, cb) {
+		return cb(null, soajs.inputmaskData.id);
+	},
+	validateCustomId: function (soajs, id, cb) {
+		if (typeof cb === 'function'){
+			return cb(null, id);
+		}
+		else {
+			return id;
+		}
+	},
+	findEntry: function (soajs, opts, cb) {
+		if (opts.collection === 'environment'){
+			cb(null, envRecord);
+		}
+		else if (opts.collection === 'infra'){
+			cb(null, infraRecord);
+		}
+		else if (opts.collection === 'templates'){
+			cb(null, template);
+		}
+		else if (opts.collection === 'vm_layers'){
+			cb(null, vm_layers);
+		}
+	},
+	findEntries: function (soajs, opts, cb) {
+		var data = [{
+			name: 'one'
+		}];
+		cb(null, data);
+	},
+	removeEntry: function (soajs, opts, cb) {
+		cb(null, true);
+	},
+	saveEntry: function (soajs, opts, cb) {
+		cb(null, true);
+	},
+	updateEntry: function (soajs, opts, cb) {
+		cb(null, true);
+	},
+	switchConnection: function (soajs) {
+	},
+	closeConnection: function (soajs){
+		return true;
+	}
+};
 describe("testing lib/cloud/infra/index.js", function () {
-	var BL = {
-		model: mongoStub
-	};
 
 	after(function (done) {
 		sinon.restore();
@@ -245,211 +266,134 @@ describe("testing lib/cloud/infra/index.js", function () {
 
 	});
 
-	describe.skip("deployVM", function () {
-		it("success ", function (done) {
-			req.soajs.inputmaskData = {
-				"infraId": "5b28c5edb53002d7b3b1f0cf",
-				"infraCodeTemplate": "dynamic-template-loadBalancer",
-				"region": "eastus",
-				"layerName" : "tester-ragheb",
-				"env": "dashboard",
-				"specs": {
-					"region": "eastus",
-					"clientId": "cca65dcd-3aa3-44d3-81cb-6b57b764be6a",
-					"secret": "QY7TMLyoA6Jjzidtduqbn/4Y2mDlyJUbKZ40c6dBTYw=",
-					"domain": "608c3255-376b-47a4-8e8e-9291e506d03e",
-					"subscriptionId": "d159e994-8b44-42f7-b100-78c4508c34a6",
-					"resourceGroupName": "dynamic-template-ragheb",
-					"name": "tester",
-					"numberOfVms": 2,
-					"vmSize": "Standard_A1",
-					"createNewVirtualNetwork": true,
-					"virtualNetworkAddressSpaces": "10.0.0.0/16,10.1.0.0/16",
-					"subnetAddressPrefix": "10.0.1.0/24",
-					"createNewSecurityGroup": true,
-					"privateIpAlregionMethod": "dynamic",
-					"attachPublicIpAddress": true,
-					"createNewPublicIpAddress": true,
-					"publicIpAlregionMethod": "dynamic",
-					"publicIpIdleTimeout": "30",
-					"ports": [
-						{
-							"name": "ssh",
-							"protocol": "tcp",
-							"target": 22,
-							"published": 22,
-							"isPublished": false
-						},
-						{
-							"name": "http",
-							"target": 80,
-							"published": 80,
-							"isPublished": true,
-							"healthCheckRequestPath": "/",
-							"healthCheckRequestProtocol": "Http"
-						},
-						{
-							"name": "https",
-							"target": 443,
-							"published": 443,
-							"isPublished": true,
-							"healthCheckRequestPath": "/",
-							"healthCheckRequestProtocol": "Http"
-						}
-					],
-					"deleteOsDiskOnTermination": true,
-					"deleteDataDisksOnTermination": true,
-					"osDiskCachingMode": "ReadWrite",
-					"osDiskType": "Standard_LRS",
-					"volumes": [
-						{
-							"name": "volume_one",
-							"createNew": true,
-							"diskSizeGb": "5",
-							"type": "Standard_LRS"
-						},
-						{
-							"name": "existing_volume",
-							"createNew": false,
-							"existingDisksNames": [
-								"existing-disk-1",
-								"existing-disk-2"
-							]
-						}
-					],
-					"adminUsername": "ubuntu",
-					"adminPassword": "Password1234!",
-					"useSshKeyAuth": false,
-					"imagePublisher": "Canonical",
-					"imageOffer": "UbuntuServer",
-					"imageSku": "16.04-LTS",
-					"imageVersion": "latest",
-					"tags": {
-						"soajs.test": "true",
-						"soajs.template.type": "terraform",
-						"soajs.template.version": "1"
-					}
-				}
-			};
-			deployer.execute = function (opts, command, options, cb) {
-				return cb(null, {stateFile: {}});
-			};
-			vm.deployVM(config, req, req.soajs, deployer, function (error, body) {
-				assert.deepEqual(body, {"name": req.soajs.inputmaskData.layerName, "infraId": req.soajs.inputmaskData.infraId})
-				done();
-			});
-		});
-	});
-
-	describe.skip("updateVM1", function () {
-		it("success ", function (done) {
-			req.soajs.inputmaskData = {
-				"infraId": "5b28c5edb53002d7b3b1f0cf",
-				"infraCodeTemplate": "dynamic-template-loadBalancer",
-				"region": "eastus",
-				"layerName" : "tester-ragheb",
-				"env": "dashboard",
-				"specs": {
-					"region": "eastus",
-					"clientId": "cca65dcd-3aa3-44d3-81cb-6b57b764be6a",
-					"secret": "QY7TMLyoA6Jjzidtduqbn/4Y2mDlyJUbKZ40c6dBTYw=",
-					"domain": "608c3255-376b-47a4-8e8e-9291e506d03e",
-					"subscriptionId": "d159e994-8b44-42f7-b100-78c4508c34a6",
-					"resourceGroupName": "dynamic-template-ragheb",
-					"name": "tester",
-					"numberOfVms": 2,
-					"vmSize": "Standard_A1",
-					"createNewVirtualNetwork": true,
-					"virtualNetworkAddressSpaces": "10.0.0.0/16,10.1.0.0/16",
-					"subnetAddressPrefix": "10.0.1.0/24",
-					"createNewSecurityGroup": true,
-					"privateIpAlregionMethod": "dynamic",
-					"attachPublicIpAddress": true,
-					"createNewPublicIpAddress": true,
-					"publicIpAlregionMethod": "dynamic",
-					"publicIpIdleTimeout": "30",
-					"ports": [
-						{
-							"name": "ssh",
-							"protocol": "tcp",
-							"target": 22,
-							"published": 22,
-							"isPublished": false
-						},
-						{
-							"name": "http",
-							"target": 80,
-							"published": 80,
-							"isPublished": true,
-							"healthCheckRequestPath": "/",
-							"healthCheckRequestProtocol": "Http"
-						},
-						{
-							"name": "https",
-							"target": 443,
-							"published": 443,
-							"isPublished": true,
-							"healthCheckRequestPath": "/",
-							"healthCheckRequestProtocol": "Http"
-						}
-					],
-					"deleteOsDiskOnTermination": true,
-					"deleteDataDisksOnTermination": true,
-					"osDiskCachingMode": "ReadWrite",
-					"osDiskType": "Standard_LRS",
-					"volumes": [
-						{
-							"name": "volume_one",
-							"createNew": true,
-							"diskSizeGb": "5",
-							"type": "Standard_LRS"
-						},
-						{
-							"name": "existing_volume",
-							"createNew": false,
-							"existingDisksNames": [
-								"existing-disk-1",
-								"existing-disk-2"
-							]
-						}
-					],
-					"adminUsername": "ubuntu",
-					"adminPassword": "Password1234!",
-					"useSshKeyAuth": false,
-					"imagePublisher": "Canonical",
-					"imageOffer": "UbuntuServer",
-					"imageSku": "16.04-LTS",
-					"imageVersion": "latest",
-					"tags": {
-						"soajs.test": "true",
-						"soajs.template.type": "terraform",
-						"soajs.template.version": "1"
-					}
-				}
-			};
-			deployer.execute = function (opts, command, options, cb) {
-				return cb(null, {stateFile: {}});
-			};
-			vm.updateVM(config, req, req.soajs, deployer, function (error, body) {
-				assert.deepEqual(body, {"name": req.soajs.inputmaskData.layerName, "infraId": req.soajs.inputmaskData.infraId})
-				done();
-			});
-		});
-	});
-
-	describe.skip("updateVM2", function () {
+	describe("deployVM", function () {
 		it("success ", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"technology": "vm",
-				"layerName" : "tester-ragheb",
-				"env": "dashboard",
+				"infraCodeTemplate": "template loadBalancer",
+				"region": "centralus",
+				"layerName": "tester",
+				"specs": {
+					"infraCodeTemplate": "template loadBalancer",
+					"name": "tester",
+					"vmSize": "Standard_A0",
+					"createNewVirtualNetwork": true,
+					"createNewSecurityGroup": true,
+					"privateIpAllocationMethod": "dynamic",
+					"attachPublicIpAddress": true,
+					"createNewPublicIpAddress": true,
+					"publicIpAllocationMethod": "dynamic",
+					"deleteOsDiskOnTermination": true,
+					"deleteDataDisksOnTermination": true,
+					"osDiskCachingMode": "ReadWrite",
+					"osDiskType": "standard_LRS",
+					"add_anothernewVolumes": "<a class='btn btn-sm btn-primary f-right'><span class='icon icon-plus'></span> Add Another</a>",
+					"add_anotherexistingVolumes": "<a class='btn btn-sm btn-primary f-right'><span class='icon icon-plus'></span> Add Another</a>",
+					"useSshKeyAuth": false,
+					"imageSku": "16.04-LTS",
+					"tags": {
+						"key": "value"
+					},
+					"subnetAddressPrefix": "10.0.0.0/24",
+					"virtualNetworkAddressSpaces": "10.0.0.0/16",
+					"numberOfVms": 1,
+					"publicIpIdleTimeout": 30,
+					"adminUsername": "ubuntu",
+					"adminPassword": "123123",
+					"imagePublisher": "Canonical",
+					"imageOffer": "UbuntuServer",
+					"imageVersion": "latest",
+					"region": "centralus",
+					"group": "tester",
+					"ports": [
+						{
+							"portName": "ssh",
+							"protocol": "tcp",
+							"target": 22,
+							"published": 22,
+							"isPublished": false,
+							"healthCheckRequestPath": "/",
+							"healthCheckRequestProtocol": "Http"
+						}
+					],
+					"newVolumes": [],
+					"existingVolumes": []
+				},
+				"env": "DEV"
 			};
 			deployer.execute = function (opts, command, options, cb) {
-				return cb(null, {stateFile: {}});
+				return cb(null, {stateFileData: {}, render: {}});
 			};
-			vm.destroyVM(config, req, req.soajs, deployer, function (error, body) {
-				assert.ok(body)
+			vm.deployVM(config, req, req.soajs, deployer, function (error, body) {
+				assert.deepEqual(body, {"id": "123", "name": req.soajs.inputmaskData.layerName, "infraId": req.soajs.inputmaskData.infraId});
+				done();
+			});
+		});
+	});
+
+	describe("updateVM1", function () {
+		it("success ", function (done) {
+			req.soajs.inputmaskData = {
+				"id": "123",
+				"infraId": "5b28c5edb53002d7b3b1f0cf",
+				"technology": "vm",
+				"infraCodeTemplate": "template loadBalancer",
+				"region": "centralus",
+				"layerName": "tester",
+				"specs": {
+					"infraCodeTemplate": "template loadBalancer",
+					"name": "tester",
+					"vmSize": "Standard_A0",
+					"createNewVirtualNetwork": true,
+					"createNewSecurityGroup": true,
+					"privateIpAllocationMethod": "dynamic",
+					"attachPublicIpAddress": true,
+					"createNewPublicIpAddress": true,
+					"publicIpAllocationMethod": "dynamic",
+					"deleteOsDiskOnTermination": true,
+					"deleteDataDisksOnTermination": true,
+					"osDiskCachingMode": "ReadWrite",
+					"osDiskType": "standard_LRS",
+					"add_anothernewVolumes": "<a class='btn btn-sm btn-primary f-right'><span class='icon icon-plus'></span> Add Another</a>",
+					"add_anotherexistingVolumes": "<a class='btn btn-sm btn-primary f-right'><span class='icon icon-plus'></span> Add Another</a>",
+					"useSshKeyAuth": false,
+					"imageSku": "16.04-LTS",
+					"tags": {
+						"key": "value"
+					},
+					"subnetAddressPrefix": "10.0.0.0/24",
+					"virtualNetworkAddressSpaces": "10.0.0.0/16",
+					"numberOfVms": 1,
+					"publicIpIdleTimeout": 30,
+					"adminUsername": "ubuntu",
+					"adminPassword": "123123",
+					"imagePublisher": "Canonical",
+					"imageOffer": "UbuntuServer",
+					"imageVersion": "latest",
+					"region": "centralus",
+					"group": "tester",
+					"ports": [
+						{
+							"portName": "ssh",
+							"protocol": "tcp",
+							"target": 22,
+							"published": 22,
+							"isPublished": false,
+							"healthCheckRequestPath": "/",
+							"healthCheckRequestProtocol": "Http"
+						}
+					],
+					"newVolumes": [],
+					"existingVolumes": []
+				},
+				"env": "DEV"
+			};
+			deployer.execute = function (opts, command, options, cb) {
+				return cb(null, {stateFileData: {}, render: {}});
+			};
+			vm.updateVM(config, req, req.soajs, deployer, function (error, body) {
+				assert.deepEqual(body, {"id": "123", "name": req.soajs.inputmaskData.layerName, "infraId": req.soajs.inputmaskData.infraId});
 				done();
 			});
 		});
