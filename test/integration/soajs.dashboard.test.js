@@ -1819,26 +1819,6 @@ describe("DASHBOARD Integration Tests:", function () {
 					done();
 				});
 			});
-
-            it.skip("success - will update the deployer ", function (done) {
-                var params = {
-                    qs: {
-                        env: 'TESTDOCKERLOCAL'
-                    },
-                    form: {
-                        driver: 'remote',
-                        config: {
-                            nodes: '127.0.0.1',
-                            apiPort: '2222',
-                            token: '123abc'
-						}
-                    }
-                };
-                executeMyRequest(params, "environment/platforms/deployer/update", 'put', function (body) {
-                    assert.ok(body.data);
-                    done();
-                });
-            });
 		});
 	});
 
