@@ -285,14 +285,14 @@ describe("testing lib/cloud/deploy/index.js", function () {
 				if(opts.collection === 'tenants'){
 					return cb(null, tenantRecord);
 				}
-				
+
 				if(opts.collection === 'cicd'){
 					return cb({
 						code : 400,
 						msg : 'error test'
 					});
 				}
-				
+
 				return cb(null, envRecord);
 			};
 
@@ -318,7 +318,7 @@ describe("testing lib/cloud/deploy/index.js", function () {
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
-			
+
 			deployer = {
 				execute: function(driverOptions, method, methodOptions, cb) {
 					if (method === 'manageResources'){
@@ -467,7 +467,7 @@ describe("testing lib/cloud/deploy/index.js", function () {
 				},
 				custom: {}
 			};
-			
+
 			deployer = {
 				execute: function(driverOptions, method, methodOptions, cb) {
 					if (method === 'manageResources'){
@@ -484,7 +484,7 @@ describe("testing lib/cloud/deploy/index.js", function () {
 					}
 				}
 			};
-			
+
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
@@ -620,6 +620,524 @@ describe("testing lib/cloud/deploy/index.js", function () {
 			req.soajs.inputmaskData.serviceName = 'test';
 
 			deploy.deployService(config, req, deployer, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+
+		it("Success deployService VM", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				var catalogRecord = {
+					"_id": "123456",
+					"name": "Mongo Recipe VM",
+					"type": "cluster",
+					"subtype": "mongo",
+					"description": "This recipe allows you to deploy a mongo server in VM",
+					"restriction": {
+						"deployment": [
+							"vm"
+						],
+						"infra": [
+							"azure"
+						]
+					},
+					"recipe": {
+						"deployOptions": {
+							"image": {
+								"prefix": "Canonical",
+								"name": "UbuntuServer",
+								"tag": "17.10"
+							},
+							"sourceCode": {
+								"configuration": {
+									"label": "Attach Custom Configuration",
+									"repo": "",
+									"branch": "",
+									"required": false
+								}
+							},
+							"readinessProbe": {
+								"httpGet": {
+									"path": "/",
+									"port": 27017
+								},
+								"initialDelaySeconds": 5,
+								"timeoutSeconds": 2,
+								"periodSeconds": 5,
+								"successThreshold": 1,
+								"failureThreshold": 3
+							},
+							"restartPolicy": {
+								"condition": "any",
+								"maxAttempts": 5
+							},
+							"container": {
+								"network": "soajsnet",
+								"workingDir": ""
+							},
+							"voluming": [],
+							"ports": [
+								{
+									"name": "mongo",
+									"target": 27017,
+									"isPublished": true,
+									"published": 27017
+								},
+								{
+									"name": "ssh",
+									"target": 22,
+									"isPublished": true,
+									"published": 22
+								}
+							],
+							"certificates": "none"
+						},
+						"buildOptions": {
+							"env": {},
+							"cmd": {
+								"deploy": {
+									"command": [
+										"#!/bin/bash"
+									],
+									"args": [
+										"sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5\n",
+										"echo \"deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list\n",
+										"sudo echo never > /sys/kernel/mm/transparent_hugepage/enabled\n",
+										"sudo echo never > /sys/kernel/mm/transparent_hugepage/defrag\n",
+										"sudo grep -q -F 'transparent_hugepage=never' /etc/default/grub || echo 'transparent_hugepage=never' >> /etc/default/grub\n",
+										"sudo apt-get -y update\n",
+										"sudo bash -c \"sudo echo net.ipv4.tcp_keepalive_time = 120 >> /etc/sysctl.conf\"\n",
+										"sudo apt-get install -y mongodb-org\n",
+										"sudo mkdir -p /data/db/\n",
+										"sudo sed -i -e 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/g' /etc/mongod.conf\n",
+										"sudo service mongod restart\n"
+									]
+								}
+							}
+						}
+					}
+				};
+
+				var tenantRecord = {
+					"_id": '551286bce603d7e01ab1688e',
+					"oauth": {},
+					"locked": true,
+					"code": "DBTN",
+					"name": "Dashboard Tenant",
+					"description": "This is the main dashboard tenant",
+					"applications": [
+						{
+							"product": "DSBRD",
+							"package": "DSBRD_MAIN",
+							"appId": '5512926a7a1f0e2123f638de',
+							"description": "this is the main application for the dashboard tenant",
+							"_TTL": 604800000,
+							"keys": [
+								{
+									"key": "38145c67717c73d3febd16df38abf311",
+									"extKeys": [
+										{
+											"expDate": 1503058746824,
+											"extKey": "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974",
+											"device": null,
+											"geo": null,
+											"dashboardAccess": true,
+											"env": "DASHBOARD"
+										}
+									],
+									"config": {
+										"dashboard": {
+											"urac": {
+												"tokenExpiryTTL": 172800000
+											}
+										}
+									}
+								}
+							]
+						}
+					]
+				};
+
+				if (opts.collection === 'catalogs') {
+					return cb(null, catalogRecord);
+				}
+				if(opts.collection === 'tenants'){
+					return cb(null, tenantRecord);
+				}
+				return cb(null, envRecord);
+			};
+
+			req.soajs.registry = envRecord;
+			req.soajs.registry.coreDB = {
+                provision: {
+                    "servers": [],
+                    "credentials": {}
+                }
+            };
+
+			req.soajs.inputmaskData = {
+				deployConfig: {
+					replication: {
+						mode: ""
+					},
+					type: "vm"
+				},
+				recipe: {
+					_id: '123456'
+				},
+				custom: {}
+			};
+			req.soajs.inputmaskData.env = 'dev';
+			req.soajs.inputmaskData.type = 'service';
+			req.soajs.inputmaskData.serviceName = 'test';
+
+			deploy.deployService(config, req, deployer, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+
+		it("Success redeployService VM redeploy action", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				var catalogRecord = {
+					"_id": "123456",
+					"name": "Mongo Recipe VM",
+					"type": "cluster",
+					"subtype": "mongo",
+					"description": "This recipe allows you to deploy a mongo server in VM",
+					"restriction": {
+						"deployment": [
+							"vm"
+						],
+						"infra": [
+							"azure"
+						]
+					},
+					"recipe": {
+						"deployOptions": {
+							"image": {
+								"prefix": "Canonical",
+								"name": "UbuntuServer",
+								"tag": "17.10"
+							},
+							"sourceCode": {
+								"configuration": {
+									"label": "Attach Custom Configuration",
+									"repo": "",
+									"branch": "",
+									"required": false
+								}
+							},
+							"readinessProbe": {
+								"httpGet": {
+									"path": "/",
+									"port": 27017
+								},
+								"initialDelaySeconds": 5,
+								"timeoutSeconds": 2,
+								"periodSeconds": 5,
+								"successThreshold": 1,
+								"failureThreshold": 3
+							},
+							"restartPolicy": {
+								"condition": "any",
+								"maxAttempts": 5
+							},
+							"container": {
+								"network": "soajsnet",
+								"workingDir": ""
+							},
+							"voluming": [],
+							"ports": [
+								{
+									"name": "mongo",
+									"target": 27017,
+									"isPublished": true,
+									"published": 27017
+								},
+								{
+									"name": "ssh",
+									"target": 22,
+									"isPublished": true,
+									"published": 22
+								}
+							],
+							"certificates": "none"
+						},
+						"buildOptions": {
+							"env": {},
+							"cmd": {
+								"deploy": {
+									"command": [
+										"#!/bin/bash"
+									],
+									"args": [
+										"sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5\n",
+										"echo \"deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list\n",
+										"sudo echo never > /sys/kernel/mm/transparent_hugepage/enabled\n",
+										"sudo echo never > /sys/kernel/mm/transparent_hugepage/defrag\n",
+										"sudo grep -q -F 'transparent_hugepage=never' /etc/default/grub || echo 'transparent_hugepage=never' >> /etc/default/grub\n",
+										"sudo apt-get -y update\n",
+										"sudo bash -c \"sudo echo net.ipv4.tcp_keepalive_time = 120 >> /etc/sysctl.conf\"\n",
+										"sudo apt-get install -y mongodb-org\n",
+										"sudo mkdir -p /data/db/\n",
+										"sudo sed -i -e 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/g' /etc/mongod.conf\n",
+										"sudo service mongod restart\n"
+									]
+								}
+							}
+						}
+					}
+				};
+
+				var tenantRecord = {
+					"_id": '551286bce603d7e01ab1688e',
+					"oauth": {},
+					"locked": true,
+					"code": "DBTN",
+					"name": "Dashboard Tenant",
+					"description": "This is the main dashboard tenant",
+					"applications": [
+						{
+							"product": "DSBRD",
+							"package": "DSBRD_MAIN",
+							"appId": '5512926a7a1f0e2123f638de',
+							"description": "this is the main application for the dashboard tenant",
+							"_TTL": 604800000,
+							"keys": [
+								{
+									"key": "38145c67717c73d3febd16df38abf311",
+									"extKeys": [
+										{
+											"expDate": 1503058746824,
+											"extKey": "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974",
+											"device": null,
+											"geo": null,
+											"dashboardAccess": true,
+											"env": "DASHBOARD"
+										}
+									],
+									"config": {
+										"dashboard": {
+											"urac": {
+												"tokenExpiryTTL": 172800000
+											}
+										}
+									}
+								}
+							]
+						}
+					]
+				};
+
+				if (opts.collection === 'catalogs') {
+					return cb(null, catalogRecord);
+				}
+				if(opts.collection === 'tenants'){
+					return cb(null, tenantRecord);
+				}
+				return cb(null, envRecord);
+			};
+
+			req.soajs.registry = envRecord;
+			req.soajs.registry.coreDB = {
+                provision: {
+                    "servers": [],
+                    "credentials": {}
+                }
+            };
+
+			req.soajs.inputmaskData = {
+				deployConfig: {
+					replication: {
+						mode: ""
+					},
+					type: "vm"
+				},
+				recipe: {
+					_id: '123456'
+				},
+				custom: {}
+			};
+			req.soajs.inputmaskData.env = 'dev';
+			req.soajs.inputmaskData.type = 'service';
+			req.soajs.inputmaskData.serviceName = 'test';
+			req.soajs.inputmaskData.action = 'redeploy';
+
+			deploy.redeployService(config, req, deployer, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+
+		it("Success redeployService VM redeploy action", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				var catalogRecord = {
+					"_id": "123456",
+					"name": "Mongo Recipe VM",
+					"type": "cluster",
+					"subtype": "mongo",
+					"description": "This recipe allows you to deploy a mongo server in VM",
+					"restriction": {
+						"deployment": [
+							"vm"
+						],
+						"infra": [
+							"azure"
+						]
+					},
+					"recipe": {
+						"deployOptions": {
+							"image": {
+								"prefix": "Canonical",
+								"name": "UbuntuServer",
+								"tag": "17.10"
+							},
+							"sourceCode": {
+								"configuration": {
+									"label": "Attach Custom Configuration",
+									"repo": "",
+									"branch": "",
+									"required": false
+								}
+							},
+							"readinessProbe": {
+								"httpGet": {
+									"path": "/",
+									"port": 27017
+								},
+								"initialDelaySeconds": 5,
+								"timeoutSeconds": 2,
+								"periodSeconds": 5,
+								"successThreshold": 1,
+								"failureThreshold": 3
+							},
+							"restartPolicy": {
+								"condition": "any",
+								"maxAttempts": 5
+							},
+							"container": {
+								"network": "soajsnet",
+								"workingDir": ""
+							},
+							"voluming": [],
+							"ports": [
+								{
+									"name": "mongo",
+									"target": 27017,
+									"isPublished": true,
+									"published": 27017
+								},
+								{
+									"name": "ssh",
+									"target": 22,
+									"isPublished": true,
+									"published": 22
+								}
+							],
+							"certificates": "none"
+						},
+						"buildOptions": {
+							"env": {},
+							"cmd": {
+								"deploy": {
+									"command": [
+										"#!/bin/bash"
+									],
+									"args": [
+										"sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5\n",
+										"echo \"deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list\n",
+										"sudo echo never > /sys/kernel/mm/transparent_hugepage/enabled\n",
+										"sudo echo never > /sys/kernel/mm/transparent_hugepage/defrag\n",
+										"sudo grep -q -F 'transparent_hugepage=never' /etc/default/grub || echo 'transparent_hugepage=never' >> /etc/default/grub\n",
+										"sudo apt-get -y update\n",
+										"sudo bash -c \"sudo echo net.ipv4.tcp_keepalive_time = 120 >> /etc/sysctl.conf\"\n",
+										"sudo apt-get install -y mongodb-org\n",
+										"sudo mkdir -p /data/db/\n",
+										"sudo sed -i -e 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/g' /etc/mongod.conf\n",
+										"sudo service mongod restart\n"
+									]
+								}
+							}
+						}
+					}
+				};
+
+				var tenantRecord = {
+					"_id": '551286bce603d7e01ab1688e',
+					"oauth": {},
+					"locked": true,
+					"code": "DBTN",
+					"name": "Dashboard Tenant",
+					"description": "This is the main dashboard tenant",
+					"applications": [
+						{
+							"product": "DSBRD",
+							"package": "DSBRD_MAIN",
+							"appId": '5512926a7a1f0e2123f638de',
+							"description": "this is the main application for the dashboard tenant",
+							"_TTL": 604800000,
+							"keys": [
+								{
+									"key": "38145c67717c73d3febd16df38abf311",
+									"extKeys": [
+										{
+											"expDate": 1503058746824,
+											"extKey": "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974",
+											"device": null,
+											"geo": null,
+											"dashboardAccess": true,
+											"env": "DASHBOARD"
+										}
+									],
+									"config": {
+										"dashboard": {
+											"urac": {
+												"tokenExpiryTTL": 172800000
+											}
+										}
+									}
+								}
+							]
+						}
+					]
+				};
+
+				if (opts.collection === 'catalogs') {
+					return cb(null, catalogRecord);
+				}
+				if(opts.collection === 'tenants'){
+					return cb(null, tenantRecord);
+				}
+				return cb(null, envRecord);
+			};
+
+			req.soajs.registry = envRecord;
+			req.soajs.registry.coreDB = {
+                provision: {
+                    "servers": [],
+                    "credentials": {}
+                }
+            };
+
+			req.soajs.inputmaskData = {
+				deployConfig: {
+					replication: {
+						mode: ""
+					},
+					type: "vm"
+				},
+				recipe: {
+					_id: '123456'
+				},
+				custom: {}
+			};
+			req.soajs.inputmaskData.env = 'dev';
+			req.soajs.inputmaskData.type = 'service';
+			req.soajs.inputmaskData.serviceName = 'test';
+			req.soajs.inputmaskData.action = 'rebuild';
+
+			deploy.redeployService(config, req, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
