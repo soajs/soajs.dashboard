@@ -265,7 +265,7 @@ describe("testing services.js", function () {
 
 	describe("testing getUpdates", function () {
 
-		it.skip("Success getUpdates", function (done) {
+		it("Success getUpdates", function (done) {
 			mongoStub.findEntries = function (soajs, opts, cb) {
 				var records = [
 					{
@@ -319,10 +319,150 @@ describe("testing services.js", function () {
 					}];
 				return cb(null, records);
 			};
-			req.soajs.inputmaskData = {};
-			// QUESTION: why is inputmaskData being set to an empty object? we are losing env code -> cannot toUpperCase of undefined
-			// TODO: do not empty inputmaskData to keep env code
-			// TODO: return envRecord through findEntry stub so we get envRecord.deployer
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				var EnvRecord = {
+					"_id": "55128442e603d7e01ab1688c",
+					"code": "DEV",
+					"locked": true,
+					"description": "this is the DEV environment",
+					"deployer": {
+						"type": "container",
+						"selected": "container.docker.local",
+						"container": {
+							"docker": {
+								"local": {
+									"socketPath": "/var/run/docker.sock"
+								},
+								"remote": {
+									"nodes": []
+								}
+							},
+							"kubernetes": {
+								"local": {},
+								"remote": {
+									"nodes": []
+								}
+							}
+						}
+					},
+					"dbs": {
+						"clusters": {
+							"cluster1": {
+								"servers": [
+									{
+										"host": "127.0.0.1",
+										"port": 27017
+									}
+								],
+								"credentials": null,
+								"URLParam": {
+									"connectTimeoutMS": 0,
+									"socketTimeoutMS": 0,
+									"maxPoolSize": 5,
+									"wtimeoutMS": 0,
+									"slaveOk": true
+								},
+								"extraParam": {
+									"db": {
+										"native_parser": true
+									},
+									"server": {
+										"auto_reconnect": true
+									}
+								}
+							}
+						},
+						"config": {
+							"prefix": "",
+							"session": {
+								"cluster": "cluster1",
+								"name": "core_session",
+								"store": {},
+								"collection": "sessions",
+								"stringify": false,
+								"expireAfter": 1209600000
+							}
+						},
+						"databases": {
+							"urac": {
+								"cluster": "cluster1",
+								"tenantSpecific": true
+							}
+						}
+					},
+					"services": {
+						"controller": {
+							"maxPoolSize": 100,
+							"authorization": true,
+							"requestTimeout": 30,
+							"requestTimeoutRenewal": 0
+						},
+						"config": {
+							"awareness": {
+								"healthCheckInterval": 500,
+								"autoRelaodRegistry": 300000,
+								"maxLogCount": 5,
+								"autoRegisterService": true
+							},
+							"agent": {
+								"topologyDir": "/opt/soajs/"
+							},
+							"key": {
+								"algorithm": "aes256",
+								"password": "soajs key lal massa"
+							},
+							"logger": {
+								"level": "fatal",
+								"formatter": {
+									"outputMode": "short"
+								}
+							},
+							"cors": {
+								"enabled": true,
+								"origin": "*",
+								"credentials": "true",
+								"methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+								"headers": "key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type",
+								"maxage": 1728000
+							},
+							"oauth": {
+								"grants": [
+									"password",
+									"refresh_token"
+								],
+								"accessTokenLifetime": 7200,
+								"refreshTokenLifetime": 1209600,
+								"debug": false
+							},
+							"ports": {
+								"controller": 4000,
+								"maintenanceInc": 1000,
+								"randomInc": 100
+							},
+							"cookie": {
+								"secret": "this is a secret sentence"
+							},
+							"session": {
+								"name": "soajsID",
+								"secret": "this is antoine hage app server",
+								"rolling": false,
+								"unset": "keep",
+								"cookie": {
+									"path": "/",
+									"httpOnly": true,
+									"secure": false,
+									"domain": "soajs.com",
+									"maxAge": null
+								},
+								"resave": false,
+								"saveUninitialized": false
+							}
+						}
+					}
+				};
+				return cb(null, EnvRecord);
+			};
+			// req.soajs.inputmaskData = {};
 			cd.getUpdates(config, req, deployer, helpers, {}, function (error, body) {
 				assert.ok(body);
 				done();
@@ -350,32 +490,37 @@ describe("testing services.js", function () {
 		// 		cb(null, null);
 		// 	};
 		// 	mongoStub.findEntry = function (soajs, opts, cb) {
-		// 	// 	if (opts.collection === 'cicd') {
-		// 	// 		var record = {
-		// 	// 			"_id": '5928052b61',
-		// 	// 			"DEV": {
-		// 	// 				"branch": "master",
-		// 	// 				"strategy": "notify",
-		// 	// 				"controller": {
-		// 	// 					"branch": "master",
-		// 	// 					"strategy": "update",
-		// 	// 					"v2": {
-		// 	// 						"branch": "master",
-		// 	// 						"strategy": "notify"
-		// 	// 					}
-		// 	// 				}
-		// 	// 			},
-		// 	// 			"type": "cd"
-		// 	// 		};
-		// 	// 		return cb(null, record);
-		// 	// 	}
+		// 		if (opts.collection === 'cicd') {
+		// 			var record = {
+		// 				"_id": '5928052b61',
+		// 				"DEV": {
+		// 					"controller": {
+		// 						"branch": "master",
+		// 						"strategy": "notify",
+		// 						"type": "service",
+		// 						"v1": {
+		// 							"branch": "master",
+		// 							"strategy": "notify"
+		// 						},
+		// 						"v2": {
+		// 							"branch": "master",
+		// 							"strategy": "update"
+		// 						}
+		// 					},
+		// 					"pause": true
+		// 				},
+		// 				"type": "cd",
+		// 				"gitToken": 'aaaabbbb'
+		// 			};
+		// 			return cb(null, record);
+		// 		}
 		// 		cb(null, []);
 		// 	};
 		//
 		// 	req.soajs.inputmaskData = {
 		// 		deploy_token: "aaaabbbb"
 		// 	};
-		// 	cd.cdDeploy(config, req, registry, deployer, helpers, function (error, body) {
+		// 	cd.cdDeploy(config, req, deployer, helpers, function (error, body) {
 		// 		assert.ok(body);
 		// 		done();
 		// 	});
