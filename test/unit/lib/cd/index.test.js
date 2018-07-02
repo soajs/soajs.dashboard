@@ -463,7 +463,6 @@ describe("testing services.js", function () {
 				return cb(null, EnvRecord);
 			};
 			// req.soajs.inputmaskData = {};
-			console.log('ana cd', cd);
 			cd.getUpdates(config, req, deployer, helpers, {}, function (error, body) {
 				assert.ok(body);
 				done();
