@@ -901,7 +901,7 @@ describe("testing infra.js", function () {
 			})
 		});
 
-		it.skip("success infra with error", function (done) {
+		it("success infra with error", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -973,7 +973,7 @@ describe("testing infra.js", function () {
 			})
 		});
 
-		it.skip("success infra without command", function (done) {
+		it("success infra without command", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -1045,7 +1045,7 @@ describe("testing infra.js", function () {
 			})
 		});
 
-		it.skip("success infra without response", function (done) {
+		it("success infra without response", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -1130,7 +1130,7 @@ describe("testing infra.js", function () {
 			})
 		});
 
-		it.skip("success infra with response", function (done) {
+		it("success infra with response", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -1189,7 +1189,7 @@ describe("testing infra.js", function () {
 			})
 		});
 
-		it.skip("success infra ", function (done) {
+		it("success infra ", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -1259,7 +1259,7 @@ describe("testing infra.js", function () {
 			})
 		});
 
-		it.skip("success infra max count", function (done) {
+		it("success infra max count", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -1329,7 +1329,7 @@ describe("testing infra.js", function () {
 			})
 		});
 
-		it.skip("success infra inputs object", function (done) {
+		it("success infra inputs object", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -1387,7 +1387,7 @@ describe("testing infra.js", function () {
 			})
 		});
 
-		it.skip("success infra inputs empty", function (done) {
+		it("success infra inputs empty", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -1432,7 +1432,7 @@ describe("testing infra.js", function () {
 			})
 		});
 
-		it.skip("success infra no steps ", function (done) {
+		it("success infra no steps ", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
@@ -1481,7 +1481,7 @@ describe("testing infra.js", function () {
 
 	});
 
-	describe.skip("testing rollback", function () {
+	describe("testing rollback", function () {
 		it("success infra no status", function (done) {
 			context = {
 				BL: BL,
