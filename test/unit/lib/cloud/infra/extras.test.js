@@ -267,6 +267,12 @@ describe("testing lib/cloud/infra/extras.js", function () {
 	});
 
 	describe("Testing getExtras", function () {
+		afterEach(function (done) {
+			deployer.execute = function (opts, command, options, cb) {
+				return cb(null, []);
+			};
+			done();
+		});
 		it("Success", function(done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
@@ -322,7 +328,6 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				},
 				"envCode": "DEV"
 			};
-
 			deployer.execute = function (opts, command, options, cb) {
 				return cb(null, {stateFileData: {}, render: {}});
 			};

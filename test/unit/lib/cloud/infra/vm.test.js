@@ -2,6 +2,7 @@
 var assert = require("assert");
 var testHelper = require("../../../../helper.js");
 var module = testHelper.requireModule('./lib/cloud/infra/index.js');
+var vmModule = testHelper.requireModule('./lib/cloud/vm/index.js');
 var vm;
 var config = testHelper.requireModule('./config.js');
 var deployer = testHelper.deployer;
@@ -325,6 +326,7 @@ describe("testing lib/cloud/infra/index.js", function () {
 			deployer.execute = function (opts, command, options, cb) {
 				return cb(null, {stateFileData: {}, render: {}});
 			};
+			
 			vm.deployVM(config, req, req.soajs, deployer, function (error, body) {
 				assert.deepEqual(body, {"id": "123", "name": req.soajs.inputmaskData.layerName, "infraId": req.soajs.inputmaskData.infraId});
 				done();
@@ -399,15 +401,30 @@ describe("testing lib/cloud/infra/index.js", function () {
 		});
 	});
 
-	describe.skip("getDeployVMStatus", function () {
+	describe("getDeployVMStatus", function () {
 		it("success ", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"technology": "vm",
+				"id": "123",
 				"layerName" : "tester-ragheb",
 				"env": "dashboard",
 			};
+			sinon
+				.stub(vmModule, 'init')
+				.yields(null, {
+					listVMs: (config, soajs, deployer, cb) => {
+						return cb(null, [
+							{
+								"name": "tester-vm",
+								"layer": "tester-ragheb",
+							}
+						])
+					}
+				});
+					
 			vm.getDeployVMStatus(config, req, req.soajs, deployer, function (error, body) {
+				sinon.restore(vmModule);
 				assert.ok(body);
 				done();
 			});

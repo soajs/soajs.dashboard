@@ -146,135 +146,18 @@ var infraRecord = {
 		}
 	]
 };
-var deployer = helper.deployer;
-
-deployer.execute = function (opts, command, options, cb) {
-	let resp = [
-		{
-			"name": "tester-vm",
-			"id": "tester-vm",
-			"labels": {
-				"soajs.env.code": "tester",
-				"soajs.service.vm.location": "eastus",
-				"soajs.service.vm.group": "TESTER",
-				"soajs.service.vm.size": "Standard_A1"
-			},
-			"ports": [
-				{
-					"protocol": "Tcp",
-					"target": "*",
-					"published": "22",
-					"isPublished": true
-				}
-			],
-			"voluming": {},
-			"tasks": [
-				{
-					"id": "tester-vm",
-					"name": "tester-vm",
-					"status": {
-						"state": "succeeded",
-						"ts": 1529401817897
-					},
-					"ref": {
-						"os": {
-							"type": "Linux",
-							"diskSizeGB": 30
-						}
-					}
-				}
-			],
-			"env": [],
-			"ip": "40.114.123.90"
-		},
-		{
-			"name": "mongo",
-			"id": "mongo",
-			"labels": {
-				"soajs.service.vm.location": "centralus",
-				"soajs.service.vm.group": "SOAJS",
-				"soajs.service.vm.size": "Standard_B1ms"
-			},
-			"ports": [
-				{
-					"protocol": "TCP",
-					"target": "*",
-					"published": "22",
-					"isPublished": true
-				},
-				{
-					"protocol": "tcp/udp",
-					"target": "*",
-					"published": "27017",
-					"isPublished": true
-				}
-			],
-			"voluming": {},
-			"tasks": [
-				{
-					"id": "mongo",
-					"name": "mongo",
-					"status": {
-						"state": "succeeded",
-						"ts": 1529401818453
-					},
-					"ref": {
-						"os": {
-							"type": "Linux",
-							"diskSizeGB": 30
-						}
-					}
-				}
-			],
-			"env": [],
-			"ip": "104.43.136.85"
-		},
-		{
-			"name": "mysql",
-			"id": "mysql",
-			"labels": {
-				"soajs.service.vm.location": "centralus",
-				"soajs.service.vm.group": "SOAJS",
-				"soajs.service.vm.size": "Standard_B1ms"
-			},
-			"ports": [
-				{
-					"protocol": "TCP",
-					"target": "*",
-					"published": "22",
-					"isPublished": true
-				},
-				{
-					"protocol": "tcp/udp",
-					"target": "*",
-					"published": "3306",
-					"isPublished": true
-				}
-			],
-			"voluming": {},
-			"tasks": [
-				{
-					"id": "mysql",
-					"name": "mysql",
-					"status": {
-						"state": "succeeded",
-						"ts": 1529401818328
-					},
-					"ref": {
-						"os": {
-							"type": "Linux",
-							"diskSizeGB": 30
-						}
-					}
-				}
-			],
-			"env": [],
-			"ip": "104.43.151.227"
-		}
-	];
-
-	return cb(null, resp);
+var vm_layers = {
+	"_id":'5b2cea680669cf2c142e6407',
+	"infraId": "5b28c5edb53002d7b3b1f0cf",
+	"layerName": "tester-ragheb",
+	"infraCodeTemplate": "dynamic-template-loadBalancer",
+	"templateState": "{}",
+	"input": "{}",
+	"env": "dashboard",
+	"v": 1,
+	"ts": 1529670248943
 };
+var deployer = helper.deployer;
 
 deployer.runCommand = function (opts, command, options, cb) {
 
@@ -285,14 +168,16 @@ describe("testing lib/cloud/bm/index.js", function () {
 
 	before(() => {
 		mongoStub.findEntry = function (soajs, opts, cb) {
-			if (opts.collection === 'environment') {
-				return cb(null, envRecord);
-			}else if (opts.collection === 'infra') {
-				return cb(null, infraRecord);
-			}else{
-				return cb(null, {});
-			}
-		};
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}else if (opts.collection === 'infra') {
+					return cb(null, infraRecord);
+				}else if (opts.collection === 'vm_layers') {
+					return cb(null, vm_layers);
+				}else{
+					return cb(null, {});
+				}
+			};
 	});
 	describe("testing init", function () {
 
@@ -327,12 +212,140 @@ describe("testing lib/cloud/bm/index.js", function () {
 
 		it("Success", function (done) {
 			req.soajs.inputmaskData.env = 'tester';
-
+			deployer.execute = function (opts, command, options, cb) {
+				let resp = [
+					{
+						"layer": "tester-ragheb",
+						"name": "tester-vm",
+						"id": "tester-vm",
+						"labels": {
+							"soajs.env.code": "tester",
+							"soajs.service.vm.location": "eastus",
+							"soajs.service.vm.group": "TESTER",
+							"soajs.service.vm.size": "Standard_A1"
+						},
+						"ports": [
+							{
+								"protocol": "Tcp",
+								"target": "*",
+								"published": "22",
+								"isPublished": true
+							}
+						],
+						"voluming": {},
+						"tasks": [
+							{
+								"id": "tester-vm",
+								"name": "tester-vm",
+								"status": {
+									"state": "succeeded",
+									"ts": 1529401817897
+								},
+								"ref": {
+									"os": {
+										"type": "Linux",
+										"diskSizeGB": 30
+									}
+								}
+							}
+						],
+						"env": [],
+						"ip": "40.114.123.90"
+					},
+					{
+						"name": "mongo",
+						"layer": "tester-ragheb",
+						"id": "mongo",
+						"labels": {
+							"soajs.service.vm.location": "centralus",
+							"soajs.service.vm.group": "SOAJS",
+							"soajs.service.vm.size": "Standard_B1ms"
+						},
+						"ports": [
+							{
+								"protocol": "TCP",
+								"target": "*",
+								"published": "22",
+								"isPublished": true
+							},
+							{
+								"protocol": "tcp/udp",
+								"target": "*",
+								"published": "27017",
+								"isPublished": true
+							}
+						],
+						"voluming": {},
+						"tasks": [
+							{
+								"id": "mongo",
+								"name": "mongo",
+								"status": {
+									"state": "succeeded",
+									"ts": 1529401818453
+								},
+								"ref": {
+									"os": {
+										"type": "Linux",
+										"diskSizeGB": 30
+									}
+								}
+							}
+						],
+						"env": [],
+						"ip": "104.43.136.85"
+					},
+					{
+						"name": "mysql",
+						"layer": "tester-differ",
+						"id": "mysql",
+						"labels": {
+							"soajs.service.vm.location": "centralus",
+							"soajs.service.vm.group": "SOAJS",
+							"soajs.service.vm.size": "Standard_B1ms"
+						},
+						"ports": [
+							{
+								"protocol": "TCP",
+								"target": "*",
+								"published": "22",
+								"isPublished": true
+							},
+							{
+								"protocol": "tcp/udp",
+								"target": "*",
+								"published": "3306",
+								"isPublished": true
+							}
+						],
+						"voluming": {},
+						"tasks": [
+							{
+								"id": "mysql",
+								"name": "mysql",
+								"status": {
+									"state": "succeeded",
+									"ts": 1529401818328
+								},
+								"ref": {
+									"os": {
+										"type": "Linux",
+										"diskSizeGB": 30
+									}
+								}
+							}
+						],
+						"env": [],
+						"ip": "104.43.151.227"
+					}
+				];
+				
+				return cb(null, resp);
+			};
 			services.listVMs(config, req.soajs, deployer, function (error, body) {
-				console.log(JSON.stringify(body,null,2));
 				assert.ok(body);
 				assert.ifError(error);
-				// assert.equal(body.azure.length, 3); // TODO: fix this assertion since response is object
+				assert.equal(body.azure.length, 1);
 				done();
 			});
 		});
