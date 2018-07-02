@@ -1327,7 +1327,6 @@ describe("testing index.js", function () {
 				else{
 					return cb(null, {});
 				}
-				return cb(null, {});
 			};
 			environment.detachContainer(config, req, deployer, function (error, body) {
 				assert.ok(body);

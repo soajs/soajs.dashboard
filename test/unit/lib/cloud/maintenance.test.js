@@ -166,6 +166,47 @@ describe("testing lib/cloud/maintenance/index.js", function () {
 			});
 		});
 		
+		
+		it("success with infra id ", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}else if (opts.collection === 'infra') {
+					return cb(null, helper.infraRecord);
+				}else{
+					return cb(null, {});
+				}
+			};
+			req.soajs.inputmaskData.env = 'dev';
+			req.soajs.inputmaskData.type = 'service';
+			req.soajs.inputmaskData.infraId = '5aec1c671242bc43b6cb9e9c';
+			req.soajs.inputmaskData.serviceId = '123';
+			maintenance.streamLogs(config, req.soajs, deployer, function (error, body) {
+				assert.ok(error);
+				done();
+			});
+		});
+		
+		it("success with no infra id ", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}else if (opts.collection === 'infra') {
+					return cb(null, helper.infraRecord);
+				}else{
+					return cb(null, {});
+				}
+			};
+			req.soajs.inputmaskData.env = 'dev';
+			req.soajs.inputmaskData.type = 'service';
+			delete req.soajs.inputmaskData.infraId;
+			req.soajs.inputmaskData.serviceId = '123';
+			maintenance.streamLogs(config, req.soajs, deployer, function (error, body) {
+				assert.ok(error);
+				done();
+			});
+		});
+		
 	});
 	
 	describe("maintenance", function () {
@@ -270,6 +311,69 @@ describe("testing lib/cloud/maintenance/index.js", function () {
 				
 			};
 			maintenance.maintenanceVM(config, req.soajs, deployer, function (error, body) {
+				assert.ok(body);
+				assert.ifError(error);
+				done();
+			});
+		});
+	});
+	
+	describe("get Logs VM", function () {
+		it("Success", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				var infraRecord = {
+					"_id": '5b28c5edb53002d7b3b1f0cf',
+					"api": {
+						"clientId": "1",
+						"secret": "1",
+						"domain": "2",
+						"subscriptionId": "36"
+					},
+					"name": "azure",
+					"technologies": [
+						"vm"
+					],
+					"templates": [
+						"local"
+					],
+					"drivers": [
+						"Native",
+						"Terraform"
+					],
+					"label": "Azure Soajs",
+					"deployments": [
+						{
+							"technology": "vm",
+							"options": {
+								"zone": "local"
+							},
+							"environments": [
+								"DEV"
+							],
+							"loadBalancers": {},
+							"name": "htlocalp42pyx0b5lsyt",
+							"id": "htlocalp42pyx0b5lsyt"
+						}
+					]
+				};
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				} else if (opts.collection === 'infra') {
+					return cb(null, infraRecord);
+				} else {
+					return cb(null, {});
+				}
+			};
+			req.soajs.inputmaskData = {
+				
+				"env": "tester",
+				"vmName": "tester-vm",
+				"infraId": "5b28c5edb53002d7b3b1f0cf",
+				"technology": "vm",
+				"numberOfLines": 100
+				
+			};
+			maintenance.getLogVM(config, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				assert.ifError(error);
 				done();
