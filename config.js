@@ -1860,6 +1860,19 @@ module.exports = {
 					"group": "Infra Providers"
 				},
 				'commonFields': ['soajs_project'],
+				"exclude": {
+					"source": ['query.exclude'],
+					"required": false,
+					"validation": {
+						"type": "array",
+						"items": {
+							"type": "string",
+							"enum": ["regions", "templates", "groups", "extra"]
+						},
+						"uniqueItems": true,
+						"minItems": 1
+					}
+				},
 				"envCode": {
 					"source": ['query.envCode'],
 					"required": false,
