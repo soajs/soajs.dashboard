@@ -2128,7 +2128,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/platforms/attach": {
 				_apiInfo: {
 					"l": "Attach Container Technology",
@@ -3911,6 +3911,13 @@ module.exports = {
 						"type": "object"
 					}
 				},
+				"imfv": {
+					"source": ['body.imfv'],
+					"required": false,
+					"validation": {
+						"type": "object"
+					}
+				},
 				"name": {
 					"source": ['body.name'],
 					"required": false,
@@ -5363,7 +5370,7 @@ module.exports = {
 					"validation": {"type": "string", "required": true}
 				}
 			},
-			
+
 			"/environment/platforms/detach": {
 				_apiInfo: {
 					"l": "Detach Container Technology",
@@ -5378,7 +5385,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/resources": {
 				_apiInfo: {
 					"l": "Delete a resource",
