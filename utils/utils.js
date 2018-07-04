@@ -2,6 +2,8 @@
 const soajsUtils = require("soajs").utils;
 const async = require('async');
 const tenantsColName = 'tenants';
+const config = require("../config");
+
 module.exports = {
 
 	/**
@@ -30,7 +32,9 @@ module.exports = {
 				}
 				return mainCb({ "code": data.error.code, "msg": data.error.msg });
 			}
-			
+			if(!data.config){
+				data.config = config;
+			}
 			let msg = data.config.errors[data.code];
 			if(data.error.message && typeof data.error.message === 'string'){
 				msg = data.error.message;
