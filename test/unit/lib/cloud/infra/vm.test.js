@@ -430,4 +430,21 @@ describe("testing lib/cloud/infra/index.js", function () {
 			});
 		});
 	});
+	
+	describe("destroyVM", function () {
+		it("success ", function (done) {
+			req.soajs.inputmaskData = {
+				"infraId": "5b28c5edb53002d7b3b1f0cf",
+				"technology": "vm",
+				"id": "123",
+				"layerName" : "tester-ragheb",
+				"env": "dashboard",
+			};
+			
+			vm.destroyVM(config, req, req.soajs, deployer, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+	});
 });
