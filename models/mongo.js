@@ -328,12 +328,12 @@ var lib = {
 					}
 				}
 				else {
-					soajs.log.error('Missing project in servicesConfig.', soajs.inputmaskData.soajs_project);
+					soajs.log.error('Missing project in servicesConfig.', soajs.inputmaskData.soajs_project || '');
 					return false;
 				}
 			}
 			else {
-				soajs.log.error('Missing project in servicesConfig.', soajs.inputmaskData.soajs_project);
+				soajs.log.error('Missing project in servicesConfig.', soajs.inputmaskData.soajs_project || '');
 				return false;
 			}
 		}
