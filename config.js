@@ -2210,9 +2210,8 @@ module.exports = {
 				// deploy: required: recipe, deployConfig
 				"recipe": {
 					"source": ['body.recipe'],
-					"required": true,
+					"required": false,
 					"validation": {
-						"required": true,
 						"type": "string"
 					}
 				},
@@ -2220,7 +2219,6 @@ module.exports = {
 					"source": ['body.vms'],
 					"required": false,
 					"validation": {
-						"required": false,
 						"type": "array"
 					}
 				},
@@ -2261,7 +2259,6 @@ module.exports = {
 					"required": false,
 					"validation": {
 						"type": "object",
-						"required": false,
 						"properties": {
 							"sourceCode": {
 								"type": "object",

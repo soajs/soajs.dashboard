@@ -295,6 +295,9 @@ var mongoStub = {
 			metadata: {}
 		});
 	},
+	updateEntry: function (soajs, opts, cb) {
+		cb(null, {});
+	},
 	findEntries: function (soajs, opts, cb) {
 		cb(null, [input.template]);
 	},

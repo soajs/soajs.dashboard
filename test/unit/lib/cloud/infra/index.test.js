@@ -28,6 +28,9 @@ var mongoStub = {
 	findEntry: function (soajs, opts, cb) {
 		cb(null, {});
 	},
+	updateEntry: function (soajs, opts, cb) {
+		cb(null, {});
+	},
 	findEntries: function (soajs, opts, cb) {
 		var data = [{
 			name: 'one'
