@@ -30,6 +30,11 @@ module.exports = {
 				if(data.error.value && data.error.value.json && data.error.value.json.message){
 					data.error.msg = data.error.value.json.message;
 				}
+				
+				if(data.error.value && typeof(data.error.value) === 'string'){
+					data.error.msg += " / " + data.error.value;
+				}
+				
 				return mainCb({ "code": data.error.code, "msg": data.error.msg });
 			}
 			if(!data.config){
