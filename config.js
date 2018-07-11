@@ -4731,7 +4731,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "number",
-						"minimum": 1
+						"minimum": 0
 					}
 				}
 			},
