@@ -9,6 +9,7 @@ var resourceDeployConfigSchema = require("./schemas/resourceDeployConfig");
 var environmentSchema = require("./schemas/environmentSchema");
 var serviceSchema = require("./schemas/serviceSchema");
 var cdOptions = require("./schemas/cdOptions");
+var infraExtras = require("./schemas/infraExtras");
 
 module.exports = {
 	type: 'service',
@@ -3944,6 +3945,36 @@ module.exports = {
 						"type": "number"
 					}
 				}
+			},
+			
+			"/infra/extras": {
+				"_apiInfo": {
+					"l": "Create Infra component",
+					"group": "HA Cloud"
+				},
+				"commonFields": ['soajs_project'],
+				'envCode': {
+					'source': ['query.envCode', 'body.envCode'],
+					'required': true,
+					'validation': {
+						'type': 'string'
+					}
+				},
+				"infraId": {
+					"source": ['query.infraId', 'body.infraId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"technology": {
+					"source": ['query.technology', 'body.technology'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"params": infraExtras.add
 			}
 		},
 
@@ -5317,6 +5348,36 @@ module.exports = {
 					}
 				}
 			},
+			
+			"/infra/extras": {
+				"_apiInfo": {
+					"l": "Create Infra component",
+					"group": "HA Cloud"
+				},
+				"commonFields": ['soajs_project'],
+				'envCode': {
+					'source': ['query.envCode', 'body.envCode'],
+					'required': true,
+					'validation': {
+						'type': 'string'
+					}
+				},
+				"infraId": {
+					"source": ['query.infraId', 'body.infraId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"technology": {
+					"source": ['query.technology', 'body.technology'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"params": infraExtras.add
+			}
 		},
 
 		"delete": {
@@ -5800,6 +5861,57 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				}
+			},
+			
+			"/infra/extras": {
+				"_apiInfo": {
+					"l": "Create Infra component",
+					"group": "HA Cloud"
+				},
+				"commonFields": ['soajs_project'],
+				'envCode': {
+					'source': ['query.envCode', 'body.envCode'],
+					'required': true,
+					'validation': {
+						'type': 'string'
+					}
+				},
+				"infraId": {
+					"source": ['query.infraId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"technology": {
+					"source": ['query.technology'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"section": {
+					"required": true,
+					"source": ['query.section'],
+					"validation": {
+						"type": "string",
+						"enum": ["group", "network", 'loadBalancer', "publicIp", "securityGroup"]
+					}
+				},
+				"group": {
+					"required": false,
+					"source": ['query.group'],
+					"validation": {
+						"type": "string",
+					}
+				},
+				"name": {
+					"required": true,
+					"source": ['query.name'],
+					"validation": {
+						"type": "string",
 					}
 				}
 			}
