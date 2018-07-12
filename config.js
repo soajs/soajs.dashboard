@@ -3234,6 +3234,7 @@ module.exports = {
 							"default": {
 								"type": "object",
 								"properties": {
+									"status": {"type": "string", "required": false},
 									"branch": {"type": "string", "required": false, "minLengh": 1},
 									"strategy": {"type": "string", "enum": ["notify", "update"], "required": false},
 									"deploy": {"type": "boolean", "required": false},
@@ -3251,6 +3252,7 @@ module.exports = {
 									"branch": {"type": "string", "required": false, "minLengh": 1},
 									"strategy": {"type": "string", "enum": ["notify", "update"], "required": false},
 									"deploy": {"type": "boolean", "required": false},
+									"status": {"type": "string", "required": false},
 									"options": {
 										"type": "object",
 										"properties": cdOptions
