@@ -3957,7 +3957,7 @@ module.exports = {
 				"commonFields": ['soajs_project'],
 				'envCode': {
 					'source': ['query.envCode', 'body.envCode'],
-					'required': true,
+					'required': false,
 					'validation': {
 						'type': 'string'
 					}
@@ -5359,7 +5359,7 @@ module.exports = {
 				"commonFields": ['soajs_project'],
 				'envCode': {
 					'source': ['query.envCode', 'body.envCode'],
-					'required': true,
+					'required': false,
 					'validation': {
 						'type': 'string'
 					}
@@ -5875,7 +5875,7 @@ module.exports = {
 				"commonFields": ['soajs_project'],
 				'envCode': {
 					'source': ['query.envCode', 'body.envCode'],
-					'required': true,
+					'required': false,
 					'validation': {
 						'type': 'string'
 					}
