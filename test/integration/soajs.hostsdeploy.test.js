@@ -708,7 +708,7 @@ describe("testing hosts deployment", function () {
 				assert.ok(body.data);
 
 				setTimeout(function () {
-					getService({env: 'dev', serviceName: 'helloDaemon'}, function (service) {
+					getService({env: 'dev', serviceName: 'helloDaemon-group1'}, function (service) {
 						deleteService({
 							env: 'DEV',
 							id: service.id,
@@ -764,7 +764,7 @@ describe("testing hosts deployment", function () {
                     assert.ok(body.result);
                     assert.ok(body.data);
 
-                    getService({env: 'dev', serviceName: 'helloDaemon'}, function (service) {
+                    getService({env: 'dev', serviceName: 'helloDaemon-group1'}, function (service) {
                         deleteService({
                             env: 'DEV',
                             id: service.id,

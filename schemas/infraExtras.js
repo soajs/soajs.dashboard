@@ -1,4 +1,179 @@
 "use strict";
+
+var addressPools = {
+	"name": {
+		'required': true,
+		'type': 'string'
+	}
+};
+
+var ipConfigs = {
+	"name": {
+		'required': true,
+		'type': 'string'
+	},
+	"privateIpAllocationMethod": {
+		'required': false,
+		'type': 'string',
+		'enum': ["Static", "Dynamic"]
+	},
+	"privateIpAddress": {
+		'required': false,
+		'type': 'string'
+	},
+	"isPublic": {
+		'required': true,
+		'type': 'boolean'
+	},
+	"publicIpAddressId": {
+		'required': false,
+		'type': 'string'
+	},
+	"subnetId": {
+		'required': false,
+		'type': 'string'
+	}
+};
+var ports = {
+	"name": {
+		'required': true,
+		'type': 'string'
+	},
+	"protocol": {
+		'required': false,
+		'type': 'string',
+		'enum': ["Tcp", "Udp", "All"]
+	},
+	"target": {
+		'required': true,
+		'type': 'number'
+	},
+	"published": {
+		'required': false,
+		'type': 'number'
+	},
+	"idleTimeoutInMinutes": {
+		'required': false,
+		'type': 'number',
+		'min': 4,
+		'max': 30
+	},
+	"loadDistribution": {
+		'required': false,
+		'type': 'string',
+		'enum': ["Default", "SourceIP", "SourceIPProtocol"]
+	},
+	"enableFloatingIP": {
+		'required': false,
+		'type': 'boolean'
+	},
+	"disableOutboundSnat": {
+		'required': false,
+		'type': 'boolean'
+	},
+	"addressPoolName": {
+		'required': true,
+		'type': 'string'
+	},
+	"lbIpConfigName": {
+		'required': true,
+		'type': 'string'
+	},
+	"healthProbePort": {
+		'required': false,
+		'type': 'number'
+	},
+	"healthProbeProtocol": {
+		'required': true,
+		'type': 'string',
+		'enum': ["Http", "Https", "Tcp"]
+	},
+	"healthProbeRequestPath": {
+		'required': true,
+		'type': 'string'
+	},
+	"maxFailureAttempts": {
+		'required': false,
+		'type': 'number'
+	},
+	"healthProbeInterval": {
+		'required': false,
+		'type': 'number'
+	},
+	
+};
+
+var natPools = {
+	"name": {
+		'required': true,
+		'type': 'string'
+	},
+	"backendPort": {
+		'required': true,
+		'type': 'number'
+	},
+	"protocol": {
+		'required': false,
+		'type': 'string',
+		'enum': ["Tcp", "Udp", "All"]
+	},
+	"enableFloatingIP": {
+		'required': false,
+		'type': 'boolean'
+	},
+	"frontendPortRangeStart": {
+		'required': true,
+		'type': 'number'
+	},
+	"frontendPortRangeEnd": {
+		'required': true,
+		'type': 'number'
+	},
+	"idleTimeoutInMinutes": {
+		'required': false,
+		'type': 'number',
+		'min': 4,
+		'max': 30
+	},
+	"frontendIPConfigName": {
+		'required': true,
+		'type': 'string'
+	},
+};
+
+var natRules = {
+	"name": {
+		'required': true,
+		'type': 'string'
+	},
+	"backendPort": {
+		'required': true,
+		'type': 'number'
+	},
+	"protocol": {
+		'required': false,
+		'type': 'string',
+		'enum': ["Tcp", "Udp", "All"]
+	},
+	"enableFloatingIP": {
+		'required': false,
+		'type': 'boolean'
+	},
+	"frontendPort": {
+		'required': true,
+		'type': 'number'
+	},
+	"idleTimeoutInMinutes": {
+		'required': false,
+		'type': 'number',
+		'min': 4,
+		'max': 30
+	},
+	"frontendIPConfigName": {
+		'required': true,
+		'type': 'string'
+	}
+};
 var add =  {
 	"required": true,
 	"source": ["body.params"],
@@ -78,8 +253,8 @@ var add =  {
 				"type": "object",
 				"additionalProperties": false,
 				"properties": {
-					"section": {"type": "string", required: true, "enum": ["securityGroup$"]},
-					"name": {
+					"section": {"type": "string", required: true, "enum": ["loadBalancer"]},
+					"name": { //lbname
 						'required': true,
 						'type': 'string'
 					},
@@ -91,9 +266,53 @@ var add =  {
 						'required': true,
 						'type': 'string'
 					},
-					"labels": {
+					"addressPools": {
+						'required': true,
+						'type': 'array',
+						"items": {
+							"type": "object",
+							"required": true,
+							"properties": addressPools
+						}
+					},
+					"ipConfigs": {
+						'required': true,
+						'type': 'array',
+						"items": {
+							"type": "object",
+							"required": true,
+							"properties": ipConfigs
+						}
+					},
+					"ports": {
 						'required': false,
-						'type': 'object'
+						'type': 'array',
+						"items": {
+							"type": "object",
+							"required": true,
+							"properties": ports
+						}
+						
+					},
+					"natPools": {
+						'required': false,
+						'type': 'array',
+						"items": {
+							"type": "object",
+							"required": true,
+							"properties": natPools
+						}
+						
+					},
+					"natRules": {
+						'required': false,
+						'type': 'array',
+						"items": {
+							"type": "object",
+							"required": true,
+							"properties": natRules
+						}
+						
 					}
 				}
 			},
@@ -145,7 +364,7 @@ var add =  {
 				"type": "object",
 				"additionalProperties": false,
 				"properties": {
-					"section": {"type": "string", required: true, "enum": ["securityGroup$"]},
+					"section": {"type": "string", required: true, "enum": ["securityGroup"]},
 					"name": {
 						'required': true,
 						'type': 'string'
