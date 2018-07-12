@@ -101,7 +101,8 @@ module.exports = {
 			functionName: 'listSecurityGroups'
 		},
 		vmSizes: {
-			functionName: 'listVmSizes'
+			functionName: 'listVmSizes',
+			requiredInput: [ 'group' ]
 		}
 	},
 
@@ -1889,7 +1890,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/infra/:id": {
 				"_apiInfo": {
 					"l": "Get One Infra Provider",
@@ -1956,7 +1957,7 @@ module.exports = {
 				'commonFields': ['soajs_project', 'id'],
 				'envCode': {
 					"source": ['query.envCode'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string"
 					}
@@ -1970,7 +1971,7 @@ module.exports = {
 				},
 				'region': {
 					"source": ['query.region'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string"
 					}
@@ -3974,7 +3975,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/infra/extras": {
 				"_apiInfo": {
 					"l": "Create Infra component",
@@ -5376,7 +5377,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/infra/extras": {
 				"_apiInfo": {
 					"l": "Create Infra component",
@@ -5892,7 +5893,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/infra/extras": {
 				"_apiInfo": {
 					"l": "Create Infra component",
