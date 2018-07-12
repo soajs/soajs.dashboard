@@ -3047,6 +3047,35 @@ module.exports = {
 				}
 			},
 
+			"/cloud/vm/onboard": {
+				"_apiInfo": {
+					"l": "On-board Virtual Machine Layer",
+					"group": "HA Cloud"
+				},
+				"commonFields": ['soajs_project', 'env'],
+				"layer": {
+					"source": ['body.layer'],
+					"required": true,
+					"validation": {
+						"type": "object"
+					}
+				},
+                "infraId": {
+                    "source": ['query.infraId', 'body.infraId'],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+                },
+				"group": {
+                    "source": ['body.group',],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+                },
+			},
+
 			"/cloud/vm/logs": {
 				"_apiInfo": {
 					"l": "Get Service Container Logs",
@@ -3098,6 +3127,7 @@ module.exports = {
 					}
 				}
 			},
+
 
 			"/catalog/recipes/add": {
 				"_apiInfo": {
