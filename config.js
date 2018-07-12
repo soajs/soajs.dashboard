@@ -2790,7 +2790,7 @@ module.exports = {
 								}
 							},
 							"env": {
-								"type": "object",
+								"type": ["object", "null"],
 								"required": false,
 								"additionalProperties": {"type": "string"}
 							},
