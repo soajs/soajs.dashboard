@@ -44,10 +44,14 @@ module.exports = {
 			if(data.error.message && typeof data.error.message === 'string'){
 				msg = data.error.message;
 			}
-			if(!msg && data.error.msg && typeof data.error.msg === 'string'){
+			if(data.error.msg && typeof data.error.msg === 'string'){
 				msg = data.error.msg;
 			}
-			return mainCb({ "code": (data && data.code) ? data.code : 404 , "msg": msg });
+			let code =(data && data.code) ? data.code : 404;
+			if (data.error.code && typeof data.error.code === 'number'){
+				code = data.error.code;
+			}
+			return mainCb({ "code": code , "msg": msg });
 		} else {
 			if (cb) {
 				return cb();
