@@ -2128,7 +2128,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/platforms/attach": {
 				_apiInfo: {
 					"l": "Attach Container Technology",
@@ -2790,7 +2790,7 @@ module.exports = {
 								}
 							},
 							"env": {
-								"type": "object",
+								"type": ["object", "null"],
 								"required": false,
 								"additionalProperties": {"type": "string"}
 							},
@@ -3241,6 +3241,7 @@ module.exports = {
 							"default": {
 								"type": "object",
 								"properties": {
+									"status": {"type": "string", "required": false},
 									"branch": {"type": "string", "required": false, "minLengh": 1},
 									"strategy": {"type": "string", "enum": ["notify", "update"], "required": false},
 									"deploy": {"type": "boolean", "required": false},
@@ -3258,6 +3259,7 @@ module.exports = {
 									"branch": {"type": "string", "required": false, "minLengh": 1},
 									"strategy": {"type": "string", "enum": ["notify", "update"], "required": false},
 									"deploy": {"type": "boolean", "required": false},
+									"status": {"type": "string", "required": false},
 									"options": {
 										"type": "object",
 										"properties": cdOptions
@@ -3940,6 +3942,13 @@ module.exports = {
 				},
 				"display": {
 					"source": ['body.display'],
+					"required": false,
+					"validation": {
+						"type": "object"
+					}
+				},
+				"imfv": {
+					"source": ['body.imfv'],
 					"required": false,
 					"validation": {
 						"type": "object"
@@ -4730,7 +4739,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "number",
-						"minimum": 1
+						"minimum": 0
 					}
 				}
 			},
@@ -5397,7 +5406,7 @@ module.exports = {
 					"validation": {"type": "string", "required": true}
 				}
 			},
-			
+
 			"/environment/platforms/detach": {
 				_apiInfo: {
 					"l": "Detach Container Technology",
@@ -5412,7 +5421,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/resources": {
 				_apiInfo: {
 					"l": "Delete a resource",

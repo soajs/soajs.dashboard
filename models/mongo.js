@@ -60,7 +60,7 @@ var lib = {
 		}
 		else {
 			if (soajs.log) {
-				soajs.log.debug("Connecting to core project");
+				soajs.log.debug("Connecting to core project", soajs.registry.coreDB.provision.prefix);
 			}
 		}
 		

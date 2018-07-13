@@ -88,7 +88,7 @@ var dashboardBL = {
 	}
 };
 
-var deployer = require("soajs").drivers;
+var deployer = require("soajs.core.drivers");
 
 var dbModel = "mongo";
 
