@@ -3060,6 +3060,13 @@ module.exports = {
 						"type": "object"
 					}
 				},
+				"release": {
+					"source": ['query.release'],
+					"required": true,
+					"validation": {
+						"type": "boolean"
+					}
+				},
                 "infraId": {
                     "source": ['query.infraId', 'body.infraId'],
                     "required": true,
