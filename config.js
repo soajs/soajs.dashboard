@@ -102,7 +102,7 @@ module.exports = {
 		},
 		vmSizes: {
 			functionName: 'listVmSizes',
-			requiredInput: [ 'group' ]
+			requiredInput: [ 'region' ]
 		}
 	},
 
