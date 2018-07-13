@@ -1858,42 +1858,7 @@ module.exports = {
 
 			"/infra": {
 				"_apiInfo": {
-					"l": "List Infra Providers",
-					"group": "Infra Providers"
-				},
-				'commonFields': ['soajs_project'],
-				"exclude": {
-					"source": ['query.exclude'],
-					"required": false,
-					"validation": {
-						"type": "array",
-						"items": {
-							"type": "string",
-							"enum": ["regions", "templates", "groups", "extra"]
-						},
-						"uniqueItems": true,
-						"minItems": 1
-					}
-				},
-				"envCode": {
-					"source": ['query.envCode'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"technology": {
-					"source": ['query.technology'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				}
-			},
-
-			"/infra/:id": {
-				"_apiInfo": {
-					"l": "Get One Infra Provider",
+					"l": "Get Infra Provider",
 					"group": "Infra Providers"
 				},
 				'commonFields': ['soajs_project'],
@@ -1911,8 +1876,22 @@ module.exports = {
 					}
 				},
 				"id": {
-					"source": ['params.id'],
+					"source": ['query.id'],
 					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"envCode": {
+					"source": ['query.envCode'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"technology": {
+					"source": ['query.technology'],
+					"required": false,
 					"validation": {
 						"type": "string"
 					}

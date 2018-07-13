@@ -3300,29 +3300,23 @@ service.init(function () {
 	 */
 
 	/**
-	 * List activated Infra Providers
+	 * Get activated Infra Provider(s)
 	 */
 	service.get("/infra", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.list(config, req.soajs, deployer, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-	
-	/**
-	 * Get one activated Infra Providers
-	 */
-	service.get("/infra/:id", function (req, res) {
-		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.get(config, req.soajs, deployer, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
+				if(req.soajs.inputmaskData.id){
+					BL.get(config, req.soajs, deployer, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
+				}
+				else{
+					BL.list(config, req.soajs, deployer, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
+				}
 			});
 		});
 	});
