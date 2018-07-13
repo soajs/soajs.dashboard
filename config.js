@@ -1858,42 +1858,7 @@ module.exports = {
 
 			"/infra": {
 				"_apiInfo": {
-					"l": "List Infra Providers",
-					"group": "Infra Providers"
-				},
-				'commonFields': ['soajs_project'],
-				"exclude": {
-					"source": ['query.exclude'],
-					"required": false,
-					"validation": {
-						"type": "array",
-						"items": {
-							"type": "string",
-							"enum": ["regions", "templates", "groups", "extra"]
-						},
-						"uniqueItems": true,
-						"minItems": 1
-					}
-				},
-				"envCode": {
-					"source": ['query.envCode'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"technology": {
-					"source": ['query.technology'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				}
-			},
-
-			"/infra/:id": {
-				"_apiInfo": {
-					"l": "Get One Infra Provider",
+					"l": "Get Infra Provider",
 					"group": "Infra Providers"
 				},
 				'commonFields': ['soajs_project'],
@@ -1911,8 +1876,22 @@ module.exports = {
 					}
 				},
 				"id": {
-					"source": ['params.id'],
+					"source": ['query.id'],
 					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"envCode": {
+					"source": ['query.envCode'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"technology": {
+					"source": ['query.technology'],
+					"required": false,
 					"validation": {
 						"type": "string"
 					}
@@ -2820,7 +2799,7 @@ module.exports = {
 								}
 							},
 							"env": {
-								"type": "object",
+								"type": ["object", "null"],
 								"required": false,
 								"additionalProperties": {"type": "string"}
 							},
@@ -3234,6 +3213,7 @@ module.exports = {
 							"default": {
 								"type": "object",
 								"properties": {
+									"status": {"type": "string", "required": false},
 									"branch": {"type": "string", "required": false, "minLengh": 1},
 									"strategy": {"type": "string", "enum": ["notify", "update"], "required": false},
 									"deploy": {"type": "boolean", "required": false},
@@ -3251,6 +3231,7 @@ module.exports = {
 									"branch": {"type": "string", "required": false, "minLengh": 1},
 									"strategy": {"type": "string", "enum": ["notify", "update"], "required": false},
 									"deploy": {"type": "boolean", "required": false},
+									"status": {"type": "string", "required": false},
 									"options": {
 										"type": "object",
 										"properties": cdOptions
@@ -3984,7 +3965,7 @@ module.exports = {
 				"commonFields": ['soajs_project'],
 				'envCode': {
 					'source': ['query.envCode', 'body.envCode'],
-					'required': true,
+					'required': false,
 					'validation': {
 						'type': 'string'
 					}
@@ -5386,7 +5367,7 @@ module.exports = {
 				"commonFields": ['soajs_project'],
 				'envCode': {
 					'source': ['query.envCode', 'body.envCode'],
-					'required': true,
+					'required': false,
 					'validation': {
 						'type': 'string'
 					}
@@ -5902,7 +5883,7 @@ module.exports = {
 				"commonFields": ['soajs_project'],
 				'envCode': {
 					'source': ['query.envCode', 'body.envCode'],
-					'required': true,
+					'required': false,
 					'validation': {
 						'type': 'string'
 					}
