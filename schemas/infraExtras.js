@@ -53,11 +53,11 @@ var ports = {
 		'required': false,
 		'type': 'number'
 	},
-	"idleTimeoutInMinutes": {
+	"idleTimeout": {
 		'required': false,
 		'type': 'number',
-		'min': 4,
-		'max': 30
+		'min': 240,
+		'max': 1800
 	},
 	"loadDistribution": {
 		'required': false,
@@ -130,11 +130,11 @@ var natPools = {
 		'required': true,
 		'type': 'number'
 	},
-	"idleTimeoutInMinutes": {
+	"idleTimeout": {
 		'required': false,
 		'type': 'number',
-		'min': 4,
-		'max': 30
+		'min': 240,
+		'max': 1800
 	},
 	"frontendIPConfigName": {
 		'required': true,
@@ -164,11 +164,11 @@ var natRules = {
 		'required': true,
 		'type': 'number'
 	},
-	"idleTimeoutInMinutes": {
+	"idleTimeout": {
 		'required': false,
 		'type': 'number',
-		'min': 4,
-		'max': 30
+		'min': 240,
+		'max': 1800
 	},
 	"frontendIPConfigName": {
 		'required': true,
@@ -344,7 +344,7 @@ var add =  {
 						'type': 'string',
 						"enum": ["Dynamic", "Static"]
 					},
-					"idleTimeoutInMinutes": {
+					"idleTimeout": {
 						'required': false,
 						'type': 'number'
 					},
@@ -414,7 +414,7 @@ var add =  {
 									'type': 'string',
 									'enum': ['Inbound', 'Outbound']
 								},
-								"sourceAddressPrefix": {
+								"sourceAddress": {
 									'required': false,
 									'type': 'string'
 								},
@@ -422,7 +422,7 @@ var add =  {
 									'required': false,
 									'type': 'string'
 								},
-								"destinationAddressPrefix": {
+								"destinationAddress": {
 									'required': false,
 									'type': 'string'
 								},
