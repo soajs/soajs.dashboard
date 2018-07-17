@@ -3053,11 +3053,11 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				"commonFields": ['soajs_project', 'env'],
-				"layer": {
-					"source": ['body.layer'],
+				"names": {
+					"source": ['body.names'],
 					"required": true,
 					"validation": {
-						"type": "object"
+						"type": "array"
 					}
 				},
 				"release": {
@@ -3075,12 +3075,26 @@ module.exports = {
                     }
                 },
 				"group": {
-                    "source": ['body.group',],
+                    "source": ['body.group'],
                     "required": true,
                     "validation": {
                         "type": "string"
                     }
                 },
+				"layerName" : {
+                    "source": ['body.layerName'],
+                    "required": false,
+                    "validation": {
+                        "type": "string"
+                    }
+                },
+				"networkName" : {
+                    "source": ['body.networkName'],
+                    "required": false,
+                    "validation": {
+                        "type": "string"
+                    }
+                }
 			},
 
 			"/cloud/vm/logs": {
