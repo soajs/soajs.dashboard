@@ -34,6 +34,7 @@ var ipConfigs = {
 		'type': 'string'
 	}
 };
+
 var ports = {
 	"name": {
 		'required': true,
@@ -214,7 +215,7 @@ var add =  {
 						'required': true,
 						'type': 'string'
 					},
-					"addressPrefixes": {
+					"address": {
 						'required': false,
 						'type': 'array',
 						"items": {"type": "string", "required": true}
@@ -347,7 +348,7 @@ var add =  {
 						'required': false,
 						'type': 'number'
 					},
-					"publicIPAddressVersion": {
+					"ipAddressVersion": {
 						'required': false,
 						'type': 'string',
 						"enum": ["IPv4", "IPv6"]
