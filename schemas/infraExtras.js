@@ -15,7 +15,7 @@ var ipConfigs = {
 	"privateIpAllocationMethod": {
 		'required': false,
 		'type': 'string',
-		'enum': ["Static", "Dynamic"]
+		'enum': ["static", "dynamic"]
 	},
 	"privateIpAddress": {
 		'required': false,
@@ -43,7 +43,7 @@ var ports = {
 	"protocol": {
 		'required': false,
 		'type': 'string',
-		'enum': ["Tcp", "Udp", "All"]
+		'enum': ["tcp", "udp", "all"]
 	},
 	"target": {
 		'required': true,
@@ -62,7 +62,7 @@ var ports = {
 	"loadDistribution": {
 		'required': false,
 		'type': 'string',
-		'enum': ["Default", "SourceIP", "SourceIPProtocol"]
+		'enum': ["default", "sourceIP", "sourceIPProtocol"]
 	},
 	"enableFloatingIP": {
 		'required': false,
@@ -87,7 +87,7 @@ var ports = {
 	"healthProbeProtocol": {
 		'required': true,
 		'type': 'string',
-		'enum': ["Http", "Https", "Tcp"]
+		'enum': ["http", "https", "tcp"]
 	},
 	"healthProbeRequestPath": {
 		'required': true,
@@ -116,7 +116,7 @@ var natPools = {
 	"protocol": {
 		'required': false,
 		'type': 'string',
-		'enum': ["Tcp", "Udp", "All"]
+		'enum': ["tcp", "udp", "all"]
 	},
 	"enableFloatingIP": {
 		'required': false,
@@ -154,7 +154,7 @@ var natRules = {
 	"protocol": {
 		'required': false,
 		'type': 'string',
-		'enum': ["Tcp", "Udp", "All"]
+		'enum': ["http", "https", "tcp"]
 	},
 	"enableFloatingIP": {
 		'required': false,
@@ -342,7 +342,7 @@ var add =  {
 					"publicIPAllocationMethod": {
 						'required': false,
 						'type': 'string',
-						"enum": ["Dynamic", "Static"]
+						"enum": ["dynamic", "static"]
 					},
 					"idleTimeout": {
 						'required': false,
@@ -356,7 +356,7 @@ var add =  {
 					"type": {
 						'required': false,
 						'type': 'string',
-						"enum": ["Basic", "Standard"]
+						"enum": ["basic", "standard"]
 					}
 				}
 			},
