@@ -101,7 +101,7 @@ var ports = {
 		'required': false,
 		'type': 'number'
 	},
-	
+
 };
 
 var natPools = {
@@ -202,7 +202,7 @@ var add =  {
 				"type": "object",
 				"additionalProperties": false,
 				"properties": {
-					"section": {"type": "string", required: true, "enum": ["network"]},
+					"section": {"type": "string", required: true, "enum": ["network", "networkAndSecurityGroup"]},
 					"name": {
 						'required': true,
 						'type': 'string'
@@ -293,7 +293,7 @@ var add =  {
 							"required": true,
 							"properties": ports
 						}
-						
+
 					},
 					"natPools": {
 						'required': false,
@@ -303,7 +303,7 @@ var add =  {
 							"required": true,
 							"properties": natPools
 						}
-						
+
 					},
 					"natRules": {
 						'required': false,
@@ -313,7 +313,7 @@ var add =  {
 							"required": true,
 							"properties": natRules
 						}
-						
+
 					}
 				}
 			},
