@@ -402,23 +402,23 @@ var add =  {
 								"protocol": {
 									'required': false,
 									'type': 'string',
-									'enum': ['Tcp', 'Udp', '*']
+									'enum': ['TCP', 'UDP', '*']
 								},
 								"access": {
 									'required': false,
 									'type': 'string',
-									'enum': ['Allow', 'Deny']
+									'enum': ['allow', 'deny']
 								},
 								"direction": {
 									'required': false,
 									'type': 'string',
-									'enum': ['Inbound', 'Outbound']
+									'enum': ['inbound', 'outbound']
 								},
 								"sourceAddress": {
 									'required': false,
 									'type': 'string'
 								},
-								"sourcePortRange": {
+								"target": {
 									'required': false,
 									'type': 'string'
 								},
@@ -426,7 +426,7 @@ var add =  {
 									'required': false,
 									'type': 'string'
 								},
-								"destinationPortRange": {
+								"published": {
 									'required': false,
 									"type": "string"
 								}
