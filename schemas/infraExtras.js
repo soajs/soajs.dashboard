@@ -402,7 +402,7 @@ var add =  {
 								"protocol": {
 									'required': false,
 									'type': 'string',
-									'enum': ['Tcp', 'Udp', '*']
+									'enum': ['TCP', 'UDP', '*']
 								},
 								"access": {
 									'required': false,
@@ -418,7 +418,7 @@ var add =  {
 									'required': false,
 									'type': 'string'
 								},
-								"sourcePortRange": {
+								"target": {
 									'required': false,
 									'type': 'string'
 								},
@@ -426,7 +426,7 @@ var add =  {
 									'required': false,
 									'type': 'string'
 								},
-								"destinationPortRange": {
+								"published": {
 									'required': false,
 									"type": "string"
 								}
