@@ -3300,29 +3300,23 @@ service.init(function () {
 	 */
 
 	/**
-	 * List activated Infra Providers
+	 * Get activated Infra Provider(s)
 	 */
 	service.get("/infra", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.list(config, req.soajs, deployer, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
-			});
-		});
-	});
-	
-	/**
-	 * Get one activated Infra Providers
-	 */
-	service.get("/infra/:id", function (req, res) {
-		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.get(config, req.soajs, deployer, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
-				});
+				if(req.soajs.inputmaskData.id){
+					BL.get(config, req.soajs, deployer, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
+				}
+				else{
+					BL.list(config, req.soajs, deployer, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
+				}
 			});
 		});
 	});
@@ -3519,6 +3513,48 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.getExtras(config, req, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Create infra components
+	 */
+	service.post("/infra/extras", function(req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.createExtras(config, req, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Update infra components
+	 */
+	service.put("/infra/extras", function(req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.updateExtras(config, req, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Update infra components
+	 */
+	service.delete("/infra/extras", function(req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.deleteExtras(config, req, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

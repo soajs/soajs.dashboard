@@ -76,10 +76,7 @@ module.exports = {
 										"properties": {
 											"volume": {
 												"type": "object",
-												"required": true,
-												"validation": {
-													"type": "object"
-												}
+												"required": true
 											}
 										}
 									},
@@ -90,16 +87,11 @@ module.exports = {
 											"volume": {
 												"type": "object",
 												"required": true,
-												"validation": {
-													"type": "object"
-												}
+												
 											},
 											"volumeMount": {
 												"type": "object",
-												"required": true,
-												"validation": {
-													"type": "object"
-												}
+												"required": true
 											}
 										}
 									}

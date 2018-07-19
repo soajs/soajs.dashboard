@@ -37,10 +37,8 @@ var genericService = {
 								"properties": {
 									"req": {"type": "boolean"},
 									"source": {"type": "array", "minItems": 1, "items": {"type": "string"}},
-									"validation": {
-										"type": "object",
-										"additionalProperties": true
-									}
+									"type": "object",
+									"additionalProperties": true
 								},
 								"required": ["req", "source", "validation"]
 							}
