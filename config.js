@@ -1888,6 +1888,34 @@ module.exports = {
 					}
 				}
 			},
+			
+			"/infra/:id": {
+				"_apiInfo": {
+					"l": "Get One Infra Provider",
+					"group": "Infra Providers"
+				},
+				'commonFields': ['soajs_project'],
+				"exclude": {
+					"source": ['query.exclude'],
+					"required": false,
+					"validation": {
+						"type": "array",
+						"items": {
+							"type": "string",
+							"enum": ["regions", "templates", "groups", "extra"]
+						},
+						"uniqueItems": true,
+						"minItems": 1
+					}
+				},
+				"id": {
+					"source": ['params.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
 
 			"/infra/cluster": {
 				"_apiInfo": {

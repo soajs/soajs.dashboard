@@ -3312,7 +3312,21 @@ service.init(function () {
 			});
 		});
 	});
-
+	
+	/**
+	 * Get one activated Infra Providers
+	 */
+	service.get("/infra/:id", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.get(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
 	/**
 	 * Activate new infra provider
 	 */
