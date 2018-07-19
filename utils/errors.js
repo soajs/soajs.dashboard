@@ -12,7 +12,7 @@ var errors = {
 	"408": "You have requested to use the SOAJS Framework in this environment. Make sure that cookie secret, session name and session secret are provided.",
 	"409": "Invalid product id provided",
 	"410": "Unable to add the product record",
-	
+
 	"411": "Unable to update the product record",
 	"412": "Unable to get the product record",
 	"413": "Product already exists",
@@ -23,7 +23,7 @@ var errors = {
 	"418": "Product package already exists",
 	"419": "Unable to remove product package",
 	"420": "Unable to add the tenant record",
-	
+
 	"421": "Unable to update the tenant record",
 	"422": "Unable to get the tenant records",
 	"423": "Tenant already exists",
@@ -56,7 +56,7 @@ var errors = {
 	"448": "tenant oAuth User already exists",
 	"449": "Unable to add tenant oAuth User",
 	"450": "Unable to remove tenant oAuth User",
-	
+
 	"451": "Unable to updated tenant oAuth User",
 	"452": "Invalid Tenant Code",
 	"453": "Invalid Tenant External Key",
@@ -81,14 +81,14 @@ var errors = {
 	"481": "Select at least one CI or Deployment Recipe or one endpoint to generate and export a template.",
 	"482": "Requested template does not exist!",
 	"483": "Error exporting endpoints. Some of the resources associated with your endpoints were not found!",
-	
+
 	"490": "Invalid Infra Provider Id Provided",
 	"491": "This provider still has registered deployments. Remove them first before you deactivate the account.",
 	"492": "This provider does not support storing infra as code templates locally",
 	"493": "Unable to update template content, this template is not stored locally",
 	"494": "This provider does not support storing infra as code templates externally",
 	"495": "No Template state provided for this layer",
-	
+
 	"500": "This record is locked. You cannot delete it",
 	"501": "This record is locked. You cannot modify or delete it",
 	"502": "Invalid resource name/id provided",
@@ -100,7 +100,7 @@ var errors = {
 	"508": "Resource not found",
 	"509": "environment database already exist",
 	"510": "environment session database already exist",
-	
+
 	"511": "environment session database does not exist",
 	"512": "environment database does not exist",
 	"513": "Error updating environment database",
@@ -117,7 +117,7 @@ var errors = {
 	"608": "Permissions denied to access this section",
 	"609": "Dashboard service is not accessible at the time being Come back later.",
 	"610": "Invalid or profile not found.",
-	
+
 	"611": "Invalid Service Image Name provided",
 	"612": "Invalid Operation! you can either deploy a service by providing its image or if it is a GC service but not both.",
 	"613": "Invalid Operation! either deploy a service by providing its image or its GC information.",
@@ -128,7 +128,7 @@ var errors = {
 	"618": "The Deployer of this environment is configured to be manual. Deploy and Start the services then refresh this section.",
 	"619": "The Deployer of this environment is configured to be manual. Unable to perform requested maintenance operation.",
 	"620": "Make sure upload directory exists :",
-	
+
 	"621": "The requested service is not deployed in any environment",
 
 	"700": "This Content Schema already Exist",
@@ -141,7 +141,7 @@ var errors = {
 
 	"710": "A Daemon with the same name and/or port already exists",
 	"711": "Group has daemons deployed, please remove them first.",
-	
+
 	"714": "A Group Configuration with the same name already exists",
 	"715": "Unable to update group configuration",
 	"716": "Unable to delete group configuration",
@@ -170,7 +170,7 @@ var errors = {
 	"738": "Unable to change deployer type",
 	"739": "Missing required param(s). Make sure you specify certificate filename, type, and environment code. If type is docker, specify driver name and if type is nginx, specify certificate label",
 	"740": "This application does not have access to specified environment. Either update its package's ACL or choose a different environment",
-	
+
 	"741": "No platform certificates found for this environment. Please upload them in the Platforms section",
 	"742": "Unable to list static content sources",
 	"743": "Missing environment deployer settings. Please specify deployment type, selected driver, and driver settings in the Platforms section",
@@ -186,7 +186,7 @@ var errors = {
 	"757": "Unable to get git user account",
 	"758": "Unable to get repositories. Please try again.",
 	"759": "Unable to get branches",
-	
+
 	"760": "Missing source information",
 	"761": "Failed to activate repository, make sure config.js file is available in your repository and it has the right schema.",
 	"762": "A module with the same name and/or port already exists",
@@ -219,7 +219,7 @@ var errors = {
 	"788": "Invalid or no type provided in config.js",
 	"789": "Unable to get content from git provider",
 	"790": "Error while pushing code to remote repository",
-	
+
 	"791": "One of the inputs under configuration repository is missing.",
 	"792": "Selected type does not support extra custom repositories",
 	"793": "One of the inputs under custom repository is missing.",
@@ -236,7 +236,7 @@ var errors = {
  	"808": "Unable to retrieve service containers list",
  	"809": "The new and current scale counts are identical",
  	"810": "Unable to scale service, make sure the deployer is configured properly",
- 	
+
 	"811": "Unable to inspect service containers",
  	"812": "Unable to update container records. However, the service was scaled successfully",
  	"813": "Unable to delete service, make sure the deployer is configured properly",
@@ -246,7 +246,7 @@ var errors = {
  	"818": "This operation is only permitted in the dashboard environment",
  	"819": "Unable to update environments' deployer. However, the node was added successfully",
  	"820": "Unable to update environments' deployer. However, the node was removed successfully",
- 	
+
 	"821": "You are not allowed you remove a manager node. You need to demote it to worker first",
  	"822": "Unable to update environments' deployer. However, the node was updated successfully",
  	"823": "Update operations are not permitted for clusters that that composed of a single node",
@@ -256,10 +256,10 @@ var errors = {
 	"827": "Invalid volume schema provided!",
 	"828": "Container mode is required!",
 	"829": "Replication type is required!",
-	
+
 	"840": "Missing Virtual Machine parameters.",
 	"841": "No Admin Authentication method was provided.",
-	
+
 	"850": "The simulator returned an error",
 	"851": "Invalid YAML code provided",
 	"852": "Error Cleaning up generated Service Code",
@@ -289,7 +289,7 @@ var errors = {
 
     "948": "Detected old Schema for volumes, please upgrade",
     "949": "Specify the type for docker volume(s)",
-	
+
 	"950": "Catalog recipe not found",
 	"951": "You are not allowed to edit or delete a locked recipe",
 	"952": "Unable to update catalog recipe",
@@ -303,7 +303,7 @@ var errors = {
 	"968": "This Account already has a Continuous Integration configured with the selected provider.",
     "969": "The chosen Continuous Integration Service does not exist",
     "970": "The chosen driver does not support the selected function",
-	
+
     "971": "Unable to submit your request to the service.",
     "972": "Please provide a valid Github token.",
     "973": "The provided Github token does not have sufficient oauth permissions.",
@@ -333,7 +333,8 @@ var errors = {
 	"995": "Modifying a custom registry entry is only allowed in the environment where it was created",
 	"996": "At least one of the deployment's exposed ports conflicts with existing deployments",
 	"997": "Unable to get repository build or job logs",
-	"999": "Limit Exceed, please upgrade your account"
+	"998": "An error occured while updating port configuration of vm layer",
+	"999": "Limit Exceed, please upgrade your account",
 };
 
 
