@@ -236,7 +236,7 @@ var add =  {
 									'required': true,
 									'type': 'string'
 								},
-								"addressPrefix": {
+								"address": {
 									'required': false,
 									'type': 'string'
 								}
