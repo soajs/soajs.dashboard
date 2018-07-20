@@ -56,7 +56,7 @@ var errors = {
 	"448": "tenant oAuth User already exists",
 	"449": "Unable to add tenant oAuth User",
 	"450": "Unable to remove tenant oAuth User",
-
+	
 	"451": "Unable to updated tenant oAuth User",
 	"452": "Invalid Tenant Code",
 	"453": "Invalid Tenant External Key",
@@ -237,7 +237,7 @@ var errors = {
  	"808": "Unable to retrieve service containers list",
  	"809": "The new and current scale counts are identical",
  	"810": "Unable to scale service, make sure the deployer is configured properly",
-
+ 	
 	"811": "Unable to inspect service containers",
  	"812": "Unable to update container records. However, the service was scaled successfully",
  	"813": "Unable to delete service, make sure the deployer is configured properly",
@@ -247,7 +247,7 @@ var errors = {
  	"818": "This operation is only permitted in the dashboard environment",
  	"819": "Unable to update environments' deployer. However, the node was added successfully",
  	"820": "Unable to update environments' deployer. However, the node was removed successfully",
-
+ 	
 	"821": "You are not allowed you remove a manager node. You need to demote it to worker first",
  	"822": "Unable to update environments' deployer. However, the node was updated successfully",
  	"823": "Update operations are not permitted for clusters that that composed of a single node",
@@ -257,7 +257,7 @@ var errors = {
 	"827": "Invalid volume schema provided!",
 	"828": "Container mode is required!",
 	"829": "Replication type is required!",
-
+	
 	"840": "Missing Virtual Machine parameters.",
 	"841": "No Admin Authentication method was provided.",
 
@@ -290,7 +290,7 @@ var errors = {
 
     "948": "Detected old Schema for volumes, please upgrade",
     "949": "Specify the type for docker volume(s)",
-
+	
 	"950": "Catalog recipe not found",
 	"951": "You are not allowed to edit or delete a locked recipe",
 	"952": "Unable to update catalog recipe",
@@ -304,7 +304,7 @@ var errors = {
 	"968": "This Account already has a Continuous Integration configured with the selected provider.",
     "969": "The chosen Continuous Integration Service does not exist",
     "970": "The chosen driver does not support the selected function",
-
+	
     "971": "Unable to submit your request to the service.",
     "972": "Please provide a valid Github token.",
     "973": "The provided Github token does not have sufficient oauth permissions.",
