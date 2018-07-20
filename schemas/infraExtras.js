@@ -202,7 +202,7 @@ var add =  {
 				"type": "object",
 				"additionalProperties": false,
 				"properties": {
-					"section": {"type": "string", required: true, "enum": ["network", "networkAndSecurityGroup"]},
+					"section": {"type": "string", required: true, "enum": ["network"]},
 					"name": {
 						'required': true,
 						'type': 'string'
