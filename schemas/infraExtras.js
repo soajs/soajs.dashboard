@@ -8,10 +8,6 @@ var addressPools = {
 };
 
 var ipConfigs = {
-	"name": {
-		'required': true,
-		'type': 'string'
-	},
 	"privateIpAllocationMethod": {
 		'required': false,
 		'type': 'string',
@@ -27,11 +23,23 @@ var ipConfigs = {
 	},
 	"publicIpAddressId": {
 		'required': false,
-		'type': 'string'
+		'type': 'object',
+		"properties": {
+			"id": {
+				'required': true,
+				'type': 'string'
+			}
+		}
 	},
 	"subnetId": {
 		'required': false,
-		'type': 'string'
+		'type': 'object',
+		"properties": {
+			"id": {
+				'required': true,
+				'type': 'string'
+			}
+		}
 	}
 };
 
@@ -76,10 +84,6 @@ var ports = {
 		'required': true,
 		'type': 'string'
 	},
-	"lbIpConfigName": {
-		'required': true,
-		'type': 'string'
-	},
 	"healthProbePort": {
 		'required': false,
 		'type': 'number'
@@ -100,8 +104,7 @@ var ports = {
 	"healthProbeInterval": {
 		'required': false,
 		'type': 'number'
-	},
-
+	}
 };
 
 var natPools = {
@@ -175,6 +178,52 @@ var natRules = {
 		'type': 'string'
 	}
 };
+
+var rules = {
+	"name": {
+		'required': true,
+		'type': 'string'
+	},
+	"config": {
+		'required': true,
+		'type': 'array',
+		"items": {
+			"type": "object",
+			"required": true,
+			"properties": ipConfigs
+		}
+	},
+	"ports": {
+		'required': false,
+		'type': 'array',
+		"items": {
+			"type": "object",
+			"required": true,
+			"properties": ports
+		}
+		
+	},
+	"natPools": {
+		'required': false,
+		'type': 'array',
+		"items": {
+			"type": "object",
+			"required": true,
+			"properties": natPools
+		}
+		
+	},
+	"natRules": {
+		'required': false,
+		'type': 'array',
+		"items": {
+			"type": "object",
+			"required": true,
+			"properties": natRules
+		}
+	}
+};
+
 var add =  {
 	"required": true,
 	"source": ["body.params"],
@@ -276,44 +325,18 @@ var add =  {
 							"properties": addressPools
 						}
 					},
-					"ipConfigs": {
+					"rules": {
+						"name": {
+							'required': true,
+							'type': 'string'
+						},
 						'required': true,
 						'type': 'array',
 						"items": {
 							"type": "object",
 							"required": true,
-							"properties": ipConfigs
+							"properties": rules
 						}
-					},
-					"ports": {
-						'required': false,
-						'type': 'array',
-						"items": {
-							"type": "object",
-							"required": true,
-							"properties": ports
-						}
-
-					},
-					"natPools": {
-						'required': false,
-						'type': 'array',
-						"items": {
-							"type": "object",
-							"required": true,
-							"properties": natPools
-						}
-
-					},
-					"natRules": {
-						'required': false,
-						'type': 'array',
-						"items": {
-							"type": "object",
-							"required": true,
-							"properties": natRules
-						}
-
 					}
 				}
 			},
