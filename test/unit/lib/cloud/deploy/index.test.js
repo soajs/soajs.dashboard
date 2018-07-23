@@ -790,6 +790,7 @@ describe("testing lib/cloud/deploy/index.js", function () {
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
+			req.soajs.inputmaskData.infraId = '123';
 
 			deploy.deployService(config, req, deployer, function (error, body) {
 				assert.ok(body);
@@ -963,6 +964,7 @@ describe("testing lib/cloud/deploy/index.js", function () {
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
 			req.soajs.inputmaskData.action = 'redeploy';
+			req.soajs.inputmaskData.infraId = '123';
 
 			deploy.redeployService(config, req, deployer, function (error, body) {
 				assert.ok(body);
@@ -1136,6 +1138,7 @@ describe("testing lib/cloud/deploy/index.js", function () {
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
 			req.soajs.inputmaskData.action = 'rebuild';
+			req.soajs.inputmaskData.infraId = '123';
 
 			deploy.redeployService(config, req, deployer, function (error, body) {
 				assert.ok(body);
