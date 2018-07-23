@@ -248,7 +248,9 @@ var lib = {
 			}
 		}
 		try {
+			soajs.log.info('convert id');
 			id = soajs.mongoDb.ObjectId(id);
+			soajs.log.info(id);
 			return ((cb) ? cb(null, id) : id);
 		}
 		catch (e) {
