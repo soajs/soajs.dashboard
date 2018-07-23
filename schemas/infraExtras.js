@@ -21,7 +21,7 @@ var ipConfigs = {
 		'required': true,
 		'type': 'boolean'
 	},
-	"publicIpAddressId": {
+	"publicIpAddress": {
 		'required': false,
 		'type': 'object',
 		"properties": {
@@ -31,7 +31,7 @@ var ipConfigs = {
 			}
 		}
 	},
-	"subnetId": {
+	"subnet": {
 		'required': false,
 		'type': 'object',
 		"properties": {
@@ -201,7 +201,7 @@ var rules = {
 			"required": true,
 			"properties": ports
 		}
-		
+
 	},
 	"natPools": {
 		'required': false,
@@ -211,7 +211,7 @@ var rules = {
 			"required": true,
 			"properties": natPools
 		}
-		
+
 	},
 	"natRules": {
 		'required': false,
@@ -326,10 +326,6 @@ var add =  {
 						}
 					},
 					"rules": {
-						"name": {
-							'required': true,
-							'type': 'string'
-						},
 						'required': true,
 						'type': 'array',
 						"items": {
