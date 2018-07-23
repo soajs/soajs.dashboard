@@ -3103,7 +3103,24 @@ module.exports = {
                     "validation": {
                         "type": "string"
                     }
-                }
+                },
+				"image": {
+					"source": ['body.image'],
+					"required": false,
+					"validation": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"prefix": {"type": "string", "required": true},
+								"name": {"type": "string", "required": true},
+								"version": {"type": "string", "required": true},
+								"vmName": {"type": "string", "required": false},
+								"onBoard": {"type": "boolean", "required": true}
+							}
+						}
+					}
+				},
 			},
 
 			"/cloud/vm/logs": {

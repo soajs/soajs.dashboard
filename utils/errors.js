@@ -131,6 +131,7 @@ var errors = {
 	"620": "Make sure upload directory exists :",
 
 	"621": "The requested service is not deployed in any environment",
+	"622": "We are unable to onBoard your VM instance because we detected a mismatch between the Operating Systems of the Virtual Machine Instance.",
 
 	"700": "This Content Schema already Exist",
 	"701": "Invalid Id provided",
