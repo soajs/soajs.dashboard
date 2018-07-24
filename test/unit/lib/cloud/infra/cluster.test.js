@@ -74,7 +74,9 @@ let soajs = {
 		}
 	},
 	// uracDriver: {},
-	inputmaskData: {},
+	inputmaskData: {
+	
+	},
 	tenant: {},
 	headers: {}
 };
@@ -112,7 +114,13 @@ describe("testing lib/cloud/infra/cluster.js", function () {
 			});
 			
 			utilsStub = sinon.stub(utils, 'buildDeployerOptions', function (environmentRecord, soajs, BL) {
-				let output = {};
+				let output = {
+					soajs :{
+						inputmaskData:{
+							id: "1"
+						}
+					}
+				};
 				return output;
 			});
 			
@@ -170,6 +178,78 @@ describe("testing lib/cloud/infra/cluster.js", function () {
 					templates: ["local"],
 					_id: "abcdefghijklmnopqrstuvwxyz"
 				};
+				let environmentRecord = {
+					code: "DASHBOARD",
+					domain: "soajs.org",
+					sitePrefix: "dashboard",
+					apiPrefix: "dashboard-api",
+					locked: true,
+					protocol: "http",
+					profile: "/opt/soajs/FILES/profiles/profile.js",
+					deployer: {
+						type: "container",
+						selected: "container.docker.remote",
+						manual: {
+							nodes: "127.0.0.1"
+						},
+						container: {
+							docker: {
+								local: {
+									nodes: "127.0.0.1",
+									socketPath: "/var/run/docker.sock"
+								},
+								remote: {
+									nodes: "127.0.0.1",
+									apiProtocol: "https",
+									auth: {
+										token: "%dockertoken%"
+									}
+								}
+							},
+							kubernetes: {
+								local: {
+									nodes: "127.0.0.1",
+									namespace: "%namespace%",
+									auth: {
+										token: "%kubetoken%"
+									}
+								},
+								remote: {
+									nodes: "127.0.0.1",
+									namespace: "%namespace%",
+									auth: {
+										token: "%kubetoken%"
+									}
+								}
+							}
+						}
+					},
+					description: "this is the Dashboard environment",
+				};
+				let info = [
+					'x1', 'x2', 'x3'
+				];
+				return cb(InfraRecord, environmentRecord, info);
+			});
+			
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, {imfv: "{\"validation\": {\n" +
+					"\t\t\t\t\t\t\"type\": \"string\"\n" +
+					"\t\t\t\t\t}}"});
+			};
+			clustersModule.deployCluster(config, req, soajs, BL, deployer, function (error, body) {
+				done();
+			});
+		});
+		
+		it("Success deployCluster without previousEnvironment & No deployments / doDeploy without local template", function (done) {
+			delete soajs.inputmaskData.previousEnvironment;
+			
+			serviceStub.restore();
+			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
+				let InfraRecord = {
+					deployments: []
+				};
 				let environmentRecord = {};
 				let info = [
 					'x1', 'x2', 'x3'
@@ -186,13 +266,14 @@ describe("testing lib/cloud/infra/cluster.js", function () {
 			});
 		});
 		
-		it("Success deployCluster without previousEnvironment & No deployments / doDeploy without local template", function (done) {
+		it("Success deployCluster without previousEnvironment & No deployments / doDeploy with external template", function (done) {
 			delete soajs.inputmaskData.previousEnvironment;
 			
 			serviceStub.restore();
 			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
 				let InfraRecord = {
-					deployments: []
+					deployments: [],
+					templates: ["external"],
 				};
 				let environmentRecord = {};
 				let info = [

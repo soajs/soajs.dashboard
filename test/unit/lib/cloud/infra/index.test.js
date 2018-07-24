@@ -25,15 +25,69 @@ var mongoStub = {
 	validateId: function (soajs, cb) {
 		return cb(null, soajs.inputmaskData.id);
 	},
+	validateCustomId: function (soajs, id, cb) {
+		return cb(null, id);
+	},
 	findEntry: function (soajs, opts, cb) {
-		cb(null, {});
+		cb(null, {
+			name: "local",
+			deployments: [{
+				environments: "dev"
+			}]
+		});
 	},
 	updateEntry: function (soajs, opts, cb) {
 		cb(null, {});
 	},
 	findEntries: function (soajs, opts, cb) {
 		var data = [{
-			name: 'one'
+			name: 'one',
+			label: "docker",
+			api: {},
+			deployer: {
+				manual: {
+					nodes: ""
+				},
+				container: {
+					docker: {
+						local: {
+							socketPath: "/var/run/docker.sock"
+						},
+						remote: {
+							apiPort: 443,
+							nodes: "192.168.61.51",
+							apiProtocol: "https",
+							auth: {
+								token: "4fecc4c5bb31054ba4f2c7feeba5bd79f3d210e1abc216e0958c239ddb5050c99ccd94da522cb98d30bcaed851a6116cbf3a7115b8f83532b5ce06412ba4d6ac47cd7f403217286cac90ec8995f21773b1332421c8d2d8e1d4c6b5a8d8ebdf109f230a24bb84a1659d6da7ac8bdd9278731072896439c93a69a277290043aede8b205e81d79c27a63b109616a2cf781f080f79c463dcb649f3760477f80279251e954d00e7cb42ec899ad4741c41452369315a87c9f8af264bf991850dd4875e154fd6c89bf481763bbfe941b6eddb0433e7b8ccce358961fb041c900d006a3341369cf6c0e930016054a2656a62907580dad85b5ed2d99eb0e81a03d8503f75076b44d047342964fa1fc8cfa49725739a8d44706dcead75e835c9e28d13aa768dd60a29d3a6f6d00d158af20a1af2c5fe6d8ec7b4b2ffa9caa59ede2c0dd881b85824abcd9bca7a80e64a17b9b4710f0134cd1806c0bf6efa1b3bf0999f629d9c4a6394b20654119d79c5ee876e9fa31b72bfc41ad91f7ad88f202da95a7d10578c8c71ae833283f61008468bc137eb44566801036cbae5b7788398bae017139711f5c61d5500aedd118b6ddb3cc7704464c548295e0c8c255288c291e11a5291bcaf26f7a8273ac2afc2a5499e27f35dc3751b49e95b1976572a47dd5e0c22a55002da3d9310ec3168960da9a7e5d2f8e8522b62bcd022b6e6087ead728abe"
+							}
+						}
+					},
+					kubernetes: {
+						local: {
+							nodes: "",
+							namespace: {
+								default: "soajs",
+								perService: false
+							},
+							auth: {
+								token: ""
+							}
+						},
+						remote: {
+							nodes: "",
+							namespace: {
+								default: "soajs",
+								perService: false
+							},
+							auth: {
+								token: ""
+							}
+						}
+					}
+				},
+				type: "container",
+				selected: "container.docker.remote"
+			}
 		}];
 		cb(null, data);
 	},
@@ -200,11 +254,43 @@ describe("testing lib/cloud/infra/index.js", function () {
 		});
 		
 	});
+	describe("get", function () {
+		it("Success list", function (done) {
+			infra.get(config, req.soajs, deployer, function (error, body) {
+				done();
+			});
+		});
+	});
 
 	describe("activate", function () {
 
 		it("Success activate", function (done) {
+			req.soajs.inputmaskData.name = 'docker';
+			req.soajs.inputmaskData.label = 'kube';
+			req.soajs.inputmaskData.api = {"data": true};
 			infra.activate(config, req.soajs, deployer, function (error, body) {
+				assert.ifError(error)
+				assert.ok(body)
+				done();
+			});
+		});
+		
+		it("failure Another Provider with the same name exists!", function (done) {
+			req.soajs.inputmaskData.name = 'notdocker';
+			req.soajs.inputmaskData.label = 'docker';
+			req.soajs.inputmaskData.api = {"data": true};
+			infra.activate(config, req.soajs, deployer, function (error, body) {
+				assert.ok(error);
+				done();
+			});
+		});
+		
+		it("failure Another Provider with the same configuration exists!", function (done) {
+			req.soajs.inputmaskData.name = 'docker';
+			req.soajs.inputmaskData.label = 'kube';
+			req.soajs.inputmaskData.api = {};
+			infra.activate(config, req.soajs, deployer, function (error, body) {
+				assert.ok(error);
 				done();
 			});
 		});
@@ -215,6 +301,8 @@ describe("testing lib/cloud/infra/index.js", function () {
 
 		it("Success modify", function (done) {
 			infra.modify(config, req.soajs, deployer, function (error, body) {
+				assert.ifError(error)
+				assert.ok(body)
 				done();
 			});
 		});
@@ -480,5 +568,15 @@ describe("testing lib/cloud/infra/index.js", function () {
 			});
 		});
 
+	});
+	
+	describe("onboardVM", function () {
+		
+		it("Success onboardVM", function (done) {
+			req.soajs.inputmaskData.env = "dev";
+			infra.onboardVM(config, req, req.soajs, deployer, function (error, body) {
+				done();
+			});
+		});
 	});
 });
