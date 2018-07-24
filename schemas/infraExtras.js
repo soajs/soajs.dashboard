@@ -139,8 +139,8 @@ var natPools = {
 		'min': 240,
 		'max': 1800
 	},
-	"frontendIPConfigName": {
-		'required': true,
+	"ipConfigName": {
+		'required': false,
 		'type': 'string'
 	},
 };
@@ -173,8 +173,8 @@ var natRules = {
 		'min': 240,
 		'max': 1800
 	},
-	"frontendIPConfigName": {
-		'required': true,
+	"ipConfigName": {
+		'required': false,
 		'type': 'string'
 	}
 };
@@ -186,12 +186,8 @@ var rules = {
 	},
 	"config": {
 		'required': true,
-		'type': 'array',
-		"items": {
-			"type": "object",
-			"required": true,
-			"properties": ipConfigs
-		}
+		'type': 'object',
+		"properties": ipConfigs
 	},
 	"ports": {
 		'required': false,
