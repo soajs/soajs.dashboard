@@ -99,7 +99,7 @@ var helpers = {
 		}];
 		return cb(null, servicesList);
 	},
-	processOneService: function (req, BL, oneService, deployer, options, callback) {
+	processOneService: function (req, BL, oneService, deployer, options, record, callback) {
 		return callback();
 	},
 	getEnvsServices: function (envs, req, deployer, BL, fcb) {
@@ -473,58 +473,88 @@ describe("testing services.js", function () {
 
 	describe("testing cdDeploy", function () {
 
-		// it.skip("Success cdDeploy", function (done) {
-		// 	mongoStub.findEntry = function (soajs, opts, cb) {
-		// 		if (opts.collection === 'cicd') {
-		// 			var records = {
-		// 				_id: '592806440e',
-		// 				provider: 'travis',
-		// 				domain: 'api.travis-ci.org',
-		// 				owner: 'soajs',
-		// 				gitToken: 'aaaabbbb',
-		// 				ciToken: 'abcd1234',
-		// 				type: 'account'
-		// 			};
-		// 			return cb(null, records);
-		// 		}
-		// 		cb(null, null);
-		// 	};
-		// 	mongoStub.findEntry = function (soajs, opts, cb) {
-		// 		if (opts.collection === 'cicd') {
-		// 			var record = {
-		// 				"_id": '5928052b61',
-		// 				"DEV": {
-		// 					"controller": {
-		// 						"branch": "master",
-		// 						"strategy": "notify",
-		// 						"type": "service",
-		// 						"v1": {
-		// 							"branch": "master",
-		// 							"strategy": "notify"
-		// 						},
-		// 						"v2": {
-		// 							"branch": "master",
-		// 							"strategy": "update"
-		// 						}
-		// 					},
-		// 					"pause": true
-		// 				},
-		// 				"type": "cd",
-		// 				"gitToken": 'aaaabbbb'
-		// 			};
-		// 			return cb(null, record);
-		// 		}
-		// 		cb(null, []);
-		// 	};
-		//
-		// 	req.soajs.inputmaskData = {
-		// 		deploy_token: "aaaabbbb"
-		// 	};
-		// 	cd.cdDeploy(config, req, deployer, helpers, function (error, body) {
-		// 		assert.ok(body);
-		// 		done();
-		// 	});
-		// });
+		it("Success cdDeploy", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'git_accounts') {
+					var records = {
+						_id: '592806440e',
+						provider: 'travis',
+						domain: 'api.travis-ci.org',
+						owner: 'soajs',
+						ciToken: 'abcd1234',
+						type: 'account'
+					};
+					return cb(null, records);
+				}
+				if (opts.collection === 'cicd') {
+					var record = {
+						_id: "5b2b93914e0ec86cef92b14a",
+						type: "cd",
+						gitToken: "aaaabbbb",
+						DASHBOARD: {
+							controller: {
+								deploy: true,
+								options: {
+									deployConfig: {
+										replication: {
+											mode: "deployment",
+											replicas: 1
+										},
+										memoryLimit: 524288000
+									},
+									autoScale: null,
+									gitSource: {
+										owner: "soajs",
+										repo: "soajs.controller",
+										branch: "master",
+										commit: "441cec29d05c82ae716d7f4b0d116c8da8f1dd2b"
+									},
+									custom: {
+										name: "controller",
+										type: "service",
+										sourceCode: {
+										
+										},
+										version: "1",
+										ports: [
+											{
+												name: "service",
+												isPublished: false,
+												target: 4000
+											},
+											{
+												name: "maintenance",
+												isPublished: false,
+												target:5000
+											}
+										]
+									},
+									recipe: "5b27cf8c254dfba7d2ddf906",
+									env: "DEV"
+								},
+								type: "custom",
+								status: "ready"
+							}
+						}
+					};
+					return cb(null, record);
+				}
+				cb(null, []);
+			};
+
+			req.soajs.inputmaskData = {
+				deploy_token: "aaaabbbb",
+				repo: "test",
+				owner: "test",
+				branch: "test",
+				commit: "test",
+				ciProvider: "test",
+			};
+			cd.cdDeploy(config, req, deployer, helpers, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
 
 	});
 
