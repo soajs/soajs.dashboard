@@ -89,6 +89,7 @@ var errors = {
 	"494": "This provider does not support storing infra as code templates externally",
 	"495": "No Template state provided for this layer",
 	"496": "Infra Provider Id is required when deploying a resource of type virtual machine",
+	"497": "No Deployments found for this Infra Provider",
 
 	"500": "This record is locked. You cannot delete it",
 	"501": "This record is locked. You cannot modify or delete it",
