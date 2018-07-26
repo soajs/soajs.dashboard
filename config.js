@@ -5748,7 +5748,14 @@ module.exports = {
 					"l": "Delete Virtual Machine",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['soajs_project', 'env', 'serviceId', 'infraId', 'technology']
+				'commonFields': ['soajs_project', 'env', 'serviceId', 'infraId', 'technology'],
+				'group':{
+					"source": ['query.group'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
 			},
 
 			"/cloud/vm": {
