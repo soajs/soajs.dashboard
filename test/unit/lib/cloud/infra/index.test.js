@@ -480,6 +480,10 @@ describe("testing lib/cloud/infra/index.js", function () {
 				};
 				cb(null, InfraRecord);
 			};
+			
+			infra.model.countEntries = function (soajs, opts, cb) {
+				cb(null, 1);
+			};
 
 			infra.addTemplate(config, req.soajs, function (error, body) {
 				done();
@@ -499,6 +503,10 @@ describe("testing lib/cloud/infra/index.js", function () {
 					templates: ['local']
 				};
 				cb(null, InfraRecord);
+			};
+			
+			infra.model.countEntries = function (soajs, opts, cb) {
+				cb(null, 1);
 			};
 
 			infra.addTemplate(config, req.soajs, function (error, body) {
