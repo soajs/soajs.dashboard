@@ -4,7 +4,7 @@ const async = require('async');
 const tenantsColName = 'tenants';
 const config = require("../config");
 
-module.exports = {
+let utils  = {
 
 	/**
 	 * Check if error is available and return it in response, else return callback function
@@ -227,5 +227,73 @@ module.exports = {
 			});
 		}
 		return [infraStack, environments, index];
+	},
+	
+	accommodateDeployTemplateForMongo: (template, insert, cb) => {
+		// if insert true remove the . and replace it with __dot__
+		// if insert false replace __dot__ with .
+		let target = "__dot__";
+		let replacement = ".";
+		let replaceRegex = /__dot__/g;
+		if (insert) {
+			target = ".";
+			replacement = "__dot__";
+			replaceRegex = /\./g;
+		}
+		let nothingToDeploy = true;
+		//loop over stages
+		async.forEachOf(template, function (stage, key, sectCB) {
+			//loop over group
+			async.forEachOf(stage, function (group, key, grCB) {
+				//loop over section
+				async.forEachOf(group, function (section, key, stCB) {
+					nothingToDeploy = false;
+					//replace the target with replacement if found
+					if (key && key.indexOf(target) !== -1) {
+						let newSection = key.replace(replaceRegex, replacement);
+						group[newSection] = section;
+						delete group[key];
+						if (section && section.imfv && typeof section.imfv === "object"
+							&& Object.keys(section.imfv.length > 0)) {
+							//loop ever the imfv inside each section
+							async.forEachOf(section.imfv, function (imfv, key, imCB) {
+								if (imfv && imfv.options && imfv.options.data
+									&& imfv.options.data.specs && imfv.options.data.specs.tags
+									&& typeof imfv.options.data.specs.tags === 'object'
+									&& Object.keys(imfv.options.data.specs.tags).length > 0) {
+									//loop ever the tags inside each imfv
+									async.forEachOf(imfv.options.data.specs.tags, function (tag, key, tagCB) {
+										//replace the target with replacement if found
+										if (key && key.indexOf(target) !== -1) {
+											let newTag = key.replace(replaceRegex, replacement);
+											imfv.options.data.specs.tags[newTag] = tag;
+											delete imfv.options.data.specs.tags[key];
+											return  tagCB();
+										}
+										else {
+											return tagCB();
+										}
+									}, imCB)
+								}
+								else {
+									return imCB();
+								}
+								
+							}, stCB)
+						}
+						else {
+							return stCB();
+						}
+					}
+					else {
+						return stCB();
+					}
+				}, grCB);
+			}, sectCB);
+		}, () => {
+			return cb(null, nothingToDeploy);
+		});
 	}
 };
+
+module.exports = utils;
