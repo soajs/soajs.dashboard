@@ -120,53 +120,51 @@ var lib = {
 				soajs.mongoDb.createIndex(hostsCollectionName, { env: 1, name: 1, ip: 1, hostname: 1 }, errorLogger);
 				soajs.mongoDb.createIndex(hostsCollectionName, { env: 1, type: 1, running: 1 }, errorLogger);
 			}
-			
+
 			//oauth_urac
 			soajs.mongoDb.createIndex(oauthUracCollectionName, { tId: 1, _id: 1 }, errorLogger);
 			soajs.mongoDb.createIndex(oauthUracCollectionName, { tId: 1, userId: 1, _id: 1 }, errorLogger);
 			soajs.mongoDb.createIndex(oauthTokenCollectionName, { expires: 1 }, { expireAfterSeconds: 0 }, errorLogger);
-			
+
 			//git_accounts
 			soajs.mongoDb.createIndex(gitAccountsCollectionName, { _id: 1, 'repos.name': 1 }, errorLogger);
 			soajs.mongoDb.createIndex(gitAccountsCollectionName, { 'repos.name': 1 }, errorLogger);
 			soajs.mongoDb.createIndex(gitAccountsCollectionName, { owner: 1, provider: 1 }, errorLogger);
-			
+
 			//templates
 			soajs.mongoDb.createIndex(templatesCollectionName, { code: 1 }, errorLogger);
 			soajs.mongoDb.createIndex(templatesCollectionName, { type: 1 }, errorLogger);
-			
+
 			//resources
 			soajs.mongoDb.createIndex(customRegCollection, { type: 1, }, errorLogger);
 			soajs.mongoDb.createIndex(customRegCollection, { name: 1, type: 1, category: 1 }, errorLogger); //compound index, includes {name: 1}, {name: 1, type: 1}
 			soajs.mongoDb.createIndex(resourcesCollection, { created: 1, shared: 1, sharedEnv: 1 }, errorLogger); //compound index, includes {created: 1}, {created: 1, shared: 1}
-			
+
 			//custom registry
 			soajs.mongoDb.createIndex(customRegCollection, { name: 1, created: 1 }, errorLogger); //compound index, includes {name: 1}
 			soajs.mongoDb.createIndex(customRegCollection, { created: 1, shared: 1, sharedEnv: 1 }, errorLogger); //compound index, includes {created: 1}, {created: 1, shared: 1}
-			
+
 			//templates
 			soajs.mongoDb.createIndex(templatesCollection, { type: 1 }, errorLogger);
 			soajs.mongoDb.createIndex(templatesCollection, { name: 1, type: 1 }, errorLogger);
 			soajs.mongoDb.createIndex(templatesCollection, { expires: 1 }, { expireAfterSeconds: 0 }, errorLogger);
-			
+
 			//endpoint collection
 			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1}, errorLogger);
 			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1, servicePort: 1 }, errorLogger);
-			
+
 			//microservices collections
 			soajs.mongoDb.createIndex(microservicesCollection, { serviceName: 1}, errorLogger);
 			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1, servicePort: 1 }, errorLogger);
-			
+
 			//infra collection
 			soajs.mongoDb.createIndex(infraCollection, { 'deployments.environments': 1}, errorLogger);
 			soajs.mongoDb.createIndex(infraCollection, { 'deployments.technology': 1}, errorLogger);
 			
-			//templateState collection
-			soajs.mongoDb.createIndex(templateStateCollection, { layerName: 1, infraId: 1}, errorLogger);
 			soajs.log.debug("Indexes Updated!");
 			firstRun = false;
 		}
-		
+
 		return true;
 	},
 	/**
