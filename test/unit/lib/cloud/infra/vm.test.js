@@ -204,6 +204,9 @@ var mongoStub = {
 		}];
 		cb(null, data);
 	},
+	countEntries: function (soajs, opts, cb) {
+		cb(null, 0);
+	},
 	removeEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
