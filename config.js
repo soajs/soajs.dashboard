@@ -9,7 +9,6 @@ var resourceDeployConfigSchema = require("./schemas/resourceDeployConfig");
 var environmentSchema = require("./schemas/environmentSchema");
 var serviceSchema = require("./schemas/serviceSchema");
 var cdOptions = require("./schemas/cdOptions");
-var infraExtras = require("./schemas/infraExtras");
 
 module.exports = {
 	type: 'service',
@@ -4052,7 +4051,13 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"params": infraExtras.add
+				"params": {
+					"source": ["body.params"],
+					"required": true,
+					"validation": {
+						"type": "object"
+					}
+				}
 			}
 		},
 
@@ -5454,7 +5459,13 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"params": infraExtras.add
+				"params": {
+					"source": ["body.params"],
+					"required": true,
+					"validation": {
+						"type": "object"
+					}
+				}
 			}
 		},
 
