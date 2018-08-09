@@ -239,45 +239,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 		describe("github repo tests", function () {
 
 			describe("repo activate tests", function () {
-
-				it("success - will activate multi repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "github",
-							owner: usernamePersonal,
-							repo: repoMultiSuccess,
-							configBranch: "master"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
-						assert.ok(body);
-						// assert.ok(body.data);
-						done();
-					});
-				});
-
-				it("fail - cannot activate again personal multi repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "github",
-							owner: usernamePersonal,
-							repo: repoMultiSuccess,
-							configBranch: "master"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
-						// assert.equal(body.result, false);
-						//assert.deepEqual(body.errors.details[0], {"code": 762, "message": errorCodes[762]});
-						done();
-					});
-				});
-
+				
 				it("fail - cannot get Branches for service - wrong name", function (done) {
 					var params = {
 						qs: {
@@ -338,6 +300,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 		});
 
 	});
+	
 	/**
 	 * When clicking the test swagger icon a new tab will be opened and we should
 	 * return the APIs documentation based on the yaml file located in the user

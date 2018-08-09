@@ -3,6 +3,7 @@ var assert = require("assert");
 var helper = require("../../../helper.js");
 var utils = helper.requireModule('./lib/git/index.js');
 var helpers = helper.requireModule('./lib/git/helper.js');
+var configFile = helper.requireModule('./lib/git/getConfig.js');
 
 var lib;
 var config = helper.requireModule('./config.js');
@@ -603,7 +604,7 @@ describe("testing git.js", function () {
 				"project": '',
 				"configBranch": "develop"
 			};
-			lib.activateRepo(config, req, gitDriver, helpers, gitModel, function (error, body) {
+			lib.activateRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -679,7 +680,7 @@ describe("testing git.js", function () {
 				"project": '',
 				"configBranch": "develop"
 			};
-			lib.activateRepo(config, req, gitDriver, helpers, gitModel, function (error, body) {
+			lib.activateRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -718,7 +719,7 @@ describe("testing git.js", function () {
 				"project": '',
 				"configBranch": "develop"
 			};
-			lib.activateRepo(config, req, gitDriver, helpers, gitModel, function (error, body) {
+			lib.activateRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -756,7 +757,7 @@ describe("testing git.js", function () {
 				"project": '',
 				"configBranch": "develop"
 			};
-			lib.activateRepo(config, req, gitDriver, helpers, gitModel, function (error, body) {
+			lib.activateRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -973,7 +974,7 @@ describe("testing git.js", function () {
 				"owner": 'owner',
 				"repo": 'repo'
 			};
-			lib.syncRepo(config, req, gitDriver, helpers, gitModel, function (error, body) {
+			lib.syncRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -1021,7 +1022,7 @@ describe("testing git.js", function () {
 				"owner": 'owner',
 				"repo": 'repo'
 			};
-			lib.syncRepo(config, req, gitDriver, helpers, gitModel, function (error, body) {
+			lib.syncRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -1102,14 +1103,79 @@ describe("testing git.js", function () {
 				"owner": 'owner',
 				"repo": 'repo'
 			};
-			lib.syncRepo(config, req, gitDriver, helpers, gitModel, function (error, body) {
+			configFile.getConfig = function(config, req, BL, git, helpers, gitModel, flags, cb){
+				let response;
+				if(flags && flags.multi){
+					console.log(flags);
+					response = {
+						type: 'service',
+						info: {
+							type: 'service',
+							serviceName: "samplex",
+							serviceGroup: "test",
+							servicePort: 3002,
+							requestTimeout: 30,
+							requestTimeoutRenewal: 5,
+							extKeyRequired: true,
+							prerequisites: {},
+							"errors": {},
+							"schema": {}
+						},
+						sha: ''
+					};
+					if(flags.path === '/sample1/config.js'){
+						response.sha = "6cbeae3ed88e9e3296e05fd52a48533ba53c0931";
+					}
+				}
+				else{
+					response = {
+						type: 'multi',
+						folders: [
+							'/sample2', '/sample3'
+						]
+					};
+				}
+				return cb(null, response);
+			};
+			configFile.analyzeConfigSyncFile = function (config, req, BL, repoConfig, path, token, configSHA, flags, cb) {
+				let response;
+				if(flags && flags.multi){
+					response = {
+						type: 'service',
+						status: 'upToDate',
+						info: {
+							type: 'service',
+							serviceName: "samplex",
+							serviceGroup: "test",
+							servicePort: 3002,
+							requestTimeout: 30,
+							requestTimeoutRenewal: 5,
+							extKeyRequired: true,
+							prerequisites: {},
+							"errors": {},
+							"schema": {}
+						},
+						sha: "6cbeae3ed88e9e3296e05fd52a48533ba53c0931"
+					};
+				}
+				else{
+					response = {
+						type: 'multi',
+						folders: [
+							'/sample2/config.js', '/sample3/config.js'
+						]
+					};
+				}
+				return cb(null, response);
+			};
+			lib.syncRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 
 		it("Fail syncRepo outOfSync", function (done) {
-			helpers.analyzeConfigSyncFile = function (req, repoConfig, path, configSHA, flag, cb) {
+			configFile.analyzeConfigSyncFile = function (config, req, BL, repoConfig, path, token, configSHA, flags, cb) {
 				return cb('outOfSync');
 			};
 
@@ -1119,7 +1185,15 @@ describe("testing git.js", function () {
 				"owner": 'owner',
 				"repo": 'repo'
 			};
-			lib.syncRepo(config, req, gitDriver, helpers, gitModel, function (error, body) {
+			configFile.getConfig = function(config, req, BL, git, helpers, gitModel, flags, cb){
+				return cb(null, {
+					type: 'multi',
+					folders: [
+						'/sample2', '/sample3'
+					]
+				});
+			};
+			lib.syncRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
 				assert.ok(body);
 				assert.equal(body.status, 'outOfSync');
 				done();
@@ -1127,7 +1201,7 @@ describe("testing git.js", function () {
 		});
 
 		it("Success syncRepo upToDate", function (done) {
-			helpers.analyzeConfigSyncFile = function (req, repoConfig, path, configSHA, flag, cb) {
+			configFile.analyzeConfigSyncFile = function (config, req, BL, repoConfig, path, token, configSHA, flags, cb) {
 				return cb(null, 'upToDate');
 			};
 
@@ -1137,7 +1211,15 @@ describe("testing git.js", function () {
 				"owner": 'owner',
 				"repo": 'repo'
 			};
-			lib.syncRepo(config, req, gitDriver, helpers, gitModel, function (error, body) {
+			configFile.getConfig = function(config, req, BL, git, helpers, gitModel, flags, cb){
+				return cb(null, {
+					type: 'multi',
+					folders: [
+						'/sample2', '/sample3'
+					]
+				});
+			};
+			lib.syncRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
 				assert.ok(body);
 				done();
 			});
