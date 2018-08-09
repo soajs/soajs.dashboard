@@ -120,7 +120,7 @@ describe("testing helper git.js", function () {
 
 	describe("getCustomRepoFiles", function () {
 
-		it.skip("Fail 1: soa.js", function (done) {
+		it("Fail 1: soa.js", function (done) {
 			gitDriver.getJSONContent = function (soajs, gitModel, model, obj, cb) {
 				var error = {
 					reason: 'soa.js'
@@ -142,7 +142,7 @@ describe("testing helper git.js", function () {
 			});
 		});
 
-		it.skip("Fail 2: swagger.yml", function (done) {
+		it("Fail 2: swagger.yml", function (done) {
 			gitDriver.getAnyContent = function (soajs, gitModel, model, options, cb) {
 				var error = {
 					reason: 'swagger.yml'
@@ -169,7 +169,7 @@ describe("testing helper git.js", function () {
 			});
 		});
 
-		it.skip("success", function(done) {
+		it("success", function(done) {
 			gitDriver.getJSONContent = function(soajs, gitModel, model, options, cb) {
 				var content = {};
 				return cb(null, content, 'sha');

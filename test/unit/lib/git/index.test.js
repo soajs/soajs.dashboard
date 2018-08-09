@@ -1027,7 +1027,7 @@ describe("testing git.js", function () {
 			});
 		});
 
-		it.skip("success syncRepo multi 2", function (done) {
+		it("success syncRepo multi 2", function (done) {
 			helpers.removePath = function (model, soajs, path, callback) {
 				return callback(null, {
 					removed: true,
@@ -1108,7 +1108,7 @@ describe("testing git.js", function () {
 			});
 		});
 
-		it.skip("Fail syncRepo outOfSync", function (done) {
+		it("Fail syncRepo outOfSync", function (done) {
 			helpers.analyzeConfigSyncFile = function (req, repoConfig, path, configSHA, flag, cb) {
 				return cb('outOfSync');
 			};
@@ -1126,7 +1126,7 @@ describe("testing git.js", function () {
 			});
 		});
 
-		it.skip("Success syncRepo upToDate", function (done) {
+		it("Success syncRepo upToDate", function (done) {
 			helpers.analyzeConfigSyncFile = function (req, repoConfig, path, configSHA, flag, cb) {
 				return cb(null, 'upToDate');
 			};
