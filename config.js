@@ -122,17 +122,17 @@ module.exports = {
 				"algorithm": "sha256"
 			},
 			repoConfigsFolder: __dirname + '/repoConfigs',
-			defaultConfigFilePath: "config.js",
-			customConfigFilesPath: {
+			customConfigFilePath: "config.js",
+			soajsConfigFilesPath: {
 				"soajsFile": "soa.js",
 				"swaggerFile": "swagger.yml"
 			}
 		},
 		"bitbucket_enterprise": {
 			userAgent: "SOAJS Bitbucket App",
-			defaultConfigFilePath: "config.js",
+			customConfigFilePath: "config.js",
 			repoConfigsFolder: __dirname + '/repoConfigs',
-			customConfigFilesPath: {
+			soajsConfigFilesPath: {
 				"soajsFile": "soa.js",
 				"swaggerFile": "swagger.yml"
 			},
@@ -156,8 +156,8 @@ module.exports = {
 				"getReposPublicOrg": "https://api.github.com/orgs/%OWNER%/repos"
 			},
 			"tokenScope": ["repo", "admin:repo_hook"],
-			"defaultConfigFilePath": "config.js",
-			"customConfigFilesPath": {
+			"customConfigFilePath": "config.js",
+			"soajsConfigFilesPath": {
 				"soajsFile": "soa.js",
 				"swaggerFile": "swagger.yml"
 			},
