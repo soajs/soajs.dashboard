@@ -1943,7 +1943,7 @@ module.exports = {
 				},
 				'group': {
 					"source": ['query.group'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string"
 					}
