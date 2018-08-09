@@ -1,7 +1,7 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../../helper.js");
-var helpers = helper.requireModule('./lib/git/helper.js');
+var helpers = helper.requireModule('./lib/git/helper.js', true);
 var config = helper.requireModule('./config.js');
 
 var mongoStub = {
