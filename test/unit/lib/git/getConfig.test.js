@@ -75,7 +75,7 @@ var gitDriver = {
 };
 var gitModel = {};
 
-describe("testing helper git.js", function () {
+describe("testing get config git.js", function () {
 	var soajs = {
 		registry: {
 			"coreDB": {
