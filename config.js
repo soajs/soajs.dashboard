@@ -4051,6 +4051,14 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				"waitResponse": {
+					"source": ['query.waitResponse', 'body.waitResponse'],
+					"required": false,
+					"validation": {
+						"type": "boolean",
+						"default": false
+					}
+				},
 				"params": {
 					"source": ["body.params"],
 					"required": true,
