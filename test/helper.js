@@ -125,8 +125,14 @@ module.exports = {
 			}
 		]
 	},
-	requireModule: function (path) {
-		return require((process.env.APP_DIR_FOR_CODE_COVERAGE || '../') + path);
+	requireModule: function (path, force) {
+		let filePath = (process.env.APP_DIR_FOR_CODE_COVERAGE || '../') + path;
+		
+		if (force && require.resolve(filePath)) {
+			delete require.cache[require.resolve(filePath)];
+		}
+		
+		return require(filePath);
 	},
 	requester: function (method, params, cb) {
 		var requestOptions = {

@@ -80,6 +80,23 @@ var serviceConfig = {
 					}
 				}
 			}
+		},
+		"throttling": {
+			"type": "object",
+			"properties":{
+				publicAPIStrategy: {"type": "string"},
+				privateAPIStrategy: {"type": "string"},
+				"additionalProperties":{
+					"type": "object",
+					"properties": {
+						type: {"type": "number", "min": 0, "max": 1, "required": true},
+						window: {"type": "number", "min": 0, "required": true},
+						limit: {"type": "number", "min": 0, "required": true},
+						retries: {"type": "number", "min": 0, "required": true},
+						delay: {"type": "number", "min": 0, "required": true}
+					}
+				}
+			}
 		}
 	}
 };

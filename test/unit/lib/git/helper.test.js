@@ -1,7 +1,7 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../../helper.js");
-var helpers = helper.requireModule('./lib/git/helper.js');
+var helpers = helper.requireModule('./lib/git/helper.js', true);
 var config = helper.requireModule('./config.js');
 
 var mongoStub = {
@@ -117,84 +117,6 @@ describe("testing helper git.js", function () {
 		soajs: soajs
 	};
 	var res = {};
-
-	describe("getCustomRepoFiles", function () {
-
-		it("Fail 1: soa.js", function (done) {
-			gitDriver.getJSONContent = function (soajs, gitModel, model, obj, cb) {
-				var error = {
-					reason: 'soa.js'
-				};
-				cb(error);
-			};
-			soajs.inputmaskData = {};
-			// options.gitConfig.provider
-			var options = {
-				gitConfig: {
-					provider: 'github'
-				},
-				gitModel: gitModel,
-				git: gitDriver,
-				model: mongoStub
-			};
-			helpers.getCustomRepoFiles(options, req, function (error, body) {
-				done();
-			});
-		});
-
-		it("Fail 2: swagger.yml", function (done) {
-			gitDriver.getAnyContent = function (soajs, gitModel, model, options, cb) {
-				var error = {
-					reason: 'swagger.yml'
-				};
-				return cb(error);
-			};
-
-			gitDriver.getJSONContent = function (soajs, gitModel, model, obj, cb) {
-				var repoConfig = {};
-				cb(null, repoConfig);
-			};
-			soajs.inputmaskData = {};
-			// options.gitConfig.provider
-			var options = {
-				gitConfig: {
-					provider: 'github'
-				},
-				gitModel: gitModel,
-				git: gitDriver,
-				model: mongoStub
-			};
-			helpers.getCustomRepoFiles(options, req, function (error, body) {
-				done();
-			});
-		});
-
-		it("success", function(done) {
-			gitDriver.getJSONContent = function(soajs, gitModel, model, options, cb) {
-				var content = {};
-				return cb(null, content, 'sha');
-			};
-			gitDriver.getAnyContent = function(soajs, gitModel, model, options, cb) {
-				var content = '';
-				return cb(null, content);
-			};
-			soajs.inputmaskData = {};
-			var options = {
-				gitConfig: {
-					provider: 'github'
-				},
-				gitModel: gitModel,
-				git: gitDriver,
-				configGenerator: configGenerator,
-				model: mongoStub
-			};
-
-			helpers.getCustomRepoFiles(options, req, function (error, result) {
-				done();
-			});
-		});
-
-	});
 
 	describe("comparePaths", function () {
 		beforeEach(() => {
