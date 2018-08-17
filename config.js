@@ -5974,7 +5974,7 @@ module.exports = {
 
 			"/infra/extras": {
 				"_apiInfo": {
-					"l": "Create Infra component",
+					"l": "Delete Infra component",
 					"group": "HA Cloud"
 				},
 				"commonFields": ['soajs_project'],
@@ -6004,12 +6004,19 @@ module.exports = {
 					"source": ['query.section'],
 					"validation": {
 						"type": "string",
-						"enum": ["group", "network", 'loadBalancer', "publicIp", "securityGroup"]
+						"enum": ["group", "network", 'loadBalancer', "publicIp", "securityGroup", 'keyPair']
 					}
 				},
 				"group": {
 					"required": false,
 					"source": ['query.group'],
+					"validation": {
+						"type": "string",
+					}
+				},
+				"region": {
+					"required": false,
+					"source": ['query.region'],
 					"validation": {
 						"type": "string",
 					}
