@@ -6007,7 +6007,7 @@ module.exports = {
 					"source": ['query.section'],
 					"validation": {
 						"type": "string",
-						"enum": ["group", "network", 'loadBalancer', "publicIp", "securityGroup", 'keyPair']
+						"enum": ["group", "network", 'loadBalancer', "publicIp", "securityGroup", 'keyPair', 'certificate']
 					}
 				},
 				"group": {
@@ -6025,10 +6025,17 @@ module.exports = {
 					}
 				},
 				"name": {
-					"required": true,
+					"required": false,
 					"source": ['query.name'],
 					"validation": {
 						"type": "string",
+					}
+				},
+				"id": {
+					"required": false,
+					"source": ['query.id'],
+					"validation": {
+						"type": "string"
 					}
 				}
 			}
