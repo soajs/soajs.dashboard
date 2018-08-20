@@ -77,7 +77,7 @@ module.exports = {
 
 	"dashboardClusterResourceName": "dash_cluster",
 
-	"infraExtrasList": [ 'osDisks', 'dataDisks', 'loadBalancers', 'networks', 'publicIps', 'securityGroups', 'vmSizes', 'keyPairs' ],
+	"infraExtrasList": [ 'osDisks', 'dataDisks', 'loadBalancers', 'networks', 'publicIps', 'securityGroups', 'vmSizes', 'keyPairs', 'certificates' ],
 	"extrasFunctionMapping": {
 		osDisks: {
 			functionName: 'listDisks',
@@ -105,6 +105,9 @@ module.exports = {
 		},
 		keyPairs: {
 			functionName: 'listKeyPairs'
+		},
+		certificates: {
+			functionName: 'listCertificates'
 		}
 	},
 
@@ -1964,7 +1967,7 @@ module.exports = {
 						"type": "array",
 						"items": {
 							"type": "string",
-							"enum": [ 'osDisks', 'dataDisks', 'loadBalancers', 'networks', 'publicIps', 'securityGroups', 'vmSizes', 'keyPairs' ]
+							"enum": [ 'osDisks', 'dataDisks', 'loadBalancers', 'networks', 'publicIps', 'securityGroups', 'vmSizes', 'keyPairs', 'certificates' ]
 						},
 						"minItems": 0,
 						"uniqueItems": true
