@@ -1960,6 +1960,13 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				'section': {
+					"source": ['query.section'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
 				'extras': {
 					"source": ['query.extras'],
 					"required": false,
