@@ -81,33 +81,42 @@ module.exports = {
 	"extrasFunctionMapping": {
 		osDisks: {
 			functionName: 'listDisks',
+			schemaName: 'osDisk',
 			specialInput: { type: 'os' }
 		},
 		dataDisks: {
 			functionName: 'listDisks',
+			schemaName: 'dataDisk',
 			specialInput: { type: 'data' }
 		},
 		loadBalancers: {
-			functionName: 'listLoadBalancers'
+			functionName: 'listLoadBalancers',
+			schemaName: 'loadBalancer'
 		},
 		networks: {
-			functionName: 'listNetworks'
+			functionName: 'listNetworks',
+			schemaName: 'network'
 		},
 		publicIps: {
-			functionName: 'listPublicIps'
+			functionName: 'listPublicIps',
+			schemaName: 'publicIp'
 		},
 		securityGroups: {
-			functionName: 'listSecurityGroups'
+			functionName: 'listSecurityGroups',
+			schemaName: 'securityGroup'
 		},
 		vmSizes: {
 			functionName: 'listVmSizes',
+			schemaName: 'vmSize',
 			requiredInput: [ 'region' ]
 		},
 		keyPairs: {
-			functionName: 'listKeyPairs'
+			functionName: 'listKeyPairs',
+			schemaName: 'keyPair'
 		},
 		certificates: {
-			functionName: 'listCertificates'
+			functionName: 'listCertificates',
+			schemaName: 'certificate'
 		}
 	},
 
@@ -1955,13 +1964,6 @@ module.exports = {
 				},
 				'region': {
 					"source": ['query.region'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				'section': {
-					"source": ['query.section'],
 					"required": false,
 					"validation": {
 						"type": "string"
