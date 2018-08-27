@@ -2029,6 +2029,20 @@ module.exports = {
 						"items":{ "type": "string", "required": true }
 					}
 				},
+				"iac": {
+					"source": ['body.iac'],
+					"required": false,
+					"validation": {
+						"type": "array",
+					}
+				},
+				"external": {
+					"source": ['body.external'],
+					"required": false,
+					"validation": {
+						"type": "object",
+					}
+				},
 				"id": {
 					"source": ['body.id'],
 					"required": false,
