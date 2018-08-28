@@ -3976,7 +3976,45 @@ module.exports = {
 					"source": ['body.template'],
 					"required": true,
 					"validation": {
-						"type": "object"
+						"type": "object",
+                        "properties": {
+                            'name': {
+                                'required': true,
+                                'type': 'string'
+                            },
+                            'description': {
+                                'required': false,
+                                'type': 'string'
+                            },
+                            'location': {
+                                'required': true,
+                                'type': 'string'
+                            },
+                            'driver': {
+                                'type': 'string',
+                                'required': true
+                            },
+                            'technology': {
+                                'required': true,
+                                'type': 'string'
+                            },
+                            'content': {
+                                'required': false,
+                                'type': 'string'
+                            },
+                            'inputs': {
+                                'required': false,
+                                'type': 'array'
+                            },
+                            'display': {
+                                'required': false,
+                                'type': 'object'
+                            },
+                            'imfv': {
+                                'required': false,
+                                'type': 'object'
+                            }
+                        }
 					}
 				}
 			},
@@ -5386,7 +5424,45 @@ module.exports = {
 					"source": ['body.template'],
 					"required": true,
 					"validation": {
-						"type": "object"
+						"type": "object",
+                        "properties": {
+                            'name': {
+                                'required': true,
+                                'type': 'string'
+                            },
+                            'description': {
+                                'required': false,
+                                'type': 'string'
+                            },
+                            'location': {
+                                'required': true,
+                                'type': 'string'
+                            },
+                            'driver': {
+                                'type': 'string',
+                                'required': true
+                            },
+                            'technology': {
+                                'required': true,
+                                'type': 'string'
+                            },
+                            'content': {
+                                'required': false,
+                                'type': 'string'
+                            },
+                            'inputs': {
+                                'required': false,
+                                'type': 'array'
+                            },
+                            'display': {
+                                'required': false,
+                                'type': 'object'
+                            },
+                            'imfv': {
+                                'required': false,
+                                'type': 'object'
+                            }
+                        }
 					}
 				}
 			},
