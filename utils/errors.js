@@ -91,6 +91,7 @@ var errors = {
 	"496": "Infra Provider Id is required when deploying a resource of type virtual machine",
 	"497": "No Deployments found for this Infra Provider",
 	"498": "Unable to parse template input",
+	"499": "Virtual Machine Layer already exists!",
 
 	"500": "This record is locked. You cannot delete it",
 	"501": "This record is locked. You cannot modify or delete it",

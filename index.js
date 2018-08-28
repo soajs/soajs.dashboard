@@ -48,6 +48,7 @@ var dashboardBL = {
 	git: {
 		module: require('./lib/git/index.js'),
 		helper: require("./lib/git/helper.js"),
+		configFile: require("./lib/git/getConfig.js"),
 		driver: require('./utils/drivers/git/index.js'),
 		model: require('./models/git.js')
 	},
@@ -2431,7 +2432,7 @@ service.init(function () {
 	service.post("/gitAccounts/repo/activate", function (req, res) {
 		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.activateRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, function (error, data) {
+				BL.activateRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.configFile, dashboardBL.git.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -2465,7 +2466,7 @@ service.init(function () {
 	service.put('/gitAccounts/repo/sync', function (req, res) {
 		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.syncRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, function (error, data) {
+				BL.syncRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.configFile, dashboardBL.git.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
