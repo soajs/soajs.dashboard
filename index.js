@@ -214,10 +214,10 @@ service.init(function () {
 	 */
 	service.post("/templates/export", function (req, res) {
 		initBLModel(req, res, dashboardBL.templates.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, deployer, function () {
+			checkConnection(BL, req, res, function () {
 				if(req.soajs.inputmaskData.id){
 					//download template
-					BL.download(config, req, res, function (error, data) {
+					BL.download(config, req, res, deployer, function (error, data) {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
 					});
