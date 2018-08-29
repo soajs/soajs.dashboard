@@ -190,7 +190,7 @@ service.init(function () {
 				//correct template
 				if(req.soajs.inputmaskData && Object.keys(req.soajs.inputmaskData).length > 0){
 					//correct the template inputs
-					BL.correct(config, req, res, function (error, data) {
+					BL.correct(config, req, res, deployer, function (error, data) {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
 					});
@@ -198,7 +198,7 @@ service.init(function () {
 				//import new template
 				else{
 					//unzip file and process template first time
-					BL.import(config, req, res, function (error, data) {
+					BL.import(config, req, res, deployer, function (error, data) {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
 					});
@@ -214,7 +214,7 @@ service.init(function () {
 	 */
 	service.post("/templates/export", function (req, res) {
 		initBLModel(req, res, dashboardBL.templates.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
+			checkConnection(BL, req, res, deployer, function () {
 				if(req.soajs.inputmaskData.id){
 					//download template
 					BL.download(config, req, res, function (error, data) {
@@ -224,7 +224,7 @@ service.init(function () {
 				}
 				else{
 					//generate and download new template
-					BL.export(config, req, res, function (error, data) {
+					BL.export(config, req, res, deployer, function (error, data) {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
 					});
