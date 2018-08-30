@@ -139,6 +139,7 @@ module.exports = function (grunt) {
 				'config.js',
 				'index.js',
 				'lib/*.js',
+				'lib/templates/*.txt',
 				'lib/*/*.js',
 				'lib/*/*/*.js',
 				'models/*.js',

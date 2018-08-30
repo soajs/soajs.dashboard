@@ -2047,6 +2047,20 @@ module.exports = {
 						"items":{ "type": "string", "required": true }
 					}
 				},
+				"iac": {
+					"source": ['body.iac'],
+					"required": false,
+					"validation": {
+						"type": "array",
+					}
+				},
+				"external": {
+					"source": ['body.external'],
+					"required": false,
+					"validation": {
+						"type": "object",
+					}
+				},
 				"id": {
 					"source": ['body.id'],
 					"required": false,
@@ -3980,7 +3994,45 @@ module.exports = {
 					"source": ['body.template'],
 					"required": true,
 					"validation": {
-						"type": "object"
+						"type": "object",
+                        "properties": {
+                            'name': {
+                                'required': true,
+                                'type': 'string'
+                            },
+                            'description': {
+                                'required': false,
+                                'type': 'string'
+                            },
+                            'location': {
+                                'required': true,
+                                'type': 'string'
+                            },
+                            'driver': {
+                                'type': 'string',
+                                'required': true
+                            },
+                            'technology': {
+                                'required': true,
+                                'type': 'string'
+                            },
+                            'content': {
+                                'required': false,
+                                'type': 'string'
+                            },
+                            'inputs': {
+                                'required': false,
+                                'type': 'array'
+                            },
+                            'display': {
+                                'required': false,
+                                'type': 'object'
+                            },
+                            'imfv': {
+                                'required': false,
+                                'type': 'object'
+                            }
+                        }
 					}
 				}
 			},
@@ -4890,7 +4942,7 @@ module.exports = {
 						"properties": {
 							"branch": {"type": "string", "required": false},
 							"commit": {"type": "string", "required": false},
-							"memory": {"type": "number", "required": false, "minimum": 500},
+							"memory": {"type": "number", "required": false, "minimum": 0},
 							"image": {
 								"type": "object",
 								"required": false,
@@ -5404,7 +5456,45 @@ module.exports = {
 					"source": ['body.template'],
 					"required": true,
 					"validation": {
-						"type": "object"
+						"type": "object",
+                        "properties": {
+                            'name': {
+                                'required': true,
+                                'type': 'string'
+                            },
+                            'description': {
+                                'required': false,
+                                'type': 'string'
+                            },
+                            'location': {
+                                'required': true,
+                                'type': 'string'
+                            },
+                            'driver': {
+                                'type': 'string',
+                                'required': true
+                            },
+                            'technology': {
+                                'required': true,
+                                'type': 'string'
+                            },
+                            'content': {
+                                'required': false,
+                                'type': 'string'
+                            },
+                            'inputs': {
+                                'required': false,
+                                'type': 'array'
+                            },
+                            'display': {
+                                'required': false,
+                                'type': 'object'
+                            },
+                            'imfv': {
+                                'required': false,
+                                'type': 'object'
+                            }
+                        }
 					}
 				}
 			},

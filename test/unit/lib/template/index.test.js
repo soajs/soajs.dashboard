@@ -362,7 +362,7 @@ describe("testing index.js", function () {
              context = {
                 errors : ["testing"]
             };
-            templates.import(config, req, res, function (error, body) {
+            templates.import(config, req, res, {}, function (error, body) {
                // assert.ok(body);
                 sinon.restore(helpers);
                 done();
@@ -373,7 +373,7 @@ describe("testing index.js", function () {
             stubStatusUtils();
             req.soajs.inputmaskData.correction = {};
             req.soajs.inputmaskData.id = '1233'
-            templates.correct(config, req, res, function (error, body) {
+            templates.correct(config, req, res, {}, function (error, body) {
                 // assert.ok(body);
                 sinon.restore(helpers);
                 done();
@@ -386,7 +386,7 @@ describe("testing index.js", function () {
             req.soajs.inputmaskData.deployment = [];
             req.soajs.inputmaskData.endpoints = [];
 
-            templates.export(config, req, res, function (error, body) {
+            templates.export(config, req, res, {}, function (error, body) {
                 // assert.ok(body);
                 sinon.restore(helpers);
                 done();
@@ -394,7 +394,6 @@ describe("testing index.js", function () {
         });
 
         it("download", function (done) {
-
             req.soajs.inputmaskData.id = '111';
             req.soajs.servicesConfig = {
             	dashboard : {
@@ -404,7 +403,7 @@ describe("testing index.js", function () {
 				}
 			};
 
-            templates.download(config, req, res, function (error, body) {
+            templates.download(config, req, res, {}, function (error, body) {
 				counter ++;
 				if (counter === 2) {
                     done();
