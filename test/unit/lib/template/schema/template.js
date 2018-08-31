@@ -732,6 +732,485 @@ let template = {
                     }
                 }
             }
+        },
+
+        "iac": {
+            "data": [
+                {
+                    "name": "CharlesTestt",
+                    "description": "this is for testing",
+                    "location": "local",
+                    "driver": "Cloud Formation",
+                    "technology": "docker",
+                    "tags": {
+                        "driver": "Cloud Formation",
+                        "description": "R u sureeeeee",
+                        "technology": "docker",
+                        "type": "template"
+                    },
+                    "content": "{\n  \"name\": \"CharlesTestttttt\",\n  \"description\": \"R u sureeeeee\",\n  \"driver\": \"Cloud Formation\",\n  \"technology\": \"docker\",\n  \"tags\": {\n    \"driver\": \"Cloud Formation\",\n    \"description\": \"New IaC template for docker swarm with exposed inputs on AWS\",\n    \"technology\": \"docker\",\n    \"type\": \"template\"\n  },\n  \"content\": \"This is for testing sooooooooooo\",\n  \"type\": \"template\"\n}",
+                    "inputs": [
+                        {
+                            "label": "Key Pair",
+                            "fieldMsg": "Enter the name of an existing EC2 KeyPair to enable SSH access on the instances to be deployed",
+                            "name": "KeyName",
+                            "type": "text",
+                            "value": "",
+                            "placeholder": "mykeypair",
+                            "required": true
+                        },
+                        {
+                            "name": "aws",
+                            "label": "AWS Extra Settings",
+                            "type": "group",
+                            "collapsed": true,
+                            "entries": [
+                                {
+                                    "label": "Enable Daily Resource Cleanup",
+                                    "fieldMsg": "Cleans up unused images, containers, networks and volumes",
+                                    "name": "EnableSystemPrune",
+                                    "type": "select",
+                                    "value": [
+                                        {
+                                            "v": "yes",
+                                            "l": "Yes"
+                                        },
+                                        {
+                                            "v": "no",
+                                            "l": "No",
+                                            "selected": true
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                {
+                                    "label": "Use Cloudwatch for Container Logging",
+                                    "fieldMsg": "Send all Container logs to CloudWatch",
+                                    "name": "EnableCloudWatchLogs",
+                                    "type": "select",
+                                    "value": [
+                                        {
+                                            "v": "yes",
+                                            "l": "Yes"
+                                        },
+                                        {
+                                            "v": "no",
+                                            "l": "No",
+                                            "selected": true
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                {
+                                    "label": "Enable Cloudwatch Container Monitoring",
+                                    "fieldMsg": "Enable CloudWatch detailed monitoring for all instances",
+                                    "name": "EnableCloudWatchDetailedMonitoring",
+                                    "type": "select",
+                                    "value": [
+                                        {
+                                            "v": "yes",
+                                            "l": "Yes"
+                                        },
+                                        {
+                                            "v": "no",
+                                            "l": "No",
+                                            "selected": true
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                {
+                                    "label": "Enable EBS I/O Optimization",
+                                    "fieldMsg": "Specifies whether the launch configuration is optimized for EBS I/O",
+                                    "name": "EnableEbsOptimized",
+                                    "type": "select",
+                                    "value": [
+                                        {
+                                            "v": "yes",
+                                            "l": "Yes"
+                                        },
+                                        {
+                                            "v": "no",
+                                            "l": "No",
+                                            "selected": true
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                {
+                                    "label": "Enable Cloud Store EFS",
+                                    "fieldMsg": "Specifies whether the to Turn on Cloud Store EFS",
+                                    "name": "EnableCloudStorEfs",
+                                    "type": "select",
+                                    "value": [
+                                        {
+                                            "v": "yes",
+                                            "l": "Yes"
+                                        },
+                                        {
+                                            "v": "no",
+                                            "l": "No",
+                                            "selected": true
+                                        }
+                                    ],
+                                    "required": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "masternodes",
+                            "label": "Master Nodes",
+                            "type": "group",
+                            "entries": [
+                                {
+                                    "name": "ManagerSize",
+                                    "label": "Number",
+                                    "type": "number",
+                                    "value": 1,
+                                    "placeholder": "1",
+                                    "tooltip": "Enter how many Master node machine(s) you want to deploy",
+                                    "fieldMsg": "Enter how many Master node machine(s) you want to deploy",
+                                    "required": true
+                                },
+                                {
+                                    "name": "ManagerInstanceType",
+                                    "label": "Machine Type",
+                                    "type": "select",
+                                    "value": [
+                                        {
+                                            "v": "t2.medium",
+                                            "l": "T2 Medium / 2 vCPUs x 4 GiB",
+                                            "selected": true,
+                                            "group": "General Purpose"
+                                        },
+                                        {
+                                            "v": "c4.large",
+                                            "l": "C4 Large / 2 vCPUs x 3.75 GiB",
+                                            "group": "Compute Optimized"
+                                        }
+                                    ],
+                                    "tooltip": "Pick the Flavor of your master node machine(s)",
+                                    "fieldMsg": "Pick the Flavor of your master node machine(s)",
+                                    "required": true,
+                                    "labelDisplay": true
+                                },
+                                {
+                                    "name": "ManagerDiskSize",
+                                    "label": "Storage",
+                                    "type": "number",
+                                    "value": 30,
+                                    "min": 25,
+                                    "tooltip": "Enter the amount of Storage you want for each machine in GB.",
+                                    "fieldMsg": "Enter the amount of Storage you want for each machine in GB; Minimum 25",
+                                    "required": true
+                                },
+                                {
+                                    "name": "ManagerDiskType",
+                                    "label": "Storage Type",
+                                    "type": "select",
+                                    "value": [
+                                        {
+                                            "v": "gp2",
+                                            "l": "GP2",
+                                            "selected": true
+                                        },
+                                        {
+                                            "v": "standard",
+                                            "l": "Standard"
+                                        }
+                                    ],
+                                    "tooltip": "Select the type of Storage Drive Technology",
+                                    "fieldMsg": "Select the type of Storage Drive Technology",
+                                    "required": true,
+                                    "labelDisplay": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "workernodes",
+                            "label": "Worker Nodes",
+                            "type": "group",
+                            "entries": [
+                                {
+                                    "name": "ClusterSize",
+                                    "label": "Number",
+                                    "type": "number",
+                                    "value": 1,
+                                    "placeholder": "1",
+                                    "tooltip": "Enter how many Worker node machine(s) you want to deploy",
+                                    "fieldMsg": "Enter how many Worker node machine(s) you want to deploy",
+                                    "required": true
+                                },
+                                {
+                                    "name": "InstanceType",
+                                    "label": "Machine Type",
+                                    "type": "select",
+                                    "value": [
+                                        {
+                                            "v": "t2.medium",
+                                            "l": "T2 Medium / 2 vCPUs x 4 GiB",
+                                            "selected": true,
+                                            "group": "General Purpose"
+                                        },
+                                        {
+                                            "v": "t2.large",
+                                            "l": "T2 Large / 2 vCPUs x 8 GiB",
+                                            "group": "General Purpose"
+                                        },
+                                        {
+                                            "v": "t2.xlarge",
+                                            "l": "T2 XLarge / 4 vCPUs x 16 GiB",
+                                            "group": "General Purpose"
+                                        },
+                                        {
+                                            "v": "t2.2xlarge",
+                                            "l": "T2 2XLarge / 8 vCPUs x 32 GiB",
+                                            "group": "General Purpose"
+                                        },
+                                        {
+                                            "v": "m4.large",
+                                            "l": "M4 Large / 2 vCPUs x 8 GiB",
+                                            "group": "General Purpose"
+                                        },
+                                        {
+                                            "v": "m4.xlarge",
+                                            "l": "M4 XLarge / 4 vCPUs x 16 GiB",
+                                            "group": "General Purpose"
+                                        },
+                                        {
+                                            "v": "m4.2xlarge",
+                                            "l": "M4 2XLarge / 8 vCPUs x 32 GiB",
+                                            "group": "General Purpose"
+                                        },
+                                        {
+                                            "v": "m4.4xlarge",
+                                            "l": "M4 4XLarge / 16 vCPUs x 64 GiB",
+                                            "group": "General Purpose"
+                                        },
+                                        {
+                                            "v": "c4.large",
+                                            "l": "C4 Large / 2 vCPUs x 3.75 GiB",
+                                            "group": "Compute Optimized"
+                                        },
+                                        {
+                                            "v": "c4.xlarge",
+                                            "l": "C4 XLarge / 4 vCPUs x 7.5 GiB",
+                                            "group": "Compute Optimized"
+                                        },
+                                        {
+                                            "v": "c4.2xlarge",
+                                            "l": "C4 2XLarge / 8 vCPUs x 15 GiB",
+                                            "group": "Compute Optimized"
+                                        },
+                                        {
+                                            "v": "c4.4xlarge",
+                                            "l": "C4 4XLarge / 16 vCPUs x 30 GiB",
+                                            "group": "Compute Optimized"
+                                        },
+                                        {
+                                            "v": "r4.large",
+                                            "l": "R4 Large / 2 vCPUs x 15.25 GiB",
+                                            "group": "Memory Optimized"
+                                        },
+                                        {
+                                            "v": "r4.xlarge",
+                                            "l": "R4 XLarge / 4 vCPUs x 30.5 GiB",
+                                            "group": "Memory Optimized"
+                                        },
+                                        {
+                                            "v": "r4.2xlarge",
+                                            "l": "R4 2XLarge / 8 vCPUs x 61 GiB",
+                                            "group": "Memory Optimized"
+                                        },
+                                        {
+                                            "v": "r4.4xlarge",
+                                            "l": "R4 4XLarge / 16 vCPUs x 122 GiB",
+                                            "group": "Memory Optimized"
+                                        },
+                                        {
+                                            "v": "r3.large",
+                                            "l": "R3 Large / 2 vCPUs x 15 GiB",
+                                            "group": "Memory Optimized"
+                                        },
+                                        {
+                                            "v": "r3.xlarge",
+                                            "l": "R3 XLarge / 4 vCPUs x 30.5 GiB",
+                                            "group": "Memory Optimized"
+                                        },
+                                        {
+                                            "v": "r3.2xlarge",
+                                            "l": "R3 2XLarge / 8 vCPUs x 61 GiB",
+                                            "group": "Memory Optimized"
+                                        },
+                                        {
+                                            "v": "r3.4xlarge",
+                                            "l": "R3 4XLarge / 16 vCPUs x 122 GiB",
+                                            "group": "Memory Optimized"
+                                        },
+                                        {
+                                            "v": "i3.large",
+                                            "l": "I3 Large / 2 vCPUs x 15.25 GiB",
+                                            "group": "Storage Optimized"
+                                        },
+                                        {
+                                            "v": "i3.xlarge",
+                                            "l": "I3 XLarge / 4 vCPUs x 30.5 GiB",
+                                            "group": "Storage Optimized"
+                                        },
+                                        {
+                                            "v": "i3.2xlarge",
+                                            "l": "I3 2XLarge / 8 vCPUs x 61 GiB",
+                                            "group": "Storage Optimized"
+                                        },
+                                        {
+                                            "v": "i3.4xlarge",
+                                            "l": "I3 4XLarge / 16 vCPUs x 122 GiB",
+                                            "group": "Storage Optimized"
+                                        }
+                                    ],
+                                    "tooltip": "Pick the Flavor of your worker node machine(s)",
+                                    "fieldMsg": "Pick the Flavor of your worker node machine(s)",
+                                    "required": true,
+                                    "labelDisplay": true
+                                },
+                                {
+                                    "name": "WorkerDiskSize",
+                                    "label": "Storage",
+                                    "type": "number",
+                                    "value": 30,
+                                    "min": 25,
+                                    "tooltip": "Enter the amount of Storage you want for each machine in GB.",
+                                    "fieldMsg": "Enter the amount of Storage you want for each machine in GB; Minimum 25",
+                                    "required": true
+                                },
+                                {
+                                    "name": "WorkerDiskType",
+                                    "label": "Storage Type",
+                                    "type": "select",
+                                    "value": [
+                                        {
+                                            "v": "gp2",
+                                            "l": "GP2",
+                                            "selected": true
+                                        },
+                                        {
+                                            "v": "standard",
+                                            "l": "Standard"
+                                        }
+                                    ],
+                                    "tooltip": "Select the type of Storage Drive Technology",
+                                    "fieldMsg": "Select the type of Storage Drive Technology",
+                                    "required": true,
+                                    "labelDisplay": true
+                                }
+                            ]
+                        }
+                    ],
+                    "display": {
+                        "region": {
+                            "label": "Region",
+                            "fields": [
+                                {
+                                    "name": "region",
+                                    "label": "Region"
+                                },
+                                {
+                                    "name": "infraCodeTemplate",
+                                    "label": "Infra Code Template"
+                                }
+                            ]
+                        },
+                        "masternodes": {
+                            "label": "Master Node(s)",
+                            "fields": [
+                                {
+                                    "name": "ManagerInstanceType",
+                                    "label": "Flavor"
+                                },
+                                {
+                                    "name": "ManagerSize",
+                                    "label": "Number"
+                                },
+                                {
+                                    "name": "ManagerDiskSize",
+                                    "label": "Storage"
+                                },
+                                {
+                                    "name": "ManagerDiskType",
+                                    "label": "Storage Type"
+                                }
+                            ]
+                        },
+                        "workernodes": {
+                            "label": "Worker Node(s)",
+                            "fields": [
+                                {
+                                    "name": "ClusterSize",
+                                    "label": "Flavor"
+                                },
+                                {
+                                    "name": "InstanceType",
+                                    "label": "Number"
+                                },
+                                {
+                                    "name": "WorkerDiskSize",
+                                    "label": "Storage"
+                                },
+                                {
+                                    "name": "WorkerDiskType",
+                                    "label": "Storage Type"
+                                }
+                            ]
+                        }
+                    },
+                    "imfv": {
+                        "keyName": {
+                            "type": "string",
+                            "required": true
+                        },
+                        "ManagerSize": {
+                            "type": "number",
+                            "required": true,
+                            "min": 1
+                        },
+                        "ManagerInstanceType": {
+                            "type": "string",
+                            "required": true
+                        },
+                        "ManagerDiskSize": {
+                            "type": "number",
+                            "required": true,
+                            "min": 25
+                        },
+                        "ManagerDiskType": {
+                            "type": "string",
+                            "required": true
+                        },
+                        "ClusterSize": {
+                            "type": "number",
+                            "required": true,
+                            "min": 1
+                        },
+                        "InstanceType": {
+                            "type": "string",
+                            "required": true
+                        },
+                        "WorkerDiskSize": {
+                            "type": "number",
+                            "required": true,
+                            "min": 25
+                        },
+                        "WorkerDiskType": {
+                            "type": "string",
+                            "required": true
+                        }
+                    },
+                    "type": "_infra",
+                    "infra": {
+                        "name": "Azure"
+                    }
+                }
+            ]
         }
     },
 

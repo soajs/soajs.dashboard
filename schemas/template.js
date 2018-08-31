@@ -129,6 +129,7 @@ module.exports = {
 				"tenant": commonContentSchema,
 				"secrets": commonContentSchema,
 				"daemonGroups": commonContentSchema,
+				"iac": commonContentSchema,
 				"deployments": {
 					"type": "object",
 					"required": false,
