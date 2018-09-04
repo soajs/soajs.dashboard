@@ -77,7 +77,7 @@ module.exports = {
 
 	"dashboardClusterResourceName": "dash_cluster",
 
-	"infraExtrasList": [ 'osDisks', 'dataDisks', 'loadBalancers', 'networks', 'publicIps', 'securityGroups', 'vmSizes', 'keyPairs', 'certificates', 'availabilityZones' ],
+	"infraExtrasList": [ 'osDisks', 'dataDisks', 'loadBalancers', 'networks', 'publicIps', 'securityGroups', 'vmSizes', 'keyPairs', 'certificates', 'availabilityZones', 'roles' ],
 	"extrasFunctionMapping": {
 		osDisks: {
 			functionName: 'listDisks',
@@ -121,6 +121,10 @@ module.exports = {
 		availabilityZones: {
 			functionName: 'listAvailabilityZones',
 			schemaName: 'availabilityZone'
+		},
+		roles: {
+			functionName: 'listRoles',
+			schemaName: 'roles'
 		}
 	},
 

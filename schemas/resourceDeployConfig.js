@@ -31,7 +31,8 @@ module.exports = {
 				"type": "object",
 				"properties": {
 					"vmLayer": {"required": true, "type": "string"},
-					"group": {"required": true, "type": "string"}
+					//"group": {"required": false, "type": "string"} --> used by Azure
+					//"region": {"required": false, "type": "string"} --> used by AWS
 				}
 			},
 		}
