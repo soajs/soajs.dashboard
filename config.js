@@ -3117,7 +3117,7 @@ module.exports = {
                 },
 				"group": {
                     "source": ['body.group'],
-                    "required": true,
+                    "required": false,
                     "validation": {
                         "type": "string"
                     }
@@ -3131,6 +3131,20 @@ module.exports = {
                 },
 				"networkName" : {
                     "source": ['body.networkName'],
+                    "required": false,
+                    "validation": {
+                        "type": "string"
+                    }
+                },
+				"ids" : {
+                    "source": ['body.ids'],
+                    "required": false,
+                    "validation": {
+                        "type": "array"
+                    }
+                },
+				"region" : {
+                    "source": ['body.region'],
                     "required": false,
                     "validation": {
                         "type": "string"
