@@ -3033,9 +3033,23 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				'region':{
+					"source": ['body.region'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'instanceId':{
+					"source": ['query.instanceId'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
 				'group':{
 					"source": ['query.group'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string"
 					}
