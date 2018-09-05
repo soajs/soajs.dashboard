@@ -3112,13 +3112,13 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				"commonFields": ['soajs_project', 'env'],
-				"names": {
-					"source": ['body.names'],
+				"ids": {
+					"source": ['body.ids'],
 					"required": true,
 					"validation": {
 						"type": "array"
 					}
-				},
+				 },
 				"release": {
 					"source": ['query.release'],
 					"required": true,
@@ -3147,20 +3147,6 @@ module.exports = {
                         "type": "string"
                     }
                 },
-				"networkName" : {
-                    "source": ['body.networkName'],
-                    "required": false,
-                    "validation": {
-                        "type": "string"
-                    }
-                },
-				"ids" : {
-                    "source": ['body.ids'],
-                    "required": false,
-                    "validation": {
-                        "type": "array"
-                    }
-                },
 				"region" : {
                     "source": ['body.region'],
                     "required": false,
@@ -3168,23 +3154,6 @@ module.exports = {
                         "type": "string"
                     }
                 },
-				"image": {
-					"source": ['body.image'],
-					"required": false,
-					"validation": {
-						"type": "array",
-						"items": {
-							"type": "object",
-							"properties": {
-								"prefix": {"type": "string", "required": true},
-								"name": {"type": "string", "required": true},
-								"version": {"type": "string", "required": true},
-								"vmName": {"type": "string", "required": false},
-								"onBoard": {"type": "boolean", "required": true}
-							}
-						}
-					}
-				},
 			},
 
 			"/cloud/vm/logs": {
@@ -5911,6 +5880,13 @@ module.exports = {
 				'commonFields': ['soajs_project', 'env', 'serviceId', 'infraId', 'technology'],
 				'group':{
 					"source": ['query.group'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'region':{
+					"source": ['query.region'],
 					"required": false,
 					"validation": {
 						"type": "string"
