@@ -46,7 +46,7 @@ module.exports = {
 							},
 							
 							"readinessProbe": {
-								"type": "object",
+								"type": ["object", "null"],
 								"required": false
 								//NOTE: removed validation for readinessProbe to allow free schema
 							},
@@ -107,7 +107,7 @@ module.exports = {
 							},
 							"certificates":{
 								"type": "string",
-								"required": true,
+								"required": false,
 								"enum": ["none","optional","required"]
 							}
 						}
