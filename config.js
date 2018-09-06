@@ -4048,21 +4048,21 @@ module.exports = {
 					"source": ['body.inputs'],
 					"required": false,
 					"validation": {
-						"type": "array"
+						"type": "string"
 					}
 				},
 				"display": {
 					"source": ['body.display'],
 					"required": false,
 					"validation": {
-						"type": "object"
+						"type": "string"
 					}
 				},
 				"imfv": {
 					"source": ['body.imfv'],
 					"required": false,
 					"validation": {
-						"type": "object"
+						"type": "string"
 					}
 				},
 				"name": {
