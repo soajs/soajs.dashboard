@@ -4018,20 +4018,20 @@ module.exports = {
                                 'type': 'string'
                             },
                             'content': {
-                                'required': false,
+                                'required': true,
                                 'type': 'string'
                             },
                             'inputs': {
                                 'required': false,
-                                'type': 'array'
+	                            'type': 'string'
                             },
                             'display': {
                                 'required': false,
-                                'type': 'object'
+	                            'type': 'string'
                             },
                             'imfv': {
                                 'required': false,
-                                'type': 'object'
+	                            'type': 'string'
                             }
                         }
 					}
@@ -5480,20 +5480,20 @@ module.exports = {
                                 'type': 'string'
                             },
                             'content': {
-                                'required': false,
-                                'type': 'string'
+                                'required': true,
+	                            'type': 'string'
                             },
                             'inputs': {
                                 'required': false,
-                                'type': 'array'
+	                            'type': 'string'
                             },
                             'display': {
                                 'required': false,
-                                'type': 'object'
+	                            'type': 'string'
                             },
                             'imfv': {
                                 'required': false,
-                                'type': 'object'
+	                            'type': 'string'
                             }
                         }
 					}
