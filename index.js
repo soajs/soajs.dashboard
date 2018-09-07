@@ -90,6 +90,7 @@ var dashboardBL = {
 };
 
 var deployer = require("soajs.core.drivers");
+var soajsLib = require("soajs.core.libs");
 
 var dbModel = "mongo";
 
@@ -188,7 +189,10 @@ service.init(function () {
 			checkConnection(BL, req, res, function () {
 
 				//correct template
+				let imfvClone = soajsLib.utils.cloneObj(req.soajs.inputmaskData);
+				delete req.soajs.inputmaskData.soajs_project;
 				if(req.soajs.inputmaskData && Object.keys(req.soajs.inputmaskData).length > 0){
+					req.soajs.inputmaskData = imfvClone;
 					//correct the template inputs
 					BL.correct(config, req, res, deployer, function (error, data) {
 						BL.model.closeConnection(req.soajs);
@@ -197,6 +201,7 @@ service.init(function () {
 				}
 				//import new template
 				else{
+					req.soajs.inputmaskData = imfvClone;
 					//unzip file and process template first time
 					BL.import(config, req, res, deployer, function (error, data) {
 						BL.model.closeConnection(req.soajs);
