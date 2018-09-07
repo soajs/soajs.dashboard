@@ -49,7 +49,7 @@ var lib = {
 		if (switchedConnection && typeof  switchedConnection === 'object' && Object.keys(switchedConnection).length > 0) {
 			provision = switchedConnection;
 			if (soajs.log) {
-				soajs.log.debug('Switching to connection to project: ', soajs.inputmaskData.soajs_project);
+				soajs.log.debug('Switching to connection to project:', soajs.inputmaskData.soajs_project);
 			}
 		} else if (switchedConnection === false) {
 			if (soajs.log) {
@@ -150,16 +150,16 @@ var lib = {
 			soajs.mongoDb.createIndex(templatesCollection, { expires: 1 }, { expireAfterSeconds: 0 }, errorLogger);
 
 			//endpoint collection
-			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1}, errorLogger);
+			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1 }, errorLogger);
 			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1, servicePort: 1 }, errorLogger);
 
 			//microservices collections
-			soajs.mongoDb.createIndex(microservicesCollection, { serviceName: 1}, errorLogger);
+			soajs.mongoDb.createIndex(microservicesCollection, { serviceName: 1 }, errorLogger);
 			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1, servicePort: 1 }, errorLogger);
 
 			//infra collection
-			soajs.mongoDb.createIndex(infraCollection, { 'deployments.environments': 1}, errorLogger);
-			soajs.mongoDb.createIndex(infraCollection, { 'deployments.technology': 1}, errorLogger);
+			soajs.mongoDb.createIndex(infraCollection, { 'deployments.environments': 1 }, errorLogger);
+			soajs.mongoDb.createIndex(infraCollection, { 'deployments.technology': 1 }, errorLogger);
 			
 			soajs.log.debug("Indexes Updated!");
 			firstRun = false;
@@ -174,13 +174,13 @@ var lib = {
 	"closeConnection": function (soajs) {
 		if (soajs.mongoDb) {
 			if (soajs.inputmaskData && soajs.inputmaskData.soajs_project) {
-				soajs.log.debug('Closing connection to client core_provision', soajs.inputmaskData.soajs_project);
+				soajs.log.debug('Closing connection to client project:', soajs.inputmaskData.soajs_project);
 			}
 			else {
-				if(soajs && soajs.log){
+				if (soajs && soajs.log) {
 					soajs.log.debug('Closing connection to core_provision');
 				}
-				else{
+				else {
 					console.log('Closing connection to core_provision');
 				}
 			}
@@ -308,30 +308,34 @@ var lib = {
 		}
 		if (process.env.SOAJS_SAAS && !soajs.tenant.locked) {
 			if (soajs.servicesConfig && soajs.servicesConfig.SOAJS_SAAS) {
-				if (soajs.inputmaskData.soajs_project && soajs.servicesConfig.SOAJS_SAAS[soajs.inputmaskData.soajs_project]) {
-					if(soajs.registry.resources){
-						if (soajs.registry.resources.cluster && soajs.registry.resources.cluster[soajs.inputmaskData.soajs_project]) {
-							provision = soajsUtils.cloneObj(soajs.registry.resources.cluster[soajs.inputmaskData.soajs_project].config);
-							provision.name = soajs.registry.coreDB.provision.name;
-							provision.prefix = soajs.inputmaskData.soajs_project + "_";
-							soajs.log.info('Switch connection');
+				if (soajs.inputmaskData.soajs_project) {
+					if (soajs.servicesConfig.SOAJS_SAAS[soajs.inputmaskData.soajs_project]) {
+						if (soajs.registry.resources) {
+							if (soajs.registry.resources.cluster && soajs.registry.resources.cluster[soajs.inputmaskData.soajs_project]) {
+								provision = soajsUtils.cloneObj(soajs.registry.resources.cluster[soajs.inputmaskData.soajs_project].config);
+								provision.name = soajs.registry.coreDB.provision.name;
+								provision.prefix = soajs.inputmaskData.soajs_project + "_";
+							}
+							else {
+								soajs.log.error('Missing cluster for', soajs.inputmaskData.soajs_project);
+								return false;
+							}
 						}
 						else {
-							soajs.log.error('Missing cluster for ', soajs.inputmaskData.soajs_project);
 							return false;
 						}
 					}
-					else{
+					else {
+						soajs.log.error('Missing project in servicesConfig', soajs.inputmaskData.soajs_project || '');
 						return false;
 					}
-				}
-				else {
-					soajs.log.error('Missing project in servicesConfig.', soajs.inputmaskData.soajs_project || '');
+				} else {
+					soajs.log.error('Missing project name from input');
 					return false;
 				}
 			}
 			else {
-				soajs.log.error('Missing project in servicesConfig.', soajs.inputmaskData.soajs_project || '');
+				soajs.log.error('Missing project in servicesConfig', soajs.inputmaskData.soajs_project || '');
 				return false;
 			}
 		}
