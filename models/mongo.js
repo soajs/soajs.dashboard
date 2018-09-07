@@ -315,7 +315,6 @@ var lib = {
 								provision = soajsUtils.cloneObj(soajs.registry.resources.cluster[soajs.inputmaskData.soajs_project].config);
 								provision.name = soajs.registry.coreDB.provision.name;
 								provision.prefix = soajs.inputmaskData.soajs_project + "_";
-								soajs.log.info('Switch connection');
 							}
 							else {
 								soajs.log.error('Missing cluster for ', soajs.inputmaskData.soajs_project);
