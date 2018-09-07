@@ -3,7 +3,7 @@ module.exports = {
 	"required": true,
 	"additionalProperties": false,
 	"properties":{
-		"code": {"required": true, "type": "string", "format": "alphanumeric", "minLength": 4, "maxLength": 5},
+		"code": {"required": true, "type": "string", "format": "alphanumeric", "minLength": 4, "maxLength": 6},
 		"name": {"required": true, "type": "string"},
 		"description": {"required": true, "type": "string"},
 		"packages":{
