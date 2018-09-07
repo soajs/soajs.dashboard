@@ -49,7 +49,7 @@ var lib = {
 		if (switchedConnection && typeof  switchedConnection === 'object' && Object.keys(switchedConnection).length > 0) {
 			provision = switchedConnection;
 			if (soajs.log) {
-				soajs.log.debug('Switching to connection to project: ', soajs.inputmaskData.soajs_project);
+				soajs.log.debug('Switching to connection to project:', soajs.inputmaskData.soajs_project);
 			}
 		} else if (switchedConnection === false) {
 			if (soajs.log) {
@@ -174,7 +174,7 @@ var lib = {
 	"closeConnection": function (soajs) {
 		if (soajs.mongoDb) {
 			if (soajs.inputmaskData && soajs.inputmaskData.soajs_project) {
-				soajs.log.debug('Closing connection to client core_provision', soajs.inputmaskData.soajs_project);
+				soajs.log.debug('Closing connection to client project:', soajs.inputmaskData.soajs_project);
 			}
 			else {
 				if (soajs && soajs.log) {
@@ -317,7 +317,7 @@ var lib = {
 								provision.prefix = soajs.inputmaskData.soajs_project + "_";
 							}
 							else {
-								soajs.log.error('Missing cluster for ', soajs.inputmaskData.soajs_project);
+								soajs.log.error('Missing cluster for', soajs.inputmaskData.soajs_project);
 								return false;
 							}
 						}
@@ -326,7 +326,7 @@ var lib = {
 						}
 					}
 					else {
-						soajs.log.error('Missing project in servicesConfig.', soajs.inputmaskData.soajs_project || '');
+						soajs.log.error('Missing project in servicesConfig', soajs.inputmaskData.soajs_project || '');
 						return false;
 					}
 				} else {
@@ -335,7 +335,7 @@ var lib = {
 				}
 			}
 			else {
-				soajs.log.error('Missing project in servicesConfig.', soajs.inputmaskData.soajs_project || '');
+				soajs.log.error('Missing project in servicesConfig', soajs.inputmaskData.soajs_project || '');
 				return false;
 			}
 		}
