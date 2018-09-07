@@ -40,7 +40,7 @@ module.exports = {
 						"type": "string",
 						"format": "alphanumeric",
 						"minLength": 4,
-						"maxLength": 5
+						"maxLength": 6
 					},
 					"package": {"required": true, "type": "string", "pattern": "[A-Z0-9_]+"},
 					"description": {"required": true, "type": "string"},
