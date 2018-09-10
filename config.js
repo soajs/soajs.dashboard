@@ -6043,7 +6043,7 @@ module.exports = {
 
 			"/infra": {
 				"_apiInfo": {
-					"l": "Deactivate Infra Providers",
+					"l": "Deactivate Infra Provider",
 					"group": "Infra Providers"
 				},
 				'commonFields': ['soajs_project', 'id']
@@ -6051,7 +6051,7 @@ module.exports = {
 
 			"/infra/deployment": {
 				"_apiInfo": {
-					"l": "Deactivate Infra Providers",
+					"l": "Remove Infra Provider Deployment",
 					"group": "Infra Providers"
 				},
 				'commonFields': ['soajs_project', 'id'],
