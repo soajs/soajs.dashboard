@@ -1302,6 +1302,14 @@ module.exports = {
 					"group": "Services"
 				},
 				'commonFields': ['soajs_project'],
+				"includeErrors": {
+					"source": ['query.includeErrors'],
+					"required": true,
+					"default": false,
+					"validation": {
+						"type": "boolean"
+					}
+				},
 				"env": {
 					"source": ['query.env'],
 					"required": false,
