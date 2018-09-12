@@ -218,6 +218,12 @@ var mongoStub = {
 		return true;
 	}
 };
+var BL = {
+	model : {
+		mongoStub
+	}
+};
+
 describe("testing lib/cloud/infra/extras.js", function () {
 
 	after(function (done) {
@@ -286,7 +292,9 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				}
 				return cb(null, []);
 			};
-
+			deployer.validateInputs = function(options, schema, type, cb){
+				return cb(null, true);
+			};
 			extras.getExtras (config, req, req.soajs, deployer, function(error, body) {
 				assert.ok(body);
 				done();

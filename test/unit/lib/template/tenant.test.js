@@ -233,6 +233,56 @@ describe("Testing productization", function () {
                 ]
             },
         ];
+        newTemplate.content['tenant'].data = [
+            {
+                "code": "PRTL",
+                "name": "Portal Tenant",
+                "description": "Portal Tenant Description",
+                "oauth": {/*...*/},
+                "applications": [
+                    {
+                        "product": "DSBRD",
+                        "package": "DSBRD_DEFLT",
+                        "description": "Portal Logged In user Application",
+                        "_TTL": 7 * 24 * 3600 * 1000,
+                        "acl": {/***/},
+                        "keys": [
+                            {
+                                "extKeys": [
+                                    {
+                                        "device": {},
+                                        "geo": {},
+                                        "dashboardAccess": true,
+                                        "expDate": null
+                                    }
+                                ],
+                                "config": {/***/}
+                            }
+                        ]
+                    },
+                    {
+                        "product": "DSBRD1",
+                        "package": "DSBRD1_fail",
+                        "description": "Portal Logged In user Application",
+                        "_TTL": 7 * 24 * 3600 * 1000,
+                        "acl": {/***/},
+                        "keys": [
+                            {
+                                "extKeys": [
+                                    {
+                                        "device": {},
+                                        "geo": {},
+                                        "dashboardAccess": true,
+                                        "expDate": null
+                                    }
+                                ],
+                                "config": {/***/}
+                            }
+                        ]
+                    }
+                ]
+            },
+        ];
         context.template = newTemplate;
         tenantIndex.check(req, context, lib, async, mongoStub, function (result, error) {
             done();
@@ -241,16 +291,24 @@ describe("Testing productization", function () {
 
     it("Success - Check tenant - no tenant record", function (done) {
         let newTemplate = JSON.parse(JSON.stringify(template));
+        let newContext =  JSON.parse(JSON.stringify(template));
         newTemplate.content['productization'].data = [];
-        tenantIndex.check(req, context, lib, async, mongoStub, function (result, error) {
+        newTemplate.content['tenant'].data = [];
+        newContext.template = newTemplate;
+
+        tenantIndex.check(req, newContext, lib, async, mongoStub, function (result, error) {
             done();
         });
     });
 
     it("Success - Check tenant - no result", function (done) {
         let newTemplate = JSON.parse(JSON.stringify(template));
+        let newContext =  JSON.parse(JSON.stringify(template));
         newTemplate.content['productization'].data = [];
-        tenantIndex.check(req, context, lib, async, mongoStub, function (result, error) {
+        newTemplate.content['tenant'].data = [];
+        newContext.template = newTemplate;
+
+        tenantIndex.check(req, newContext, lib, async, mongoStub, function (result, error) {
             done();
         });
     });
