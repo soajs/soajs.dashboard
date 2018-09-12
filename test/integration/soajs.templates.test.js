@@ -3,8 +3,6 @@
 const assert = require('assert');
 var request = require("request");
 
-var utils = require("soajs.core.libs").utils;
-
 var Mongo = require("soajs.core.modules").mongo;
 var dbConfig = require("./db.config.test.js");
 
@@ -20,7 +18,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 		assert.ok(body);
 		return cb(body);
 	});
-
+	
 	function requester(apiName, method, params, cb) {
 		var options = {
 			uri: 'http://localhost:4000/dashboard/' + apiName,
@@ -30,7 +28,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 			},
 			json: true
 		};
-
+		
 		if (params.headers) {
 			for (var h in params.headers) {
 				if (params.headers.hasOwnProperty(h)) {
@@ -38,15 +36,15 @@ function executeMyRequest(params, apiPath, method, cb) {
 				}
 			}
 		}
-
+		
 		if (params.form) {
 			options.body = params.form;
 		}
-
+		
 		if (params.qs) {
 			options.qs = params.qs;
 		}
-
+		
 		request[method](options, function (error, response, body) {
 			assert.ifError(error);
 			assert.ok(body);
@@ -56,86 +54,118 @@ function executeMyRequest(params, apiPath, method, cb) {
 }
 
 let params = {};
-//Begin testing
+
 describe("Testing Templates Functionality", function () {
-
+	
 	describe("Testing Templates GET", function () {
-
-		it("success", function (done) {
-			params = {
-				"qs": {}
-			};
-
-			executeMyRequest(params, "templates", 'get', function (result) {
-				assert.ok(result.data);
-				done();
-			});
-		});
-
+		
+		// it.skip("success", function (done) {
+		// 	params = {
+		// 		"qs": {}
+		// 	};
+		//
+		// 	executeMyRequest(params, "templates", 'get', function (result) {
+		// 		assert.ok(result.data);
+		// 		done();
+		// 	});
+		// });
+		
 		it("success - fullList", function (done) {
 			params = {
 				"qs": {
 					fullList: true
 				}
 			};
-
+			
 			executeMyRequest(params, "templates", 'get', function (result) {
 				assert.ok(result.data);
 				done();
 			});
 		});
-
+		
 	});
-
-	describe.skip("Testing Templates Import API", function () {
-
+	
+	describe("Testing Templates Import API", function () {
+		
+		// it.skip("Success Import", function (done) {
+		// 	params = {};
+		// 	executeMyRequest(params, "templates/import", 'post', function (result) {
+		// 		done();
+		// 	});
+		// });
+		
 		it("Success Import", function (done) {
-
+			
 			params = {
-				"qs": {},
-				"form": {}
+				"qs": {
+					"id": "5b990031238c971bc53959f5"
+				},
+				"form": {
+					"correction": {}
+				}
 			};
-
+			
 			executeMyRequest(params, "templates/import", 'post', function (result) {
-				// assert.ok(result.data);
+				done();
+			});
+		});
+	});
+	
+	describe("Testing Templates Export API", function () {
+		
+		it("Success - Export - nothing to export", function (done) {
+			params = {};
+			
+			executeMyRequest(params, "templates/export", 'post', function (result) {
+				assert.ok(result.errors);
+				done();
+			});
+		});
+		
+		it("Fail - Export id", function (done) {
+			params = {
+				form: {
+					"id": "invalid",
+					"deployment": ["test"]
+				}
+			};
+			
+			executeMyRequest(params, "templates/export", 'post', function (result) {
+				assert.deepEqual(result.errors.details[0].code, 701);
+				done();
+			});
+		});
+		
+		it.skip("Success - Export id", function (done) {
+			params = {
+				form: {
+					"id": "5acf46c4af4cd3a45f21e2eb",
+					"deployment": []
+				}
+			};
+			
+			executeMyRequest(params, "templates/export", 'post', function (result) {
 				// assert.ok(result.result);
 				done();
 			});
 		});
 	});
-
-	describe.skip("Testing Templates Export API", function () {
-
-		it("Fail - Export", function (done) {
-			params = {
-				"qs": {}
-			};
-
-			executeMyRequest(params, "templates/export", 'post', function (result) {
-				// assert.ok(result.errors);
-				// assert.deepEqual(result.errors.details[0].code, 404);
-				done();
-			});
-		});
-
-	});
-
+	
 	describe("Testing Templates upgrade API", function () {
-
-		it("Fail - invalidId", function (done) {
+		
+		it("Success", function (done) {
 			params = {
 				"qs": {}
 			};
-
+			
 			executeMyRequest(params, "templates/upgrade", 'get', function (result) {
-				// assert.ok(result.errors);
-				// assert.deepEqual(result.errors.details[0].code, 404);
+				assert.ok(result.result);
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("Testing Templates DELETE API", function () {
 		
 		it("Fail - delete", function (done) {
@@ -144,28 +174,28 @@ describe("Testing Templates Functionality", function () {
 					"id": "invalidId"
 				}
 			};
-
+			
 			executeMyRequest(params, "templates", 'delete', function (result) {
 				assert.ok(result.errors);
 				assert.deepEqual(result.errors.details[0].code, 701);
 				done();
 			});
 		});
-
+		
 		it("Success - delete", function (done) {
 			params = {
 				"qs": {
 					"id": "5b990031238c971bc53959f5"
 				}
 			};
-
+			
 			executeMyRequest(params, "templates", 'delete', function (result) {
 				assert.ok(result.data);
 				done();
 			});
 		});
 	});
-
+	
 	after(function (done) {
 		mongo.closeDb();
 		done();
