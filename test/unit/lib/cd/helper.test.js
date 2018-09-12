@@ -111,6 +111,9 @@ describe("testing helper soajs.cd.js", function () {
 			},
 			info: function (data) {
 				if (process.env.SOAJS_DEBUG_LOGS) console.log(data);
+			},
+			warn: function (data) {
+				if (process.env.SOAJS_DEBUG_LOGS) console.log(data);
 			}
 		},
 		inputmaskData: {},

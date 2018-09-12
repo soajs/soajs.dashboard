@@ -6,7 +6,7 @@ let template1 = {
 	"restriction": {
 		"allowInfraReuse": false,
 		"deployment": [
-			"manual"
+			"container"
 		]
 	},
 	"content": {
