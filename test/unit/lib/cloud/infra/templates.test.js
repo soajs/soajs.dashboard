@@ -9,7 +9,14 @@ var infraTemplates = testHelper.requireModule('./lib/cloud/infra/templates.js');
 var deployer = testHelper.deployer;
 
 var mongoStub = {
-	getDb: function () {
+	getDb: function (soajs) {
+      return {
+          ObjectId: function () {
+              return{
+              	errors : 'Argument passed in must be a single String of 12 bytes or a string of 24 hex characters'
+			  }
+          }
+      }
 	},
 	checkForMongo: function (soajs) {
 		return true;
@@ -22,16 +29,33 @@ var mongoStub = {
 	},
 	findEntries: function (soajs, opts, cb) {
 		var data = [];
+		if (opts.collection && opts .collection === 'templates') {
+			data = [{
+				inputs : '[{}]',
+				display : '[{}]',
+				imfv : '[{}]',
+			}];
+		}
 		cb(null, data);
 	},
 	removeEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
+    countEntries: function (soajs, opts, cb) {
+		if (opts.collection === 'templates') {
+            cb(null, 0);
+		} else {
+            cb(null, true);
+		}
+	},
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
 	switchConnection: function (soajs) {
-	}
+	},
+    insertEntry: function (soajs, {}, cb) {
+		return cb(null, true)
+	},
 };
 var soajs = {
 	validator: {
@@ -71,7 +95,9 @@ var soajs = {
 		}
 	},
 	// uracDriver: {},
-	inputmaskData: {},
+	inputmaskData: {
+        templateId : 'test'
+	},
 	tenant: {}
 };
 var BL = {
@@ -202,10 +228,57 @@ describe("testing lib/cloud/infra/templates.js", function () {
 			});
 		});
 
+		it("Success getRemoteTemplates - 3", function (done) {
+			oneInfra.templatesTypes = ['external'];
+			deployer.execute = function (driverOptions, method, methodOptions, cb) {
+				let templates = [];
+				if (method === 'getFiles') {
+                    templates = [{
+                    	id : '1234',
+                        type: 'template',
+                        name : 'test',
+						tags : {
+                        	template : '1234',
+						}
+                    }];
+				} else if(method === 'downloadFile') {
+                    templates = {
+                    	content : {
+                    		"test" : 'test'
+						}
+					}
+				}
+				return cb(null, templates);
+			};
+			soajs.inputmaskData.fullTemplate = 'test';
+
+			infraTemplates.getRemoteTemplates(soajs, config, BL, oneInfra, deployer, options, function (error, body) {
+				deployer.execute = function (driverOptions, method, methodOptions, cb) {
+					if (method === 'listKubeServices') {
+						return cb(null, [{
+							metadata: {
+								name: 'heapster',
+								namespace: 'kube-system'
+							}
+						}]);
+					} else {
+						return cb(null, []);
+					}
+				};
+				done();
+			});
+		});
+
 	});
 
 	describe("removeTemplate", function () {
 		it("Success removeTemplate", function (done) {
+			infraTemplates.removeTemplate(config, soajs, BL, deployer, function (error, body) {
+				done();
+			});
+		});
+
+		it("Success removeTemplate -2", function (done) {
 			infraTemplates.removeTemplate(config, soajs, BL, deployer, function (error, body) {
 				done();
 			});
@@ -217,7 +290,34 @@ describe("testing lib/cloud/infra/templates.js", function () {
 		it("Success addTemplate", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				var InfraRecord = {
-					templates: []
+					'_id' : 1234,
+					templates : 'local'
+				};
+				cb(null, InfraRecord);
+			};
+				soajs.inputmaskData = {
+                    template : {
+                        textMode : true,
+                        driver : {},
+                        technology : 'vm',
+                        name : 'test',
+                        description : 'test',
+                        display : {},
+                        imfv : {},
+                        inputs : {},
+                        tags : {},
+					}
+				};
+			infraTemplates.addTemplate(config, soajs, BL, function (error, body) {
+				done();
+			});
+		});
+
+		it("Success addTemplate - 2", function (done) {
+			mongoStub.count = function (soajs, opts, cb) {
+				var InfraRecord = {
+					templates: [],
+                    '_id' : 1234,
 				};
 				cb(null, InfraRecord);
 			};
@@ -285,6 +385,55 @@ describe("testing lib/cloud/infra/templates.js", function () {
 			infraTemplates.downloadTemplate(config, soajs, BL, deployer, res, function (error, body) {
 				done();
 			});
+		});
+
+	});
+
+	describe("buildTemplateRawRecord", function () {
+		var res = {};
+		it("Success buildTemplateRawRecord", function (done) {
+            soajs.inputmaskData.templateId = 'test';
+
+			let downloadedFiles = [{
+                fileName : 'test',
+                data : {
+                    inputs : [],
+                    display : [],
+                    imfv : [],
+                },
+				record : {
+                    id : '',
+                    name : '',
+                    description : '',
+                    driver : '',
+                    technology : '',
+                    tags : '',
+				},
+			}];
+			infraTemplates.buildTemplateRawRecord(soajs, downloadedFiles);
+			done();
+		});
+
+		it("Success buildTemplateRawRecord", function (done) {
+            soajs.inputmaskData.templateId = 'test';
+			let downloadedFiles = [{
+                fileName : 'comp__test',
+                data : {
+                	inputs : [],
+                    display : [],
+                	imfv : [],
+                },
+				record : {
+                    id : '',
+                    name : '',
+                    description : '',
+                    driver : '',
+                    technology : '',
+                    tags : '',
+				},
+			}];
+			infraTemplates.buildTemplateRawRecord(soajs, downloadedFiles);
+			done();
 		});
 
 	});
