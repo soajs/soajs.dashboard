@@ -13,14 +13,14 @@ var mongo = new Mongo(dashboardConfig);
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 var access_token;
 
-function executeMyRequest (params, apiPath, method, cb) {
+function executeMyRequest(params, apiPath, method, cb) {
 	requester(apiPath, method, params, function (error, body) {
 		assert.ifError(error);
 		assert.ok(body);
 		return cb(body);
 	});
 
-	function requester (apiName, method, params, cb) {
+	function requester(apiName, method, params, cb) {
 		var options = {
 			uri: 'http://localhost:4000/dashboard/' + apiName,
 			headers: {
@@ -32,7 +32,7 @@ function executeMyRequest (params, apiPath, method, cb) {
 		if (params.headers) {
 			for (var h in params.headers) {
 				if (params.headers.hasOwnProperty(h)) {
-					options.headers[ h ] = params.headers[ h ];
+					options.headers[h] = params.headers[h];
 				}
 			}
 		}
@@ -52,7 +52,7 @@ function executeMyRequest (params, apiPath, method, cb) {
 		if (params.formData) {
 			options.formData = params.formData;
 		}
-		request[ method ](options, function (error, response, body) {
+		request[method](options, function (error, response, body) {
 			//maintenance tests have a timeout set to avoid travis errors
 			//if timeout is exceeded, return cb() without checking for error since this is expected behavior
 			if (error && error.code && error.code === 'ESOCKETTIMEDOUT') {
@@ -66,7 +66,7 @@ function executeMyRequest (params, apiPath, method, cb) {
 	}
 }
 
-function getServices (env, cb) {
+function getServices(env, cb) {
 	var params = {
 		qs: {
 			access_token: access_token,
@@ -80,7 +80,7 @@ function getServices (env, cb) {
 	});
 }
 
-function deleteService (options, cb) {
+function deleteService(options, cb) {
 	var params = {
 		"qs": {
 			access_token: access_token,
@@ -145,7 +145,7 @@ describe("testing hosts deployment", function () {
 						}
 					}
 				};
-				mongo.remove("ledger", {}, function(error){
+				mongo.remove("ledger", {}, function (error) {
 					assert.ifError(error);
 					mongo.update("environment", {}, {
 						"$set": {
@@ -165,7 +165,7 @@ describe("testing hosts deployment", function () {
 	before("Perform cleanup of any previous services deployed", function (done) {
 		console.log('Deleting previous deployments ...');
 		shell.exec('docker service rm $(docker service ls -q) && docker rm -f $(docker ps -qa)');
-		setTimeout(function(){
+		setTimeout(function () {
 			done();
 		}, 1500);
 	});
@@ -303,7 +303,7 @@ describe("testing hosts deployment", function () {
 		var updateField = {
 			"$set": dashEnv
 		};
-		mongo.update("environment", {"code": "DASHBOARD"}, updateField, {
+		mongo.update("environment", { "code": "DASHBOARD" }, updateField, {
 			"upsert": true,
 			"multi": false
 		}, function (error) {
@@ -316,14 +316,14 @@ describe("testing hosts deployment", function () {
 		mongo.closeDb();
 		console.log('Deleting deployments and cleaning up...');
 		shell.exec('docker service rm $(docker service ls -q) && docker rm -f $(docker ps -qa)');
-		setTimeout(function(){
+		setTimeout(function () {
 			done();
 		}, 1500);
 	});
 
 	describe("testing service deployment", function () {
 
-		function mimicCall(token, version, cb){
+		function mimicCall(token, version, cb) {
 			var options = {
 				qs: {
 					deploy_token: token
@@ -334,11 +334,11 @@ describe("testing hosts deployment", function () {
 					branch: 'master',
 					commit: '1fea60a6d26efd7fcbaeeb95d52fc651d6c3eba5',
 					ciProvider: 'travis',
-					services: [{serviceName: 'controller'}]
+					services: [{ serviceName: 'controller' }]
 				}
 			};
 
-			if(version){
+			if (version) {
 				options.form.services[0].serviceVersion = version;
 			}
 
@@ -347,7 +347,7 @@ describe("testing hosts deployment", function () {
 			});
 		}
 
-		function configureCD(config, cb){
+		function configureCD(config, cb) {
 			var options = {
 				qs: {
 					access_token: access_token
@@ -362,7 +362,7 @@ describe("testing hosts deployment", function () {
 			});
 		}
 
-		it("update catalog recipe", function(done){
+		it("update catalog recipe", function (done) {
 			var recipes = [
 				{
 					"name": "soajsCatalog",
@@ -376,9 +376,9 @@ describe("testing hosts deployment", function () {
 								"name": "soajs",
 								"tag": "latest"
 							},
-							"container" : {
-								"network" : "soajsnet",
-								"workingDir" : ""
+							"container": {
+								"network": "soajsnet",
+								"workingDir": ""
 							}
 						},
 						"buildOptions": {
@@ -484,7 +484,7 @@ describe("testing hosts deployment", function () {
 							}
 						}
 					},
-					v:1,
+					v: 1,
 					ts: new Date().getTime()
 				},
 				{
@@ -499,9 +499,9 @@ describe("testing hosts deployment", function () {
 								"name": "nginx",
 								"tag": "1.0.x"
 							},
-							"container" : {
-								"network" : "soajsnet",
-								"workingDir" : ""
+							"container": {
+								"network": "soajsnet",
+								"workingDir": ""
 							},
 							"ports": [
 								{
@@ -576,7 +576,7 @@ describe("testing hosts deployment", function () {
 							}
 						}
 					},
-					v:1,
+					v: 1,
 					ts: new Date().getTime()
 				},
 				{
@@ -591,9 +591,9 @@ describe("testing hosts deployment", function () {
 								"name": "soajs",
 								"tag": "1.0.x-1.0.x"
 							},
-							"container" : {
-								"network" : "soajsnet",
-								"workingDir" : ""
+							"container": {
+								"network": "soajsnet",
+								"workingDir": ""
 							}
 						},
 						"buildOptions": {
@@ -699,11 +699,11 @@ describe("testing hosts deployment", function () {
 							}
 						}
 					},
-					v:1,
+					v: 1,
 					ts: new Date().getTime()
 				}
 			];
-			mongo.insert('catalogs', recipes, function(error, response){
+			mongo.insert('catalogs', recipes, function (error, response) {
 				assert.ifError(error);
 				recipesInfo = response;
 				done();
@@ -735,14 +735,14 @@ describe("testing hosts deployment", function () {
 							replicas: 1
 						}
 					},
-					infraId : '5af57221c32d1309b7d43ab6'
+					infraId: '5af57221c32d1309b7d43ab6'
 				}
 			};
 			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
 				
 				assert.ok(body.result);
 				assert.ok(body.data);
-				setTimeout(function(){
+				setTimeout(function () {
 					done();
 				}, 1000);
 			});
@@ -772,7 +772,7 @@ describe("testing hosts deployment", function () {
 			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
-				setTimeout(function(){
+				setTimeout(function () {
 					done();
 				}, 700);
 			});
@@ -812,31 +812,31 @@ describe("testing hosts deployment", function () {
 			});
 		});
 
-		it.skip("mimic call to cd/deploy, nothing should happen", function(done){
-			mimicCall("myGitToken", null, function(body){
+		it.skip("mimic call to cd/deploy, nothing should happen", function (done) {
+			mimicCall("myGitToken", null, function (body) {
 				assert.equal(body.result, true);
 				assert.ok(body.data);
 				done();
 			});
 		});
 
-		it.skip("fail - mimic call for cd/deploy of controller in dev", function(done){
-			mimicCall("invalid", null, function(body){
+		it.skip("fail - mimic call for cd/deploy of controller in dev", function (done) {
+			mimicCall("invalid", null, function (body) {
 				assert.equal(body.result, false);
 				assert.ok(body.errors);
 				done();
 			});
 		});
 
-		it.skip("mimic call for cd/deploy of controller in dev", function(done){
-			mimicCall("myGitToken", null, function(body){
+		it.skip("mimic call for cd/deploy of controller in dev", function (done) {
+			mimicCall("myGitToken", null, function (body) {
 				assert.equal(body.result, true);
 				assert.ok(body.data);
 				done();
 			});
 		});
 
-		it("configure cd again with specific entry for controller", function(done){
+		it("configure cd again with specific entry for controller", function (done) {
 			configureCD({
 				"env": "STG",
 				"serviceName": "controller",
@@ -844,22 +844,22 @@ describe("testing hosts deployment", function () {
 					"branch": "master",
 					"strategy": "notify"
 				}
-			}, function(body){
+			}, function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
 				done();
 			});
 		});
 
-		it.skip("mimic call for cd/deploy of controller in dev again", function(done){
-			mimicCall("myGitToken", null, function(body){
+		it.skip("mimic call for cd/deploy of controller in dev again", function (done) {
+			mimicCall("myGitToken", null, function (body) {
 				assert.equal(body.result, true);
 				assert.ok(body.data);
 				done();
 			});
 		});
 
-		it("configure cd again with specific version for controller", function(done){
+		it("configure cd again with specific version for controller", function (done) {
 			configureCD({
 				"env": "STG",
 				"serviceName": "controller",
@@ -868,22 +868,22 @@ describe("testing hosts deployment", function () {
 					"branch": "master",
 					"strategy": "notify"
 				}
-			}, function(body){
+			}, function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
 				done();
 			});
 		});
 
-		it.skip("mimic call for cd/deploy of controller in dev again", function(done){
-			mimicCall("myGitToken", 1, function(body){
+		it.skip("mimic call for cd/deploy of controller in dev again", function (done) {
+			mimicCall("myGitToken", 1, function (body) {
 				assert.equal(body.result, true);
 				assert.ok(body.data);
 				done();
 			});
 		});
 
-		it("get ledger", function(done){
+		it("get ledger", function (done) {
 			var options = {
 				qs: {
 					deploy_token: access_token,
@@ -920,7 +920,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 
-		it("mark all ledger entries as read", function(done){
+		it("mark all ledger entries as read", function (done) {
 			var options = {
 				qs: {
 					deploy_token: access_token
@@ -938,14 +938,19 @@ describe("testing hosts deployment", function () {
 			});
 		});
 
-		it("trigger catalog update", function(done){
-			mongo.update('catalogs', {'name': "soajsCatalog"}, {$set:{v: 2, ts: new Date().getTime()}}, function(error){
+		it("trigger catalog update", function (done) {
+			mongo.update('catalogs', { 'name': "soajsCatalog" }, {
+				$set: {
+					v: 2,
+					ts: new Date().getTime()
+				}
+			}, function (error) {
 				assert.ifError(error);
 				done();
 			});
 		});
 
-		it.skip("get updates", function(done){
+		it.skip("get updates", function (done) {
 			var options = {
 				qs: {
 					deploy_token: access_token,
@@ -960,7 +965,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 
-		it("configure cd for automatic controller update", function(done){
+		it("configure cd for automatic controller update", function (done) {
 			configureCD({
 				"env": "STG",
 				"serviceName": "controller",
@@ -969,15 +974,15 @@ describe("testing hosts deployment", function () {
 					"branch": "master",
 					"strategy": "update"
 				}
-			}, function(body){
+			}, function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
 				done();
 			});
 		});
 
-		it.skip("mimic call for cd/deploy of controller in dev again", function(done){
-			mimicCall("myGitToken", 1, function(body){
+		it.skip("mimic call for cd/deploy of controller in dev again", function (done) {
+			mimicCall("myGitToken", 1, function (body) {
 				assert.equal(body.result, true);
 				assert.ok(body.data);
 				done();
@@ -985,7 +990,7 @@ describe("testing hosts deployment", function () {
 		});
 
 		//todo: need to trigger get action api, redeploy and rebuild
-		it.skip("calling take action on redeploy", function(done){
+		it.skip("calling take action on redeploy", function (done) {
 			var options = {
 				qs: {
 					deploy_token: access_token,
@@ -999,8 +1004,8 @@ describe("testing hosts deployment", function () {
 
 				var list = body.data;
 				var oneUpdate;
-				for(var i =0; i < list.length; i++){
-					if(list[i].notify && !list[i].manual){
+				for (var i = 0; i < list.length; i++) {
+					if (list[i].notify && !list[i].manual) {
 						oneUpdate = list[i];
 						break;
 					}
@@ -1029,15 +1034,15 @@ describe("testing hosts deployment", function () {
 			});
 		});
 
-		it.skip("calling take action on rebuild", function(done){
-			getServices('stg', function(list){
-				var lastEntry = list[list.length -1];
+		it.skip("calling take action on rebuild", function (done) {
+			getServices('stg', function (list) {
+				var lastEntry = list[list.length - 1];
 				var options = {
 					qs: {
 						deploy_token: access_token
 					},
-					form:{
-						data:{
+					form: {
+						data: {
 							"env": 'stg',
 							"action": 'rebuild',
 							"mode": lastEntry.labels['soajs.service.mode'],
@@ -1076,5 +1081,185 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
+	});
+
+	describe("cloud VM tests", function () {
+
+		describe("Add VM", function () {
+
+			it("Fail - invalid Id", function (done) {
+				var params = {
+					qs: {
+						"env": "TEST",
+						"infraId": "123",
+						"technology": "docker"
+					},
+					form: {
+						"infraCodeTemplate": "test",
+						"region": "test",
+						"name": "name",
+						"specs": {}
+					}
+				};
+
+				executeMyRequest(params, "cloud/vm", 'post', function (body) {
+					assert.ok(body.errors);
+					done();
+				});
+			});
+
+		});
+
+		describe("Edit VM", function () {
+
+			it("Fail - invalid Id", function (done) {
+				var params = {
+					qs: {
+						"env": "TEST",
+						"id": "123",
+						"infraId": "123",
+						"technology": "docker",
+						"layerName": "name"
+					},
+					form: {
+						"infraCodeTemplate": "test",
+						"region": "test",
+						"specs": {}
+					}
+				};
+
+				executeMyRequest(params, "cloud/vm", 'put', function (body) {
+					assert.ok(body.errors);
+					done();
+				});
+			});
+
+		});
+
+		describe("VM maintenance", function () {
+
+			it("Fail - invalid Id", function (done) {
+				var params = {
+					qs: {
+						"infraId": "123",
+						"technology": "docker",
+						"serviceId": "abc"
+					},
+					form: {
+						"operation": "startVM"
+					}
+				};
+
+				executeMyRequest(params, "cloud/vm/maintenance", 'post', function (body) {
+					assert.ok(body.errors);
+					done();
+				});
+			});
+
+		});
+
+		describe("VM Logs", function () {
+
+			it("Fail", function (done) {
+				var params = {
+					qs: {
+						"group": "a",
+						"infraId": "123",
+						"technology": "docker",
+						"serviceId": "abc"
+					},
+					form: {}
+				};
+
+				executeMyRequest(params, "cloud/vm/logs", 'post', function (body) {
+					assert.ok(body.errors);
+					done();
+				});
+			});
+
+		});
+
+		describe("VM Onboard", function () {
+
+			it("Fail", function (done) {
+				var params = {
+					qs: {
+						env: "TEST",
+						infraId: "123",
+						release: false
+					},
+					form: {
+						ids: []
+					}
+				};
+
+				executeMyRequest(params, "cloud/vm/onboard", 'post', function (body) {
+					assert.ok(body.errors);
+					done();
+				});
+			});
+
+		});
+
+		describe("VM Layer status", function () {
+
+			it("Fail", function (done) {
+				var params = {
+					qs: {
+						infraId: "123",
+						id: "123",
+						layerName: 'name'
+					}
+				};
+
+				executeMyRequest(params, "cloud/vm/layer/status", 'get', function (body) {
+					assert.ok(body);
+					done();
+				});
+			});
+
+		});
+
+		describe("Delete VM instance", function () {
+
+			it("Fail", function (done) {
+				var params = {
+					qs: {
+						env: "TEST",
+						infraId: "123",
+						technology: "docker",
+						serviceId: ""
+					}
+				};
+
+				executeMyRequest(params, "cloud/vm/instance", 'delete', function (body) {
+					assert.ok(body.errors);
+					done();
+				});
+			});
+
+		});
+
+		describe("Delete VM", function () {
+
+			it("Fail", function (done) {
+				var params = {
+					qs: {
+						id: "abc",
+						env: "TEST",
+						infraId: "123",
+						technology: "docker",
+						layerName: ""
+					}
+				};
+
+				executeMyRequest(params, "cloud/vm", 'delete', function (body) {
+					assert.ok(body.errors);
+					done();
+				});
+			});
+
+		});
+
 	});
 });
