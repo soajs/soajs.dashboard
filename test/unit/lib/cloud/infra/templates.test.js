@@ -10,13 +10,11 @@ var deployer = testHelper.deployer;
 
 var mongoStub = {
 	getDb: function (soajs) {
-      return {
-          ObjectId: function () {
-              return{
-              	errors : 'Argument passed in must be a single String of 12 bytes or a string of 24 hex characters'
-			  }
-          }
-      }
+        return {
+            ObjectId: function (id) {
+                return {message :"Argument passed in must be a single String of 12 bytes or a string of 24 hex characters"};
+            }
+        };
 	},
 	checkForMongo: function (soajs) {
 		return true;
@@ -382,11 +380,24 @@ describe("testing lib/cloud/infra/templates.js", function () {
 	describe("downloadTemplate", function () {
 		var res = {};
 		it("Success downloadTemplate", function (done) {
+			soajs.inputmaskData.templateId = '123';
+            soajs.inputmaskData.returnRawData = true;
+            deployer.execute = function (opts, method, {}, cb) {
+            	if (method === 'getFiles') {
+            		return cb(null, [{
+            			type : 'template',
+						id : '123'
+					}])
+				} else {
+            		return cb(null, {
+						content : {}
+					})
+				}
+			};
 			infraTemplates.downloadTemplate(config, soajs, BL, deployer, res, function (error, body) {
 				done();
 			});
 		});
-
 	});
 
 	describe("buildTemplateRawRecord", function () {

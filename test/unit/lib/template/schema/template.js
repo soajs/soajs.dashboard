@@ -28,6 +28,114 @@ let template = {
                             },
                             "sourceCode": {
                                 "configuration": {
+                                    //"label" : "test",
+                                    "repo": "test",
+                                   // "branch": "",
+                                    "required": false
+                                },
+                                "custom": {
+                                    //"label": "Attach Custom UI",
+                                    "repo": "test",
+                                  //  "branch" : "test",
+                                    //"type": "server",
+                                    "required": false
+                                }
+                            },
+                            "readinessProbe": {
+                                "httpGet": {
+                                    "path": "/",
+                                    "port": "http"
+                                },
+                                "initialDelaySeconds": 5,
+                                "timeoutSeconds": 2,
+                                "periodSeconds": 5,
+                                "successThreshold": 1,
+                                "failureThreshold": 3
+                            },
+                            "container": {
+                                "workingDir": "/opt/soajs/deployer/" //container working directory
+                            },
+                            "voluming": [
+                                {
+                                    docker: {
+                                        volume: {
+                                           // "Type" : "test",
+                                            "Source": "soajs_log_volume",
+                                            "Target": "/var/log/soajs/"
+                                        }
+                                    },
+                                    kubernetes: {
+                                        volume: {
+                                            "name": "soajs-log-volume",
+                                            "hostPath": {
+                                                "path": "/var/log/soajs/"
+                                            }
+                                        },
+                                        volumeMount: {
+                                            "mountPath": "/var/log/soajs/",
+                                            "name": "soajs-log-volume"
+                                        }
+                                    }
+                                },
+                                {
+                                    docker: {
+                                        volume: {
+                                            "Type": "test",
+                                            "ReadOnly": true,
+                                            "Source": "/var/run/docker.sock",
+                                            "Target": "/var/run/docker.sock"
+                                        }
+                                    }
+                                },
+                                {
+                                    docker: {
+                                        volume: {
+                                            "Type": "volume",
+                                            "Source": "soajs_certs_volume",
+                                            "Target": "/var/certs/soajs/"
+                                        }
+                                    }
+                                }
+                            ],
+                            "ports": [
+                                {
+                                    "name": "http",
+                                    "target": 80,
+                                    "preserveClientIP": true
+                                },
+                                {
+                                    "name": "http",
+                                    "target": 80,
+                                    "isPublished": true,
+                                    "preserveClientIP": true
+                                },
+                                {
+                                    "name": "https",
+                                    "target": 443,
+                                    "isPublished": true,
+                                    "preserveClientIP": true
+                                }
+                            ]
+                        },
+                        "buildOptions": {}
+                    },
+                    "type": "service",
+                    "subtype": "soajs",
+                    "technology": "kubernetes",
+                    "description": "This is the service catalog recipe used to deploy the core services in the dashboard environment.",
+                },
+                {
+                    "name": "DAAS Service Recipe3",
+                    "recipe": {
+                        "deployOptions": {
+                            "image": {
+                                "prefix": "soajsorg",
+                                "name": "nginx",
+                                "tag": "latest",
+                                "pullPolicy": "IfNotPresent"
+                            },
+                            "sourceCode": {
+                                "configuration": {
                                     "label" : "test",
                                     "repo": "",
                                     "branch": "",
@@ -107,6 +215,7 @@ let template = {
                                     "name": "http",
                                     "target": 80,
                                     "isPublished": true,
+                                    'published' : -1,
                                     "preserveClientIP": true
                                 },
                                 {
@@ -122,7 +231,10 @@ let template = {
                     "type": "service",
                     "subtype": "soajs",
                     "technology": "kubernetes",
-                    "description": "This is the service catalog recipe used to deploy the core services in the dashboard environment."
+                    "description": "This is the service catalog recipe used to deploy the core services in the dashboard environment.",
+                    'restriction' : {
+                        deployment : ['vm']
+                    }
                 }
             ]
         },
