@@ -83,7 +83,7 @@ var infraRecord = {
 	]
 };
 var vm_layers = {
-	"_id":'5b2cea680669cf2c142e6407',
+	"_id": '5b2cea680669cf2c142e6407',
 	"infraId": "5b28c5edb53002d7b3b1f0cf",
 	"layerName": "tester-ragheb",
 	"infraCodeTemplate": "dynamic-template-loadBalancer",
@@ -170,13 +170,13 @@ var mongoStub = {
 		return true;
 	},
 	insertEntry: function (soajs, options, cb) {
-		cb(null, [{_id: "123"}]);
+		cb(null, [{ _id: "123" }]);
 	},
 	validateId: function (soajs, cb) {
 		return cb(null, soajs.inputmaskData.id);
 	},
 	validateCustomId: function (soajs, id, cb) {
-		if (typeof cb === 'function'){
+		if (typeof cb === 'function') {
 			return cb(null, id);
 		}
 		else {
@@ -184,16 +184,16 @@ var mongoStub = {
 		}
 	},
 	findEntry: function (soajs, opts, cb) {
-		if (opts.collection === 'environment'){
+		if (opts.collection === 'environment') {
 			cb(null, envRecord);
 		}
-		else if (opts.collection === 'infra'){
+		else if (opts.collection === 'infra') {
 			cb(null, infraRecord);
 		}
-		else if (opts.collection === 'templates'){
+		else if (opts.collection === 'templates') {
 			cb(null, template);
 		}
-		else if (opts.collection === 'vm_layers'){
+		else if (opts.collection === 'vm_layers') {
 			cb(null, vm_layers);
 		}
 	},
@@ -214,13 +214,8 @@ var mongoStub = {
 	},
 	switchConnection: function (soajs) {
 	},
-	closeConnection: function (soajs){
+	closeConnection: function (soajs) {
 		return true;
-	}
-};
-var BL = {
-	model : {
-		mongoStub
 	}
 };
 
@@ -236,13 +231,13 @@ describe("testing lib/cloud/infra/extras.js", function () {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}else if (opts.collection === 'infra') {
+				} else if (opts.collection === 'infra') {
 					return cb(null, infraRecord);
-				}else if (opts.collection === 'templates') {
+				} else if (opts.collection === 'templates') {
 					return cb(null, template);
-				}else if (opts.collection === 'vm_layers') {
+				} else if (opts.collection === 'vm_layers') {
 					return cb(null, vm_layers);
-				}else{
+				} else {
 					return cb(null, {});
 				}
 			};
@@ -279,7 +274,7 @@ describe("testing lib/cloud/infra/extras.js", function () {
 			};
 			done();
 		});
-		it("Success", function(done) {
+		it("Success", function (done) {
 			req.soajs.inputmaskData = {
 				"id": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
@@ -287,15 +282,15 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				"region": "eastus",
 			};
 			deployer.execute = function (opts, command, options, cb) {
-				if (command === "listDisks"){
+				if (command === "listDisks") {
 					return cb(new Error("error"));
 				}
 				return cb(null, []);
 			};
-			deployer.validateInputs = function(options, schema, type, cb){
+			deployer.validateInputs = function (options, schema, type, cb) {
 				return cb(null, true);
 			};
-			extras.getExtras (config, req, req.soajs, deployer, function(error, body) {
+			extras.getExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -309,127 +304,127 @@ describe("testing lib/cloud/infra/extras.js", function () {
 			};
 			done();
 		});
-		it("Success group", function(done) {
+		it("Success group", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
 				"technology": "vm",
 				"params": {
-					"section" : "group",
-					"name" : "testcase",
-					"labels": {"test": "case"}
+					"section": "group",
+					"name": "testcase",
+					"labels": { "test": "case" }
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
 				return cb(null, true);
 			};
 			
-			extras.createExtras(config, req, req.soajs, deployer, function(error, body) {
+			extras.createExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 		
-		it("Success network", function(done) {
+		it("Success network", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
 				"technology": "vm",
 				"params": {
-					"section" : "network",
-					"name" : "testcase",
-					"labels": {"test": "case"}
+					"section": "network",
+					"name": "testcase",
+					"labels": { "test": "case" }
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
 				return cb(null, true);
 			};
 			
-			extras.createExtras(config, req, req.soajs, deployer, function(error, body) {
+			extras.createExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 		
-		it("Success loadBalancer", function(done) {
+		it("Success loadBalancer", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
 				"technology": "vm",
 				"params": {
-					"section" : "loadBalancer",
-					"name" : "testcase",
-					"labels": {"test": "case"}
+					"section": "loadBalancer",
+					"name": "testcase",
+					"labels": { "test": "case" }
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
 				return cb(null, true);
 			};
 			
-			extras.createExtras(config, req, req.soajs, deployer, function(error, body) {
+			extras.createExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 		
-		it("Success publicIp", function(done) {
+		it("Success publicIp", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
 				"technology": "vm",
 				"params": {
-					"section" : "publicIp",
-					"name" : "testcase",
-					"labels": {"test": "case"}
+					"section": "publicIp",
+					"name": "testcase",
+					"labels": { "test": "case" }
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
 				return cb(null, true);
 			};
 			
-			extras.createExtras(config, req, req.soajs, deployer, function(error, body) {
+			extras.createExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 		
-		it("Success securityGroup", function(done) {
+		it("Success securityGroup", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
 				"technology": "vm",
 				"params": {
-					"section" : "securityGroup",
-					"name" : "testcase",
-					"labels": {"test": "case"}
+					"section": "securityGroup",
+					"name": "testcase",
+					"labels": { "test": "case" }
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
 				return cb(null, true);
 			};
 			
-			extras.createExtras(config, req, req.soajs, deployer, function(error, body) {
+			extras.createExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 		
-		it("fail wrong", function(done) {
+		it("fail wrong", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
 				"technology": "vm",
 				"params": {
-					"section" : "wrong",
-					"name" : "testcase",
-					"labels": {"test": "case"}
+					"section": "wrong",
+					"name": "testcase",
+					"labels": { "test": "case" }
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
 				return cb(null, true);
 			};
 			
-			extras.createExtras(config, req, req.soajs, deployer, function(error, body) {
+			extras.createExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(error);
 				done();
 			});
@@ -443,127 +438,127 @@ describe("testing lib/cloud/infra/extras.js", function () {
 			};
 			done();
 		});
-		it("Success group", function(done) {
+		it("Success group", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
 				"technology": "vm",
 				"params": {
-					"section" : "group",
-					"name" : "testcase",
-					"labels": {"test": "case"}
+					"section": "group",
+					"name": "testcase",
+					"labels": { "test": "case" }
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
 				return cb(null, true);
 			};
 			
-			extras.updateExtras (config, req, req.soajs, deployer, function(error, body) {
+			extras.updateExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 		
-		it("Success network", function(done) {
+		it("Success network", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
 				"technology": "vm",
 				"params": {
-					"section" : "network",
-					"name" : "testcase",
-					"labels": {"test": "case"}
+					"section": "network",
+					"name": "testcase",
+					"labels": { "test": "case" }
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
 				return cb(null, true);
 			};
 			
-			extras.updateExtras(config, req, req.soajs, deployer, function(error, body) {
+			extras.updateExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 		
-		it("Success loadBalancer", function(done) {
+		it("Success loadBalancer", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
 				"technology": "vm",
 				"params": {
-					"section" : "loadBalancer",
-					"name" : "testcase",
-					"labels": {"test": "case"}
+					"section": "loadBalancer",
+					"name": "testcase",
+					"labels": { "test": "case" }
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
 				return cb(null, true);
 			};
 			
-			extras.updateExtras(config, req, req.soajs, deployer, function(error, body) {
+			extras.updateExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 		
-		it("Success publicIp", function(done) {
+		it("Success publicIp", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
 				"technology": "vm",
 				"params": {
-					"section" : "publicIp",
-					"name" : "testcase",
-					"labels": {"test": "case"}
+					"section": "publicIp",
+					"name": "testcase",
+					"labels": { "test": "case" }
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
 				return cb(null, true);
 			};
 			
-			extras.updateExtras(config, req, req.soajs, deployer, function(error, body) {
+			extras.updateExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 		
-		it("Success securityGroup", function(done) {
+		it("Success securityGroup", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
 				"technology": "vm",
 				"params": {
-					"section" : "securityGroup",
-					"name" : "testcase",
-					"labels": {"test": "case"}
+					"section": "securityGroup",
+					"name": "testcase",
+					"labels": { "test": "case" }
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
 				return cb(null, true);
 			};
 			
-			extras.updateExtras(config, req, req.soajs, deployer, function(error, body) {
+			extras.updateExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 		
-		it("fail wrong", function(done) {
+		it("fail wrong", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
 				"technology": "vm",
 				"params": {
-					"section" : "wrong",
-					"name" : "testcase",
-					"labels": {"test": "case"}
+					"section": "wrong",
+					"name": "testcase",
+					"labels": { "test": "case" }
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
 				return cb(null, true);
 			};
 			
-			extras.updateExtras(config, req, req.soajs, deployer, function(error, body) {
+			extras.updateExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(error);
 				done();
 			});
@@ -577,7 +572,7 @@ describe("testing lib/cloud/infra/extras.js", function () {
 			};
 			done();
 		});
-		it("Success group", function(done) {
+		it("Success group", function (done) {
 			req.soajs.inputmaskData = {
 				"id": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
@@ -588,13 +583,13 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				return cb(null, true);
 			};
 			
-			extras.deleteExtras (config, req, req.soajs, deployer, function(error, body) {
+			extras.deleteExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 		
-		it("Success network", function(done) {
+		it("Success network", function (done) {
 			req.soajs.inputmaskData = {
 				"id": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
@@ -605,13 +600,13 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				return cb(null, true);
 			};
 			
-			extras.deleteExtras (config, req, req.soajs, deployer, function(error, body) {
+			extras.deleteExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 		
-		it("Success loadBalancer", function(done) {
+		it("Success loadBalancer", function (done) {
 			req.soajs.inputmaskData = {
 				"id": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
@@ -622,13 +617,13 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				return cb(null, true);
 			};
 			
-			extras.deleteExtras (config, req, req.soajs, deployer, function(error, body) {
+			extras.deleteExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 		
-		it("Success publicIp", function(done) {
+		it("Success publicIp", function (done) {
 			req.soajs.inputmaskData = {
 				"id": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
@@ -639,13 +634,13 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				return cb(null, true);
 			};
 			
-			extras.deleteExtras (config, req, req.soajs, deployer, function(error, body) {
+			extras.deleteExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 		
-		it("Success securityGroup", function(done) {
+		it("Success securityGroup", function (done) {
 			req.soajs.inputmaskData = {
 				"id": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
@@ -656,13 +651,13 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				return cb(null, true);
 			};
 			
-			extras.deleteExtras (config, req, req.soajs, deployer, function(error, body) {
+			extras.deleteExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 		
-		it("fail wrong", function(done) {
+		it("fail wrong", function (done) {
 			req.soajs.inputmaskData = {
 				"id": "5b28c5edb53002d7b3b1f0cf",
 				"envCode": "DEV",
@@ -673,7 +668,7 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				return cb(null, true);
 			};
 			
-			extras.deleteExtras (config, req, req.soajs, deployer, function(error, body) {
+			extras.deleteExtras(config, req, req.soajs, deployer, function (error, body) {
 				assert.ok(error);
 				done();
 			});

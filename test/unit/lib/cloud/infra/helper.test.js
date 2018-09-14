@@ -34,8 +34,6 @@ var mongoStub = {
 	}
 };
 
-var deployer = helper.deployer;
-
 describe("testing lib/cloud/infra/helper.js", function () {
 	var soajs = {
 		validator: {
@@ -51,7 +49,7 @@ describe("testing lib/cloud/infra/helper.js", function () {
 						else {
 							//invalid
 							return {
-								errors: [{error: 'msg'}]
+								errors: [{ error: 'msg' }]
 							};
 						}
 					}
@@ -110,7 +108,7 @@ describe("testing lib/cloud/infra/helper.js", function () {
 		
 		let options = {
 			id: 123,
-			previousEnvironment : 'DEV'
+			previousEnvironment: 'DEV'
 		};
 		
 		it("Success getClusterEnvironments", function (done) {
@@ -118,7 +116,8 @@ describe("testing lib/cloud/infra/helper.js", function () {
 				deployments: [
 					{
 						id: 123
-					}]
+					}
+				]
 			};
 			
 			helpers.getClusterEnvironments(infra, options);
@@ -131,7 +130,7 @@ describe("testing lib/cloud/infra/helper.js", function () {
 				deployments: [
 					{
 						id: 321,
-						environments : ['DEV']
+						environments: ['DEV']
 					}]
 			};
 			

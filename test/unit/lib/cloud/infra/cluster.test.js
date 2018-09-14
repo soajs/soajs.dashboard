@@ -88,14 +88,11 @@ let req = {
 };
 
 describe("testing lib/cloud/infra/cluster.js", function () {
+
 	describe("deployCluster", function () {
 		
 		let serviceStub, utilsStub;
-		
-		let InfraRecord = {
-			templates: []
-		};
-		let info = [];
+
 		before(function (done) {
 			
 			serviceStub = sinon.stub(helper, 'getCommonData', function (config, soajs, BL, cbMain, cb) {
