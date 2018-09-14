@@ -36,30 +36,30 @@ module.exports = {
 		"hashIterations": 1024,
 		"seedLength": 32
 	},
-
+	
 	"expDateTTL": 86400000,
 	"ncpLimit": 16,
-
+	
 	"profileLocation": process.env.SOAJS_PROFILE_LOC || "/opt/soajs/FILES/profiles/",
-
+	
 	"images": {
 		"nginx": 'nginx',
 		"services": "soajs"
 	},
-
+	
 	"templates": {
 		"path": __dirname + '/templates/'
 	},
-
+	
 	"network": 'soajsnet',
-
+	
 	"imagesDir": "/opt/soajs/deployer/",
-
+	
 	"kubeNginx": {
 		"minPort": 0,
 		"maxPort": 2767
 	},
-
+	
 	"docker": {
 		"url": "https://hub.docker.com/v2/repositories/%organization%/%imagename%/tags/"
 	},
@@ -68,16 +68,16 @@ module.exports = {
 		"dynamicCatalogVariables": ['$SOAJS_NX_CONTROLLER_IP_N', '$SOAJS_MONGO_IP_N', '$SOAJS_MONGO_PORT_N'],
 		"clustersList": ['mysql', 'sql', "mongo", 'mongodb', "es", 'elasticsearch']
 	},
-
+	
 	"tokens": {
 		"dotValue": ".",
 		"dotToken": "__dot__",
 		"dotRegexString": "\\."
 	},
-
+	
 	"dashboardClusterResourceName": "dash_cluster",
-
-	"infraExtrasList": [ 'osDisks', 'dataDisks', 'loadBalancers', 'networks', 'publicIps', 'securityGroups', 'vmSizes', 'keyPairs', 'certificates', 'availabilityZones', 'roles' ],
+	
+	"infraExtrasList": ['osDisks', 'dataDisks', 'loadBalancers', 'networks', 'publicIps', 'securityGroups', 'vmSizes', 'keyPairs', 'certificates', 'availabilityZones', 'roles'],
 	"extrasFunctionMapping": {
 		osDisks: {
 			functionName: 'listDisks',
@@ -108,7 +108,7 @@ module.exports = {
 		vmSizes: {
 			functionName: 'listVmSizes',
 			schemaName: 'vmSize',
-			requiredInput: [ 'region' ]
+			requiredInput: ['region']
 		},
 		keyPairs: {
 			functionName: 'listKeyPairs',
@@ -127,7 +127,7 @@ module.exports = {
 			schemaName: 'roles'
 		}
 	},
-
+	
 	"gitAccounts": {
 		"bitbucket": {
 			apiDomain: 'https://api.bitbucket.org/1.0',
@@ -186,9 +186,9 @@ module.exports = {
 			"repoConfigsFolder": __dirname + '/repoConfigs'
 		}
 	},
-
+	
 	"errors": require("./utils/errors"),
-
+	
 	"schema": {
 		"commonFields": {
 			"soajs_project": {
@@ -248,16 +248,16 @@ module.exports = {
 				"validation": {
 					"type": "object",
 					"properties": {
-						"clusterType": {"type": "string"},
-						"URLParam": {"type": "object", "properties": {}},
-						"servers": {"type": "array", "items": {"type": "object", "required": true}},
-						"extraParam": {"type": "object", "properties": {}},
-						"streaming": {"type": "object", "properties": {}},
+						"clusterType": { "type": "string" },
+						"URLParam": { "type": "object", "properties": {} },
+						"servers": { "type": "array", "items": { "type": "object", "required": true } },
+						"extraParam": { "type": "object", "properties": {} },
+						"streaming": { "type": "object", "properties": {} },
 						"credentials": {
 							"type": "object",
 							"properties": {
-								"username": {"type": "string"},
-								"password": {"type": "string"}
+								"username": { "type": "string" },
+								"password": { "type": "string" }
 							}
 						}
 					}
@@ -273,10 +273,10 @@ module.exports = {
 							"required": true,
 							"type": "object",
 							"properties": {
-								"maxPoolSize": {"type": "integer", "required": true},
-								"authorization": {"type": "boolean", "required": true},
-								"requestTimeout": {"type": "integer", "required": true, "min": 20, "max": 60},
-								"requestTimeoutRenewal": {"type": "integer", "required": true, "min": 0}
+								"maxPoolSize": { "type": "integer", "required": true },
+								"authorization": { "type": "boolean", "required": true },
+								"requestTimeout": { "type": "integer", "required": true, "min": 20, "max": 60 },
+								"requestTimeoutRenewal": { "type": "integer", "required": true, "min": 0 }
 							}
 						},
 						"config": serviceConfig
@@ -391,13 +391,13 @@ module.exports = {
 				"validation": {
 					"type": "object",
 					"properties": {
-						"type": {"required": true, "type": "string", "enum": ['manual', 'container']},
-						"selected": {"type": "string", "required": false},
+						"type": { "required": true, "type": "string", "enum": ['manual', 'container'] },
+						"selected": { "type": "string", "required": false },
 						"docker": {
 							"type": "object",
 							"required": false,
 							"properties": {
-								"selected": {"type": "string", "required": false},
+								"selected": { "type": "string", "required": false },
 								"boot2docker": {
 									"type": "object",
 									"required": false
@@ -419,13 +419,13 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"extKeyRequired": {
 				"source": ['body.extKeyRequired'],
 				"required": true,
-				"validation": {"type": "boolean"}
+				"validation": { "type": "boolean" }
 			},
-
+			
 			"urac": {
 				"required": true,
 				"source": ["body.urac"],
@@ -457,12 +457,12 @@ module.exports = {
 			"requestTimeout": {
 				"source": ['body.requestTimeout'],
 				"required": true,
-				"validation": {"type": "integer", "min": 0}
+				"validation": { "type": "integer", "min": 0 }
 			},
 			"requestTimeoutRenewal": {
 				"source": ['body.requestTimeoutRenewal'],
 				"required": true,
-				"validation": {"type": "integer", "min": 0}
+				"validation": { "type": "integer", "min": 0 }
 			},
 			'apis': {
 				"required": true,
@@ -474,15 +474,15 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"l": {"type": "string", "required": true},
-							"v": {"type": "string", "required": true},
-							"group": {"type": "string", "required": true},
-							"groupMain": {"type": "boolean", "required": false}
+							"l": { "type": "string", "required": true },
+							"v": { "type": "string", "required": true },
+							"group": { "type": "string", "required": true },
+							"groupMain": { "type": "boolean", "required": false }
 						}
 					}
 				}
 			},
-
+			
 			'jobs': {
 				'source': ['body.jobs'],
 				'required': true,
@@ -532,7 +532,7 @@ module.exports = {
 					'type': 'text'
 				}
 			},
-
+			
 			'status': {
 				'source': ['body.status'],
 				'required': true,
@@ -625,7 +625,7 @@ module.exports = {
 				'required': true,
 				'validation': {
 					'type': 'array',
-					'items': {'type': 'string'}
+					'items': { 'type': 'string' }
 				}
 			},
 			"env": {
@@ -671,7 +671,7 @@ module.exports = {
 				}
 			}
 		},
-
+		
 		"get": {
 			"/cd/ledger": {
 				"_apiInfo": {
@@ -689,7 +689,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'env']
 			},
-
+			
 			"/environment": {
 				_apiInfo: {
 					"l": "Get Environment",
@@ -711,7 +711,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/templates": {
 				_apiInfo: {
 					"l": "Get Templates",
@@ -722,12 +722,12 @@ module.exports = {
 					"required": false,
 					"default": false,
 					"source": ["query.fullList"],
-					"validation":{
+					"validation": {
 						"type": "boolean"
 					}
 				}
 			},
-
+			
 			"/templates/upgrade": {
 				_apiInfo: {
 					"l": "Upgrade Old Templates",
@@ -735,7 +735,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-
+			
 			"/environment/status": {
 				_apiInfo: {
 					"l": "Get/Set Environment Deployment Status",
@@ -778,7 +778,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/environment/list": {
 				_apiInfo: {
 					"l": "List Environments",
@@ -794,7 +794,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/environment/profile": {
 				_apiInfo: {
 					"l": "Get Profile",
@@ -802,7 +802,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-
+			
 			"/environment/dbs/list": {
 				_apiInfo: {
 					"l": "List Environment Databases",
@@ -810,7 +810,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'env']
 			},
-
+			
 			"/resources": {
 				_apiInfo: {
 					"l": "List Available Resources",
@@ -818,15 +818,15 @@ module.exports = {
 					"groupMain": true
 				},
 				"commonFields": ['soajs_project', 'env'],
-                "envType": {
-                    "source": ['query.envType'],
-                    "required": true,
-                    "validation": {
-                        "type": "string"
-                    }
-                }
+				"envType": {
+					"source": ['query.envType'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
 			},
-
+			
 			"/resources/get": {
 				_apiInfo: {
 					"l": "Get One Resource",
@@ -848,7 +848,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/resources/upgrade": {
 				_apiInfo: {
 					"l": "Upgrade Resources to latest version",
@@ -857,7 +857,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'env']
 			},
-
+			
 			"/resources/config": {
 				_apiInfo: {
 					"l": "Get Resources Deploy Configuration",
@@ -865,7 +865,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-
+			
 			"/customRegistry/list": {
 				_apiInfo: {
 					"l": "List Custom Registry Entries",
@@ -890,7 +890,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/customRegistry/get": {
 				_apiInfo: {
 					"l": "Get Custom Registry Entry",
@@ -912,7 +912,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/environment/platforms/list": {
 				_apiInfo: {
 					"l": "List Environment Platforms",
@@ -920,7 +920,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'env']
 			},
-
+			
 			"/product/list": {
 				_apiInfo: {
 					"l": "List Products",
@@ -929,7 +929,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-
+			
 			"/product/get": {
 				_apiInfo: {
 					"l": "Get Product",
@@ -953,7 +953,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/product/packages/list": {
 				_apiInfo: {
 					"l": "List Product Packages",
@@ -961,7 +961,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'soajs_project']
 			},
-
+			
 			"/product/packages/get": {
 				_apiInfo: {
 					"l": "Get Product Package",
@@ -985,7 +985,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/permissions/get": {
 				_apiInfo: {
 					"l": "Get Tenant Security Permissions",
@@ -1001,7 +1001,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/list": {
 				_apiInfo: {
 					"l": "List Tenants",
@@ -1025,7 +1025,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/get": {
 				_apiInfo: {
 					"l": "Get Tenant",
@@ -1047,7 +1047,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/oauth/list": {
 				_apiInfo: {
 					"l": "Get Tenant oAuth Configuration",
@@ -1055,7 +1055,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'soajs_project']
 			},
-
+			
 			"/tenant/oauth/users/list": {
 				_apiInfo: {
 					"l": "List Tenant oAuth Users",
@@ -1063,7 +1063,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'soajs_project']
 			},
-
+			
 			"/tenant/application/list": {
 				_apiInfo: {
 					"l": "List Tenant Applications",
@@ -1071,7 +1071,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'soajs_project']
 			},
-
+			
 			"/tenant/application/key/list": {
 				_apiInfo: {
 					"l": "List Tenant Application Keys",
@@ -1079,7 +1079,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'soajs_project']
 			},
-
+			
 			"/tenant/application/key/ext/list": {
 				_apiInfo: {
 					"l": "List Tenant Application External Keys",
@@ -1087,7 +1087,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'key', 'soajs_project']
 			},
-
+			
 			"/tenant/application/key/config/list": {
 				_apiInfo: {
 					"l": "List Tenant Application Key Configuration",
@@ -1095,7 +1095,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'key', 'soajs_project']
 			},
-
+			
 			"/tenant/db/keys/list": {
 				_apiInfo: {
 					"l": "List Dashboard Tenant Keys",
@@ -1103,7 +1103,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-
+			
 			"/settings/tenant/get": {
 				_apiInfo: {
 					"l": "Get Tenant",
@@ -1111,7 +1111,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-
+			
 			"/settings/tenant/oauth/list": {
 				_apiInfo: {
 					"l": "Get Tenant oAuth Configuration",
@@ -1119,7 +1119,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-
+			
 			"/settings/tenant/oauth/users/list": {
 				_apiInfo: {
 					"l": "List Tenant oAuth Users",
@@ -1127,7 +1127,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-
+			
 			"/settings/tenant/application/list": {
 				_apiInfo: {
 					"l": "List Tenant Applications",
@@ -1135,7 +1135,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-
+			
 			"/settings/tenant/application/key/list": {
 				_apiInfo: {
 					"l": "List Tenant Application Keys",
@@ -1143,7 +1143,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'soajs_project']
 			},
-
+			
 			"/settings/tenant/application/key/ext/list": {
 				_apiInfo: {
 					"l": "List Tenant Application External Keys",
@@ -1151,7 +1151,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key', 'soajs_project']
 			},
-
+			
 			"/settings/tenant/application/key/config/list": {
 				_apiInfo: {
 					"l": "List Tenant Application Key Configuration",
@@ -1159,7 +1159,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key', 'soajs_project']
 			},
-
+			
 			/*
 			 * This API will return the env where a service is deployed.
 			 * it takes the service name and renders an object having the following form :
@@ -1186,7 +1186,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/daemons/groupConfig/serviceConfig/list": {
 				_apiInfo: {
 					"l": "List Service Configuration",
@@ -1194,7 +1194,7 @@ module.exports = {
 				},
 				'commonFields': ['id', 'jobName', 'soajs_project']
 			},
-
+			
 			"/daemons/groupConfig/tenantExtKeys/list": {
 				_apiInfo: {
 					"l": "List Job's External Keys",
@@ -1202,7 +1202,7 @@ module.exports = {
 				},
 				'commonFields': ['id', 'jobName', 'soajs_project']
 			},
-
+			
 			"/hosts/list": {
 				_apiInfo: {
 					"l": "List Hosts",
@@ -1211,7 +1211,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
-
+			
 			"/hosts/awareness": {
 				"_apiInfo": {
 					"l": "Get Controller Hosts",
@@ -1219,7 +1219,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'env']
 			},
-
+			
 			"/cloud/services/list": {
 				"_apiInfo": {
 					"l": "List Cloud Services",
@@ -1227,7 +1227,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
-
+			
 			"/cloud/nodes/list": {
 				"_apiInfo": {
 					"l": "List HA Cloud Nodes",
@@ -1235,7 +1235,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
-
+			
 			"/cloud/services/instances/logs": {
 				"_apiInfo": {
 					"l": "Get Service Container Logs",
@@ -1265,7 +1265,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/namespaces/list": {
 				"_apiInfo": {
 					"l": "List Available Namespaces",
@@ -1273,7 +1273,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
-
+			
 			"/cloud/resource": {
 				"_apiInfo": {
 					"l": "Check if resource is Deployed",
@@ -1295,7 +1295,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/vm/list": {
 				"_apiInfo": {
 					"l": "List Cloud Virtual Machines",
@@ -1332,7 +1332,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/vm/layer/status": {
 				"_apiInfo": {
 					"l": "List Cloud Virtual Machines",
@@ -1353,9 +1353,9 @@ module.exports = {
 						"type": "string"
 					}
 				}
-
+				
 			},
-
+			
 			"/cloud/metrics/services": {
 				"_apiInfo": {
 					"l": "List Services Metrics",
@@ -1363,7 +1363,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
-
+			
 			"/cloud/metrics/nodes": {
 				"_apiInfo": {
 					"l": "List Nodes Metrics",
@@ -1371,7 +1371,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
-
+			
 			"/catalog/recipes/list": {
 				"_apiInfo": {
 					"l": "List Catalog Recipes",
@@ -1386,7 +1386,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/catalog/recipes/get": {
 				"_apiInfo": {
 					"l": "Get a Catalog",
@@ -1409,7 +1409,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/catalog/recipes/upgrade": {
 				"_apiInfo": {
 					"l": "Upgrade Catalog Recipes to latest Version",
@@ -1417,7 +1417,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project']
 			},
-
+			
 			"/cd": {
 				"_apiInfo": {
 					"l": "Get CD Configuration",
@@ -1425,7 +1425,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project']
 			},
-
+			
 			"/cd/updates": {
 				"_apiInfo": {
 					"l": "Get Update Notification Ledger",
@@ -1433,7 +1433,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'env']
 			},
-
+			
 			"/ci": {
 				"_apiInfo": {
 					"l": "Get CI Accounts",
@@ -1462,7 +1462,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/ci/providers": {
 				"_apiInfo": {
 					"l": "Get CI Providers",
@@ -1484,7 +1484,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/ci/recipe/download": {
 				"_apiInfo": {
 					"l": "Download CI Recipe",
@@ -1492,7 +1492,7 @@ module.exports = {
 				},
 				"commonFields": ["id", 'soajs_project']
 			},
-
+			
 			"/ci/script/download": {
 				"_apiInfo": {
 					"l": "Download CI Script",
@@ -1507,7 +1507,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/ci/status": {
 				"_apiInfo": {
 					"l": "Turn On/Off Repository CI",
@@ -1543,7 +1543,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/ci/settings": {
 				"_apiInfo": {
 					"l": "Get CI Repository Settings & Environment Variables",
@@ -1572,7 +1572,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/ci/repo/remote/config": {
 				"_apiInfo": {
 					"l": "Get the CI configuration file of the repository from provider",
@@ -1608,7 +1608,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/ci/repo/builds": {
 				"_apiInfo": {
 					"l": "Get the CI Latest Repository Build Per Branch",
@@ -1637,7 +1637,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/gitAccounts/accounts/list": {
 				"_apiInfo": {
 					"l": "List Git Accounts",
@@ -1660,7 +1660,7 @@ module.exports = {
 					}
 				},
 			},
-
+			
 			"/gitAccounts/getRepos": {
 				"_apiInfo": {
 					"l": "Get Repositories",
@@ -1705,7 +1705,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/gitAccounts/getBranches": {
 				"_apiInfo": {
 					"l": "Get Repository Branches",
@@ -1741,7 +1741,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			/*
 			 * this API will get the content and the url of any file located on a specific
 			 * github/bitbucket account for a certain repo.
@@ -1796,7 +1796,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/apiBuilder/list": {
 				"_apiInfo": {
 					"l": "List Endpoints",
@@ -1812,7 +1812,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/apiBuilder/get": {
 				"_apiInfo": {
 					"l": "Get Endpoint",
@@ -1830,10 +1830,10 @@ module.exports = {
 				"id": {
 					"source": ['query.id'],
 					"required": true,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				}
 			},
-
+			
 			"/apiBuilder/publish": {
 				"_apiInfo": {
 					"l": "Publish endpoint apis",
@@ -1851,10 +1851,10 @@ module.exports = {
 				"endpointId": {
 					"source": ['query.endpointId'],
 					"required": true,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				}
 			},
-
+			
 			"/apiBuilder/getResources": {
 				"_apiInfo": {
 					"l": "Get Resources",
@@ -1862,7 +1862,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-
+			
 			"/secrets/list": {
 				"_apiInfo": {
 					"l": "List Available Secrets",
@@ -1870,7 +1870,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'namespace', 'env']
 			},
-
+			
 			"/secrets/get": {
 				"_apiInfo": {
 					"l": "Get One Secret",
@@ -1885,7 +1885,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/infra": {
 				"_apiInfo": {
 					"l": "Get Infra Provider",
@@ -1927,7 +1927,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/infra/cluster": {
 				"_apiInfo": {
 					"l": "Get Cluster From Infra Provider",
@@ -1942,7 +1942,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/infra/template/download": {
 				"_apiInfo": {
 					"l": "Download Infra as Code Template",
@@ -1957,7 +1957,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/infra/extras": {
 				"_apiInfo": {
 					"l": "Get Extra Compnents From An Infra Provider",
@@ -1992,18 +1992,18 @@ module.exports = {
 						"type": "array",
 						"items": {
 							"type": "string",
-							"enum": [ 'osDisks', 'dataDisks', 'loadBalancers', 'networks', 'publicIps', 'securityGroups', 'vmSizes', 'keyPairs', 'certificates', 'availabilityZones' ]
+							"enum": ['osDisks', 'dataDisks', 'loadBalancers', 'networks', 'publicIps', 'securityGroups', 'vmSizes', 'keyPairs', 'certificates', 'availabilityZones']
 						},
 						"minItems": 0,
 						"uniqueItems": true
 					}
 				}
 			}
-
+			
 		},
-
+		
 		"post": {
-
+			
 			"/templates/import": {
 				_apiInfo: {
 					"l": "Import Templates",
@@ -2025,7 +2025,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/templates/export": {
 				_apiInfo: {
 					"l": "Export Templates",
@@ -2038,7 +2038,7 @@ module.exports = {
 					"validation": {
 						"type": "array",
 						"uniqueItems": true,
-						"items":{ "type": "string", "required": true }
+						"items": { "type": "string", "required": true }
 					}
 				},
 				"deployment": {
@@ -2047,7 +2047,7 @@ module.exports = {
 					"validation": {
 						"type": "array",
 						"uniqueItems": true,
-						"items":{ "type": "string", "required": true }
+						"items": { "type": "string", "required": true }
 					}
 				},
 				"endpoints": {
@@ -2056,7 +2056,7 @@ module.exports = {
 					"validation": {
 						"type": "array",
 						"uniqueItems": true,
-						"items":{ "type": "string", "required": true }
+						"items": { "type": "string", "required": true }
 					}
 				},
 				"iac": {
@@ -2081,7 +2081,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/services/list": {
 				_apiInfo: {
 					"l": "List Services",
@@ -2100,11 +2100,11 @@ module.exports = {
 					'required': false,
 					"validation": {
 						"type": "array",
-						'items': {'type': 'string'}
+						'items': { 'type': 'string' }
 					}
 				}
 			},
-
+			
 			"/environment/add": {
 				_apiInfo: {
 					"l": "Add Environment",
@@ -2136,7 +2136,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/environment/dbs/add": {
 				_apiInfo: {
 					"l": "Add Environment Database",
@@ -2153,17 +2153,17 @@ module.exports = {
 				"name": {
 					"source": ['body.name'],
 					"required": true,
-					"validation": {"type": "string", "required": true}
+					"validation": { "type": "string", "required": true }
 				},
 				"cluster": {
 					"source": ['body.cluster'],
 					"required": true,
-					"validation": {"type": "string", "required": true}
+					"validation": { "type": "string", "required": true }
 				},
 				"tenantSpecific": {
 					"source": ['body.tenantSpecific'],
 					"required": false,
-					"validation": {"type": "boolean", "required": true}
+					"validation": { "type": "boolean", "required": true }
 				},
 				"sessionInfo": {
 					"source": ['body.sessionInfo'],
@@ -2172,16 +2172,16 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"store": {"type": "object", "required": true},
-							"dbName": {"type": "string", "required": true},
-							"expireAfter": {"type": "integer", "required": true},
-							"collection": {"type": "string", "required": true},
-							"stringify": {"type": "boolean", "required": true}
+							"store": { "type": "object", "required": true },
+							"dbName": { "type": "string", "required": true },
+							"expireAfter": { "type": "integer", "required": true },
+							"collection": { "type": "string", "required": true },
+							"stringify": { "type": "boolean", "required": true }
 						}
 					}
 				}
 			},
-
+			
 			"/environment/platforms/attach": {
 				_apiInfo: {
 					"l": "Attach Container Technology",
@@ -2190,7 +2190,7 @@ module.exports = {
 				"commonFields": ['soajs_project'],
 				'env': {
 					'source': ['query.env'],
-					'required': false,
+					'required': true,
 					'validation': {
 						'type': 'string'
 					}
@@ -2199,11 +2199,40 @@ module.exports = {
 					'source': ['body.data'],
 					'required': true,
 					'validation': {
-						'type': 'object'
+						'type': 'object',
+						'properties': {
+							"deployment": {
+								'required': false,
+								'type': 'object',
+								'properties': {
+									"previousEnvironment": {
+										'type': 'string'
+									}
+								}
+							},
+							"selectedInfraProvider": {
+								'required': true,
+								'type': 'object',
+								'properties': {
+									'name': {
+										'type': 'string'
+									},
+									'deploy': {
+										'type': 'object',
+										'properties': {
+											"technology": {
+												'required': true,
+												'type': 'string'
+											}
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			},
-
+			
 			"/resources": { // add new
 				_apiInfo: {
 					"l": "Add / Edit Resource",
@@ -2225,16 +2254,16 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"deployType" : {
-                    "source": ['body.deployType'],
-                    "required": true,
+				"deployType": {
+					"source": ['body.deployType'],
+					"required": true,
 					"validation": {
 						"type": "string",
 						"enum": ["save", "saveAndRebuild", "saveAndDeploy"]
 					}
 				},
 				"resource": resourceSchema,
-
+				
 				// cicd stuff + resourceName
 				"status": {
 					"source": ['body.status'],
@@ -2250,7 +2279,7 @@ module.exports = {
 						"type": "object",
 						"default": {},
 						"properties": {
-							"deploy": {"type": "boolean", "required": true},
+							"deploy": { "type": "boolean", "required": true },
 							"options": {
 								"type": "object",
 								"required": false,
@@ -2259,7 +2288,7 @@ module.exports = {
 						}
 					}
 				},
-
+				
 				// deploy: required: recipe, deployConfig
 				"recipe": {
 					"source": ['body.recipe'],
@@ -2282,9 +2311,9 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"memoryLimit": {"required": false, "type": "number", "default": 209715200},
-							"cpuLimit": {"required": false, "type": "string"},
-							"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
+							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
+							"cpuLimit": { "required": false, "type": "string" },
+							"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
 							"replication": {
 								"required": false,
 								"type": "object",
@@ -2294,12 +2323,12 @@ module.exports = {
 										"type": "string",
 										"enum": ['replicated', 'global', 'deployment', 'daemonset']
 									},
-									"replicas": {"required": false, "type": "number", "minimum": 1}
+									"replicas": { "required": false, "type": "number", "minimum": 1 }
 								}
 							},
-							"region": {"required": false, "type": "string"},
-							"infra": {"required": false, "type": "string"},
-							"type": {"required": false, "type": "string"},
+							"region": { "required": false, "type": "string" },
+							"infra": { "required": false, "type": "string" },
+							"type": { "required": false, "type": "string" },
 							"vmConfiguration": {
 								"required": false,
 								"type": "object"
@@ -2321,10 +2350,10 @@ module.exports = {
 										"type": "object",
 										"required": false,
 										"properties": {
-											"repo": {"type": "string", "required": true},
-											"branch": {"type": "string", "required": true},
-											"commit": {"type": "string", "required": false},
-											"path": {"type": "string", "required": false}
+											"repo": { "type": "string", "required": true },
+											"branch": { "type": "string", "required": true },
+											"commit": { "type": "string", "required": false },
+											"path": { "type": "string", "required": false }
 										}
 									}
 								}
@@ -2333,15 +2362,15 @@ module.exports = {
 								"type": "object",
 								"required": false,
 								"properties": {
-									"prefix": {"required": false, "type": "string"},
-									"name": {"required": false, "type": "string"},
-									"tag": {"required": false, "type": "string"},
+									"prefix": { "required": false, "type": "string" },
+									"name": { "required": false, "type": "string" },
+									"tag": { "required": false, "type": "string" },
 								}
 							},
 							"env": {
 								"type": ["object", "null"],
 								"required": false,
-								"additionalProperties": {"type": "string"}
+								"additionalProperties": { "type": "string" }
 							},
 							"type": {
 								"required": true,
@@ -2369,8 +2398,8 @@ module.exports = {
 								"required": false,
 								"type": "object",
 								"properties": {
-									"gcName": {"required": true, "type": "string"},
-									"gcVersion": {"required": true, "type": "number", "minimum": 1}
+									"gcName": { "required": true, "type": "string" },
+									"gcVersion": { "required": true, "type": "number", "minimum": 1 }
 								}
 							},
 							"secrets": {
@@ -2380,9 +2409,9 @@ module.exports = {
 									"type": "object",
 									"required": true,
 									"properties": {
-										"name": {"type": "string", "required": true},
-										"type": {"type": "string", "required": false},
-										"mountPath": {"type": "string", "required": true}
+										"name": { "type": "string", "required": true },
+										"type": { "type": "string", "required": false },
+										"mountPath": { "type": "string", "required": true }
 									}
 								}
 							},
@@ -2394,15 +2423,15 @@ module.exports = {
 									"type": "object",
 									"required": true,
 									"properties": {
-										"name": {"type": "string", "required": true},
-										"port": {"type": "number", "required": false, "min": 1, "max": 2766 }
+										"name": { "type": "string", "required": true },
+										"port": { "type": "number", "required": false, "min": 1, "max": 2766 }
 									}
 								}
 							}
 						}
 					}
 				},
-
+				
 				// rebuild : required:  serviceId, mode, action
 				"serviceId": {
 					"source": ['body.serviceId'],
@@ -2427,7 +2456,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/customRegistry/add": {
 				_apiInfo: {
 					"l": "Add New Custom Registry Entry",
@@ -2443,7 +2472,7 @@ module.exports = {
 				},
 				"customRegEntry": customRegEntrySchema
 			},
-
+			
 			"/product/add": {
 				_apiInfo: {
 					"l": "Add Product",
@@ -2461,7 +2490,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/product/packages/add": {
 				_apiInfo: {
 					"l": "Add Product Package",
@@ -2479,7 +2508,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/add": {
 				_apiInfo: {
 					"l": "Add Tenant",
@@ -2512,7 +2541,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/oauth/add": {
 				_apiInfo: {
 					"l": "Add Tenant oAuth Configuration",
@@ -2520,7 +2549,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'secret', 'redirectURI', 'oauthType', 'availableEnv', 'soajs_project']
 			},
-
+			
 			"/tenant/oauth/users/add": {
 				_apiInfo: {
 					"l": "Add Tenant oAuth User",
@@ -2528,7 +2557,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'userId', 'password', 'soajs_project']
 			},
-
+			
 			"/tenant/application/add": {
 				_apiInfo: {
 					"l": "Add Tenant Application",
@@ -2536,7 +2565,7 @@ module.exports = {
 				},
 				"commonFields": ['id', '_TTL', 'description', 'acl', 'productCode', 'packageCode', 'soajs_project']
 			},
-
+			
 			"/tenant/application/key/add": {
 				_apiInfo: {
 					"l": "Add Tenant Application Key",
@@ -2544,7 +2573,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'soajs_project']
 			},
-
+			
 			"/tenant/application/key/ext/add": {
 				_apiInfo: {
 					"l": "Add Tenant Application External Key",
@@ -2567,7 +2596,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/application/key/ext/delete": { //TODO: should be delete, remove params passed in body and change its method
 				_apiInfo: {
 					"l": "Delete Tenant Application External Key",
@@ -2582,7 +2611,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/acl/get": { //TODO: should be changed from post to get
 				_apiInfo: {
 					"l": "Get Current Tenant Access Level",
@@ -2590,7 +2619,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'soajs_project']
 			},
-
+			
 			"/settings/tenant/oauth/add": {
 				_apiInfo: {
 					"l": "Add Tenant oAuth Configuration",
@@ -2598,7 +2627,7 @@ module.exports = {
 				},
 				"commonFields": ['secret', 'redirectURI', 'oauthType', 'availableEnv', 'soajs_project']
 			},
-
+			
 			"/settings/tenant/oauth/users/add": {
 				_apiInfo: {
 					"l": "Add Tenant oAuth User",
@@ -2606,7 +2635,7 @@ module.exports = {
 				},
 				"commonFields": ['userId', 'password', 'soajs_project']
 			},
-
+			
 			"/settings/tenant/application/key/add": {
 				_apiInfo: {
 					"l": "Add Tenant Application Key",
@@ -2614,7 +2643,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'soajs_project']
 			},
-
+			
 			"/settings/tenant/application/key/ext/add": {
 				_apiInfo: {
 					"l": "Add Tenant Application External Key",
@@ -2637,7 +2666,7 @@ module.exports = {
 					}
 				},
 			},
-
+			
 			"/settings/tenant/application/key/ext/delete": { //TODO: should be delete, remove params passed in body and change its method
 				_apiInfo: {
 					"l": "Delete Tenant Application External Key",
@@ -2652,7 +2681,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/daemons/groupConfig/list": {
 				_apiInfo: {
 					"l": "List Daemon Group Configuration",
@@ -2664,11 +2693,11 @@ module.exports = {
 					'required': false,
 					'validation': {
 						'type': 'array',
-						'items': {'type': 'string'}
+						'items': { 'type': 'string' }
 					}
 				}
 			},
-
+			
 			"/daemons/groupConfig/add": {
 				_apiInfo: {
 					"l": "Add Daemon Group Configuration",
@@ -2685,7 +2714,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/daemons/list": {
 				_apiInfo: {
 					"l": "List Daemons",
@@ -2697,7 +2726,7 @@ module.exports = {
 					'required': false,
 					'validation': {
 						'type': 'array',
-						'items': {'type': 'string'}
+						'items': { 'type': 'string' }
 					}
 				},
 				'getGroupConfigs': {
@@ -2708,7 +2737,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/services/soajs/deploy": {
 				"_apiInfo": {
 					"l": "Deploy A New SOAJS Service",
@@ -2737,10 +2766,10 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"owner": {"required": true, "type": "string"},
-							"repo": {"required": true, "type": "string"},
-							"branch": {"required": true, "type": "string"},
-							"commit": {"required": false, "type": "string"}
+							"owner": { "required": true, "type": "string" },
+							"repo": { "required": true, "type": "string" },
+							"branch": { "required": true, "type": "string" },
+							"commit": { "required": false, "type": "string" }
 						}
 					}
 				},
@@ -2751,9 +2780,9 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"memoryLimit": {"required": false, "type": "number", "default": 209715200},
-							"cpuLimit": {"required": false, "type": "string"},
-							"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
+							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
+							"cpuLimit": { "required": false, "type": "string" },
+							"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
 							"replication": {
 								"required": false,
 								"type": "object",
@@ -2763,17 +2792,17 @@ module.exports = {
 										"type": "string",
 										"enum": ['replicated', 'global', 'deployment', 'daemonset']
 									},
-									"replicas": {"required": false, "type": "number", "minimum": 1}
+									"replicas": { "required": false, "type": "number", "minimum": 1 }
 								}
 							},
-							"region": {"required": false, "type": "string"},
-							"infra": {"required": false, "type": "string"},
-							"type": {"required": false, "type": "string"},
+							"region": { "required": false, "type": "string" },
+							"infra": { "required": false, "type": "string" },
+							"type": { "required": false, "type": "string" },
 							"vmConfiguration": {
 								"required": false,
 								"type": "object",
 								"properties": {
-									"vmLayer": {"required": true, "type": "string"},
+									"vmLayer": { "required": true, "type": "string" },
 								}
 							},
 						}
@@ -2789,8 +2818,8 @@ module.exports = {
 								"type": "object",
 								"required": true,
 								"properties": {
-									"min": {"type": "number", "minimum": 1, "required": true},
-									"max": {"type": "number", "minimum": 1, "required": true}
+									"min": { "type": "number", "minimum": 1, "required": true },
+									"max": { "type": "number", "minimum": 1, "required": true }
 								}
 							},
 							"metrics": {
@@ -2802,7 +2831,7 @@ module.exports = {
 										"type": "object",
 										"required": true,
 										"properties": {
-											"percent": {"type": "number", "minimum": 1, "required": true}
+											"percent": { "type": "number", "minimum": 1, "required": true }
 										}
 									}
 								}
@@ -2825,10 +2854,10 @@ module.exports = {
 										"type": "object",
 										"required": false,
 										"properties": {
-											"repo": {"type": "string", "required": true},
-											"branch": {"type": "string", "required": true},
-											"commit": {"type": "string", "required": false},
-											"path": {"type": "string", "required": false}
+											"repo": { "type": "string", "required": true },
+											"branch": { "type": "string", "required": true },
+											"commit": { "type": "string", "required": false },
+											"path": { "type": "string", "required": false }
 										}
 									}
 								}
@@ -2837,15 +2866,15 @@ module.exports = {
 								"type": "object",
 								"required": false,
 								"properties": {
-									"prefix": {"required": false, "type": "string"},
-									"name": {"required": false, "type": "string"},
-									"tag": {"required": false, "type": "string"},
+									"prefix": { "required": false, "type": "string" },
+									"name": { "required": false, "type": "string" },
+									"tag": { "required": false, "type": "string" },
 								}
 							},
 							"env": {
 								"type": ["object", "null"],
 								"required": false,
-								"additionalProperties": {"type": "string"}
+								"additionalProperties": { "type": "string" }
 							},
 							"type": {
 								"required": true,
@@ -2873,8 +2902,8 @@ module.exports = {
 								"required": false,
 								"type": "object",
 								"properties": {
-									"gcName": {"required": true, "type": "string"},
-									"gcVersion": {"required": true, "type": "number", "minimum": 1}
+									"gcName": { "required": true, "type": "string" },
+									"gcVersion": { "required": true, "type": "number", "minimum": 1 }
 								}
 							},
 							"secrets": {
@@ -2884,9 +2913,9 @@ module.exports = {
 									"type": "object",
 									"required": true,
 									"properties": {
-										"name": {"type": "string", "required": true},
-										"type": {"type": "string", "required": false},
-										"mountPath": {"type": "string", "required": true}
+										"name": { "type": "string", "required": true },
+										"type": { "type": "string", "required": false },
+										"mountPath": { "type": "string", "required": true }
 									}
 								}
 							},
@@ -2898,8 +2927,8 @@ module.exports = {
 									"type": "object",
 									"required": true,
 									"properties": {
-										"name": {"type": "string", "required": true},
-										"port": {"type": "number", "required": false, "min": 1, "max": 2766 }
+										"name": { "type": "string", "required": true },
+										"port": { "type": "number", "required": false, "min": 1, "max": 2766 }
 									}
 								}
 							}
@@ -2907,7 +2936,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/plugins/deploy": {
 				"_apiInfo": {
 					"l": "Deploy A Custom Resource",
@@ -2930,7 +2959,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/nodes/add": {
 				"_apiInfo": {
 					"l": "Add HA Cloud Node",
@@ -2968,7 +2997,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/services/maintenance": {
 				"_apiInfo": {
 					"l": "Perform A Maintenance Operation on a Deployed Service",
@@ -2998,7 +3027,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/vm/maintenance": {
 				"_apiInfo": {
 					"l": "Perform A Maintenance Operation on a Virtual Machine",
@@ -3034,28 +3063,28 @@ module.exports = {
 						"enum": ["powerOffVM", "startVM", "restartService"]
 					}
 				},
-				'env':{
+				'env': {
 					"source": ['query.env'],
 					"required": false,
 					"validation": {
 						"type": "string"
 					}
 				},
-				'region':{
+				'region': {
 					"source": ['body.region'],
 					"required": false,
 					"validation": {
 						"type": "string"
 					}
 				},
-				'instanceId':{
+				'instanceId': {
 					"source": ['query.instanceId'],
 					"required": false,
 					"validation": {
 						"type": "string"
 					}
 				},
-				'group':{
+				'group': {
 					"source": ['query.group'],
 					"required": false,
 					"validation": {
@@ -3063,7 +3092,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/vm": {
 				"_apiInfo": {
 					"l": "Add Virtual Machine Layer",
@@ -3113,7 +3142,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/vm/onboard": {
 				"_apiInfo": {
 					"l": "On-board Virtual Machine Layer",
@@ -3126,7 +3155,7 @@ module.exports = {
 					"validation": {
 						"type": "array"
 					}
-				 },
+				},
 				"release": {
 					"source": ['query.release'],
 					"required": true,
@@ -3134,36 +3163,36 @@ module.exports = {
 						"type": "boolean"
 					}
 				},
-                "infraId": {
-                    "source": ['query.infraId', 'body.infraId'],
-                    "required": true,
-                    "validation": {
-                        "type": "string"
-                    }
-                },
+				"infraId": {
+					"source": ['query.infraId', 'body.infraId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
 				"group": {
-                    "source": ['body.group'],
-                    "required": false,
-                    "validation": {
-                        "type": "string"
-                    }
-                },
-				"layerName" : {
-                    "source": ['body.layerName'],
-                    "required": false,
-                    "validation": {
-                        "type": "string"
-                    }
-                },
-				"region" : {
-                    "source": ['body.region'],
-                    "required": false,
-                    "validation": {
-                        "type": "string"
-                    }
-                },
+					"source": ['body.group'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"layerName": {
+					"source": ['body.layerName'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"region": {
+					"source": ['body.region'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
 			},
-
+			
 			"/cloud/vm/logs": {
 				"_apiInfo": {
 					"l": "Get Service Container Logs",
@@ -3200,14 +3229,14 @@ module.exports = {
 						"max": 1000
 					}
 				},
-				'env':{
+				'env': {
 					"source": ['query.env'],
 					"required": false,
 					"validation": {
 						"type": "string"
 					}
 				},
-				'group':{
+				'group': {
 					"source": ['query.group'],
 					"required": true,
 					"validation": {
@@ -3215,8 +3244,8 @@ module.exports = {
 					}
 				}
 			},
-
-
+			
+			
 			"/catalog/recipes/add": {
 				"_apiInfo": {
 					"l": "Add New Catalog",
@@ -3225,7 +3254,7 @@ module.exports = {
 				"commonFields": ['soajs_project'],
 				"catalog": catalogSchema
 			},
-
+			
 			"/ci/provider": {
 				"_apiInfo": {
 					"l": "Activate CI Provider",
@@ -3275,7 +3304,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/ci/recipe": {
 				"_apiInfo": {
 					"l": "Add New CI Recipe",
@@ -3304,7 +3333,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cd": {
 				"_apiInfo": {
 					"l": "Save CD Configuration for a specific Service",
@@ -3317,15 +3346,15 @@ module.exports = {
 					"validation": {
 						"type": "object",
 						"properties": {
-							"env": {"type": "string", "required": true},
-							"serviceName": {"type": "string", "required": true},
+							"env": { "type": "string", "required": true },
+							"serviceName": { "type": "string", "required": true },
 							"default": {
 								"type": "object",
 								"properties": {
-									"status": {"type": "string", "required": false},
-									"branch": {"type": "string", "required": false, "minLengh": 1},
-									"strategy": {"type": "string", "enum": ["notify", "update"], "required": false},
-									"deploy": {"type": "boolean", "required": false},
+									"status": { "type": "string", "required": false },
+									"branch": { "type": "string", "required": false, "minLengh": 1 },
+									"strategy": { "type": "string", "enum": ["notify", "update"], "required": false },
+									"deploy": { "type": "boolean", "required": false },
 									"options": {
 										"type": "object",
 										"properties": cdOptions
@@ -3336,11 +3365,11 @@ module.exports = {
 							"version": {
 								"type": "object",
 								"properties": {
-									"v": {"type": "string", "required": true, "pattern": /v[0-9]+$/},
-									"branch": {"type": "string", "required": false, "minLengh": 1},
-									"strategy": {"type": "string", "enum": ["notify", "update"], "required": false},
-									"deploy": {"type": "boolean", "required": false},
-									"status": {"type": "string", "required": false},
+									"v": { "type": "string", "required": true, "pattern": /v[0-9]+$/ },
+									"branch": { "type": "string", "required": false, "minLengh": 1 },
+									"strategy": { "type": "string", "enum": ["notify", "update"], "required": false },
+									"deploy": { "type": "boolean", "required": false },
+									"status": { "type": "string", "required": false },
 									"options": {
 										"type": "object",
 										"properties": cdOptions
@@ -3353,7 +3382,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cd/pause": {
 				"_apiInfo": {
 					"l": "Pause CD Configuration",
@@ -3366,14 +3395,14 @@ module.exports = {
 					"validation": {
 						"type": "object",
 						"properties": {
-							"env": {"type": "string", "required": true},
-							"pause": {"type": "boolean", "required": false}
+							"env": { "type": "string", "required": true },
+							"pause": { "type": "boolean", "required": false }
 						},
 						"additionalProperties": false
 					}
 				}
 			},
-
+			
 			"/cd/deploy": {
 				"_apiInfo": {
 					"l": "Trigger CD Deployment",
@@ -3441,7 +3470,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/gitAccounts/login": {
 				"_apiInfo": {
 					"l": "Github Login",
@@ -3512,7 +3541,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/gitAccounts/repo/activate": {
 				"_apiInfo": {
 					"l": "Activate Repository",
@@ -3562,7 +3591,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/swagger/simulate": {
 				"_apiInfo": {
 					"l": "Api simulation service",
@@ -3587,9 +3616,9 @@ module.exports = {
 						}
 					}
 				}
-
+				
 			},
-
+			
 			"/swagger/generate": {
 				"_apiInfo": {
 					"l": "Generate Service via Swagger",
@@ -3679,9 +3708,9 @@ module.exports = {
 										"items": {
 											"type": "object",
 											"properties": {
-												"prefix": {"type": "string"},
-												"name": {"type": "string", "required": true},
-												"multitenant": {"type": "boolean"}
+												"prefix": { "type": "string" },
+												"name": { "type": "string", "required": true },
+												"multitenant": { "type": "boolean" }
 											}
 										},
 										"minItems": 1,
@@ -3697,7 +3726,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/swagger/generateExistingService": {
 				"_apiInfo": {
 					"l": "Regenerate Service via Swagger",
@@ -3713,7 +3742,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/apiBuilder/add": {
 				"_apiInfo": {
 					"l": "Add Endpoint",
@@ -3739,32 +3768,32 @@ module.exports = {
 				"serviceGroup": {
 					"source": ['query.serviceGroup', 'body.serviceGroup'],
 					"required": true,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				},
 				"servicePort": {
 					"source": ['query.servicePort', 'body.servicePort'],
 					"required": true,
-					"validation": {"type": "number", "minimum": 1}
+					"validation": { "type": "number", "minimum": 1 }
 				},
 				"serviceVersion": {
 					"source": ['query.serviceVersion', 'body.serviceVersion'],
 					"required": true,
-					"validation": {"type": "number", "minimum": 1}
+					"validation": { "type": "number", "minimum": 1 }
 				},
 				"requestTimeout": {
 					"source": ['query.requestTimeout', 'body.requestTimeout'],
 					"required": true,
-					"validation": {"type": "number", "minimum": 1}
+					"validation": { "type": "number", "minimum": 1 }
 				},
 				"requestTimeoutRenewal": {
 					"source": ['query.requestTimeoutRenewal', 'body.requestTimeoutRenewal'],
 					"required": true,
-					"validation": {"type": "number", "minimum": 1}
+					"validation": { "type": "number", "minimum": 1 }
 				},
 				"defaultAuthentication": {
 					"source": ['query.defaultAuthentication', 'body.defaultAuthentication'],
 					"required": false,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				},
 				"epType": {
 					"source": ['query.epType', 'body.epType'],
@@ -3778,18 +3807,18 @@ module.exports = {
 					"source": ['query.oauth', 'body.oauth'],
 					"required": false,
 					"default": false,
-					"validation": {"type": "boolean"}
+					"validation": { "type": "boolean" }
 				},
 				"extKeyRequired": {
 					"source": ['query.extKeyRequired', 'body.extKeyRequired'],
 					"required": false,
 					"default": false,
-					"validation": {"type": "boolean"}
+					"validation": { "type": "boolean" }
 				},
 				"swaggerInput": {
 					"source": ['query.swaggerInput', 'body.swaggerInput'],
 					"required": false,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				},
 				"authentications": {
 					"source": ['query.authentications', 'body.authentications'],
@@ -3818,8 +3847,8 @@ module.exports = {
 						"type": "object",
 						"additionalProperties": false,
 						"properties": {
-							"cpu": {"type": "string"},
-							"memory": {"type": "string"}
+							"cpu": { "type": "string" },
+							"memory": { "type": "string" }
 						}
 					}
 				},
@@ -3829,7 +3858,7 @@ module.exports = {
 					"validation": serviceSchema.contract
 				}
 			},
-
+			
 			"/apiBuilder/authentication/update": {
 				"_apiInfo": {
 					"l": "Update Route Authentication Method",
@@ -3847,25 +3876,25 @@ module.exports = {
 				"endpointId": {
 					"source": ['query.endpointId', 'body.endpointId'],
 					"required": true,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				},
 				"schemaKey": {
 					"source": ['query.schemaKey', 'body.schemaKey'],
 					"required": true,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				},
 				"routeKey": {
 					"source": ['query.routeKey', 'body.routeKey'],
 					"required": true,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				},
 				"authentication": {
 					"source": ['query.authentication', 'body.authentication'],
 					"required": false,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				}
 			},
-
+			
 			"/apiBuilder/convertSwaggerToImfv": {
 				"_apiInfo": {
 					"l": "Convert Swagger String To an IMFV Soajs Object",
@@ -3883,7 +3912,7 @@ module.exports = {
 				"id": {
 					"source": ['query.id', 'body.id'],
 					"required": true,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				},
 				"swagger": {
 					"source": ['query.swagger', 'body.swagger'],
@@ -3893,7 +3922,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/apiBuilder/convertImfvToSwagger": {
 				"_apiInfo": {
 					"l": "Convert IMFV Soajs Object to a Swagger String",
@@ -3911,7 +3940,7 @@ module.exports = {
 				"id": {
 					"source": ['query.id', 'body.id'],
 					"required": true,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				},
 				"schema": {
 					"source": ['query.schema', 'body.schema'],
@@ -3923,7 +3952,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/secrets/add": {
 				"_apiInfo": {
 					"l": "Add Secret",
@@ -3943,17 +3972,17 @@ module.exports = {
 				"env": {
 					"source": ['body.env'],
 					"required": true,
-					"validation": {"type": "string", "required": true}
+					"validation": { "type": "string", "required": true }
 				},
 				"type": {
 					"source": ['body.type'],
 					"required": false,
-					"validation": {"type": "string", "required": true}
+					"validation": { "type": "string", "required": true }
 				},
 				"namespace": {
 					"source": ['body.namespace'],
 					"required": false,
-					"validation": {"type": "string", "required": false}
+					"validation": { "type": "string", "required": false }
 				},
 				"data": {
 					"source": ['body.data'],
@@ -3963,7 +3992,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/infra": {
 				"_apiInfo": {
 					"l": "Connect Infra Providers",
@@ -3992,7 +4021,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/infra/template": {
 				"_apiInfo": {
 					"l": "Add Infra as Code Template",
@@ -4004,48 +4033,48 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "object",
-                        "properties": {
-                            'name': {
-                                'required': true,
-                                'type': 'string'
-                            },
-                            'description': {
-                                'required': false,
-                                'type': 'string'
-                            },
-                            'location': {
-                                'required': true,
-                                'type': 'string'
-                            },
-                            'driver': {
-                                'type': 'string',
-                                'required': true
-                            },
-                            'technology': {
-                                'required': true,
-                                'type': 'string'
-                            },
-                            'content': {
-                                'required': true,
-                                'type': 'string'
-                            },
-                            'inputs': {
-                                'required': false,
-	                            'type': 'string'
-                            },
-                            'display': {
-                                'required': false,
-	                            'type': 'string'
-                            },
-                            'imfv': {
-                                'required': false,
-	                            'type': 'string'
-                            }
-                        }
+						"properties": {
+							'name': {
+								'required': true,
+								'type': 'string'
+							},
+							'description': {
+								'required': false,
+								'type': 'string'
+							},
+							'location': {
+								'required': true,
+								'type': 'string'
+							},
+							'driver': {
+								'type': 'string',
+								'required': true
+							},
+							'technology': {
+								'required': true,
+								'type': 'string'
+							},
+							'content': {
+								'required': true,
+								'type': 'string'
+							},
+							'inputs': {
+								'required': false,
+								'type': 'string'
+							},
+							'display': {
+								'required': false,
+								'type': 'string'
+							},
+							'imfv': {
+								'required': false,
+								'type': 'string'
+							}
+						}
 					}
 				}
 			},
-
+			
 			"/infra/template/upload": {
 				"_apiInfo": {
 					"l": "Update Infra as Code Template",
@@ -4081,7 +4110,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/infra/cluster/scale": {
 				"_apiInfo": {
 					"l": "Scale Cluster at Infra Provider",
@@ -4103,7 +4132,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/infra/extras": {
 				"_apiInfo": {
 					"l": "Create Infra component",
@@ -4148,7 +4177,7 @@ module.exports = {
 				}
 			}
 		},
-
+		
 		"put": {
 			"/services/settings/update": {
 				"_apiInfo": {
@@ -4185,7 +4214,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cd/ledger/read": {
 				"_apiInfo": {
 					"l": "Mark as read",
@@ -4223,7 +4252,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cd/action": {
 				"_apiInfo": {
 					"l": "Take Action",
@@ -4347,7 +4376,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/environment/update": {
 				_apiInfo: {
 					"l": "Update Environment",
@@ -4413,7 +4442,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/environment/key/update": {
 				_apiInfo: {
 					"l": "Update Environment Tenant Key Security",
@@ -4435,7 +4464,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/environment/dbs/update": {
 				_apiInfo: {
 					"l": "Update Environment Database",
@@ -4445,22 +4474,22 @@ module.exports = {
 				"prefix": {
 					"source": ['body.prefix'],
 					"required": false,
-					"validation": {"type": "string", "required": false}
+					"validation": { "type": "string", "required": false }
 				},
 				"name": {
 					"source": ['body.name'],
 					"required": true,
-					"validation": {"type": "string", "required": true}
+					"validation": { "type": "string", "required": true }
 				},
 				"cluster": {
 					"source": ['body.cluster'],
 					"required": true,
-					"validation": {"type": "string", "required": true}
+					"validation": { "type": "string", "required": true }
 				},
 				"tenantSpecific": {
 					"source": ['body.tenantSpecific'],
 					"required": false,
-					"validation": {"type": "boolean", "required": true}
+					"validation": { "type": "boolean", "required": true }
 				},
 				"sessionInfo": {
 					"source": ['body.sessionInfo'],
@@ -4469,16 +4498,16 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"store": {"type": "object", "required": true},
-							"dbName": {"type": "string", "required": true},
-							"expireAfter": {"type": "integer", "required": true},
-							"collection": {"type": "string", "required": true},
-							"stringify": {"type": "boolean", "required": true}
+							"store": { "type": "object", "required": true },
+							"dbName": { "type": "string", "required": true },
+							"expireAfter": { "type": "integer", "required": true },
+							"collection": { "type": "string", "required": true },
+							"stringify": { "type": "boolean", "required": true }
 						}
 					}
 				}
 			},
-
+			
 			"/environment/dbs/updatePrefix": {
 				_apiInfo: {
 					"l": "Update Environment Databases Prefix",
@@ -4488,10 +4517,10 @@ module.exports = {
 				"prefix": {
 					"source": ['body.prefix'],
 					"required": false,
-					"validation": {"type": "string", "required": false}
+					"validation": { "type": "string", "required": false }
 				}
 			},
-
+			
 			"/resources/update": {
 				_apiInfo: {
 					"l": "Update Resource",
@@ -4507,7 +4536,7 @@ module.exports = {
 				},
 				"resource": resourceSchema
 			},
-
+			
 			"/resources/config/update": {
 				_apiInfo: {
 					"l": "Set Resource Deploy Configuration",
@@ -4542,7 +4571,7 @@ module.exports = {
 						"type": "object",
 						"default": {},
 						"properties": {
-							"deploy": {"type": "boolean", "required": true},
+							"deploy": { "type": "boolean", "required": true },
 							"options": {
 								"type": "object",
 								"required": false,
@@ -4552,7 +4581,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/customRegistry/update": {
 				_apiInfo: {
 					"l": "Update Custom Registry Entry",
@@ -4568,7 +4597,7 @@ module.exports = {
 				},
 				"customRegEntry": customRegEntrySchema
 			},
-
+			
 			"/customRegistry/upgrade": {
 				_apiInfo: {
 					"l": "Upgrade To New Custom Registry",
@@ -4576,7 +4605,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'env']
 			},
-
+			
 			"/environment/platforms/deployer/update": {
 				_apiInfo: {
 					"l": "Change Deployer Type",
@@ -4599,7 +4628,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/product/update": {
 				_apiInfo: {
 					"l": "Update Product",
@@ -4607,7 +4636,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'name', 'description', 'soajs_project']
 			},
-
+			
 			"/product/packages/update": {
 				_apiInfo: {
 					"l": "Update Product Package",
@@ -4623,7 +4652,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/update": {
 				_apiInfo: {
 					"l": "Update Tenant",
@@ -4647,7 +4676,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/oauth/update": {
 				_apiInfo: {
 					"l": "Update Tenant oAuth Configuration",
@@ -4655,7 +4684,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'secret', 'redirectURI', 'oauthType', 'availableEnv', 'soajs_project']
 			},
-
+			
 			"/tenant/oauth/users/update": {
 				_apiInfo: {
 					"l": "Update Tenant oAuth User",
@@ -4677,7 +4706,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/application/update": {
 				_apiInfo: {
 					"l": "Update Tenant Application",
@@ -4693,7 +4722,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'id', 'appId', 'description', 'acl', 'productCode', 'packageCode', 'clearAcl']
 			},
-
+			
 			"/tenant/application/key/ext/update": {
 				_apiInfo: {
 					"l": "Update Tenant Application External Key",
@@ -4708,7 +4737,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/application/key/config/update": {
 				_apiInfo: {
 					"l": "Update Tenant Application Key Configuration",
@@ -4716,7 +4745,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'key', 'envCode', 'config', 'soajs_project']
 			},
-
+			
 			"/settings/tenant/update": {
 				_apiInfo: {
 					"l": "Update Tenant",
@@ -4733,7 +4762,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/settings/tenant/oauth/update": {
 				_apiInfo: {
 					"l": "Update Tenant oAuth Configuration",
@@ -4741,7 +4770,7 @@ module.exports = {
 				},
 				"commonFields": ['secret', 'redirectURI', 'oauthType', 'availableEnv', 'soajs_project']
 			},
-
+			
 			"/settings/tenant/oauth/users/update": {
 				_apiInfo: {
 					"l": "Update Tenant oAuth User",
@@ -4763,7 +4792,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/settings/tenant/application/key/ext/update": {
 				_apiInfo: {
 					"l": "Update Tenant Application External Key",
@@ -4778,7 +4807,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/settings/tenant/application/key/config/update": {
 				_apiInfo: {
 					"l": "Update Tenant Application Key Configuration",
@@ -4786,7 +4815,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key', 'envCode', 'config', 'soajs_project']
 			},
-
+			
 			"/daemons/groupConfig/update": {
 				_apiInfo: {
 					"l": "Update Daemon Group Configuration",
@@ -4802,7 +4831,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/daemons/groupConfig/serviceConfig/update": {
 				_apiInfo: {
 					"l": "Update Service Configuration",
@@ -4824,7 +4853,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/daemons/groupConfig/tenantExtKeys/update": {
 				_apiInfo: {
 					"l": "Update Job's External Keys",
@@ -4846,7 +4875,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/nodes/update": {
 				"_apiInfo": {
 					"l": "Update HA Cloud Node",
@@ -4876,7 +4905,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/services/scale": {
 				"_apiInfo": {
 					"l": "Scale HA Service",
@@ -4906,7 +4935,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/services/redeploy": {
 				"_apiInfo": {
 					"l": "Redeploy HA Service",
@@ -4949,28 +4978,28 @@ module.exports = {
 						"type": "object",
 						"required": false,
 						"properties": {
-							"branch": {"type": "string", "required": false},
-							"commit": {"type": "string", "required": false},
-							"memory": {"type": "number", "required": false, "minimum": 0},
+							"branch": { "type": "string", "required": false },
+							"commit": { "type": "string", "required": false },
+							"memory": { "type": "number", "required": false, "minimum": 0 },
 							"image": {
 								"type": "object",
 								"required": false,
 								"properties": {
-									"prefix": {"required": false, "type": "string"},
-									"name": {"required": false, "type": "string"},
-									"tag": {"required": false, "type": "string"},
+									"prefix": { "required": false, "type": "string" },
+									"name": { "required": false, "type": "string" },
+									"tag": { "required": false, "type": "string" },
 								}
 							},
 							"env": {
 								"type": "object",
 								"required": false,
-								"additionalProperties": {"type": "string"}
+								"additionalProperties": { "type": "string" }
 							}
 						}
 					}
 				}
 			},
-
+			
 			"/cloud/services/autoscale": {
 				"_apiInfo": {
 					"l": "Autoscale Services",
@@ -4994,11 +5023,11 @@ module.exports = {
 							"replicas": {
 								"type": "object",
 								"properties": {
-									"min": {"type": "number", "minimum": 1, "required": true},
-									"max": {"type": "number", "minimum": 1, "required": true}
+									"min": { "type": "number", "minimum": 1, "required": true },
+									"max": { "type": "number", "minimum": 1, "required": true }
 								}
 							},
-							"metrics": {"type": "object", "required": true}
+							"metrics": { "type": "object", "required": true }
 						}
 					}
 				},
@@ -5010,14 +5039,14 @@ module.exports = {
 						"items": {
 							"type": "object",
 							"properties": {
-								"id": {"type": "string", "required": true},
-								"type": {"type": "string", "required": true, "enum": ["deployment"]}
+								"id": { "type": "string", "required": true },
+								"type": { "type": "string", "required": true, "enum": ["deployment"] }
 							}
 						}
 					}
 				}
 			},
-
+			
 			"/cloud/services/autoscale/config": {
 				"_apiInfo": {
 					"l": "Configure Environment Autoscaling",
@@ -5034,8 +5063,8 @@ module.exports = {
 							"replicas": {
 								"type": "object",
 								"properties": {
-									"min": {"type": "number", "minimum": 1, "required": true},
-									"max": {"type": "number", "minimum": 1, "required": true}
+									"min": { "type": "number", "minimum": 1, "required": true },
+									"max": { "type": "number", "minimum": 1, "required": true }
 								}
 							},
 							"metrics": {
@@ -5046,7 +5075,7 @@ module.exports = {
 									"cpu": {
 										"type": "object",
 										"properties": {
-											"percent": {"type": "number", "minimum": 1, "required": true}
+											"percent": { "type": "number", "minimum": 1, "required": true }
 										}
 									}
 								}
@@ -5055,7 +5084,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/catalog/recipes/update": {
 				"_apiInfo": {
 					"l": "Update Catalog",
@@ -5071,7 +5100,7 @@ module.exports = {
 				},
 				"catalog": catalogSchema
 			},
-
+			
 			"/gitAccounts/repo/sync": {
 				"_apiInfo": {
 					"l": "Deactivate Repository",
@@ -5114,7 +5143,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/ci/provider": {
 				"_apiInfo": {
 					"l": "Deactivate CI Provider",
@@ -5136,7 +5165,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/ci/recipe": {
 				"_apiInfo": {
 					"l": "Edit CI Recipe",
@@ -5165,7 +5194,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/ci/settings": {
 				"_apiInfo": {
 					"l": "Update CI Repository Settings",
@@ -5215,7 +5244,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/gitAccounts/repo/deactivate": {
 				"_apiInfo": {
 					"l": "Deactivate Repository",
@@ -5244,7 +5273,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/apiBuilder/edit": {
 				"_apiInfo": {
 					"l": "Edit Endpoint",
@@ -5262,7 +5291,7 @@ module.exports = {
 				"id": {
 					"source": ['query.id', 'body.id'],
 					"required": true,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				},
 				"serviceName": {
 					"source": ['query.serviceName', 'body.serviceName'],
@@ -5275,32 +5304,32 @@ module.exports = {
 				"serviceGroup": {
 					"source": ['query.serviceGroup', 'body.serviceGroup'],
 					"required": true,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				},
 				"servicePort": {
 					"source": ['query.servicePort', 'body.servicePort'],
 					"required": true,
-					"validation": {"type": "number", "minimum": 1}
+					"validation": { "type": "number", "minimum": 1 }
 				},
 				"serviceVersion": {
 					"source": ['query.serviceVersion', 'body.serviceVersion'],
 					"required": true,
-					"validation": {"type": "number", "minimum": 1}
+					"validation": { "type": "number", "minimum": 1 }
 				},
 				"requestTimeout": {
 					"source": ['query.requestTimeout', 'body.requestTimeout'],
 					"required": true,
-					"validation": {"type": "number", "minimum": 1}
+					"validation": { "type": "number", "minimum": 1 }
 				},
 				"requestTimeoutRenewal": {
 					"source": ['query.requestTimeoutRenewal', 'body.requestTimeoutRenewal'],
 					"required": true,
-					"validation": {"type": "number", "minimum": 1}
+					"validation": { "type": "number", "minimum": 1 }
 				},
 				"defaultAuthentication": {
 					"source": ['query.defaultAuthentication', 'body.defaultAuthentication'],
 					"required": false,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				},
 				"epType": {
 					"source": ['query.epType', 'body.epType'],
@@ -5314,13 +5343,13 @@ module.exports = {
 					"source": ['query.oauth', 'body.oauth'],
 					"required": false,
 					"default": false,
-					"validation": {"type": "boolean"}
+					"validation": { "type": "boolean" }
 				},
 				"extKeyRequired": {
 					"source": ['query.extKeyRequired', 'body.extKeyRequired'],
 					"required": false,
 					"default": false,
-					"validation": {"type": "boolean"}
+					"validation": { "type": "boolean" }
 				},
 				"authentications": {
 					"source": ['query.authentications', 'body.authentications'],
@@ -5390,9 +5419,9 @@ module.exports = {
 						"items": {
 							"type": "object",
 							"properties": {
-								"prefix": {"type": "string"},
-								"name": {"type": "string", "required": true},
-								"multitenant": {"type": "boolean"}
+								"prefix": { "type": "string" },
+								"name": { "type": "string", "required": true },
+								"multitenant": { "type": "boolean" }
 							}
 						},
 						"minItems": 1,
@@ -5400,7 +5429,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/apiBuilder/updateSchemas": {
 				"_apiInfo": {
 					"l": "Update Endpoint's Schemas",
@@ -5418,13 +5447,13 @@ module.exports = {
 				"endpointId": {
 					"source": ['query.endpointId', 'body.endpointId'],
 					"required": true,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				},
 				"convert": {
 					"source": ['query.convert', 'body.convert'],
 					"required": false,
 					"default": true,
-					"validation": {"type": "boolean"}
+					"validation": { "type": "boolean" }
 				},
 				"schemas": {
 					"source": ['body.schemas'],
@@ -5439,7 +5468,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/infra": {
 				"_apiInfo": {
 					"l": "Modify Infra Providers Connection",
@@ -5454,7 +5483,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/infra/template": {
 				"_apiInfo": {
 					"l": "Update Infra as Code Template",
@@ -5466,48 +5495,48 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "object",
-                        "properties": {
-                            'name': {
-                                'required': true,
-                                'type': 'string'
-                            },
-                            'description': {
-                                'required': false,
-                                'type': 'string'
-                            },
-                            'location': {
-                                'required': true,
-                                'type': 'string'
-                            },
-                            'driver': {
-                                'type': 'string',
-                                'required': true
-                            },
-                            'technology': {
-                                'required': true,
-                                'type': 'string'
-                            },
-                            'content': {
-                                'required': true,
-	                            'type': 'string'
-                            },
-                            'inputs': {
-                                'required': false,
-	                            'type': 'string'
-                            },
-                            'display': {
-                                'required': false,
-	                            'type': 'string'
-                            },
-                            'imfv': {
-                                'required': false,
-	                            'type': 'string'
-                            }
-                        }
+						"properties": {
+							'name': {
+								'required': true,
+								'type': 'string'
+							},
+							'description': {
+								'required': false,
+								'type': 'string'
+							},
+							'location': {
+								'required': true,
+								'type': 'string'
+							},
+							'driver': {
+								'type': 'string',
+								'required': true
+							},
+							'technology': {
+								'required': true,
+								'type': 'string'
+							},
+							'content': {
+								'required': true,
+								'type': 'string'
+							},
+							'inputs': {
+								'required': false,
+								'type': 'string'
+							},
+							'display': {
+								'required': false,
+								'type': 'string'
+							},
+							'imfv': {
+								'required': false,
+								'type': 'string'
+							}
+						}
 					}
 				}
 			},
-
+			
 			"/cloud/vm": {
 				"_apiInfo": {
 					"l": "Modify Virtual Machine Layer",
@@ -5557,7 +5586,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/infra/extras": {
 				"_apiInfo": {
 					"l": "Update Infra component",
@@ -5594,7 +5623,7 @@ module.exports = {
 				}
 			}
 		},
-
+		
 		"delete": {
 			"/templates": {
 				_apiInfo: {
@@ -5603,7 +5632,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project', 'id']
 			},
-
+			
 			"/environment/delete": {
 				_apiInfo: {
 					"l": "Delete Environment",
@@ -5613,7 +5642,7 @@ module.exports = {
 				"force": {
 					"source": ['query.force'],
 					"required": true, "default": false,
-					"validation": {"type": "boolean"}
+					"validation": { "type": "boolean" }
 				},
 				'code': {
 					'source': ['query.code'],
@@ -5630,7 +5659,7 @@ module.exports = {
 					}
 				},
 			},
-
+			
 			"/environment/dbs/delete": {
 				_apiInfo: {
 					"l": "Delete Environment Database",
@@ -5640,10 +5669,10 @@ module.exports = {
 				"name": {
 					"source": ['query.name'],
 					"required": true,
-					"validation": {"type": "string", "required": true}
+					"validation": { "type": "string", "required": true }
 				}
 			},
-
+			
 			"/environment/platforms/detach": {
 				_apiInfo: {
 					"l": "Detach Container Technology",
@@ -5658,7 +5687,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/resources": {
 				_apiInfo: {
 					"l": "Delete a resource",
@@ -5696,10 +5725,10 @@ module.exports = {
 				"config": {
 					"source": ['query.config'],
 					"required": false,
-                    "validation": {
-                        "type": "string",
-                    },
-
+					"validation": {
+						"type": "string",
+					},
+					
 				},
 				"resourceName": {
 					"source": ['query.resourceName'],
@@ -5709,7 +5738,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/customRegistry/delete": {
 				_apiInfo: {
 					"l": "Delete A Custom Registry Entry",
@@ -5724,7 +5753,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/product/delete": {
 				_apiInfo: {
 					"l": "Delete Product",
@@ -5746,7 +5775,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/product/packages/delete": {
 				_apiInfo: {
 					"l": "Delete Product Package",
@@ -5762,7 +5791,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant",
@@ -5784,7 +5813,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/oauth/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant oAuth Configuration",
@@ -5792,7 +5821,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'soajs_project']
 			},
-
+			
 			"/tenant/oauth/users/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant oAuth User",
@@ -5800,7 +5829,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'uId', 'soajs_project']
 			},
-
+			
 			"/tenant/application/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant Application",
@@ -5808,7 +5837,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'soajs_project']
 			},
-
+			
 			"/tenant/application/key/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant Application Key",
@@ -5816,7 +5845,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'key', 'soajs_project']
 			},
-
+			
 			"/settings/tenant/oauth/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant oAuth Configuration",
@@ -5824,7 +5853,7 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project']
 			},
-
+			
 			"/settings/tenant/oauth/users/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant oAuth User",
@@ -5832,7 +5861,7 @@ module.exports = {
 				},
 				"commonFields": ['uId', 'soajs_project']
 			},
-
+			
 			"/settings/tenant/application/key/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant Application Key",
@@ -5840,7 +5869,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key', 'soajs_project']
 			},
-
+			
 			"/daemons/groupConfig/delete": {
 				_apiInfo: {
 					"l": "Delete Daemon Group Configuration",
@@ -5848,7 +5877,7 @@ module.exports = {
 				},
 				'commonFields': ['id', 'soajs_project']
 			},
-
+			
 			"/cloud/nodes/remove": {
 				"_apiInfo": {
 					"l": "Remove HA Cloud Node",
@@ -5863,14 +5892,14 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/services/delete": {
 				"_apiInfo": {
 					"l": "Delete HA Service",
 					"group": "HA Cloud"
 				},
 				'commonFields': ['soajs_project', 'env', 'serviceId', 'namespace', 'mode', 'infraId', 'technology'],
-				'group':{
+				'group': {
 					"source": ['query.group'],
 					"required": true,
 					"default": "",
@@ -5879,21 +5908,21 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/vm/instance": {
 				"_apiInfo": {
 					"l": "Delete Virtual Machine",
 					"group": "HA Cloud"
 				},
 				'commonFields': ['soajs_project', 'env', 'serviceId', 'infraId', 'technology'],
-				'group':{
+				'group': {
 					"source": ['query.group'],
 					"required": false,
 					"validation": {
 						"type": "string"
 					}
 				},
-				'region':{
+				'region': {
 					"source": ['query.region'],
 					"required": false,
 					"validation": {
@@ -5901,7 +5930,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/vm": {
 				"_apiInfo": {
 					"l": "Delete Virtual Machine Layer",
@@ -5930,7 +5959,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/namespaces/delete": {
 				"_apiInfo": {
 					"l": "Delete a Namespace",
@@ -5945,7 +5974,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/catalog/recipes/delete": {
 				"_apiInfo": {
 					"l": "Delete a Catalog",
@@ -5968,7 +5997,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/ci/recipe": {
 				"_apiInfo": {
 					"l": "Delete CI Recipe",
@@ -5976,7 +6005,7 @@ module.exports = {
 				},
 				"commonFields": ["id", 'soajs_project']
 			},
-
+			
 			"/gitAccounts/logout": {
 				"_apiInfo": {
 					"l": "Github Logout",
@@ -6012,7 +6041,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/apiBuilder/delete": {
 				"_apiInfo": {
 					"l": "Delete Endpoint",
@@ -6030,10 +6059,10 @@ module.exports = {
 				"id": {
 					"source": ['query.id', 'body.id'],
 					"required": true,
-					"validation": {"type": "string"}
+					"validation": { "type": "string" }
 				}
 			},
-
+			
 			"/secrets/delete": {
 				_apiInfo: {
 					"l": "Delete Secret",
@@ -6048,7 +6077,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/infra": {
 				"_apiInfo": {
 					"l": "Deactivate Infra Provider",
@@ -6056,7 +6085,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project', 'id']
 			},
-
+			
 			"/infra/deployment": {
 				"_apiInfo": {
 					"l": "Remove Infra Provider Deployment",
@@ -6071,7 +6100,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/infra/template": {
 				"_apiInfo": {
 					"l": "Remove Template from Infra Providers",
@@ -6093,7 +6122,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/infra/extras": {
 				"_apiInfo": {
 					"l": "Delete Infra component",

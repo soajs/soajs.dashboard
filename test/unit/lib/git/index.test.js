@@ -1,9 +1,14 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/git/index.js');
-var helpers = helper.requireModule('./lib/git/helper.js');
-var configFile = helper.requireModule('./lib/git/getConfig.js');
+var utils1 = helper.requireModule('./lib/git/index.js');
+var helpers1 = helper.requireModule('./lib/git/helper.js');
+var configFile1 = helper.requireModule('./lib/git/getConfig.js');
+
+let soajsUtils = require('soajs.core.libs').utils;
+let configFile = soajsUtils.cloneObj(configFile1);
+let helpers = soajsUtils.cloneObj(helpers1);
+let utils = soajsUtils.cloneObj(utils1);
 
 var lib;
 var config = helper.requireModule('./config.js');
@@ -49,7 +54,7 @@ var mongoStub = {
 	closeConnection: function (soajs) {
 		return true;
 	},
-	switchConnection: function(soajs) {
+	switchConnection: function (soajs) {
 	}
 };
 
@@ -200,6 +205,10 @@ var gitModel = {
 
 describe("testing git.js", function () {
 
+	after(() => {
+		var helpers = helper.requireModule('./lib/git/helper.js');
+		var configFile = helper.requireModule('./lib/git/getConfig.js');
+	});
 	describe("testing init", function () {
 
 		it("No Model Requested", function (done) {
@@ -340,7 +349,7 @@ describe("testing git.js", function () {
 			
 			deployer.execute = function (in1, in2, in3, cb) {
 				return cb(null, {
-					env : ['SOAJS_GIT_BRANCH']
+					env: ['SOAJS_GIT_BRANCH']
 				});
 			};
 			
@@ -384,9 +393,7 @@ describe("testing git.js", function () {
 						}
 					},
 					services: {
-						config: {
-						
-						}
+						config: {}
 					}
 				};
 				cb(null, envRecord);
@@ -1103,9 +1110,9 @@ describe("testing git.js", function () {
 				"owner": 'owner',
 				"repo": 'repo'
 			};
-			configFile.getConfig = function(config, req, BL, git, helpers, gitModel, flags, cb){
+			configFile.getConfig = function (config, req, BL, git, helpers, gitModel, flags, cb) {
 				let response;
-				if(flags && flags.multi){
+				if (flags && flags.multi) {
 					console.log(flags);
 					response = {
 						type: 'service',
@@ -1123,11 +1130,11 @@ describe("testing git.js", function () {
 						},
 						sha: ''
 					};
-					if(flags.path === '/sample1/config.js'){
+					if (flags.path === '/sample1/config.js') {
 						response.sha = "6cbeae3ed88e9e3296e05fd52a48533ba53c0931";
 					}
 				}
-				else{
+				else {
 					response = {
 						type: 'multi',
 						folders: [
@@ -1139,7 +1146,7 @@ describe("testing git.js", function () {
 			};
 			configFile.analyzeConfigSyncFile = function (config, req, BL, repoConfig, path, token, configSHA, flags, cb) {
 				let response;
-				if(flags && flags.multi){
+				if (flags && flags.multi) {
 					response = {
 						type: 'service',
 						status: 'upToDate',
@@ -1158,7 +1165,7 @@ describe("testing git.js", function () {
 						sha: "6cbeae3ed88e9e3296e05fd52a48533ba53c0931"
 					};
 				}
-				else{
+				else {
 					response = {
 						type: 'multi',
 						folders: [
@@ -1185,7 +1192,7 @@ describe("testing git.js", function () {
 				"owner": 'owner',
 				"repo": 'repo'
 			};
-			configFile.getConfig = function(config, req, BL, git, helpers, gitModel, flags, cb){
+			configFile.getConfig = function (config, req, BL, git, helpers, gitModel, flags, cb) {
 				return cb(null, {
 					type: 'multi',
 					folders: [
@@ -1211,7 +1218,7 @@ describe("testing git.js", function () {
 				"owner": 'owner',
 				"repo": 'repo'
 			};
-			configFile.getConfig = function(config, req, BL, git, helpers, gitModel, flags, cb){
+			configFile.getConfig = function (config, req, BL, git, helpers, gitModel, flags, cb) {
 				return cb(null, {
 					type: 'multi',
 					folders: [

@@ -3,6 +3,7 @@ var assert = require("assert");
 var helper = require("../../../../../helper.js");
 var driverHelper = helper.requireModule('./utils/drivers/git/bitbucket/helper.js');
 var nock = require("nock");
+
 describe("testing git/bitbucket helper.js", function () {
 	var soajs = {};
 	var model = {};

@@ -10,8 +10,8 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../../helper.js");
-var helpers = helper.requireModule('./lib/git/helper.js');
-var getConfig = helper.requireModule('./lib/git/getConfig.js');
+var helpers1 = helper.requireModule('./lib/git/helper.js');
+var getConfig1 = helper.requireModule('./lib/git/getConfig.js');
 var config = helper.requireModule('./config.js');
 
 var gitDriver = {
@@ -74,6 +74,10 @@ var gitDriver = {
 	}
 };
 var gitModel = {};
+
+let soajsUtils = require('soajs.core.libs').utils;
+let helpers = soajsUtils.cloneObj(helpers1);
+let getConfig = soajsUtils.cloneObj(getConfig1);
 
 describe("testing get config git.js", function () {
 	var soajs = {
