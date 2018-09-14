@@ -1822,7 +1822,28 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 		});
-		
+
+		describe("update platform", function () {
+
+			it("Invalid Env", function (done) {
+				var params = {
+					qs: {
+						env: 'TEST'
+					},
+					form: {
+						driver: 'local',
+						config: {}
+					}
+				};
+
+				executeMyRequest(params, "environment/platforms/deployer/update", 'put', function (body) {
+					assert.ok(body.errors);
+					done();
+				});
+			});
+
+		});
+
 		describe("detach platform", function () {
 			
 			it("success - will detach platform", function (done) {
