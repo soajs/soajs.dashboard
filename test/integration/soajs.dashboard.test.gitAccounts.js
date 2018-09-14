@@ -83,7 +83,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 	var repoStaticContent = 'testStaticContent';
 
 	before(function (done) {
-		mongo.findOne("git_accounts", {owner: "soajs"}, function (error, record) {
+		mongo.findOne("git_accounts", { owner: "soajs" }, function (error, record) {
 			assert.ifError(error);
 			assert.ok(record);
 			record.repos.forEach(function (oneRepo) {
@@ -217,6 +217,28 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 
 		});
 
+		describe("github activate repo tests", function () {
+
+			it("Test activate", function (done) {
+				var params = {
+					qs: {
+						"id": gitAccId
+					},
+					form: {
+						provider: "github",
+						owner: usernamePersonal,
+						repo: repoSingleSuccess,
+						configBranch: "develop"
+					}
+				};
+				executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
+					assert.ok(body);
+					done();
+				});
+			});
+
+		});
+
 		describe("github getBranches tests", function () {
 
 			it("success - will get Branches repo", function (done) {
@@ -308,40 +330,40 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 	 * This test will get the yaml file needed so the ui can return the APIs documentation
 	 * The user must activate his github/bitbucket account on the dashboard first.
 	 */
-	describe("pull from a repo in github or bitbucket", function(){
+	describe("pull from a repo in github or bitbucket", function () {
 
-		it("success - the user is logged in and provided an existing repo and file path", function(done){
+		it("success - the user is logged in and provided an existing repo and file path", function (done) {
 			var params = {
 				qs: {
-					"owner" : "soajs",
-					"repo" : "soajs.dashboard",
-					"filepath" : "config.js",
-					"branch" : "develop",
+					"owner": "soajs",
+					"repo": "soajs.dashboard",
+					"filepath": "config.js",
+					"branch": "develop",
 					"serviceName": "dashboard",
 					"env": "dashboard",
 					"type": "service"
 				}
 			};
-			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function(body){
+			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function (body) {
 				assert.ok(body);
 				// assert.deepEqual(body.data.downloadLink, "https://raw.githubusercontent.com/soajs/soajs.dashboard/swagger/config.js");
 				done();
 			});
 		});
 
-		it("fail - the user isn't logged in", function(done){
+		it("fail - the user isn't logged in", function (done) {
 			var params = {
 				qs: {
-					"owner" : "michel-el-hajj",
-					"repo" : "soajs.dashboard",
-					"filepath" : "config.js",
-					"branch" : "develop",
+					"owner": "michel-el-hajj",
+					"repo": "soajs.dashboard",
+					"filepath": "config.js",
+					"branch": "develop",
 					"serviceName": "dashboard",
 					"env": "dashboard",
 					"type": "service"
 				}
 			};
-			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function(body){
+			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function (body) {
 				assert.ok(body);
 				// assert.equal(body.result, false);
 				// assert.deepEqual(body.errors.details, [ { code: 757, message: 'Unable to get git user account' } ]);
@@ -349,38 +371,38 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 			});
 		});
 
-		it("fail - the repo doesn't exist", function(done){
+		it("fail - the repo doesn't exist", function (done) {
 			var params = {
 				qs: {
-					"owner" : "soajs",
-					"repo" : "soajs.unknown",
-					"filepath" : "config.js",
-					"branch" : "develop",
+					"owner": "soajs",
+					"repo": "soajs.unknown",
+					"filepath": "config.js",
+					"branch": "develop",
 					"serviceName": "unknown",
 					"env": "dev",
 					"type": "service"
 				}
 			};
-			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function(body){
+			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function (body) {
 				assert.ok(body);
 				// assert.equal(body.result, false);
 				done();
 			});
 		});
 
-		it("fail - wrong file path", function(done){
+		it("fail - wrong file path", function (done) {
 			var params = {
 				qs: {
-					"owner" : "soajs",
-					"repo" : "soajs.dashboard",
-					"filepath" : "configs.js",
-					"branch" : "develop",
+					"owner": "soajs",
+					"repo": "soajs.dashboard",
+					"filepath": "configs.js",
+					"branch": "develop",
 					"serviceName": "dashboard",
 					"env": "dashboard",
 					"type": "service"
 				}
 			};
-			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function(body){
+			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function (body) {
 				assert.ok(body);
 				// assert.equal(body.result, false);
 				// assert.deepEqual(body.errors.details, [ { code: 789,
@@ -438,7 +460,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 
 		describe("login & logout", function () {
 			before(function (done) {
-				mongo.remove('git_accounts', {'owner': orgName}, function (error) {
+				mongo.remove('git_accounts', { 'owner': orgName }, function (error) {
 					assert.ifError(error);
 					done();
 				});

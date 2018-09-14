@@ -4,17 +4,17 @@ var assert = require('assert');
 var request = require("request");
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 
-var util = require ("soajs.core.libs").utils;
+var util = require("soajs.core.libs").utils;
 
 function executeMyRequest(params, apiPath, method, cb) {
-	if(cb && typeof(cb) === 'function'){
+	if (cb && typeof(cb) === 'function') {
 		requester(apiPath, method, params, function (error, body) {
 			assert.ifError(error);
 			assert.ok(body);
 			return cb(body);
 		});
 	}
-	else{
+	else {
 		return requester(apiPath, method, params);
 	}
 	
@@ -44,14 +44,14 @@ function executeMyRequest(params, apiPath, method, cb) {
 			options.qs = params.qs;
 		}
 		
-		if(cb && typeof(cb) === 'function'){
+		if (cb && typeof(cb) === 'function') {
 			request[method](options, function (error, response, body) {
 				assert.ifError(error);
 				assert.ok(body);
 				return cb(null, body);
 			});
 		}
-		else{
+		else {
 			return options;
 		}
 	}
@@ -64,7 +64,7 @@ describe("Swagger", function () {
 				var params = {
 					"form": {
 						"data": {
-							"input": {"number": 10},
+							"input": { "number": 10 },
 							"imfv": {
 								"type": "number"
 							}
@@ -81,7 +81,7 @@ describe("Swagger", function () {
 				var params = {
 					"form": {
 						"data": {
-							"input": {"number": 10},
+							"input": { "number": 10 },
 							"imfv": {
 								"number": {
 									"source": "body"
@@ -100,7 +100,7 @@ describe("Swagger", function () {
 				var params = {
 					"form": {
 						"data": {
-							"input": {"number": 10},
+							"input": { "number": 10 },
 							"imfv": {
 								"number": {
 									"source": []
@@ -241,7 +241,7 @@ describe("Swagger", function () {
 	
 	describe("Generator Tests", function () {
 		
-		var Mongo = require ("soajs.core.modules").mongo;
+		var Mongo = require("soajs.core.modules").mongo;
 		var dbConfig = require("./db.config.test.js");
 		
 		var dashboardConfig = dbConfig();
@@ -378,13 +378,13 @@ describe("Swagger", function () {
 		describe("full check", function () {
 			it("success - service generated", function (done) {
 				var params = util.cloneObj(oParams);
-				oParams.headers ={
+				oParams.headers = {
 					'Accept': 'application/zip'
 				};
 				
 				var options = executeMyRequest(params, "swagger/generate", 'post');
-				request.post(options).pipe(fs.createWriteStream("./" + oParams.form.data.service.serviceName + ".zip")).on('close', function(){
-					fs.exists("./" + oParams.form.data.service.serviceName + ".zip", function(exists){
+				request.post(options).pipe(fs.createWriteStream("./" + oParams.form.data.service.serviceName + ".zip")).on('close', function () {
+					fs.exists("./" + oParams.form.data.service.serviceName + ".zip", function (exists) {
 						console.log("file downloaded to:", "./" + oParams.form.data.service.serviceName + ".zip");
 						assert.equal(exists, true);
 						done();
@@ -393,4 +393,19 @@ describe("Swagger", function () {
 			});
 		});
 	});
+
+	describe("Testing swagger/generateExistingService", function () {
+		it("success", function (done) {
+			var params = {
+				"form": {
+					"id": "123"
+				}
+			};
+			executeMyRequest(params, "swagger/generateExistingService", 'post', function (result) {
+				assert.ok(result);
+				done();
+			});
+		});
+	});
+
 });
