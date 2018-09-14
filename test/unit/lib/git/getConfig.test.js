@@ -9,10 +9,13 @@
 
 "use strict";
 var assert = require("assert");
-var helper = require("../../../helper.js");
-var helpers1 = helper.requireModule('./lib/git/helper.js');
-var getConfig1 = helper.requireModule('./lib/git/getConfig.js');
-var config = helper.requireModule('./config.js');
+var testHelper = require("../../../helper.js");
+var config = testHelper.requireModule('./config.js');
+
+var gitHelper = testHelper.requireModule('./lib/git/helper.js');
+var getConfig = testHelper.requireModule('./lib/git/getConfig.js');
+
+let soajsUtils = require('soajs.core.libs').utils;
 
 var gitDriver = {
 	logout: function (soajs, gitModel, model, options, cb) {
@@ -75,17 +78,11 @@ var gitDriver = {
 };
 var gitModel = {};
 
-let soajsUtils = require('soajs.core.libs').utils;
-let helpers = soajsUtils.cloneObj(helpers1);
-let getConfig = soajsUtils.cloneObj(getConfig1);
-
 describe("testing get config git.js", function () {
 	var soajs = {
 		registry: {
 			"coreDB": {
-				registryLocation: {
-				
-				}
+				registryLocation: {}
 			}
 		},
 		log: {
@@ -102,13 +99,12 @@ describe("testing get config git.js", function () {
 	var req = {
 		soajs: soajs
 	};
-	var res = {};
-
+	
 	describe("getSOAFile", function () {
-
+		
 		it("success 1: soa.js", function (done) {
 			var configGenerator = {
-				generate: function(soajsFilePath, swaggerFilePath, cb) {
+				generate: function (soajsFilePath, swaggerFilePath, cb) {
 					return cb(null, "module.exports = {};");
 				}
 			};
@@ -138,7 +134,7 @@ describe("testing get config git.js", function () {
 		
 		it("success 1: config.js", function (done) {
 			var configGenerator = {
-				generate: function(soajsFilePath, swaggerFilePath, cb) {
+				generate: function (soajsFilePath, swaggerFilePath, cb) {
 					return cb(null, "module.exports = {};");
 				}
 			};
@@ -167,15 +163,15 @@ describe("testing get config git.js", function () {
 	describe("analyzeConfigFile", function () {
 		
 		it("success 1: config.js", function (done) {
-			helpers.checkCanAdd = function(model, soajs, type, info, cb) {
+			gitHelper.checkCanAdd = function (model, soajs, type, info, cb) {
 				return cb(null, true);
 			};
 			
-			helpers.validateFileContents = function(req, object, repoConfig, cb) {
+			gitHelper.validateFileContents = function (req, object, repoConfig, cb) {
 				return cb(null, true);
 			};
 			
-			helpers.getServiceInfo = function() {
+			gitHelper.getServiceInfo = function () {
 				return {};
 			};
 			
@@ -191,15 +187,15 @@ describe("testing get config git.js", function () {
 	describe("analyzeConfigSyncFile", function () {
 		
 		it("success 1: config.js", function (done) {
-			helpers.analyzeConfigSyncFile = function(req, repoConfig, path, configSHA, flags, cb) {
+			gitHelper.analyzeConfigSyncFile = function (req, repoConfig, path, configSHA, flags, cb) {
 				return cb(null, 'upToDate');
 			};
 			
-			helpers.checkCanSync = function(model, soajs, type, info, flags, cb) {
+			gitHelper.checkCanSync = function (model, soajs, type, info, flags, cb) {
 				return cb(null, true);
 			};
 			
-			helpers.getServiceInfo = function() {
+			gitHelper.getServiceInfo = function () {
 				return {};
 			};
 			
@@ -210,5 +206,9 @@ describe("testing get config git.js", function () {
 				done();
 			});
 		});
+	});
+	
+	after(() => {
+		gitHelper = testHelper.requireModule('./lib/git/helper.js');
 	});
 });
