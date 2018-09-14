@@ -148,66 +148,13 @@ describe("testing lib/cloud/infra/index.js", function () {
 	var BL = {
 		model: mongoStub
 	};
-	var envRecord = {
-		code: 'DEV',
-		deployer: {
-			"type": "container",
-			"selected": "container.kubernetes.local",
-			"container": {
-				"docker": {
-					"local": {
-						"socketPath": "/var/run/docker.sock"
-					},
-					"remote": {
-						"nodes": ""
-					}
-				},
-				"kubernetes": {
-					"local": {
-						"nginxDeployType": "",
-						"namespace": {},
-						"auth": {
-							"token": ""
-						}
-					},
-					"remote": {
-						"nginxDeployType": "",
-						"namespace": {},
-						"auth": {
-							"token": ""
-						}
-					}
-				}
-			}
-		},
-		dbs: {
-			clusters: {
-				analy: {
-					credentials: {
-						username: 'username',
-						password: 'password'
-					},
-					servers: [{ port: 123, host: 'host' }]
-				},
-				oneCluster: {
-					servers: []
-				}
-			},
-			config: {
-				session: {
-					cluster: 'oneCluster'
-				}
-			}
-		},
-		services: {},
-		profile: ''
-	};
-	
+
 	after(function (done) {
 		sinon.restore();
+		sinon.restore(clusters);
 		done();
 	});
-	
+
 	describe("testing init", function () {
 		
 		it("No Model Requested", function (done) {
@@ -254,6 +201,7 @@ describe("testing lib/cloud/infra/index.js", function () {
 		});
 		
 	});
+
 	describe("get", function () {
 		it("Success list", function (done) {
 			infra.get(config, req.soajs, deployer, function (error, body) {
@@ -301,8 +249,8 @@ describe("testing lib/cloud/infra/index.js", function () {
 
 		it("Success modify", function (done) {
 			infra.modify(config, req.soajs, deployer, function (error, body) {
-				assert.ifError(error)
-				assert.ok(body)
+				assert.ifError(error);
+				assert.ok(body);
 				done();
 			});
 		});
