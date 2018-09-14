@@ -259,7 +259,7 @@ var input =  {
 				}
 		}
 
-}
+};
 
 var res = {};
 var config = {

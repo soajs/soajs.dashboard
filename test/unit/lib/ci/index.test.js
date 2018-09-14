@@ -4,6 +4,7 @@ var assert = require("assert");
 var helper = require("../../../helper.js");
 var utils = helper.requireModule('./lib/ci/index.js');
 var ci;
+
 var ciDriver = {
 	ensureRepoVars: function (settings, cb) {
 		return cb(null, true);

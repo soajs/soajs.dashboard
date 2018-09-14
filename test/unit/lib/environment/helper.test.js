@@ -4,6 +4,7 @@ var assert = require("assert");
 var helper = require("../../../helper.js");
 var helperIndex = helper.requireModule('./lib/environment/helper.js');
 var status = helper.requireModule('./lib/environment/status.js');
+
 var config = {
     "errors": {}
 };
