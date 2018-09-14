@@ -94,6 +94,7 @@ describe("importing sample data", function () {
 	after(function (done) {
 		setTimeout(function () {
 			require("./soajs.templates.test.js");
+			require("./soajs.infra.test.js");
 			require("./soajs.dashboard.test.swagger.js");
 			require("./soajs.dashboard.locked.test.js");
 			require("./soajs.dashboard.test.tenants.js");

@@ -5560,7 +5560,7 @@ module.exports = {
 
 			"/infra/extras": {
 				"_apiInfo": {
-					"l": "Create Infra component",
+					"l": "Update Infra component",
 					"group": "HA Cloud"
 				},
 				"commonFields": ['soajs_project'],
