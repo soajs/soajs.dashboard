@@ -1809,8 +1809,12 @@ describe("DASHBOARD Integration Tests:", function () {
 					},
 					form: {
 						data: {
-							deployment: {},
-							selectedInfraProvider: {}
+							deployment: {
+								"selectedDriver": ""
+							},
+							selectedInfraProvider: {
+								"name": ""
+							}
 						}
 					}
 				};
