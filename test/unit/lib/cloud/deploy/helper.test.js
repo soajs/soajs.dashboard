@@ -21,6 +21,9 @@ var mongoStub = {
         cb(null, true);
     },
 	switchConnection: function(soajs) {
+        return {
+            "test": ''
+        }
 	}
 };
 var deployer = helper.deployer;

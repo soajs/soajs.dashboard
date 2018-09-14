@@ -49,7 +49,9 @@ var req = {
 
 			}
 		},
-		inputmaskData: {},
+		inputmaskData: {
+			specs : {}
+		},
 		validator: {
 			Validator: function () {
 				return {
@@ -78,17 +80,21 @@ var req = {
 };
 var mongoStub = {
 	findEntry: function (soajs, opts, cb) {
-		cb(null, {
-			"productize": {
-				"modifyTemplateStatus": true
-			},
-			"cluster": {},
-			"controller": {},
-			"urac": {},
-			"oauth": {},
-			"nginx": {},
-			"user": {}
-		});
+		if (opts.collection === 'infra') {
+			cb (null, {'_id' : 123123})
+		} else {
+            cb(null, {
+                "productize": {
+                    "modifyTemplateStatus": true
+                },
+                "cluster": {},
+                "controller": {},
+                "urac": {},
+                "oauth": {},
+                "nginx": {},
+                "user": {}
+            });
+		}
 	},
 	updateEntry: function (soajs, opts, cb) {
 		cb(null, true);
@@ -101,6 +107,12 @@ var mongoStub = {
 	},
 	closeConnection: function (soajs) {
 		return true;
+	},
+    validateCustomId : function(soajs, id) {
+		return true
+	},
+    onboardVM : function(soajs, id) {
+		return true
 	}
 };
 var BL = {
@@ -368,7 +380,7 @@ var template = {
 						{
 							"command":{
 								"method" : "post",
-								"routeName" : "/bridge/executeDriver",
+								"routeName" : "/bridge/executeDriver", //change the path
 								"data" : {
 									"type" : "infra",
 									"name" : "google",
@@ -710,7 +722,7 @@ var lib = {
             updateCluster: function (config, soajs, deployer, cb) {
                 return cb(true);
             },
-            getDNSInfo: function (config, soajs, deployer, cb) {
+            getDNSInfo: function (config, req, soajs, deployer, cb) {
                 return cb(true);
             },
             removeTemplate: function (config, soajs, deployer, cb) {
@@ -731,6 +743,19 @@ var lib = {
             downloadTemplate: function (config, soajs, deployer, cb) {
                 return cb(true);
             },
+            getDeployVMStatus: function (config, req, soajs, deployer, cb) {
+                return cb(true);
+            },
+            onboardVM: function (config, req, soajs, deployer, cb) {
+                return cb(true);
+            },
+            destroyVM: function (config, req, soajs, deployer, cb) {
+                return cb(true);
+            },
+			deployVM: function (config, req, soajs, deployer, cb) {
+                return cb(true);
+            },
+
 		});
 	},
 	checkReturnError: function(req, {}, {}, cb){
@@ -1164,6 +1189,7 @@ describe("testing infra.js", function () {
 					]
 				}
 			};
+
 			nock("http://dashboard.com:80").post('/bridge/executeDriver?access_token=token&soajs_project=soajs_project', {
 				"type": "infra",
 				"name": "google",
@@ -1188,6 +1214,283 @@ describe("testing infra.js", function () {
 				done();
 			})
 		});
+
+		it("success infra with response case getDeployVMStatus", function (done) {
+			context = {
+				BL: BL,
+				environmentRecord: environmentRecord,
+				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
+				config: config,
+				errors: [],
+				opts:  {
+					"stage": "deployments",
+					"group": "pre",
+					"stepPath": "infra.cluster.deploy",
+					"section": [
+						"infra",
+						"cluster",
+						"deploy"
+					],
+					"inputs": [
+						{
+							"command": "getDeployVMStatus",
+							"check": {
+								"id": {
+									"type": "string",
+									"required": true
+								}
+							},
+							"recursive": {
+								"max": 1,
+								"delay": 300
+							},
+							options : {
+                                params : ['test'],
+								data : ['test']
+							}
+						},
+					]
+				}
+			};
+			delete context.template.deploy.deployments.pre["infra.cluster.deploy"].status;
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				nock.cleanAll();
+				done();
+			})
+		});
+
+		it("success infra with response case onBoard", function (done) {
+			context = {
+				BL: BL,
+				environmentRecord: environmentRecord,
+				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
+				config: config,
+				errors: [],
+				opts:  {
+					"stage": "deployments",
+					"group": "pre",
+					"stepPath": "infra.cluster.deploy",
+					"section": [
+						"infra",
+						"cluster",
+						"deploy"
+					],
+					"inputs": [
+						{
+							"command": "onboardVM",
+							"check": {
+								"id": {
+									"type": "string",
+									"required": true
+								}
+							},
+							"recursive": {
+								"max": 1,
+								"delay": 300
+							},
+							options : {
+                                params : ['test'],
+								data : ['test']
+							}
+						},
+					]
+				}
+			};
+			context.infraProvider.command = 'onboardVM';
+			delete context.template.deploy.deployments.pre["infra.cluster.deploy"].status;
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				nock.cleanAll();
+				done();
+			})
+		});
+
+		it("success infra with response case dnsInfo", function (done) {
+			context = {
+				BL: BL,
+				environmentRecord: environmentRecord,
+				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
+				config: config,
+				errors: [],
+				opts:  {
+					"stage": "deployments",
+					"group": "pre",
+					"stepPath": "infra.cluster.deploy",
+					"section": [
+						"infra",
+						"cluster",
+						"deploy"
+					],
+					"inputs": [
+						{
+							"command": "getDNSInfo",
+							"check": {
+								"id": {
+									"type": "string",
+									"required": true
+								}
+							},
+							"recursive": {
+								"max": 1,
+								"delay": 300
+							},
+							options : {
+                                params : ['test'],
+								data : ['test']
+							}
+						},
+					]
+				}
+			};
+			delete context.template.deploy.deployments.pre["infra.cluster.deploy"].status;
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				nock.cleanAll();
+				done();
+			})
+		});
+
+		it("success infra with response case deployVm", function (done) {
+			context = {
+				BL: BL,
+				environmentRecord: environmentRecord,
+				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
+				config: config,
+				errors: [],
+				opts:  {
+					"stage": "deployments",
+					"group": "pre",
+					"stepPath": "infra.cluster.deploy",
+					"section": [
+						"infra",
+						"cluster",
+						"deploy"
+					],
+					"inputs": [
+						{
+							"command": "deployVM",
+							"check": {
+								"id": {
+									"type": "string",
+									"required": true
+								}
+							},
+							"recursive": {
+								"max": 1,
+								"delay": 300
+							},
+							options : {
+                                params : {'specs' : {}},
+                                data: [{"test": 'test', "specs": {}}],
+							}
+						},
+					]
+				}
+			};
+			req.soajs.inputmaskData.specs = {
+				layerName : ''
+			};
+			delete context.template.deploy.deployments.pre["infra.cluster.deploy"].status;
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				nock.cleanAll();
+				done();
+			})
+		});
+
+		it("success infra with response case releaseVm", function (done) {
+			context = {
+				BL: BL,
+				environmentRecord: environmentRecord,
+				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
+				config: config,
+				errors: [],
+				opts:  {
+					"stage": "deployments",
+					"group": "pre",
+					"stepPath": "infra.cluster.deploy",
+					"section": [
+						"infra",
+						"cluster",
+						"deploy"
+					],
+					"inputs": [
+						{
+							"command": "releaseVM",
+							"check": {
+								"id": {
+									"type": "string",
+									"required": true
+								}
+							},
+							"recursive": {
+								"max": 1,
+								"delay": 300
+							},
+							options : {
+                                params : ['test'],
+								data : ['test']
+							}
+						},
+					]
+				}
+			};
+            context.infraProvider.command = 'onboardVM';
+			delete context.template.deploy.deployments.pre["infra.cluster.deploy"].status;
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				nock.cleanAll();
+				done();
+			})
+		});
+
+		it("success infra with response case destroyVm", function (done) {
+			context = {
+				BL: BL,
+				environmentRecord: environmentRecord,
+				template: JSON.parse(JSON.stringify(template)),
+                infraProvider : JSON.parse(JSON.stringify(infraRecord)),
+				config: config,
+				errors: [],
+				opts:  {
+					"stage": "deployments",
+					"group": "pre",
+					"stepPath": "infra.cluster.deploy",
+					"section": [
+						"infra",
+						"cluster",
+						"deploy"
+					],
+					"inputs": [
+						{
+							"command": "destroyVM",
+							"check": {
+								"id": {
+									"type": "string",
+									"required": true
+								}
+							},
+							"recursive": {
+								"max": 1,
+								"delay": 300
+							},
+							options : {
+                                params : ['test'],
+								data : ['test']
+							}
+						},
+					]
+				}
+			};
+			delete context.template.deploy.deployments.pre["infra.cluster.deploy"].status;
+			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
+				nock.cleanAll();
+				done();
+			})
+		});
+
+
 
 		it("success infra ", function (done) {
 			context = {
