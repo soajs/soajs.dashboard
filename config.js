@@ -2205,8 +2205,23 @@ module.exports = {
 								'required': false,
 								'type': 'object',
 								'properties': {
-									"previousEnvironment": {
+									"selectedDriver": {
+										'required': true,
 										'type': 'string'
+									},
+									"previousEnvironment": {
+										'required': false,
+										'type': 'string'
+									},
+									"deployment": {
+										'type': 'object',
+										'required': false,
+										'properties': {
+											"previousEnvironment": {
+												'required': false,
+												'type': 'string'
+											}
+										}
 									}
 								}
 							},
@@ -2215,10 +2230,12 @@ module.exports = {
 								'type': 'object',
 								'properties': {
 									'name': {
+										'required': true,
 										'type': 'string'
 									},
 									'deploy': {
 										'type': 'object',
+										'required': false,
 										'properties': {
 											"technology": {
 												'required': true,
