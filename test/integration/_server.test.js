@@ -95,7 +95,6 @@ describe("importing sample data", function () {
 		setTimeout(function () {
 			require("./soajs.templates.test.js");
 			require("./soajs.infra.test.js");
-			require("./soajs.dashboard.test.gitAccounts.js");
 			require("./soajs.dashboard.test.swagger.js");
 			require("./soajs.dashboard.locked.test.js");
 			require("./soajs.dashboard.test.tenants.js");
@@ -108,6 +107,7 @@ describe("importing sample data", function () {
 			require("./soajs.dashboard.test.secrets.js");
 			require("./soajs.dashboard.test.ci.js");
 			require("./soajs.cd.test.js");
+			require("./soajs.dashboard.test.gitAccounts.js");
 			require("./soajs.dashboard.test.apiBuilder.js");
 			done();
 		}, 100);

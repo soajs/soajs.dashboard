@@ -5496,7 +5496,8 @@ module.exports = {
 					"source": ['body.api'],
 					"required": true,
 					"validation": {
-						"type": "object"
+						"type": "object",
+						"properties":{}
 					}
 				}
 			},
