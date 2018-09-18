@@ -428,9 +428,9 @@ module.exports = {
 				}
 			});
 			
-			callback(error);
+			return callback(error);
 		} else {
-			callback();
+			return callback();
 		}
 	}
 };

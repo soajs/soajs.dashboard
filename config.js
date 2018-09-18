@@ -2772,7 +2772,6 @@ module.exports = {
 					"source": ['body.recipe'],
 					"required": true,
 					"validation": {
-						"required": true,
 						"type": "string"
 					}
 				},
@@ -2781,7 +2780,6 @@ module.exports = {
 					"source": ['body.gitSource'],
 					"validation": {
 						"type": "object",
-						"required": true,
 						"properties": {
 							"owner": { "required": true, "type": "string" },
 							"repo": { "required": true, "type": "string" },
@@ -2795,7 +2793,6 @@ module.exports = {
 					"source": ['body.deployConfig'],
 					"validation": {
 						"type": "object",
-						"required": true,
 						"properties": {
 							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
 							"cpuLimit": { "required": false, "type": "string" },
@@ -2861,7 +2858,6 @@ module.exports = {
 					"required": false,
 					"validation": {
 						"type": "object",
-						"required": false,
 						"properties": {
 							"sourceCode": {
 								"type": "object",
@@ -4227,7 +4223,27 @@ module.exports = {
 					"source": ['body.settings'],
 					"required": true,
 					"validation": {
-						"type": "object"
+						"type": "object",
+						"properties": {
+							"extKeyRequired": {
+								"type": "boolean"
+							},
+							"oauth": {
+								"type": "boolean"
+							},
+							"urac": {
+								"type": "boolean"
+							},
+							"urac_Profile": {
+								"type": "boolean"
+							},
+							"urac_ACL": {
+								"type": "boolean"
+							},
+							"provision_ACL": {
+								"type": "boolean"
+							}
+						}
 					}
 				}
 			},
@@ -4389,7 +4405,85 @@ module.exports = {
 					'required': false,
 					"source": ["body.deployOptions"],
 					'validation': {
-						'type': 'object'
+						'type': 'object',
+						'properties': {
+							"env": {
+								"required": true,
+								"type": "string"
+							},
+							"recipe": {
+								"required": true,
+								"type": "string"
+							},
+							"gitSource": {
+								"required": false,
+								"type": "object",
+								"properties": {
+									"owner": { "required": true, "type": "string" },
+									"repo": { "required": true, "type": "string" },
+									"branch": { "required": true, "type": "string" },
+									"commit": { "required": false, "type": "string" }
+								}
+							},
+							"deployConfig": {
+								"required": true,
+								"type": "object",
+								"properties": {
+									"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
+									"cpuLimit": { "required": false, "type": "string" },
+									"isKubernetes": { "required": false, "type": "boolean" },
+									"replication": {
+										"required": false,
+										"type": "object",
+										"properties": {
+											"mode": {
+												"required": true,
+												"type": "string",
+												"enum": ['replicated', 'global', 'deployment', 'daemonset']
+											},
+											"replicas": { "required": false, "type": "number", "minimum": 1 }
+										}
+									},
+									"region": { "required": false, "type": "string" },
+									"infra": { "required": false, "type": "string" },
+									"type": { "required": false, "type": "string" },
+									"vmConfiguration": {
+										"required": false,
+										"type": "object",
+										"properties": {
+											"vmLayer": { "required": true, "type": "string" },
+										}
+									},
+								}
+							},
+							"autoScale": {
+								"required": false,
+								"type": "object",
+								"properties": {
+									"replicas": {
+										"type": "object",
+										"required": true,
+										"properties": {
+											"min": { "type": "number", "minimum": 1, "required": true },
+											"max": { "type": "number", "minimum": 1, "required": true }
+										}
+									},
+									"metrics": {
+										"type": "object",
+										"required": true,
+										"properties": {
+											"cpu": {
+												"type": "object",
+												"required": true,
+												"properties": {
+													"percent": { "type": "number", "minimum": 1, "required": true }
+												}
+											}
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			},
@@ -4641,7 +4735,22 @@ module.exports = {
 					"source": ['body.config'],
 					"required": true,
 					"validation": {
-						"type": "object"
+						"type": "object",
+						"properties": {
+							"namespace": {
+								"type": "object",
+								"properties": {
+									"default": {
+										"required": true,
+										"type": "string"
+									},
+									"perService": {
+										"required": true,
+										"type": "boolean"
+									}
+								}
+							}
+						}
 					}
 				}
 			},
@@ -5496,8 +5605,7 @@ module.exports = {
 					"source": ['body.api'],
 					"required": true,
 					"validation": {
-						"type": "object",
-						"properties":{}
+						"type": "object"
 					}
 				}
 			},
