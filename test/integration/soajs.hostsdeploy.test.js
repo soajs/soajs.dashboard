@@ -704,6 +704,9 @@ describe("testing hosts deployment", function () {
 				}
 			};
 			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
+				if (!(body.result) && (!body.data)){
+					console.log(body)
+				}
 				assert.ok(body.result);
 				assert.ok(body.data);
 
@@ -761,9 +764,11 @@ describe("testing hosts deployment", function () {
                     }
                 };
                 executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
+                	if (!(body.result) && (!body.data)){
+		                console.log(body)
+	                }
                     assert.ok(body.result);
                     assert.ok(body.data);
-
                     getService({env: 'dev', serviceName: 'helloDaemon-group1'}, function (service) {
                         deleteService({
                             env: 'DEV',
