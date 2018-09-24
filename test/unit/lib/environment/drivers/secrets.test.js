@@ -4,28 +4,6 @@ var async = require("async");
 var helper = require("../../../../helper.js");
 var config = require("../../../../../config.js");
 var utils = helper.requireModule('./lib/environment/drivers/secrets.js');
-var sinon = require('sinon');
-
-function stubStatusUtils(error) {
-	sinon
-		.stub(statusUtils, 'custom_registry')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'products')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'tenants')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'secrets')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'repos')
-		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'resources')
-		.yields(error, true);
-}
 
 var req = {
 	soajs: {

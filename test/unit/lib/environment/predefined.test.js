@@ -30,12 +30,15 @@ var context = {};
 describe("testing predefinedSteps.js", function () {
 	
 	describe("testing custom_registry", function () {
+		afterEach((done) => {
+			sinon.restore(statusUtils);
+			done();
+		});
 		
 		it("Success custom_registry validate", function (done) {
 			stubStatusUtils();
 			utils.custom_registry.validate(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});
@@ -44,7 +47,6 @@ describe("testing predefinedSteps.js", function () {
 			stubStatusUtils();
 			utils.custom_registry.deploy(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});
@@ -53,19 +55,21 @@ describe("testing predefinedSteps.js", function () {
 			stubStatusUtils();
 			utils.custom_registry.rollback(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});
 	});
 	
 	describe("testing productization", function () {
+		afterEach((done) => {
+			sinon.restore(statusUtils);
+			done();
+		});
 		
 		it("Success productization deploy", function (done) {
 			stubStatusUtils();
 			utils.productization.deploy(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});
@@ -74,19 +78,21 @@ describe("testing predefinedSteps.js", function () {
 			stubStatusUtils();
 			utils.productization.rollback(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});
 	});
 	
 	describe("testing tenants", function () {
+		afterEach((done) => {
+			sinon.restore(statusUtils);
+			done();
+		});
 		
 		it("Success tenants deploy", function (done) {
 			stubStatusUtils();
 			utils.tenant.deploy(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});
@@ -96,19 +102,21 @@ describe("testing predefinedSteps.js", function () {
 			stubStatusUtils();
 			utils.tenant.rollback(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});
 	});
 	
 	describe("testing secrets", function () {
+		afterEach((done) => {
+			sinon.restore(statusUtils);
+			done();
+		});
 		
 		it("Success secrets validate", function (done) {
 			stubStatusUtils();
 			utils.secrets.validate(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});
@@ -117,7 +125,6 @@ describe("testing predefinedSteps.js", function () {
 			stubStatusUtils();
 			utils.secrets.deploy(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});
@@ -126,19 +133,20 @@ describe("testing predefinedSteps.js", function () {
 			stubStatusUtils();
 			utils.secrets.rollback(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});
 	});
 	
 	describe("testing repo", function () {
-		
+		afterEach((done) => {
+			sinon.restore(statusUtils);
+			done();
+		});
 		it("Success repo validate", function (done) {
 			stubStatusUtils();
 			utils.repo.validate(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});
@@ -147,7 +155,6 @@ describe("testing predefinedSteps.js", function () {
 			stubStatusUtils();
 			utils.repo.deploy(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});
@@ -156,19 +163,20 @@ describe("testing predefinedSteps.js", function () {
 			stubStatusUtils();
 			utils.repo.rollback(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});
 	});
 	
 	describe("testing resources", function () {
-		
+		afterEach((done) => {
+			sinon.restore(statusUtils);
+			done();
+		});
 		it("Success resources validate", function (done) {
 			stubStatusUtils();
 			utils.resources.validate(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});
@@ -177,7 +185,6 @@ describe("testing predefinedSteps.js", function () {
 			stubStatusUtils();
 			utils.resources.deploy(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});
@@ -186,7 +193,6 @@ describe("testing predefinedSteps.js", function () {
 			stubStatusUtils();
 			utils.resources.rollback(req, context, function (error, body) {
 				assert.ok(body);
-				sinon.restore(statusUtils);
 				done();
 			});
 		});

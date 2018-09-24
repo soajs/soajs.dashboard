@@ -443,6 +443,7 @@ describe("Testing iacIndex", function () {
         };
         stubStatusUtils();
         iacIndex.export(req, context2, lib, async, mongoStub, function (result, error) {
+	        sinon.restore(templates);
             done();
         });
     });
