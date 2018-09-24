@@ -14,6 +14,7 @@ module.exports = {
 					"type": "object",
 					"additionalProperties": false,
 					"properties": {
+						"oauthType": {"required": false, "type": "string"},
 						"secret": {"required": true, "type": "string"},
 						"redirectURI": {"required": true, "type": "string"},
 						"grants": {
