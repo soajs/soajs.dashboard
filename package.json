@@ -54,11 +54,11 @@
     "moment-timezone": "0.5.11",
     "ncp": "2.0.0",
     "object-hash": "1.1.5",
-    "request": "2.82.0",
+    "request": "2.84.0",
     "rimraf": "2.5.4",
     "shortid": "^2.2.4",
     "soajs": "2.0.13",
-    "soajs.core.drivers": "3.0.13",
+    "soajs.core.drivers": "3.0.14",
     "unzip2": "0.2.5",
     "url-clean": "^1.0.2",
     "yamljs": "0.2.8"
