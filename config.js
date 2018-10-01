@@ -1925,6 +1925,14 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				"type": {
+					"source": ['query.type'],
+					"required": false,
+					"validation": {
+						"type": "string",
+						"enum": ["cloud", "technology"]
+					}
 				}
 			},
 			
