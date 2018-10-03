@@ -6,6 +6,11 @@ var environment = {
 		"type": "string",
 		"format": "alphanumeric"
 	},
+	"envType": {
+		"required": true,
+		"type": "string",
+		"enum": ['manual', 'container', 'singleInfra']
+	},
 	"description": {
 		"required": false,
 		"type": "string"
