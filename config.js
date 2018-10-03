@@ -2220,16 +2220,6 @@ module.exports = {
 									"previousEnvironment": {
 										'required': false,
 										'type': 'string'
-									},
-									"deployment": {
-										'type': 'object',
-										'required': false,
-										'properties': {
-											"previousEnvironment": {
-												'required': false,
-												'type': 'string'
-											}
-										}
 									}
 								}
 							},
@@ -2237,6 +2227,10 @@ module.exports = {
 								'required': true,
 								'type': 'object',
 								'properties': {
+									'_id': {
+										'required': true,
+										'type': 'string'
+									},
 									'name': {
 										'required': true,
 										'type': 'string'
