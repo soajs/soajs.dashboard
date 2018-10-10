@@ -5870,7 +5870,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project'],
 				'envCode': {
-					"source": ['body.envCode'],
+					"source": ['query.envCode'],
 					"required": true,
 					"validation": {
 						"type": "string"
