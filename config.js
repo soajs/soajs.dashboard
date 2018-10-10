@@ -2252,6 +2252,53 @@ module.exports = {
 				}
 			},
 			
+			"/environment/infra/lock": {
+				"_apiInfo": {
+					"l": "Lock an environment to a Cloud Provider",
+					"group": "Environment"
+				},
+				'commonFields': ['soajs_project'],
+				'envCode': {
+					"source": ['body.envCode'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'infraId': {
+					"source": ['body.infraId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'region': {
+					"source": ['body.region'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'network': {
+					"source": ['body.network'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'extras': {
+					"source": ['body.extras'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"additionalProperties": {
+							"type": "string",
+							"required": true
+						}
+					}
+				}
+			},
+			
 			"/resources": { // add new
 				_apiInfo: {
 					"l": "Add / Edit Resource",
@@ -5812,6 +5859,21 @@ module.exports = {
 					'required': true,
 					'validation': {
 						'type': 'string'
+					}
+				}
+			},
+			
+			"/environment/infra/lock": {
+				"_apiInfo": {
+					"l": "Unlock an environment from a Cloud Provider",
+					"group": "Environment"
+				},
+				'commonFields': ['soajs_project'],
+				'envCode': {
+					"source": ['body.envCode'],
+					"required": true,
+					"validation": {
+						"type": "string"
 					}
 				}
 			},
