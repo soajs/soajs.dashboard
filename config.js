@@ -1326,7 +1326,7 @@ module.exports = {
 				},
 				"infraId": {
 					"source": ['query.infraId'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string"
 					}
