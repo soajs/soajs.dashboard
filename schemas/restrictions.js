@@ -569,7 +569,7 @@ options.forEach((opt)=>{
 		case "array":
 			imfv.template.properties.restrictions.properties.deployment.items.enum = ["container", "vm"];
 			imfv.template.properties.content.properties.deployments.properties.resources.patternProperties["\w+"].properties.deploy.properties.restriction.properties.type.enum = ["container", "vm"];
-			imfv.template.properties.content.properties.deployments.properties.repo.patternProperties["\w+"].properties.deploy.properties.restriction.properties.type.enum = ["container, \"vm\""];
+			imfv.template.properties.content.properties.deployments.properties.repo.patternProperties["\w+"].properties.deploy.properties.restriction.properties.type.enum = ["container", "vm"];
 			singleInfra.oneOf.push({
 				"properties": soajsUtils.cloneObj(imfv),
 				"additionalProperties": false

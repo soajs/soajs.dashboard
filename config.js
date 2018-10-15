@@ -3095,14 +3095,7 @@ module.exports = {
 					"l": "Perform A Maintenance Operation on a Virtual Machine",
 					"group": "HA Cloud"
 				},
-				"commonFields": ['soajs_project'],
-				"infraId": {
-					"source": ['query.infraId', 'body.infraId'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
+				"commonFields": ['soajs_project', 'env'],
 				"technology": {
 					"source": ['query.technology'],
 					"required": true,
@@ -3125,29 +3118,8 @@ module.exports = {
 						"enum": ["powerOffVM", "startVM", "restartService"]
 					}
 				},
-				'env': {
-					"source": ['query.env'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				'region': {
-					"source": ['body.region'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
 				'instanceId': {
 					"source": ['query.instanceId'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				'group': {
-					"source": ['query.group'],
 					"required": false,
 					"validation": {
 						"type": "string"
@@ -3161,13 +3133,6 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				"commonFields": ['soajs_project', 'env'],
-				"infraId": {
-					"source": ['query.infraId', 'body.infraId'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
 				"technology": {
 					"source": ['query.technology'],
 					"required": true,
@@ -3177,13 +3142,6 @@ module.exports = {
 				},
 				"infraCodeTemplate": {
 					"source": ['body.infraCodeTemplate'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"region": {
-					"source": ['body.region'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -3261,13 +3219,6 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				'commonFields': ['soajs_project'],
-				"infraId": {
-					"source": ['query.infraId', 'body.infraId'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
 				"technology": {
 					"source": ['query.technology', 'body.vmName'],
 					"required": true,
@@ -3293,20 +3244,12 @@ module.exports = {
 				},
 				'env': {
 					"source": ['query.env'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				'group': {
-					"source": ['query.group'],
 					"required": true,
 					"validation": {
 						"type": "string"
 					}
 				}
 			},
-			
 			
 			"/catalog/recipes/add": {
 				"_apiInfo": {
@@ -5718,13 +5661,6 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				"commonFields": ['soajs_project', 'id', 'env'],
-				"infraId": {
-					"source": ['query.infraId', 'body.infraId'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
 				"technology": {
 					"source": ['query.technology'],
 					"required": true,
@@ -5734,13 +5670,6 @@ module.exports = {
 				},
 				"infraCodeTemplate": {
 					"source": ['body.infraCodeTemplate'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"region": {
-					"source": ['body.region'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -6104,14 +6033,7 @@ module.exports = {
 					"l": "Delete Virtual Machine",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['soajs_project', 'env', 'serviceId', 'infraId', 'technology'],
-				'group': {
-					"source": ['query.group'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
+				'commonFields': ['soajs_project', 'env', 'serviceId', 'technology'],
 				'region': {
 					"source": ['query.region'],
 					"required": false,
@@ -6127,13 +6049,6 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				"commonFields": ['soajs_project', 'id', 'env'],
-				"infraId": {
-					"source": ['query.infraId',],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
 				"technology": {
 					"source": ['query.technology'],
 					"required": true,
