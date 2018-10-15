@@ -3183,34 +3183,13 @@ module.exports = {
 						"type": "boolean"
 					}
 				},
-				"infraId": {
-					"source": ['query.infraId', 'body.infraId'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"group": {
-					"source": ['body.group'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
 				"layerName": {
 					"source": ['body.layerName'],
 					"required": false,
 					"validation": {
 						"type": "string"
 					}
-				},
-				"region": {
-					"source": ['body.region'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
+				}
 			},
 			
 			"/cloud/vm/logs": {

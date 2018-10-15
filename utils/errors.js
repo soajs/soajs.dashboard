@@ -111,6 +111,7 @@ var errors = {
 	"514": "Error removing environment database",
 	
 	"520": "Error Invalid environment restriction",
+	"521": "Unable to onBoard your VM layer",
 
 	"600": "Database error",
 	"601": "No Logged in User found.",
