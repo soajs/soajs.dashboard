@@ -114,6 +114,7 @@ var errors = {
 	"517": "This environment has virtual machines at the cloud provider associated to it, you need to remove these virtual machines first.",
 	
 	"520": "Error Invalid environment restriction",
+	"521": "Unable to onBoard your VM layer",
 
 	"600": "Database error",
 	"601": "No Logged in User found.",
