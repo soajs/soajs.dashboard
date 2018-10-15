@@ -3096,13 +3096,6 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				"commonFields": ['soajs_project', 'env'],
-				"technology": {
-					"source": ['query.technology'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
 				"vmName": {
 					"source": ['query.serviceId', 'body.serviceId'],
 					"required": true,
