@@ -510,7 +510,7 @@ service.init(function () {
 	service.delete("/environment/infra/lock", function (req, res) {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.unlockEnvToCloudProvider(config, req, function (error, data) {
+				BL.unlockEnvToCloudProvider(config, req, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

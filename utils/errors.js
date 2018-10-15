@@ -109,6 +109,9 @@ var errors = {
 	"512": "environment database does not exist",
 	"513": "Error updating environment database",
 	"514": "Error removing environment database",
+	"515": "This environment is not associated with any Cloud Provider!",
+	"516": "This environment is using a container cluster provisioned at the cloud provider, you need to remove the cluster first.",
+	"517": "This environment has virtual machines at the cloud provider associated to it, you need to remove these virtual machines first.",
 	
 	"520": "Error Invalid environment restriction",
 
