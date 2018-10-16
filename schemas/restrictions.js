@@ -113,7 +113,7 @@ let manual = {
 					"additionalProperties": false,
 					"properties": {}
 				},
-				"restrictions": {
+				"restriction": {
 					"type": "object",
 					"required": false,
 					"properties": {
@@ -304,9 +304,9 @@ let container = {
 					"additionalProperties": true,
 					"properties": {}
 				},
-				"restrictions": {
+				"restriction": {
 					"type": "object",
-					"required": true,
+					"required": false,
 					"properties": {
 						"deployment": {
 							"type": "array",
@@ -362,9 +362,9 @@ let imfv =  {
 		"required": true,
 		"additionalProperties": true,
 		"properties": {
-			"restrictions": {
+			"restriction": {
 				"type": "object",
-				"required": true,
+				"required": false,
 				"properties": {
 					"deployment": {
 						"type": "array",
