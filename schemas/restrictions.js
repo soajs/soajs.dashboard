@@ -540,7 +540,7 @@ let singleInfra = {
 options.forEach((opt)=>{
 	switch (opt) {
 		case "vm":
-			imfv.template.properties.restrictions.properties.deployment.items.enum = ["vm"];
+			imfv.template.properties.restriction.properties.deployment.items.enum = ["vm"];
 			imfv.template.properties.content.properties.deployments.properties.resources.patternProperties["\w+"].properties.deploy.properties.restriction.properties.type.enum = ["vm"];
 			imfv.template.properties.content.properties.deployments.properties.repo.patternProperties["\w+"].properties.deploy.properties.restriction.properties.type.enum = ["vm"];
 			singleInfra.oneOf.push({
@@ -549,7 +549,7 @@ options.forEach((opt)=>{
 			});
 			break;
 		case "container":
-			imfv.template.properties.restrictions.properties.deployment.items.enum = ["container"];
+			imfv.template.properties.restriction.properties.deployment.items.enum = ["container"];
 			imfv.template.properties.content.properties.deployments.properties.resources.patternProperties["\w+"].properties.deploy.properties.restriction.properties.type.enum = ["container"];
 			imfv.template.properties.content.properties.deployments.properties.repo.patternProperties["\w+"].properties.deploy.properties.restriction.properties.type.enum = ["container"];
 			singleInfra.oneOf.push({
@@ -558,7 +558,7 @@ options.forEach((opt)=>{
 			});
 			break;
 		case "composite":
-			imfv.template.properties.restrictions.properties.deployment.items.enum = ["container", "vm"];
+			imfv.template.properties.restriction.properties.deployment.items.enum = ["container", "vm"];
 			imfv.template.properties.content.properties.deployments.properties.resources.patternProperties["\w+"].properties.deploy.properties.restriction.properties.type.enum = ["container", "vm"];
 			imfv.template.properties.content.properties.deployments.properties.repo.patternProperties["\w+"].properties.deploy.properties.restriction.properties.type.enum = ["container", "vm"];
 			singleInfra.oneOf.push({
@@ -567,7 +567,7 @@ options.forEach((opt)=>{
 			});
 			break;
 		case "array":
-			imfv.template.properties.restrictions.properties.deployment.items.enum = ["container", "vm"];
+			imfv.template.properties.restriction.properties.deployment.items.enum = ["container", "vm"];
 			imfv.template.properties.content.properties.deployments.properties.resources.patternProperties["\w+"].properties.deploy.properties.restriction.properties.type.enum = ["container", "vm"];
 			imfv.template.properties.content.properties.deployments.properties.repo.patternProperties["\w+"].properties.deploy.properties.restriction.properties.type.enum = ["container", "vm"];
 			singleInfra.oneOf.push({
@@ -576,7 +576,7 @@ options.forEach((opt)=>{
 			});
 			break;
 		case null:
-			imfv.template.properties.restrictions.properties.deployment.items.enum = ["container", "vm"];
+			imfv.template.properties.restriction.properties.deployment.items.enum = ["container", "vm"];
 			imfv.template.properties.content.properties.deployments.properties.resources.patternProperties["\w+"].properties.deploy.properties.restriction.properties.type.enum = ["container", "vm"];
 			imfv.template.properties.content.properties.deployments.properties.repo.patternProperties["\w+"].properties.deploy.properties.restriction.properties.type.enum = ["container", "vm"];
 			singleInfra.oneOf.push({
