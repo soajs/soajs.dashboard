@@ -350,7 +350,7 @@ let imfv =  {
 				"properties": {
 					"selectedDriver": {
 						"type": "string",
-						"required": true,
+						"required": false,
 						"enum": ["vm", "container"]
 					}
 				}
@@ -399,7 +399,7 @@ let imfv =  {
 			},
 			"content": {
 				"type": "object",
-				"required": false,
+				"required": true,
 				"additionalProperties": false,
 				"properties": {
 					"recipes": {
