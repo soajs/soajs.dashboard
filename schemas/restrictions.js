@@ -399,7 +399,7 @@ let imfv =  {
 			},
 			"content": {
 				"type": "object",
-				"required": false,
+				"required": true,
 				"additionalProperties": false,
 				"properties": {
 					"recipes": {
