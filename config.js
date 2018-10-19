@@ -1338,16 +1338,9 @@ module.exports = {
 					"l": "List Cloud Virtual Machines",
 					"group": "Services"
 				},
-				'commonFields': ['soajs_project', 'id'],
+				'commonFields': ['soajs_project', 'env', 'id'],
 				"layerName": {
 					"source": ['query.layerName'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"infraId": {
-					"source": ['query.infraId'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -5626,13 +5619,7 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				"commonFields": ['soajs_project', 'id', 'env'],
-				"technology": {
-					"source": ['query.technology'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
+				
 				"infraCodeTemplate": {
 					"source": ['body.infraCodeTemplate'],
 					"required": true,
@@ -5641,7 +5628,7 @@ module.exports = {
 					}
 				},
 				"layerName": {
-					"source": ['query.layerName'],
+					"source": ['body.layerName'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -6014,13 +6001,6 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				"commonFields": ['soajs_project', 'id', 'env'],
-				"technology": {
-					"source": ['query.technology'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
 				"layerName": {
 					"source": ['query.layerName'],
 					"required": true,
