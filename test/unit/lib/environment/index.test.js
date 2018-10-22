@@ -1615,8 +1615,8 @@ describe("testing index.js", function () {
 				"code": "QA",
 				"description": "this is the QA environment",
 				"deployer": {
-					"type": "container",
-					"selected": "container.docker.local",
+					"type": "manual",
+					"selected": "manual",
 					"manual": {
 						"nodes": "127.0.0.1"
 					},
