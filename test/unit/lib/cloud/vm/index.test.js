@@ -109,6 +109,14 @@ var envRecord = {
 		config: {
 			ports: {}
 		}
+	},
+	"restriction":{
+		"1231231":{
+			"eastus": {
+				group: "grouptest",
+				network: "networktest"
+			}
+		}
 	}
 };
 var infraRecord = {
@@ -164,7 +172,7 @@ deployer.runCommand = function (opts, command, options, cb) {
 	return cb(null, true);
 };
 
-describe("testing lib/cloud/bm/index.js", function () {
+describe("testing lib/cloud/vm/index.js", function () {
 
 	before(() => {
 		mongoStub.findEntry = function (soajs, opts, cb) {

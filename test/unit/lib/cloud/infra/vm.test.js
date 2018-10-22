@@ -138,6 +138,14 @@ var envRecord = {
 			}
 		}
 	},
+	restriction: {
+		"5b28c5edb53002d7b3b1f0cf":{
+			"eastus": {
+				group: "grouptest",
+				network: "networktest"
+			}
+		}
+	},
 	dbs: {
 		clusters: {
 			analy: {

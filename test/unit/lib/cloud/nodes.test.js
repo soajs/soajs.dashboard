@@ -87,6 +87,14 @@ var envRecord = {
 		config: {
 		
 		}
+	},
+	"restriction":{
+		"1231231":{
+			"eastus": {
+				group: "grouptest",
+				network: "networktest"
+			}
+		}
 	}
 };
 

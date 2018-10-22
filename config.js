@@ -1326,7 +1326,7 @@ module.exports = {
 				},
 				"infraId": {
 					"source": ['query.infraId'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string"
 					}
@@ -1338,16 +1338,9 @@ module.exports = {
 					"l": "List Cloud Virtual Machines",
 					"group": "Services"
 				},
-				'commonFields': ['soajs_project', 'id'],
+				'commonFields': ['soajs_project', 'env', 'id'],
 				"layerName": {
 					"source": ['query.layerName'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"infraId": {
-					"source": ['query.infraId'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -1925,6 +1918,14 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				"type": {
+					"source": ['query.type'],
+					"required": false,
+					"validation": {
+						"type": "string",
+						"enum": ["cloud", "technology"]
+					}
 				}
 			},
 			
@@ -2212,16 +2213,6 @@ module.exports = {
 									"previousEnvironment": {
 										'required': false,
 										'type': 'string'
-									},
-									"deployment": {
-										'type': 'object',
-										'required': false,
-										'properties': {
-											"previousEnvironment": {
-												'required': false,
-												'type': 'string'
-											}
-										}
 									}
 								}
 							},
@@ -2229,6 +2220,10 @@ module.exports = {
 								'required': true,
 								'type': 'object',
 								'properties': {
+									'_id': {
+										'required': true,
+										'type': 'string'
+									},
 									'name': {
 										'required': true,
 										'type': 'string'
@@ -2245,6 +2240,53 @@ module.exports = {
 									}
 								}
 							}
+						}
+					}
+				}
+			},
+			
+			"/environment/infra/lock": {
+				"_apiInfo": {
+					"l": "Lock an environment to a Cloud Provider",
+					"group": "Environment"
+				},
+				'commonFields': ['soajs_project'],
+				'envCode': {
+					"source": ['body.envCode'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'infraId': {
+					"source": ['body.infraId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'region': {
+					"source": ['body.region'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'network': {
+					"source": ['body.network'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'extras': {
+					"source": ['body.extras'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"additionalProperties": {
+							"type": "string",
+							"required": true
 						}
 					}
 				}
@@ -3046,21 +3088,7 @@ module.exports = {
 					"l": "Perform A Maintenance Operation on a Virtual Machine",
 					"group": "HA Cloud"
 				},
-				"commonFields": ['soajs_project'],
-				"infraId": {
-					"source": ['query.infraId', 'body.infraId'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"technology": {
-					"source": ['query.technology'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
+				"commonFields": ['soajs_project', 'env'],
 				"vmName": {
 					"source": ['query.serviceId', 'body.serviceId'],
 					"required": true,
@@ -3076,29 +3104,8 @@ module.exports = {
 						"enum": ["powerOffVM", "startVM", "restartService"]
 					}
 				},
-				'env': {
-					"source": ['query.env'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				'region': {
-					"source": ['body.region'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
 				'instanceId': {
 					"source": ['query.instanceId'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				'group': {
-					"source": ['query.group'],
 					"required": false,
 					"validation": {
 						"type": "string"
@@ -3112,29 +3119,8 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				"commonFields": ['soajs_project', 'env'],
-				"infraId": {
-					"source": ['query.infraId', 'body.infraId'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"technology": {
-					"source": ['query.technology'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
 				"infraCodeTemplate": {
 					"source": ['body.infraCodeTemplate'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"region": {
-					"source": ['body.region'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -3176,34 +3162,13 @@ module.exports = {
 						"type": "boolean"
 					}
 				},
-				"infraId": {
-					"source": ['query.infraId', 'body.infraId'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"group": {
-					"source": ['body.group'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
 				"layerName": {
 					"source": ['body.layerName'],
 					"required": false,
 					"validation": {
 						"type": "string"
 					}
-				},
-				"region": {
-					"source": ['body.region'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
+				}
 			},
 			
 			"/cloud/vm/logs": {
@@ -3212,13 +3177,6 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				'commonFields': ['soajs_project'],
-				"infraId": {
-					"source": ['query.infraId', 'body.infraId'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
 				"technology": {
 					"source": ['query.technology', 'body.vmName'],
 					"required": true,
@@ -3244,20 +3202,12 @@ module.exports = {
 				},
 				'env': {
 					"source": ['query.env'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				'group': {
-					"source": ['query.group'],
 					"required": true,
 					"validation": {
 						"type": "string"
 					}
 				}
 			},
-			
 			
 			"/catalog/recipes/add": {
 				"_apiInfo": {
@@ -5669,20 +5619,7 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				"commonFields": ['soajs_project', 'id', 'env'],
-				"infraId": {
-					"source": ['query.infraId', 'body.infraId'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"technology": {
-					"source": ['query.technology'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
+				
 				"infraCodeTemplate": {
 					"source": ['body.infraCodeTemplate'],
 					"required": true,
@@ -5690,15 +5627,8 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"region": {
-					"source": ['body.region'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
 				"layerName": {
-					"source": ['query.layerName'],
+					"source": ['body.layerName'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -5810,6 +5740,21 @@ module.exports = {
 					'required': true,
 					'validation': {
 						'type': 'string'
+					}
+				}
+			},
+			
+			"/environment/infra/lock": {
+				"_apiInfo": {
+					"l": "Unlock an environment from a Cloud Provider",
+					"group": "Environment"
+				},
+				'commonFields': ['soajs_project'],
+				'envCode': {
+					"source": ['query.envCode'],
+					"required": true,
+					"validation": {
+						"type": "string"
 					}
 				}
 			},
@@ -6040,14 +5985,7 @@ module.exports = {
 					"l": "Delete Virtual Machine",
 					"group": "HA Cloud"
 				},
-				'commonFields': ['soajs_project', 'env', 'serviceId', 'infraId', 'technology'],
-				'group': {
-					"source": ['query.group'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
+				'commonFields': ['soajs_project', 'env', 'serviceId', 'technology'],
 				'region': {
 					"source": ['query.region'],
 					"required": false,
@@ -6063,20 +6001,6 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				"commonFields": ['soajs_project', 'id', 'env'],
-				"infraId": {
-					"source": ['query.infraId',],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"technology": {
-					"source": ['query.technology'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
 				"layerName": {
 					"source": ['query.layerName'],
 					"required": true,

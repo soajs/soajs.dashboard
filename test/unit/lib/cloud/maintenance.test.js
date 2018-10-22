@@ -107,6 +107,14 @@ var envRecord = {
 				maintenanceInc: 5
 			}
 		}
+	},
+	"restriction":{
+		"1231231":{
+			"eastus": {
+				group: "grouptest",
+				network: "networktest"
+			}
+		}
 	}
 };
 

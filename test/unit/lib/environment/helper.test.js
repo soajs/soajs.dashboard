@@ -59,13 +59,13 @@ describe("testing lib/environment/helper.js", function () {
                 code : 'dev'
             };
             let output = helperIndex.prepareEnvRecord(config, data, {}, {});
-            assert.ok(output.code);
             done();
         });
 
         it("Success -- data.deploy.selectedDriver = manual", function (done) {
             let data = {
                 code : 'dev',
+	            envType: "manual",
                 deploy : {
                     selectedDriver : 'manual',
                     previousEnvironment : 'dashboard'
@@ -89,6 +89,7 @@ describe("testing lib/environment/helper.js", function () {
         it("Success -- data.deploy.selectedDriver = manual and no previous environment", function (done) {
             let data = {
                 code : 'dev',
+	            envType: "manual",
                 deploy : {
                     selectedDriver : 'manual',
                     deployment : {
@@ -107,6 +108,7 @@ describe("testing lib/environment/helper.js", function () {
         it("Success -- if infraProvider local docker", function (done) {
             let data = {
                 code : 'dev',
+	            envType: "container",
                 deploy : {
                     selectedDriver : 'test',
                     technology : 'docker'
@@ -117,7 +119,7 @@ describe("testing lib/environment/helper.js", function () {
                 name : "local",
                 api : {}
             };
-            let output = helperIndex.prepareEnvRecord(config, data, {}, infraProvider);
+            let output = helperIndex.prepareEnvRecord(config, data, {}, {},infraProvider);
             assert.ok(output.code);
             done();
         });
@@ -125,9 +127,18 @@ describe("testing lib/environment/helper.js", function () {
         it("Success -- if infraProvider local kubernetes", function (done) {
             let data = {
                 code : 'dev',
+	            envType: "container",
                 deploy : {
                     selectedDriver : 'test',
-                    technology : 'kubernetes'
+                    technology : 'kubernetes',
+	                selectedInfraProvider: {
+		                _id: "1",
+		                region: "region",
+		                network: "network",
+		                extras: {
+		                	group: "group"
+		                }
+	                }
                 }
             };
 
@@ -135,7 +146,7 @@ describe("testing lib/environment/helper.js", function () {
                 name : "local",
                 api : {}
             };
-            let output = helperIndex.prepareEnvRecord(config, data, {}, infraProvider);
+            let output = helperIndex.prepareEnvRecord(config, data, {}, {}, infraProvider);
             assert.ok(output.code);
             done();
         });
@@ -143,9 +154,18 @@ describe("testing lib/environment/helper.js", function () {
         it("Success -- if infraProvider local kubernetes", function (done) {
             let data = {
                 code : 'dev',
+	            envType: "singleInfra",
                 deploy : {
                     selectedDriver : 'test',
-                    technology : 'kubernetes'
+                    technology : 'kubernetes',
+	                selectedInfraProvider: {
+		                _id: "1",
+		                region: "region",
+		                network: "network",
+		                extras: {
+			                group: "group"
+		                }
+	                }
                 }
             };
 
@@ -153,8 +173,8 @@ describe("testing lib/environment/helper.js", function () {
                 name : "remote",
                 api : {}
             };
-            let output = helperIndex.prepareEnvRecord(config, data, {}, infraProvider);
-            assert.ok(output.code);
+            let output = helperIndex.prepareEnvRecord(config, data, {}, {}, infraProvider);
+            assert.ok(output);
             done();
         });
     });

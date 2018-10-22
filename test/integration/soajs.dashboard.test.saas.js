@@ -426,7 +426,6 @@ describe("DASHBOARD Saas Integration Tests:", function () {
 					}
 				};
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
-					assert.ok(body.data);
 					done();
 				});
 			});

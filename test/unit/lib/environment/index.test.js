@@ -5,6 +5,7 @@ var helper = require("../../../helper.js");
 var utils = helper.requireModule('./lib/environment/index.js');
 var mongoModel = helper.requireModule('./models/mongo.js');
 var status = helper.requireModule('./lib/environment/status.js');
+var vms = helper.requireModule('./lib/cloud/vm/index.js');
 function stubStatusUtils() {
 	sinon
 		.stub(status, 'validateDeploymentInputs')
@@ -94,6 +95,7 @@ var req = {
 
 var input = {
 	data: {
+		envType: "container",
 		code: 'MIKE',
 		description: 'mike env',
 		sensitive: false,
@@ -102,7 +104,15 @@ var input = {
 		sitePrefix: 'mike-site',
 		domain: 'soajs.local',
 		deploy: {
-			previousEnvironment: "last"
+			previousEnvironment: "last",
+			selectedInfraProvider: {
+				_id: "1",
+				region: "region",
+				network: "network",
+				extras: {
+					group: "group"
+				}
+			}
 		},
 		templateId: '5ac39208c29b8c2e3fd9279a',
 		soajsFrmwrk: true,
@@ -286,6 +296,9 @@ var mongoStub = {
 			}
 		}
 	},
+	validateCustomId : function(soajs, id) {
+		return true
+	},
 	removeEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
@@ -371,6 +384,14 @@ describe("testing index.js", function () {
 									"remote": {
 										"nodes": []
 									}
+								}
+							}
+						},
+						"restriction":{
+							"1231231":{
+								"eastus": {
+									group: "grouptest",
+									network: "networktest"
 								}
 							}
 						},
@@ -499,6 +520,33 @@ describe("testing index.js", function () {
 						"logo": "modules/dashboard/templates/images/soajs.png",
 					})
 				}
+				else if (opts.collection === 'infra'){
+					
+					cb(null, {
+						"_id": '5b28c5edb53002d7b3b1f0cf',
+						"api": {
+							"clientId": "1",
+							"secret": "1",
+							"domain": "2",
+							"subscriptionId": "36"
+						},
+						"name": "local",
+						"technologies": [
+							"container"
+						],
+						"templates": [
+							"local"
+						],
+						"drivers": [
+							"Native",
+							"Terraform"
+						],
+						"label": "local",
+						"deployments": [
+						
+						]
+					})
+				}
 			};
 			req.soajs.validator = {
 				Validator: function () {
@@ -527,7 +575,15 @@ describe("testing index.js", function () {
 			req.soajs.inputmaskData.data.sessionName = 2;
 			req.soajs.inputmaskData.data.sessionSecret = 3;
 			req.soajs.inputmaskData.data.deploy = {
-				previousEnvironment: "last"
+				previousEnvironment: "last",
+				selectedInfraProvider: {
+					_id: "1",
+					region: "region",
+					network: "network",
+					extras: {
+						group: "group"
+					}
+				}
 			};
 			stubStatusUtils();
 			environment.add(config, req, res, function (error, body) {
@@ -1313,6 +1369,417 @@ describe("testing index.js", function () {
 			});
 		});
 		
+	});
+	
+	describe("testing lockEnvToCloudProvider", function () {
+		
+		it("Success lockEnvToCloudProvider", function (done) {
+			let env = {
+				"api": {
+					"ipaddress": "192.168.61.51",
+					"token": "3432",
+					"network": "soajsnet",
+					"port": 443,
+					"protocol": "https"
+				},
+				"name": "local",
+				"technologies": [
+					"docker"
+				],
+				"templates": null,
+				"drivers": [
+					"Native"
+				],
+				"label": "docker local",
+				"deployments": [
+					{
+						"technology": "docker",
+						"options": {
+							"zone": "local"
+						},
+						"environments": [
+							"QA"
+						],
+						"loadBalancers": {},
+						"name": "htlocalr6yav9ay6daz5",
+						"id": "htlocalr6yav9ay6daz5"
+					}
+				],
+				"code": "QA",
+				"description": "this is the QA environment",
+				"deployer": {
+					"type": "container",
+					"selected": "container.docker.local",
+					"manual": {
+						"nodes": "127.0.0.1"
+					},
+					"container": {
+						"docker": {
+							"local": {
+								"socketPath": "/var/run/docker.sock"
+							},
+							"remote": {
+								"nodes": []
+							}
+						},
+						"kubernetes": {
+							"local": {},
+							"remote": {
+								"nodes": []
+							}
+						}
+					}
+				},
+				"dbs": {
+					"clusters": {
+						"cluster1": {
+							"servers": [
+								{
+									"host": "127.0.0.1",
+									"port": 27017
+								}
+							],
+							"credentials": null,
+							"URLParam": {
+								"connectTimeoutMS": 0,
+								"socketTimeoutMS": 0,
+								"maxPoolSize": 5,
+								"wtimeoutMS": 0,
+								"slaveOk": true
+							},
+							"extraParam": {
+								"db": {
+									"native_parser": true
+								},
+								"server": {
+									"auto_reconnect": true
+								}
+							}
+						}
+					},
+					"config": {
+						"prefix": "",
+						"session": {
+							"cluster": "cluster1",
+							"name": "core_session",
+							"store": {},
+							"collection": "sessions",
+							"stringify": false,
+							"expireAfter": 1209600000
+						}
+					},
+					"databases": {
+						"urac": {
+							"cluster": "cluster1",
+							"tenantSpecific": true
+						}
+					}
+				},
+				"services": {
+					"controller": {
+						"maxPoolSize": 100,
+						"authorization": true,
+						"requestTimeout": 30,
+						"requestTimeoutRenewal": 0
+					},
+					"config": {
+						"awareness": {
+							"healthCheckInterval": 500,
+							"autoRelaodRegistry": 300000,
+							"maxLogCount": 5,
+							"autoRegisterService": true
+						},
+						"agent": {
+							"topologyDir": "/opt/soajs/"
+						},
+						"key": {
+							"algorithm": "aes256",
+							"password": "soajs key lal massa"
+						},
+						"logger": {
+							"src": true,
+							"level": "fatal",
+							"formatter": {
+								"outputMode": "short"
+							}
+						},
+						"cors": {
+							"enabled": true,
+							"origin": "*",
+							"credentials": "true",
+							"methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+							"headers": "key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type",
+							"maxage": 1728000
+						},
+						"oauth": {
+							"grants": [
+								"password",
+								"refresh_token"
+							],
+							"accessTokenLifetime": 7200,
+							"refreshTokenLifetime": 1209600,
+							"debug": false
+						},
+						"ports": {
+							"controller": 4000,
+							"maintenanceInc": 1000,
+							"randomInc": 100
+						},
+						"cookie": {
+							"secret": "this is a secret sentence"
+						},
+						"session": {
+							"name": "soajsID",
+							"secret": "this is antoine hage app server",
+							"rolling": false,
+							"unset": "keep",
+							"cookie": {
+								"path": "/",
+								"httpOnly": true,
+								"secure": false,
+								"domain": "soajs.com",
+								"maxAge": null
+							},
+							"resave": false,
+							"saveUninitialized": false
+						}
+					}
+				}
+			};
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, env);
+			};
+			mongoStub.saveEntry = function (soajs, opts, cb) {
+				cb(null, true);
+			};
+			sinon
+				.stub(mongoModel, 'findEntry')
+				.yields(null, env);
+			
+			req.soajs.inputmaskData = {
+				envCode: "QA",
+				infraId: "123",
+				extras: {
+					group: "group",
+					network: "network"
+				}
+			};
+			
+			environment.model = mongoStub;
+			environment.lockEnvToCloudProvider(config, req, function (error, body) {
+				sinon.restore(mongoModel);
+				done();
+			});
+		});
+	});
+	
+	describe("testing unlockEnvToCloudProvider", function () {
+		
+		it("Success unlockEnvToCloudProvider", function (done) {
+			let env = {
+				"restriction":{
+					"123":{
+						group: "123"
+					}
+				},
+				"api": {
+					"ipaddress": "192.168.61.51",
+					"token": "3432",
+					"network": "soajsnet",
+					"port": 443,
+					"protocol": "https"
+				},
+				"name": "local",
+				"technologies": [
+					"docker"
+				],
+				"templates": null,
+				"drivers": [
+					"Native"
+				],
+				"label": "docker local",
+				"deployments": [
+					{
+						"technology": "docker",
+						"options": {
+							"zone": "local"
+						},
+						"environments": [
+							"QA"
+						],
+						"loadBalancers": {},
+						"name": "htlocalr6yav9ay6daz5",
+						"id": "htlocalr6yav9ay6daz5"
+					}
+				],
+				"code": "QA",
+				"description": "this is the QA environment",
+				"deployer": {
+					"type": "manual",
+					"selected": "manual",
+					"manual": {
+						"nodes": "127.0.0.1"
+					},
+					"container": {
+						"docker": {
+							"local": {
+								"socketPath": "/var/run/docker.sock"
+							},
+							"remote": {
+								"nodes": []
+							}
+						},
+						"kubernetes": {
+							"local": {},
+							"remote": {
+								"nodes": []
+							}
+						}
+					}
+				},
+				"dbs": {
+					"clusters": {
+						"cluster1": {
+							"servers": [
+								{
+									"host": "127.0.0.1",
+									"port": 27017
+								}
+							],
+							"credentials": null,
+							"URLParam": {
+								"connectTimeoutMS": 0,
+								"socketTimeoutMS": 0,
+								"maxPoolSize": 5,
+								"wtimeoutMS": 0,
+								"slaveOk": true
+							},
+							"extraParam": {
+								"db": {
+									"native_parser": true
+								},
+								"server": {
+									"auto_reconnect": true
+								}
+							}
+						}
+					},
+					"config": {
+						"prefix": "",
+						"session": {
+							"cluster": "cluster1",
+							"name": "core_session",
+							"store": {},
+							"collection": "sessions",
+							"stringify": false,
+							"expireAfter": 1209600000
+						}
+					},
+					"databases": {
+						"urac": {
+							"cluster": "cluster1",
+							"tenantSpecific": true
+						}
+					}
+				},
+				"services": {
+					"controller": {
+						"maxPoolSize": 100,
+						"authorization": true,
+						"requestTimeout": 30,
+						"requestTimeoutRenewal": 0
+					},
+					"config": {
+						"awareness": {
+							"healthCheckInterval": 500,
+							"autoRelaodRegistry": 300000,
+							"maxLogCount": 5,
+							"autoRegisterService": true
+						},
+						"agent": {
+							"topologyDir": "/opt/soajs/"
+						},
+						"key": {
+							"algorithm": "aes256",
+							"password": "soajs key lal massa"
+						},
+						"logger": {
+							"src": true,
+							"level": "fatal",
+							"formatter": {
+								"outputMode": "short"
+							}
+						},
+						"cors": {
+							"enabled": true,
+							"origin": "*",
+							"credentials": "true",
+							"methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+							"headers": "key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type",
+							"maxage": 1728000
+						},
+						"oauth": {
+							"grants": [
+								"password",
+								"refresh_token"
+							],
+							"accessTokenLifetime": 7200,
+							"refreshTokenLifetime": 1209600,
+							"debug": false
+						},
+						"ports": {
+							"controller": 4000,
+							"maintenanceInc": 1000,
+							"randomInc": 100
+						},
+						"cookie": {
+							"secret": "this is a secret sentence"
+						},
+						"session": {
+							"name": "soajsID",
+							"secret": "this is antoine hage app server",
+							"rolling": false,
+							"unset": "keep",
+							"cookie": {
+								"path": "/",
+								"httpOnly": true,
+								"secure": false,
+								"domain": "soajs.com",
+								"maxAge": null
+							},
+							"resave": false,
+							"saveUninitialized": false
+						}
+					}
+				}
+			};
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, env);
+			};
+			mongoStub.saveEntry = function (soajs, opts, cb) {
+				cb(null, true);
+			};
+			mongoStub.updateEntry = function (soajs, opts, cb) {
+				cb(null, true);
+			};
+			sinon
+				.stub(vms, 'init')
+				.yields(null, {
+					listVMs : function (context, req, data, cb) {
+						return cb(null, true);
+					}
+				});
+			req.soajs.inputmaskData = {
+				envCode: "QA"
+			};
+			
+			environment.model = mongoStub;
+			environment.unlockEnvToCloudProvider(config, req, deployer, function (error, body) {
+				sinon.restore(mongoModel);
+				sinon.restore(vms);
+				done();
+			});
+		});
 	});
 
 });
