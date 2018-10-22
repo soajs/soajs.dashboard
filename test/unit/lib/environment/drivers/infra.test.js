@@ -641,7 +641,15 @@ var environmentRecord = {
 		}
 	},
 	services: {},
-	profile: ''
+	profile: '',
+	"restriction":{
+		"1231231":{
+			"eastus": {
+				group: "grouptest",
+				network: "networktest"
+			}
+		}
+	}
 };
 var infraRecord = {
         "_id":'5af2b621a0e17acc56000001',

@@ -764,7 +764,16 @@ describe("testing lib/cloud/deploy/index.js", function () {
 				if(opts.collection === 'tenants'){
 					return cb(null, tenantRecord);
 				}
-				return cb(null, envRecord);
+				let vmEnvRecord = JSON.parse(JSON.stringify(envRecord, null, 2));
+				vmEnvRecord.restriction = {
+					"1231231":{
+						"eastus": {
+							group: "grouptest",
+							network: "networktest"
+						}
+					}
+				};
+				return cb(null, vmEnvRecord);
 			};
 
 			req.soajs.registry = envRecord;
@@ -937,7 +946,16 @@ describe("testing lib/cloud/deploy/index.js", function () {
 				if(opts.collection === 'tenants'){
 					return cb(null, tenantRecord);
 				}
-				return cb(null, envRecord);
+				let vmEnvRecord = JSON.parse(JSON.stringify(envRecord, null, 2));
+				vmEnvRecord.restriction = {
+					"1231231":{
+						"eastus": {
+							group: "grouptest",
+							network: "networktest"
+						}
+					}
+				};
+				return cb(null, vmEnvRecord);
 			};
 
 			req.soajs.registry = envRecord;
@@ -1111,7 +1129,16 @@ describe("testing lib/cloud/deploy/index.js", function () {
 				if(opts.collection === 'tenants'){
 					return cb(null, tenantRecord);
 				}
-				return cb(null, envRecord);
+				let vmEnvRecord = JSON.parse(JSON.stringify(envRecord, null, 2));
+				vmEnvRecord.restriction = {
+					"1231231":{
+						"eastus": {
+							group: "grouptest",
+							network: "networktest"
+						}
+					}
+				};
+				return cb(null, vmEnvRecord);
 			};
 
 			req.soajs.registry = envRecord;

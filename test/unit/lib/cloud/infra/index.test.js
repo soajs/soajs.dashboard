@@ -87,7 +87,16 @@ var mongoStub = {
 				},
 				type: "container",
 				selected: "container.docker.remote"
+			},
+			"restriction":{
+				"1231231":{
+					"eastus": {
+						group: "grouptest",
+						network: "networktest"
+					}
+				}
 			}
+			
 		}];
 		cb(null, data);
 	},

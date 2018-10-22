@@ -157,7 +157,15 @@ var envRecord = {
 		}
 	},
 	services: {},
-	profile: ''
+	profile: '',
+	"restriction":{
+		"1231231":{
+			"eastus": {
+				group: "grouptest",
+				network: "networktest"
+			}
+		}
+	}
 };
 var req = {
 	query: {},
