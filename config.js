@@ -1220,6 +1220,93 @@ module.exports = {
 				"commonFields": ['soajs_project', 'env']
 			},
 			
+			"/hosts/start": {
+				"_apiInfo": {
+					"l": "Start Service Hosts",
+					"group": "Hosts"
+				},
+				"commonFields": ['soajs_project', 'env'],
+				"serviceName": {
+					"source": ['body.serviceName'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["controller", "urac", "oauth"]
+					}
+				},
+				"serviceVersion": {
+					"source": ['body.serviceVersion'],
+					"required": false,
+					"default": 1,
+					"validation": {
+						"type": "number"
+					}
+				},
+			},
+			"/hosts/stop": {
+				"_apiInfo": {
+					"l": "Stop Service Hosts",
+					"group": "Hosts"
+				},
+				"commonFields": ['soajs_project', 'env'],
+				"serviceName": {
+					"source": ['body.serviceName'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["controller", "urac", "oauth"]
+					}
+				},
+				"serviceVersion": {
+					"source": ['body.serviceVersion'],
+					"required": false,
+					"default": 1,
+					"validation": {
+						"type": "number"
+					}
+				},
+			},
+			
+			"/hosts/maintenance": {
+				"_apiInfo": {
+					"l": "Execute Maintenance Operation on Hosts",
+					"group": "Hosts"
+				},
+				"commonFields": ['soajs_project', 'env'],
+				"serviceName": {
+					"source": ['query.serviceName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceType": {
+					"source": ['query.serviceType'],
+					"required": false,
+					"default": 1,
+					"validation": {
+						"type": "string",
+						"enum": ['service','daemon']
+					}
+				},
+				"serviceVersion": {
+					"source": ['query.serviceVersion'],
+					"required": false,
+					"default": 1,
+					"validation": {
+						"type": "number"
+					}
+				},
+				"operation": {
+					"source": ['query.operation'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'daemonStats', 'reloadDaemonConf']
+					}
+				}
+			},
+			
 			"/cloud/services/list": {
 				"_apiInfo": {
 					"l": "List Cloud Services",
@@ -1639,6 +1726,14 @@ module.exports = {
 				'commonFields': ['soajs_project'],
 				"fullList": {
 					"source": ['query.fullList'],
+					"required": false,
+					"default": false,
+					"validation": {
+						"type": "boolean"
+					}
+				},
+				"rms": {
+					"source": ['query.rms'],
 					"required": false,
 					"default": false,
 					"validation": {

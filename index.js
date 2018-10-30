@@ -1439,7 +1439,7 @@ service.init(function () {
 	});
 
 	/**
-	 * Perform maintenance operation on a host deployed in manual mode
+	 * Perform awareness stat operation on a controller host deployed in manual mode
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
@@ -1453,7 +1453,55 @@ service.init(function () {
 			});
 		});
 	});
-
+	
+	/**
+	 * Perform maintenance operation on a host deployed in manual mode
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/hosts/maintenance", function (req, res) {
+		initBLModel(req, res, dashboardBL.hosts.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.maintenance(config, req.soajs, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Start a service host when manual environment
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/hosts/start", function (req, res) {
+		initBLModel(req, res, dashboardBL.hosts.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.start(config, req.soajs, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Stop a service host when manual environment
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/hosts/stop", function (req, res) {
+		initBLModel(req, res, dashboardBL.hosts.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.stop(config, req.soajs, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
 	/**
 	 * High Availability Cloud features
 	 */

@@ -80,6 +80,13 @@ var methods = {
         	delete opts.fields.repos;
         }
         
+        if(soajs.inputmaskData.rms){
+        	opts.conditions = {
+        		"owner": "soajs",
+		        "access": "public"
+	        };
+        }
+        
         model.findEntries(soajs, opts, cb);
     },
 	
