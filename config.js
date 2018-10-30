@@ -1220,53 +1220,6 @@ module.exports = {
 				"commonFields": ['soajs_project', 'env']
 			},
 			
-			"/hosts/start": {
-				"_apiInfo": {
-					"l": "Start Service Hosts",
-					"group": "Hosts"
-				},
-				"commonFields": ['soajs_project', 'env'],
-				"serviceName": {
-					"source": ['body.serviceName'],
-					"required": true,
-					"validation": {
-						"type": "string",
-						"enum": ["controller", "urac", "oauth"]
-					}
-				},
-				"serviceVersion": {
-					"source": ['body.serviceVersion'],
-					"required": false,
-					"default": 1,
-					"validation": {
-						"type": "number"
-					}
-				},
-			},
-			"/hosts/stop": {
-				"_apiInfo": {
-					"l": "Stop Service Hosts",
-					"group": "Hosts"
-				},
-				"commonFields": ['soajs_project', 'env'],
-				"serviceName": {
-					"source": ['body.serviceName'],
-					"required": true,
-					"validation": {
-						"type": "string",
-						"enum": ["controller", "urac", "oauth"]
-					}
-				},
-				"serviceVersion": {
-					"source": ['body.serviceVersion'],
-					"required": false,
-					"default": 1,
-					"validation": {
-						"type": "number"
-					}
-				},
-			},
-			
 			"/hosts/maintenance": {
 				"_apiInfo": {
 					"l": "Execute Maintenance Operation on Hosts",
@@ -2099,6 +2052,54 @@ module.exports = {
 		},
 		
 		"post": {
+			
+			"/hosts/start": {
+				"_apiInfo": {
+					"l": "Start Service Hosts",
+					"group": "Hosts"
+				},
+				"commonFields": ['soajs_project', 'env'],
+				"serviceName": {
+					"source": ['body.serviceName'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["controller", "urac", "oauth"]
+					}
+				},
+				"serviceVersion": {
+					"source": ['body.serviceVersion'],
+					"required": false,
+					"default": 1,
+					"validation": {
+						"type": "number"
+					}
+				},
+			},
+			
+			"/hosts/stop": {
+				"_apiInfo": {
+					"l": "Stop Service Hosts",
+					"group": "Hosts"
+				},
+				"commonFields": ['soajs_project', 'env'],
+				"serviceName": {
+					"source": ['body.serviceName'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["controller", "urac", "oauth"]
+					}
+				},
+				"serviceVersion": {
+					"source": ['body.serviceVersion'],
+					"required": false,
+					"default": 1,
+					"validation": {
+						"type": "number"
+					}
+				},
+			},
 			
 			"/templates/import": {
 				_apiInfo: {
