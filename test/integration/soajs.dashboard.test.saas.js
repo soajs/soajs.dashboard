@@ -15,7 +15,6 @@ var dashboardConfig = dbConfig();
 dashboardConfig.name = "demo_core_provision";
 var mongo = new Mongo(dashboardConfig);
 
-var AuthValue;
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f7ad78ebb7347db3fc9875cb10c2bce39bbf8aabacf9e00420afb580b15698c04ce10d659d1972ebc53e76b6bbae0c113bee1e23062800bc830e4c329ca913fefebd1f1222295cf2eb5486224044b4d0c';
 var qaEnvRecord;
 
@@ -73,26 +72,7 @@ describe("DASHBOARD Saas Integration Tests:", function () {
 		mongo.closeDb();
 		done();
 	});
-
-	it("get Main Auhtorization token", function (done) {
-		var options = {
-			uri: 'http://localhost:4000/oauth/authorization',
-			headers: {
-				'Content-Type': 'application/json',
-				'key': extKey
-			},
-			json: true
-		};
-
-		request.get(options, function (error, response, body) {
-			assert.ifError(error);
-			assert.ok(body);
-			assert.ok(body.data);
-			AuthValue = body.data;
-			done();
-		});
-	});
-
+	
 	describe("environment tests", function () {
 		var validEnvRecord = {
 			"code": "DEV",
