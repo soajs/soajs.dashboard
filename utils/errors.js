@@ -115,6 +115,10 @@ var errors = {
 	
 	"520": "Error Invalid environment restriction",
 	"521": "Unable to onBoard your VM layer",
+	
+	"522": "The Service Host is already running in this environment",
+	"523": "The Service Host is not running in this environment",
+	"524": "The requested service is not found!",
 
 	"600": "Database error",
 	"601": "No Logged in User found.",

@@ -28,6 +28,10 @@ let manual = {
 											"type": "string",
 											"required": true,
 											"enum": ["127.0.0.1"]
+										},
+										"port": {
+											"type": "number",
+											"required": true
 										}
 									}
 								}
