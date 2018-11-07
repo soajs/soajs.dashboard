@@ -41,7 +41,8 @@ module.exports = {
 									"prefix": {"type": "string", "required": false},
 									"name": {"type": "string", "required": true},
 									"tag": {"type": "string", "required": true},
-									"pullPolicy": {"type": "string", "required": false}
+									"repositoryType": {"type": "string", "required": false, "enum": ["private","public"]},
+									"pullPolicy": {"type": "string", "required": false},
 								}
 							},
 							
