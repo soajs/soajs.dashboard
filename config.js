@@ -2520,6 +2520,7 @@ module.exports = {
 									"prefix": { "required": false, "type": "string" },
 									"name": { "required": false, "type": "string" },
 									"tag": { "required": false, "type": "string" },
+									"registrySecret": {"required": false, "type": "string"}
 								}
 							},
 							"env": {
