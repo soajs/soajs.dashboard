@@ -14,6 +14,12 @@ var mongo = new Mongo(dashboardConfig);
 
 describe("importing sample data", function () {
 
+	it("drop previous db", (done) => {
+		mongo.dropDatabase(() => {
+			done();
+		});
+	});
+	
 	it("do import", function (done) {
 		shell.pushd(sampleData.dir);
 		shell.exec("chmod +x " + sampleData.shell, function (code) {
@@ -58,7 +64,7 @@ describe("importing sample data", function () {
 				done();
 			});
 	});
-
+	
 	it("Start Services", function (done) {
 		//todo: never change process.env.SOAJS_ENV_WORKDIR to /opt/, contents of the directory will be deleted.
 		process.env.SOAJS_ENV_WORKDIR = __dirname + "/";
@@ -73,7 +79,27 @@ describe("importing sample data", function () {
 			}, 2000);
 		}, 2000);
 	});
-
+	
+	it("Update hosts entries", (done) => {
+		mongo.update('hosts', {'name': 'dashboard'}, {$set: {"port": 8003}}, {"multi": true, "safe": true}, function (error) {
+			assert.ifError(error);
+			
+			mongo.update('hosts', {'name': 'urac'}, {$set: {"port": 8001}}, {"multi": true, "safe": true}, function (error) {
+				assert.ifError(error);
+				
+				mongo.update('hosts', {'name': 'oauth'}, {$set: {"port": 8002}}, {"multi": true, "safe": true}, function (error) {
+					assert.ifError(error);
+					
+					mongo.update('hosts', {'name': 'controller'}, {$set: {"port": 4000}}, {"multi": true, "safe": true}, function (error) {
+						assert.ifError(error);
+						done();
+					});
+				});
+			});
+		});
+	});
+	
+	
 	it("reload controller registry", function (done) {
 		var params = {
 			"uri": "http://127.0.0.1:5000/reloadRegistry",
@@ -85,9 +111,22 @@ describe("importing sample data", function () {
 		helper.requester("get", params, function (error, response) {
 			assert.ifError(error);
 			assert.ok(response);
-			setTimeout(function () {
-				done();
-			}, 500);
+			
+			var params = {
+				"uri": "http://127.0.0.1:5000/awarenessStat",
+				"headers": {
+					"content-type": "application/json"
+				},
+				"json": true
+			};
+			helper.requester("get", params, function (error, response) {
+				assert.ifError(error);
+				assert.ok(response);
+				
+				setTimeout(function () {
+					done();
+				}, 500);
+			});
 		});
 	});
 	
