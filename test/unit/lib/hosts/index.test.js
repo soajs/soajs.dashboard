@@ -356,4 +356,440 @@ describe("testing host.js", function () {
 		});
 	});
 	
+	describe("start", function() {
+		let envRecord = {
+			_id: '',
+			code: 'DEV',
+			deployer: {
+				type: "manual",
+				"selected": "manual",
+				"container": {
+					"docker": {
+						"local": {
+							"socketPath": "/var/run/docker.sock"
+						},
+						"remote": {
+							"nodes": []
+						}
+					},
+					"kubernetes": {
+						"local": {},
+						"remote": {
+							"nodes": []
+						}
+					}
+				}
+			},
+			services: {
+				config:{
+					ports: {
+						controller: 6000,
+						maintenanceInc: 1000
+					}
+				}
+			}
+		};
+		
+		it("Success start", function (done) {
+			let counter = 0;
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}
+				else if(opts.collection === 'hosts'){
+					if(counter === 0){
+						counter ++;
+						return cb(null, null);
+					}
+					else{
+						let serviceHost = {
+							"_id": '5be039a9914c0d532ebfc285',
+							"env": "dev",
+							"name": "urac",
+							"ip": "127.0.0.1",
+							"hostname": "mikes-macbook-pro-3.local",
+							"version": 2,
+							"port": 10001
+						};
+						return cb(null, serviceHost);
+					}
+				}
+				else{
+					return cb(null, {});
+				}
+			};
+			
+			soajs.inputmaskData = {
+				env: 'dev',
+				serviceName: 'urac',
+				serviceVersion: 1
+			};
+			host.start(config, soajs, function (error, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				done();
+			});
+		});
+		
+		it("fail service not starting", function (done) {
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}
+				else if(opts.collection === 'hosts'){
+					return cb(null, null);
+				}
+				else{
+					return cb(null, {});
+				}
+			};
+			
+			soajs.inputmaskData = {
+				env: 'dev',
+				serviceName: 'urac',
+				serviceVersion: 1
+			};
+			host.start(config, soajs, function (error, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				done();
+			});
+		});
+		
+		it("fail, service not found", function (done) {
+			
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}
+				else if(opts.collection === 'hosts'){
+					return cb(null, null);
+				}
+				return cb(null, {});
+			};
+			
+			soajs.inputmaskData = {
+				env: 'dev',
+				serviceVersion: 1
+			};
+			host.start(config, soajs, function (error) {
+				assert.ok(error);
+				assert.deepEqual(error, { code: 524, msg: 'The requested service is not found!' });
+				done();
+			});
+		});
+	});
+	
+	describe("stop", function() {
+		let envRecord = {
+			_id: '',
+			code: 'DEV',
+			deployer: {
+				type: "manual",
+				"selected": "manual",
+				"container": {
+					"docker": {
+						"local": {
+							"socketPath": "/var/run/docker.sock"
+						},
+						"remote": {
+							"nodes": []
+						}
+					},
+					"kubernetes": {
+						"local": {},
+						"remote": {
+							"nodes": []
+						}
+					}
+				}
+			},
+			services: {
+				config:{
+					ports: {
+						controller: 6000,
+						maintenanceInc: 1000
+					}
+				}
+			}
+		};
+		
+		it("Success stop", function (done) {
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}
+				else if(opts.collection === 'hosts'){
+					let serviceHost = {
+						"_id": '5be039a9914c0d532ebfc285',
+						"env": "dev",
+						"name": "urac",
+						"ip": "127.0.0.1",
+						"hostname": "mikes-macbook-pro-3.local",
+						"version": 2,
+						"port": 10001
+					};
+					return cb(null, serviceHost);
+				}
+				else{
+					return cb(null, {});
+				}
+			};
+			
+			soajs.inputmaskData = {
+				env: 'dev',
+				serviceName: 'urac',
+				serviceVersion: 1
+			};
+			host.stop(config, soajs, function (error, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				done();
+			});
+		});
+		
+		it("Success stop gateway", function (done) {
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}
+				else if(opts.collection === 'hosts'){
+					let serviceHost = {
+						"_id": '5be039a9914c0d532ebfc285',
+						"env": "dev",
+						"name": "controller",
+						"ip": "127.0.0.1",
+						"hostname": "mikes-macbook-pro-3.local",
+						"version": 2,
+						"port": 6000
+					};
+					return cb(null, serviceHost);
+				}
+				else{
+					return cb(null, {});
+				}
+			};
+			
+			soajs.inputmaskData = {
+				env: 'dev',
+				serviceName: 'controller',
+				serviceVersion: 1
+			};
+			host.stop(config, soajs, function (error, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				done();
+			});
+		});
+	});
+	
+	describe("maintenance", function() {
+		let envRecord = {
+			_id: '',
+			code: 'DEV',
+			deployer: {
+				type: "manual",
+				"selected": "manual",
+				"container": {
+					"docker": {
+						"local": {
+							"socketPath": "/var/run/docker.sock"
+						},
+						"remote": {
+							"nodes": []
+						}
+					},
+					"kubernetes": {
+						"local": {},
+						"remote": {
+							"nodes": []
+						}
+					}
+				}
+			},
+			services: {
+				config:{
+					ports: {
+						controller: 6000,
+						maintenanceInc: 1000
+					}
+				}
+			}
+		};
+		
+		it("Success urac reload registry", function (done) {
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}
+				else if(opts.collection === 'hosts'){
+					let serviceHost = {
+						"_id": '5be039a9914c0d532ebfc285',
+						"env": "dev",
+						"name": "urac",
+						"ip": "127.0.0.1",
+						"hostname": "mikes-macbook-pro-3.local",
+						"version": 2,
+						"port": 10001
+					};
+					return cb(null, serviceHost);
+				}
+				else{
+					return cb(null, {});
+				}
+			};
+			
+			soajs.inputmaskData = {
+				env: 'dev',
+				serviceName: 'urac',
+				serviceType: 'service',
+				'operation': 'reloadRegistry'
+			};
+			host.maintenance(config, soajs, function (error, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				done();
+			});
+		});
+		
+		it("Success controller awareness", function (done) {
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}
+				else if(opts.collection === 'hosts'){
+					let serviceHost = {
+						"_id": '5be039a9914c0d532ebfc285',
+						"env": "dev",
+						"name": "controller",
+						"ip": "127.0.0.1",
+						"hostname": "mikes-macbook-pro-3.local",
+						"version": 2,
+						"port": 6000
+					};
+					return cb(null, serviceHost);
+				}
+				else{
+					return cb(null, {});
+				}
+			};
+			
+			soajs.inputmaskData = {
+				env: 'dev',
+				serviceName: 'controller',
+				serviceType: 'service',
+				operation: 'awarenessStat'
+			};
+			host.maintenance(config, soajs, function (error, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				done();
+			});
+		});
+		
+		it("Success oauth reload provision", function (done) {
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}
+				else if(opts.collection === 'hosts'){
+					let serviceHost = {
+						"_id": '5be039a9914c0d532ebfc285',
+						"env": "dev",
+						"name": "oauth",
+						"ip": "127.0.0.1",
+						"hostname": "mikes-macbook-pro-3.local",
+						"version": 2,
+						"port": 10002
+					};
+					return cb(null, serviceHost);
+				}
+				else{
+					return cb(null, {});
+				}
+			};
+			
+			soajs.inputmaskData = {
+				env: 'dev',
+				serviceName: 'oauth',
+				serviceType: 'service',
+				'operation': 'loadProvision'
+			};
+			host.maintenance(config, soajs, function (error, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				done();
+			});
+		});
+		
+		it("Success daemon daemonStats", function (done) {
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}
+				else if(opts.collection === 'hosts'){
+					let serviceHost = {
+						"_id": '5be039a9914c0d532ebfc285',
+						"env": "dev",
+						"name": "my_daemon",
+						"ip": "127.0.0.1",
+						"hostname": "mikes-macbook-pro-3.local",
+						"version": 2,
+						"port": 10005
+					};
+					return cb(null, serviceHost);
+				}
+				else{
+					return cb(null, {});
+				}
+			};
+			
+			soajs.inputmaskData = {
+				env: 'dev',
+				serviceName: 'my_daemon',
+				serviceType: 'daemon',
+				'operation': 'daemonStats'
+			};
+			host.maintenance(config, soajs, function (error, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				done();
+			});
+		});
+		
+		it("Fail operation not permitted for service typ", function (done) {
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}
+				else if(opts.collection === 'hosts'){
+					let serviceHost = {
+						"_id": '5be039a9914c0d532ebfc285',
+						"env": "dev",
+						"name": "my_service",
+						"ip": "127.0.0.1",
+						"hostname": "mikes-macbook-pro-3.local",
+						"version": 2,
+						"port": 10005
+					};
+					return cb(null, serviceHost);
+				}
+				else{
+					return cb(null, {});
+				}
+			};
+			
+			soajs.inputmaskData = {
+				env: 'dev',
+				serviceName: 'my_service',
+				serviceType: 'service',
+				'operation': 'daemonStats'
+			};
+			host.maintenance(config, soajs, function (error, body) {
+				assert.ok(error);
+				assert.deepEqual(error, {code: 602, msg: "Invalid maintenance operation requested." });
+				done();
+			});
+		});
+	});
 });
