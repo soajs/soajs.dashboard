@@ -5413,7 +5413,15 @@ module.exports = {
 					"source": ['body.variables'],
 					"required": true,
 					"validation": {
-						"type": "array"
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"name": { "type": "string", "required": true },
+								"value": { "type": "string", "required": true },
+								"public": { "type": "boolean", "required": false }
+							}
+						}
 					}
 				}
 			},
