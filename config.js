@@ -5413,7 +5413,7 @@ module.exports = {
 					"source": ['body.variables'],
 					"required": true,
 					"validation": {
-						"type": "object"
+						"type": "array"
 					}
 				}
 			},

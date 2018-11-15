@@ -198,7 +198,7 @@ let lib = {
 	ensureRepoVars(opts, cb) {
 		opts.settings.domain = utils.cleanDomain(opts.settings.domain);
 		// If there are no variables, skip the check
-		if (!opts.params.variables || (opts.params.variables && Object.keys(opts.params.variables).length === 0))
+		if (!opts.params.variables || (opts.params.variables && opts.params.variables.length === 0))
 			return cb();
 		else {
 			// list the environment variables of each repo
@@ -230,13 +230,13 @@ let lib = {
 						delete options.settings.name;
 					
 					// add the supplied environment variables
-					async.eachSeries(Object.keys(inputVariables), function (inputVar, callback) {
+					async.eachSeries(inputVariables, function (inputVar, callback) {
 						// set up the env variable record
-						if(inputVariables[inputVar] && inputVariables[inputVar].trim() !== ''){
+						if(inputVar.value && inputVar.value.trim() !== ''){
 							options.settings.envVar = {
-								name: inputVar,
-								value: inputVariables[inputVar],
-								event: ["push", "tag", "deployment"]
+								"name": inputVar.name,
+								"value": inputVar.value,
+								"public": true
 							};
 							
 							lib.addEnvVar(options, callback);
