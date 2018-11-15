@@ -5418,7 +5418,7 @@ module.exports = {
 							"type": "object",
 							"properties": {
 								"name": { "type": "string", "required": true },
-								"value": { "type": "string", "required": true },
+								"value": { "type": "string", "required": false },
 								"public": { "type": "boolean", "required": false }
 							}
 						}
