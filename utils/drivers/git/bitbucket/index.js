@@ -156,38 +156,47 @@ var driver = {
 						options.token = newTokenInfo.token;
 						options.tokenInfo = newTokenInfo.tokenInfo;
 					}
+					else {
+						options.token = accountRecord.token;
+						options.tokenInfo = accountRecord.tokenInfo;
+					}
 					checkIfError(error, {}, cb, function () {
 						driver.helper.getRepoContent(options, function (error, response) {
 							checkIfError(error, {}, cb, function () {
-								var configFile = response.replace(/require\s*\(.+\)/g, '""');
-								var repoConfigsFolder = config.gitAccounts.bitbucket.repoConfigsFolder;
-								var configDirPath = repoConfigsFolder + options.path.substring(0, options.path.lastIndexOf('/'));
-								
-								var configSHA = options.repo + options.path;
-								var hash = crypto.createHash(config.gitAccounts.bitbucket_enterprise.hash.algorithm);
-								configSHA = hash.update(configSHA).digest('hex');
-								
-								var fileInfo = {
-									configDirPath: configDirPath,
-									configFilePath: repoConfigsFolder + options.path,
-									configFile: configFile,
-									soajs: soajs
-								};
-								
-								driver.helper.writeFile(fileInfo, function (error) {
-									checkIfError(error, {}, cb, function () {
-										var repoConfig;
-										if (require.resolve(fileInfo.configFilePath)) {
-											delete require.cache[require.resolve(fileInfo.configFilePath)];
-										}
-										try {
-											repoConfig = require(fileInfo.configFilePath);
-										}
-										catch (e) {
-											soajs.log.error(e);
-										}
-										repoConfig = repoConfig || { "type" : "custom" };
-										return cb(null, repoConfig, configSHA);
+								checkIfError(!response, {
+									code: 758,
+									message: 'Unable to get repositories. Please try again.'
+								}, cb, function () {
+									var configFile = response.replace(/require\s*\(.+\)/g, '""');
+									var repoConfigsFolder = config.gitAccounts.bitbucket.repoConfigsFolder;
+									var configDirPath = repoConfigsFolder + options.path.substring(0, options.path.lastIndexOf('/'));
+									
+									var configSHA = options.repo + options.path;
+									var hash = crypto.createHash(config.gitAccounts.bitbucket_enterprise.hash.algorithm);
+									configSHA = hash.update(configSHA).digest('hex');
+									
+									var fileInfo = {
+										configDirPath: configDirPath,
+										configFilePath: repoConfigsFolder + options.path,
+										configFile: configFile,
+										soajs: soajs
+									};
+									
+									driver.helper.writeFile(fileInfo, function (error) {
+										checkIfError(error, {}, cb, function () {
+											var repoConfig;
+											if (require.resolve(fileInfo.configFilePath)) {
+												delete require.cache[require.resolve(fileInfo.configFilePath)];
+											}
+											try {
+												repoConfig = require(fileInfo.configFilePath);
+											}
+											catch (e) {
+												soajs.log.error(e);
+											}
+											repoConfig = repoConfig || {"type": "custom"};
+											return cb(null, repoConfig, configSHA);
+										});
 									});
 								});
 							});
