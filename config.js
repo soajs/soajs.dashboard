@@ -1780,7 +1780,21 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
-				}
+				},
+				"version": {
+					"source": ['query.version'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceName": {
+					"source": ['query.serviceName'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
 			},
 			
 			/*
@@ -3649,6 +3663,22 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				"git": {
+					"source": ['body.git'],
+					"required": true,
+					"validation": {
+						"type": "object",
+						"properties": {
+							"branches": {
+								"type": "array",
+								"required": true,
+								"items": {
+									"type": "object"
+								}
+							}
+						}
+					}
 				}
 			},
 			
@@ -5276,7 +5306,7 @@ module.exports = {
 			
 			"/gitAccounts/repo/sync": {
 				"_apiInfo": {
-					"l": "Deactivate Repository",
+					"l": "Sync Repository",
 					"group": "Git Accounts"
 				},
 				'commonFields': ['soajs_project'],
@@ -5310,6 +5340,50 @@ module.exports = {
 				},
 				"repo": {
 					"source": ['body.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"branch": {
+					"source": ['body.branch'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
+			"/gitAccounts/repo/sync/branches": {
+				"_apiInfo": {
+					"l": "Sync Repository Branches",
+					"group": "Git Accounts"
+				},
+				'commonFields': ['soajs_project'],
+				"name": {
+					"source": ['body.name'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"type": {
+					"source": ['body.type'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["service", "daemon", "multi"]
+					}
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"provider": {
+					"source": ['body.provider'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -5449,6 +5523,13 @@ module.exports = {
 				"repo": {
 					"source": ['query.repo'],
 					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"branch": {
+					"source": ['query.branch'],
+					"required": false,
 					"validation": {
 						"type": "string"
 					}

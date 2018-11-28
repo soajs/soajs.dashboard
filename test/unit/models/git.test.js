@@ -94,6 +94,11 @@ describe("testing models git.js", function () {
 			options = {
 				repo: 'property'
 			};
+			soajs.inputmaskData = {
+				accountRecord : {
+					repos: []
+				}
+			};
 			models.addRepoToAccount(soajs, mongoStub, options, function () {
 				done();
 			});
@@ -105,6 +110,11 @@ describe("testing models git.js", function () {
 		it("success 1", function (done) {
 			options = {
 				repoLabel: 'property'
+			};
+			soajs.inputmaskData = {
+				accountRecord : {
+					repos: []
+				}
 			};
 			models.removeRepoFromAccount(soajs, mongoStub, options, function () {
 				done();

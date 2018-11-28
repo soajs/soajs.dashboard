@@ -4,18 +4,15 @@ var collName = "git_accounts";
 
 var methods = {
     "getAuthToken": function (soajs, model, options, cb) {
-        var opts = {
-            collection: collName,
-            conditions: { _id: options.accountId },
-            fields: { token: 1, _id: 0 }
-        };
-        model.findEntry(soajs, opts, function (error, tokenRecord) {
-            return cb(error, ((tokenRecord) ? tokenRecord.token : null));
-        });
+	    let opts = {
+		    collection: collName,
+		    conditions: { _id: options.accountId }
+	    };
+	    model.findEntry(soajs, opts, cb);
     },
 
     "getAccount": function (soajs, model, options, cb) {
-        var opts = {
+        let opts = {
             collection: collName,
             conditions: { _id: options.accountId }
         };
@@ -98,26 +95,73 @@ var methods = {
 		};
 		model.findEntries(soajs, opts, cb);
 	},
-
-    "addRepoToAccount": function (soajs, model, options, cb) {
-        var opts = {
-            collection: collName,
-            conditions: { _id: options.accountId },
-            fields: { '$addToSet': { 'repos': options.repo } }
-        };
-        model.updateEntry(soajs, opts, cb);
+	
+	"addRepoToAccount": function (soajs, model, options, cb) {
+  
+		let opts = {
+			collection: collName,
+			conditions: {_id: options.accountId},
+			fields: {}
+		};
+		opts.fields['$addToSet'] = {'repos': options.repo};
+		for (let x = 0; x < soajs.inputmaskData.accountRecord.repos.length; x++) {
+			if (soajs.inputmaskData.accountRecord.repos[x].name === options.repo.name) {
+				soajs.inputmaskData.accountRecord.repos[x].git = options.repo.git;
+				delete opts.fields['$addToSet'];
+				opts.fields['$set'] = {'repos': soajs.inputmaskData.accountRecord.repos};
+				break;
+			}
+		}
+		model.updateEntry(soajs, opts, cb);
     },
-
-    "removeRepoFromAccount": function (soajs, model, options, cb) {
-        var opts = {
-            collection: collName,
-            conditions: { _id: options.accountId },
-            fields: { '$pull': {'repos': { 'name': options.repoLabel } } }
-        };
-        model.updateEntry(soajs, opts, cb);
-    },
-
-    "updateRepoInfo": function (soajs, model, options, cb) {
+	
+	"removeRepoFromAccount": function (soajs, model, options, cb) {
+		let opts = {
+			collection: collName,
+			conditions: {_id: options.accountId}
+		};
+		if (soajs.inputmaskData.branch) {
+			model.findEntry(soajs, opts, (err, account) => {
+				if (err) {
+					return cb(err);
+				}
+				let found = false;
+				if (account && account.repos && account.repos.length > 0) {
+					for (let i = 0; i < account.repos.length ; i++) {
+						if (account.repos[i] && account.repos[i].name && account.repos[i].name === options.repoLabel) {
+							if (account.repos[i].git && account.repos[i].git.branches && account.repos[i].git.branches.length > 0) {
+								for (let j = 0; j < account.repos[i].git.branches.length ; j++) {
+									if (account.repos[i].git.branches[j].name === soajs.inputmaskData.branch) {
+										account.repos[i].git.branches[j].active = false;
+										found = true;
+										break;
+									}
+								}
+							}
+							break;
+						}
+					}
+					opts.record = account;
+					delete opts.conditions;
+					if (found){
+						model.saveEntry(soajs, opts, cb);
+					}
+					else {
+						return cb(null, true);
+					}
+				}
+				else {
+					return cb(null, true);
+				}
+			});
+		}
+		else {
+			opts.fields = {'$pull': {'repos': {'name': options.repoLabel}}};
+			model.updateEntry(soajs, opts, cb);
+		}
+	},
+	
+	"updateRepoInfo": function (soajs, model, options, cb) {
         var set = {
             '$set': {}
         };

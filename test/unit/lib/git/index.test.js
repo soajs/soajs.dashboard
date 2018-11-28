@@ -611,7 +611,7 @@ describe("testing git.js", function () {
 				"project": '',
 				"configBranch": "develop"
 			};
-			lib.activateRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
+			lib.activateRepo(config, req, gitDriver, helpers, configFile, gitModel, {}, {}, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -687,7 +687,7 @@ describe("testing git.js", function () {
 				"project": '',
 				"configBranch": "develop"
 			};
-			lib.activateRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
+			lib.activateRepo(config, req, gitDriver, helpers, configFile, gitModel, {}, {}, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -726,7 +726,7 @@ describe("testing git.js", function () {
 				"project": '',
 				"configBranch": "develop"
 			};
-			lib.activateRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
+			lib.activateRepo(config, req, gitDriver, helpers, configFile, gitModel, {}, {}, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -764,7 +764,7 @@ describe("testing git.js", function () {
 				"project": '',
 				"configBranch": "develop"
 			};
-			lib.activateRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
+			lib.activateRepo(config, req, gitDriver, helpers, configFile, gitModel, {}, {}, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -981,7 +981,7 @@ describe("testing git.js", function () {
 				"owner": 'owner',
 				"repo": 'repo'
 			};
-			lib.syncRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
+			lib.syncRepo(config, req, gitDriver, helpers, configFile, gitModel, {}, {}, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -1029,7 +1029,7 @@ describe("testing git.js", function () {
 				"owner": 'owner',
 				"repo": 'repo'
 			};
-			lib.syncRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
+			lib.syncRepo(config, req, gitDriver, helpers, configFile, gitModel, {}, {}, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -1175,7 +1175,7 @@ describe("testing git.js", function () {
 				}
 				return cb(null, response);
 			};
-			lib.syncRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
+			lib.syncRepo(config, req, gitDriver, helpers, configFile, gitModel, {}, {}, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -1200,7 +1200,7 @@ describe("testing git.js", function () {
 					]
 				});
 			};
-			lib.syncRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
+			lib.syncRepo(config, req, gitDriver, helpers, configFile, gitModel, {}, {}, function (error, body) {
 				assert.ok(body);
 				assert.equal(body.status, 'outOfSync');
 				done();
@@ -1226,7 +1226,7 @@ describe("testing git.js", function () {
 					]
 				});
 			};
-			lib.syncRepo(config, req, gitDriver, helpers, configFile, gitModel, function (error, body) {
+			lib.syncRepo(config, req, gitDriver, helpers, configFile, gitModel, {}, {}, function (error, body) {
 				assert.ok(body);
 				done();
 			});
