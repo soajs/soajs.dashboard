@@ -1249,7 +1249,10 @@ describe("DASHBOARD Integration Tests:", function () {
 						assert.deepEqual(tenantRecord.oauth, {
 							"secret": "my secret key",
 							"redirectURI": "http://www.myredirecturi.com/",
-							"grants": ["password", "refresh_token"]
+							"grants": ["password", "refresh_token"],
+							"disabled": 0,
+							"loginMode": "urac",
+							"type": 2
 						});
 						done();
 						
@@ -1277,7 +1280,10 @@ describe("DASHBOARD Integration Tests:", function () {
 						assert.deepEqual(tenantRecord.oauth, {
 							"secret": "shhh this is a secret",
 							"redirectURI": "http://www.myredirecturi.com/",
-							"grants": ["password", "refresh_token"]
+							"grants": ["password", "refresh_token"],
+							"disabled": 0,
+							"loginMode": "urac",
+							"type": 2
 						});
 						done();
 					});
@@ -1294,7 +1300,10 @@ describe("DASHBOARD Integration Tests:", function () {
 					assert.deepEqual(body.data, {
 						"secret": "shhh this is a secret",
 						"redirectURI": "http://www.myredirecturi.com/",
-						"grants": ["password", "refresh_token"]
+						"grants": ["password", "refresh_token"],
+						"disabled": 0,
+						"loginMode": "urac",
+						"type": 2
 					});
 					done();
 				});

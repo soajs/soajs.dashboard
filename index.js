@@ -865,6 +865,22 @@ service.init(function () {
 			});
 		});
 	});
+	
+	/**
+	 * List available console products
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/console/product/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.listConsole(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
 
 	/**
 	 * Get a specific product
@@ -1007,6 +1023,22 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.tenant.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.list(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * List available console tenants
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/console/tenant/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.tenant.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.listConsole(config, req, res, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

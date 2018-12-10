@@ -147,6 +147,7 @@ module.exports = {
 			customConfigFilePath: "config.js",
 			soajsConfigFilesPath: {
 				"soajsFile": "soa.js",
+				"soajsJSONFile": "soa.json",
 				"swaggerFile": "swagger.yml"
 			}
 		},
@@ -156,6 +157,7 @@ module.exports = {
 			repoConfigsFolder: __dirname + '/repoConfigs',
 			soajsConfigFilesPath: {
 				"soajsFile": "soa.js",
+				"soajsJSONFile": "soa.json",
 				"swaggerFile": "swagger.yml"
 			},
 			"hash": {
@@ -180,6 +182,7 @@ module.exports = {
 			"tokenScope": ["repo", "admin:repo_hook"],
 			"customConfigFilePath": "config.js",
 			"soajsConfigFilesPath": {
+				"soajsJSONFile": "soa.json",
 				"soajsFile": "soa.js",
 				"swaggerFile": "swagger.yml"
 			},
@@ -930,6 +933,14 @@ module.exports = {
 				"commonFields": ['soajs_project']
 			},
 			
+			"/console/product/list": {
+				_apiInfo: {
+					"l": "List Console Products",
+					"group": "Product"
+				},
+				"commonFields": ['soajs_project']
+			},
+			
 			"/product/get": {
 				_apiInfo: {
 					"l": "Get Product",
@@ -1005,6 +1016,30 @@ module.exports = {
 			"/tenant/list": {
 				_apiInfo: {
 					"l": "List Tenants",
+					"group": "Tenant"
+				},
+				"commonFields": ['soajs_project'],
+				"type": {
+					"source": ['query.type'],
+					"required": false,
+					"validation": {
+						"type": "string",
+						"enum": ["admin", "product", "client"]
+					}
+				},
+				"negate": {
+					"source": ['query.negate'],
+					"required": false,
+					"default": false,
+					"validation": {
+						"type": "boolean"
+					}
+				}
+			},
+			
+			"/console/tenant/list": {
+				_apiInfo: {
+					"l": "List Console Tenants",
 					"group": "Tenant"
 				},
 				"commonFields": ['soajs_project'],
@@ -1254,10 +1289,24 @@ module.exports = {
 					"source": ['query.operation'],
 					"required": true,
 					"validation": {
-						"type": "string",
-						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'daemonStats', 'reloadDaemonConf']
+						"type": "string"
 					}
-				}
+				},
+				"portType": {
+					"source": ['query.portType'],
+					"required": false,
+					"validation": {
+						"type": "string",
+						"enum": ["inherit", "custom", "maintenance"]
+					}
+				},
+				"portValue": {
+					"source": ['query.portValue'],
+					"required": false,
+					"validation": {
+						"type": "number"
+					}
+				},
 			},
 			
 			"/cloud/services/list": {
@@ -2709,7 +2758,14 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
-				}
+				},
+				"console": {
+					"source": ['body.console'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
+				},
 			},
 			
 			"/tenant/oauth/add": {
@@ -4885,7 +4941,23 @@ module.exports = {
 					"l": "Update Tenant oAuth Configuration",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'secret', 'redirectURI', 'oauthType', 'availableEnv', 'soajs_project']
+				"commonFields": ['id', 'secret', 'redirectURI', 'availableEnv', 'soajs_project'],
+				"type": {
+					"source": ['body.type'],
+					"required": false,
+					"validation": {
+						"type": "number",
+						"enum": [0, 2]
+					}
+				},
+				"oauthType": {
+					"source": ['body.oauthType'],
+					"required": false,
+					"validation": {
+						"type": "string",
+						"enum": ["urac", "miniurac", "off"]
+					}
+				},
 			},
 			
 			"/tenant/oauth/users/update": {
