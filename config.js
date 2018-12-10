@@ -190,6 +190,10 @@ module.exports = {
 		}
 	},
 	
+	"console":{
+		"product": "DSBRD"
+	},
+	
 	"errors": require("./utils/errors"),
 	
 	"schema": {
