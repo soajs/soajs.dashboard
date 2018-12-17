@@ -148,7 +148,8 @@ module.exports = {
 			soajsConfigFilesPath: {
 				"soajsFile": "soa.js",
 				"soajsJSONFile": "soa.json",
-				"swaggerFile": "swagger.yml"
+				"swaggerFile": "swagger.yml",
+				"swaggerJSONFile": "swagger.json"
 			}
 		},
 		"bitbucket_enterprise": {
@@ -158,7 +159,8 @@ module.exports = {
 			soajsConfigFilesPath: {
 				"soajsFile": "soa.js",
 				"soajsJSONFile": "soa.json",
-				"swaggerFile": "swagger.yml"
+				"swaggerFile": "swagger.yml",
+				"swaggerJSONFile": "swagger.json"
 			},
 			"hash": {
 				"algorithm": "sha256"
@@ -184,7 +186,8 @@ module.exports = {
 			"soajsConfigFilesPath": {
 				"soajsJSONFile": "soa.json",
 				"soajsFile": "soa.js",
-				"swaggerFile": "swagger.yml"
+				"swaggerFile": "swagger.yml",
+				"swaggerJSONFile": "swagger.json"
 			},
 			"repoConfigsFolder": __dirname + '/repoConfigs'
 		}
