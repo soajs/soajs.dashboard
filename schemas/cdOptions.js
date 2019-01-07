@@ -82,7 +82,6 @@ module.exports = {
 			"env": {
 				"type": "object",
 				"required": false,
-				"additionalProperties": {"type": "string"}
 			},
 			"type": {
 				"required": true,

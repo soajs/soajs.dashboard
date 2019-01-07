@@ -3102,8 +3102,7 @@ module.exports = {
 							},
 							"env": {
 								"type": ["object", "null"],
-								"required": false,
-								"additionalProperties": { "type": "string" }
+								"required": false
 							},
 							"type": {
 								"required": true,
@@ -3438,6 +3437,24 @@ module.exports = {
 					"required": false,
 					"validation": {
 						"type": "boolean"
+					}
+				},
+				"variables": {
+					"source": ['body.variables'],
+					"required": false,
+					"validation": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string", "required": true
+								},
+								"value": {
+									"type": "string", "required": true
+								}
+							}
+						}
 					}
 				}
 			},
