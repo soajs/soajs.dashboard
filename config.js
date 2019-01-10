@@ -5442,7 +5442,7 @@ module.exports = {
 				},
 				"branch": {
 					"source": ['body.branch'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string"
 					}
