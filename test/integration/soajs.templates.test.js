@@ -71,7 +71,9 @@ describe("Testing Templates Functionality", function () {
 			};
 			
 			executeMyRequest(params, "templates", 'get', function (result) {
-				console.log(JSON.stringify(result, null, 2))
+				if (!result.data){
+					console.log(JSON.stringify(result, null, 2))
+				}
 				assert.ok(result.data);
 				done();
 			});
