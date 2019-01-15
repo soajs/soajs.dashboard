@@ -262,10 +262,14 @@ describe("testing ci.js", function () {
 				"id": 12464664,
 				"port": 80,
 				"settings": {},
-				"variables": {
-					"var1": "val1",
-					"var2": "val2"
+				"variables": [{
+					name: "var1",
+					value: "val1"
+				},{
+					name: "var2",
+					value: "val2"
 				}
+				]
 			};
 
 			mongoStub.findEntry = function (soajs, opts, cb) {
@@ -288,10 +292,14 @@ describe("testing ci.js", function () {
 				"id": "CLOUD/dashboard",
 				"port": 80,
 				"settings": {},
-				"variables": {
-					"var1": "val1",
-					"var2": "val2"
+				"variables": [{
+					name: "var1",
+					value: "val1"
+				},{
+					name: "var2",
+					value: "val2"
 				}
+				]
 			};
 
 			mongoStub.findEntry = function (soajs, opts, cb) {
@@ -316,10 +324,14 @@ describe("testing ci.js", function () {
 				"id": "CLOUD/dashboard",
 				"port": 80,
 				"settings": {},
-				"variables": {
-					"var1": "val1",
-					"var2": "val2"
-				},
+				"variables": [{
+					name: "var1",
+					value: "val1"
+				},{
+					name: "var2",
+					value: "val2"
+				}
+				],
 				soajs_project : 'test'
 			};
 

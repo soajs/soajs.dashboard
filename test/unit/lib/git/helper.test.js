@@ -566,6 +566,9 @@ describe("testing helper git.js", function () {
 		before(() => {
 			mongoStub.countEntries = function (soajs, opts, cb) {
 				cb(null, 1);
+			},
+			mongoStub.findEntries = function (soajs, opts, cb) {
+				cb(null, [{}]);
 			}
 		});
 		// model, soajs, type, info, flags, cb

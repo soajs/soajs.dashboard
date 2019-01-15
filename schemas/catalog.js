@@ -110,6 +110,10 @@ module.exports = {
 								"type": "string",
 								"required": false,
 								"enum": ["none","optional","required"]
+							},
+							"allowExposeServicePort": {
+								"type": "boolean",
+								"required": false
 							}
 						}
 					},
@@ -134,7 +138,7 @@ module.exports = {
 										"type": {
 											"type": "string",
 											"required": true,
-											"enum": ["static", "userInput", "computed"]
+											"enum": ["static", "userInput", "computed", "secret"]
 										},
 										"label": {"type": "string", "required": false},
 										"fieldMsg": {"type": "string", "required": false},

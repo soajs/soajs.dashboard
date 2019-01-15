@@ -547,10 +547,14 @@ describe('testing ci drone index.js', function () {
 				},
 				params: {
 					repoOwner: 'CLOUD',
-					variables: {
-						ENV_NAME_1: 'ENV_VALUE_1',
-						ENV_NAME_2: 'ENV_VALUE_2'
-					}
+					variables: [{
+						name: 'ENV_NAME_1',
+						value: 'ENV_VALUE_1'
+					},
+						{
+							name: 'ENV_NAME_2',
+							value: 'ENV_VALUE_2'
+						}]
 				}
 			};
 

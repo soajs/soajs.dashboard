@@ -288,15 +288,25 @@ describe("DASHBOARD UNIT Tests:", function () {
 				it("success - will list product", function (done) {
 					executeMyRequest({}, 'product/list', 'get', function (body) {
 						assert.ok(body.data);
-						assert.equal(body.data.length, 2);
-						productId = body.data[1]._id.toString();
-						delete body.data[1]._id;
-						assert.deepEqual(body.data[1], {
+						assert.equal(body.data.length, 1);
+						productId = body.data[0]._id.toString();
+						delete body.data[0]._id;
+						assert.deepEqual(body.data[0], {
 							"code": "TPROD",
 							"name": "test product updated",
 							"description": "this is a dummy updated description",
 							"packages": []
 						});
+						done();
+					});
+				});
+			});
+			
+			describe("list console product tests", function () {
+				it("success - will list product", function (done) {
+					executeMyRequest({}, 'console/product/list', 'get', function (body) {
+						assert.ok(body.data);
+						assert.equal(body.data.length, 1);
 						done();
 					});
 				});
@@ -903,7 +913,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"description": "this is a dummy description",
 							"type": "client",
 							"applications": [],
-							"oauth": {}
+							"oauth": {
+								"secret": 'this is a secret',
+								"redirectURI": 'http://domain.com',
+								"grants": ["password", "refresh_token"],
+								"disabled": 0,
+								"type": 2,
+								"loginMode": "urac"
+							}
 						});
 						
 						uracMongo.find('users', { 'tenant.code': 'TSTN' }, function (error, data) {
@@ -944,13 +961,21 @@ describe("DASHBOARD UNIT Tests:", function () {
 					executeMyRequest(params, 'tenant/get', 'get', function (body) {
 						assert.ok(body.data);
 						delete body.data._id;
+						delete body.data.oauth.authorization;
 						assert.deepEqual(body.data, {
 							"code": "TSTN",
 							"name": "test tenant updated",
 							"description": "this is a dummy updated description",
 							"type": "client",
 							"applications": [],
-							"oauth": {}
+							"oauth": {
+								"secret": 'this is a secret',
+								"redirectURI": 'http://domain.com',
+								"grants": ["password", "refresh_token"],
+								"disabled": 0,
+								"type": 2,
+								"loginMode": "urac"
+							}
 						});
 						done();
 					});
@@ -1043,6 +1068,13 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 				
+				it("success - will get empty list", function (done) {
+					executeMyRequest({}, 'console/tenant/list', 'get', function (body) {
+						assert.ok(body.data);
+						done();
+					});
+				});
+				
 				it("success - will add tenant", function (done) {
 					var params = {
 						form: {
@@ -1111,7 +1143,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 							assert.deepEqual(tenantRecord.oauth, {
 								"secret": "my secret key",
 								"redirectURI": "http://www.myredirecturi.com/",
-								"grants": ["password", "refresh_token"]
+								"grants": ["password", "refresh_token"],
+								"type": 2,
+								"disabled": 0,
+								"loginMode": "urac"
 							});
 							done();
 							
@@ -1173,7 +1208,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 							assert.deepEqual(tenantRecord.oauth, {
 								"secret": "my secret key",
 								"redirectURI": "http://www.myredirecturi2.com/",
-								"grants": ["password", "refresh_token"]
+								"grants": ["password", "refresh_token"],
+								"type": 2,
+								"disabled": 0,
+								"loginMode": "urac"
 							});
 							done();
 						});
@@ -1187,7 +1225,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"secret": "my secret key",
 							"redirectURI": "http://www.myredirecturi.com/",
 							"oauthType": "urac",
-							"availableEnv": ["dashboard", "dev", "stg"]
+							"availableEnv": ["dashboard", "dev", "stg"],
+							"type": 2,
+							"disabled": 0,
 						}
 					};
 					executeMyRequest(params, 'tenant/oauth/update', 'put', function (body) {
@@ -1236,7 +1276,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"secret": "my secret key",
 							"redirectURI": "http://www.myredirecturi.com/",
 							"oauthType": "urac",
-							"availableEnv": ["dashboard", "dev", "stg"]
+							"availableEnv": ["dashboard", "dev", "stg"],
+							"type": 2,
+							"disabled": 0,
 						}
 					};
 					executeMyRequest(params, 'tenant/oauth/add/', 'post', function (body) {
@@ -1250,7 +1292,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 						assert.deepEqual(body.data, {
 							"secret": "my secret key",
 							"redirectURI": "http://www.myredirecturi.com/",
-							"grants": ["password", "refresh_token"]
+							"grants": ["password", "refresh_token"],
+							"disabled": 0,
+							"loginMode": "urac"
 						});
 						done();
 					});
@@ -3006,7 +3050,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"redirectURI": "http://www.myredirecturi.com/",
 						"grants": [
 							"password", "refresh_token"
-						]
+						],
+						"loginMode": "urac",
+						"disabled": 0
 					});
 					delete record.oauth;
 					assert.deepEqual(record.applications, [

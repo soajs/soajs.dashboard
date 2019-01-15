@@ -134,6 +134,10 @@ let manual = {
 					"additionalProperties": true
 				}
 			}
+		},
+		"soajs_project": {
+			"type": "string",
+			"required": false
 		}
 	},
 	"additionalProperties": false
@@ -336,6 +340,10 @@ let container = {
 					"additionalProperties": false
 				}
 			}
+		},
+		"soajs_project": {
+			"type": "string",
+			"required": false
 		}
 	},
 	"additionalProperties": false
@@ -533,6 +541,10 @@ let imfv =  {
 				"properties": {}
 			}
 		}
+	},
+	"soajs_project": {
+		"type": "string",
+		"required": false
 	}
 };
 let options = ["vm", "container", "composite", null, "array"];

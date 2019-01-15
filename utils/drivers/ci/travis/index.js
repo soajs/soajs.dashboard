@@ -232,8 +232,9 @@ var lib = {
 	 * @param cb
 	 */
 	ensureRepoVars(opts, cb) {
+		let preDefined = ["SOAJS_CD_AUTH_KEY", "SOAJS_CD_DEPLOY_TOKEN","SOAJS_CD_DASHBOARD_DOMAIN","SOAJS_CD_API_ROUTE","SOAJS_CD_DASHBOARD_PORT","SOAJS_CD_DASHBOARD_PROTOCOL"];
 		//If there are no variables, skip the check
-		if (!opts.params.variables || (opts.params.variables && Object.keys(opts.params.variables).length === 0))
+		if (!opts.params.variables || (opts.params.variables && opts.params.variables.length === 0))
 			return cb();
 		else {
 			//list the environment variables of each repo
@@ -252,22 +253,41 @@ var lib = {
 			lib.listEnvVars(options, (err, repoVars) => {
 				//delete all the environment variables
 				async.eachSeries(repoVars, function (oneVar, callback) {
+					//check if not found in predefined environment variables
+					// check if public is false ==> if not found remove it (user have deleted it) ==> remove it
+					if (preDefined.indexOf(oneVar.name) === -1 && !oneVar.public){
+						let found = false;
+						for (let x = opts.params.variables.length - 1; x >= 0; x--) {
+							if (opts.params.variables[x].name === oneVar.name) {
+								found = true;
+								opts.params.variables.splice(x, 1);
+							}
+						}
+						if (found){
+							return callback();
+						}
+					}
 					options.settings.varID = oneVar.id;
 					lib.deleteEnvVar(options, callback);
+					
 				}, (err) => {
+				
 					let inputVariables = opts.params.variables;
 					
 					if (options.settings.varID)
 						delete options.settings.varID;
 					
 					//add the supplied environment variables
-					async.eachSeries(Object.keys(inputVariables), function (inputVar, callback) {
+					async.eachSeries(inputVariables, function (inputVar, callback) {
 						//set up the env variable record
 						options.settings.envVar = {
-							"name": inputVar,
-							"value": inputVariables[ inputVar ],
+							"name": inputVar.name,
+							"value": inputVar.value,
 							"public": true
 						};
+						if (inputVar.hasOwnProperty("public")){
+							options.settings.envVar.public = inputVar.public;
+						}
 						//set the public status of each env var
 						if (inputVar === "SOAJS_CD_AUTH_KEY" || inputVar === "SOAJS_CD_DEPLOY_TOKEN")
 							options.settings.envVar.public = false;

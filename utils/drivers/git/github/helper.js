@@ -280,7 +280,8 @@ var lib = {
 					} else {
 						allRepos[i].status = 'active';
 					}
-
+					allRepos[i].git = oneRepo.git;
+					allRepos[i].configBranch = oneRepo.configBranch;
 					if(oneRepo.type !== 'multi') {
 						if(oneRepo.serviceName){
 							allRepos[i].serviceName = oneRepo.serviceName;
@@ -313,8 +314,12 @@ var lib = {
 					},
 					name: repoInfo[1],
 					status: 'deleted',
-					type: oneRepo.type
+					type: oneRepo.type,
+					git: oneRepo.git
 				};
+				if (oneRepo.configBranch){
+					newRepo.configBranch = oneRepo.configBranch;
+				}
 				if(multi && multi.length > 0){
 					newRepo.multi = multi;
 				}

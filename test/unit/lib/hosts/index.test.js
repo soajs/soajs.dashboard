@@ -786,8 +786,6 @@ describe("testing host.js", function () {
 				'operation': 'daemonStats'
 			};
 			host.maintenance(config, soajs, function (error, body) {
-				assert.ok(error);
-				assert.deepEqual(error, {code: 602, msg: "Invalid maintenance operation requested." });
 				done();
 			});
 		});

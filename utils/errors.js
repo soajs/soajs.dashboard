@@ -65,6 +65,7 @@ var errors = {
 	"456": "Error adding Tenant Key",
 	"457": "You are not allowed to create an environment named PORTAL or DASHBOARD",
 	"458": "Failed to Create User Account, try adding the user manually!",
+	"459": "Unable to update the tenant OAuth, Server to server authentication is only supported with Oauth 2.0",
 	"460": "Unable to find product",
 
 	"461": "Unable to find package",

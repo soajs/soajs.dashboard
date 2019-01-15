@@ -205,6 +205,8 @@ var lib = {
 					}
 
 					allRepos[i].type = oneRepo.type;
+					allRepos[i].git = oneRepo.git;
+					allRepos[i].configBranch = oneRepo.configBranch;
 					if (multi && multi.length > 0) {
 						allRepos[i].multi = multi;
 					}
@@ -224,6 +226,9 @@ var lib = {
 					status: 'deleted',
 					type: oneRepo.type
 				};
+				if (oneRepo.configBranch){
+					newRepo.configBranch = oneRepo.configBranch;
+				}
 				if (multi && multi.length > 0) {
 					newRepo.multi = multi;
 				}

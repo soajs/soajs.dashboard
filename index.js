@@ -865,6 +865,22 @@ service.init(function () {
 			});
 		});
 	});
+	
+	/**
+	 * List available console products
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/console/product/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.listConsole(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
 
 	/**
 	 * Get a specific product
@@ -1007,6 +1023,22 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.tenant.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.list(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * List available console tenants
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/console/tenant/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.tenant.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.listConsole(config, req, res, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -2515,11 +2547,13 @@ service.init(function () {
 	 * @param {Function} API middleware
 	 */
 	service.post("/gitAccounts/repo/activate", function (req, res) {
-		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.activateRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.configFile, dashboardBL.git.model, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
+		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (cloudBL) {
+			initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
+				checkConnection(BL, req, res, function () {
+					BL.activateRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.configFile, dashboardBL.git.model, cloudBL, deployer, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
 				});
 			});
 		});
@@ -2544,16 +2578,36 @@ service.init(function () {
 	});
 
 	/**
-	 * Sync an active repository
+	 * Sync an active repository branch
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
 	service.put('/gitAccounts/repo/sync', function (req, res) {
-		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
-			checkConnection(BL, req, res, function () {
-				BL.syncRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.configFile, dashboardBL.git.model, function (error, data) {
-					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
+		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (cloudBL) {
+			initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
+				checkConnection(BL, req, res, function () {
+					BL.syncRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.configFile, dashboardBL.git.model, cloudBL, deployer, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Sync an active repository
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put('/gitAccounts/repo/sync/branches', function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (cloudBL) {
+			initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
+				checkConnection(BL, req, res, function () {
+					BL.syncRepoBranch(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.configFile, dashboardBL.git.model, cloudBL, deployer, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
 				});
 			});
 		});
