@@ -192,7 +192,7 @@ var driver = {
 					token: options.token || null,
 					downloadLink: response.download_url,
 					content: new Buffer(response.content, 'base64').toString()
-				});
+				}, response.sha);
 			});
 		});
 	}
