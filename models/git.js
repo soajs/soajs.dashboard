@@ -162,18 +162,34 @@ var methods = {
 	},
 	
 	"updateRepoInfo": function (soajs, model, options, cb) {
-        var set = {
-            '$set': {}
-        };
-        set['$set']['repos.$.' + options.property] = options.value;
-
-        var opts = {
-            collection: collName,
-            conditions: {_id: options.accountId, 'repos.name': options.repoLabel},
-            fields: set
-        };
-        model.updateEntry(soajs, opts, cb);
-    }
+		var set = {
+			'$set': {}
+		};
+		var opts = {
+			collection: collName,
+			conditions: {
+				_id: options.accountId,
+				'repos.name': options.repoLabel
+			},
+			fields: set
+		};
+		if (options.property === 'SHA') {
+			soajs.inputmaskData.branches.forEach((oneBranch)=>{
+				if (oneBranch.name === soajs.inputmaskData.branch){
+					oneBranch.configSHA = options.value.sha;
+					if (options.value.swaggerSHA) {
+						oneBranch.swaggerSHA  = options.value.swaggerSHA;
+					}
+				}
+			});
+			set['$set']['repos.$.git.branches'] = soajs.inputmaskData.branches;
+			
+		} else {
+			set['$set']['repos.$.' + options.property] = options.value;
+		}
+		opts.fields = set;
+		model.updateEntry(soajs, opts, cb);
+	}
 };
 
 module.exports = methods;
