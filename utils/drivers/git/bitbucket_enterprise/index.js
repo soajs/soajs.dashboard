@@ -233,12 +233,14 @@ var driver = {
 						.replace('%REPO_NAME%', options.repo)
 						.replace('%PATH%', options.path)
 						.replace('%BRANCH%', options.ref || 'master');
-				
+				var configSHA = options.repo + options.path;
+				var hash = crypto.createHash(config.gitAccounts.bitbucket_enterprise.hash.algorithm);
+				configSHA = hash.update(configSHA).digest('hex');
 				return cb(null, {
 					token: options.token,
 					downloadLink: downloadLink,
 					content: content
-				});
+				}, configSHA);
 			});
 		});
 	}
