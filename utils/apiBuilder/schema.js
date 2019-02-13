@@ -39,7 +39,7 @@ module.exports = {
 			"type": "boolean"
 		},
 		"serviceVersion": {
-			"type": "integer",
+			"type": "number",
 			"min": 1,
 			"required": true
 		},

@@ -187,7 +187,7 @@ var config = {
 					"minItems": 1,
 					"uniqueItems": true
 				},
-				"serviceVersion": {"type": "integer", "min": 1, "required": false},
+				"serviceVersion": {"type": "number", "min": 1, "required": false},
 				"serviceName": {"type": "string", "minLength": "3", "required": true, "pattern": /^[a-z0-9\-]+$/},
 				"serviceGroup": {"type": "string", "minLength": "3", "required": false},
 				"servicePort": {"type": "integer", "min": 4100, "required": true},
@@ -246,7 +246,7 @@ var config = {
 					"minItems": 1,
 					"uniqueItems": true
 				},
-				"serviceVersion": {"type": "integer", "min": 1, "required": false},
+				"serviceVersion": {"type": "number", "min": 1, "required": false},
 				"serviceName": {"type": "string", "minLength": "3", "required": true, "pattern": /^[a-z0-9\-]+$/},
 				"serviceGroup": {"type": "string", "minLength": "3", "required": false},
 				"servicePort": {"type": "integer", "min": 4100, "required": true},
