@@ -666,7 +666,10 @@ describe("testing helper git.js", function () {
 			BL.model.findEntries = function (soajs, opts, cb) {
 				var entries = [
 					{
-						code: 'DEV'
+						code: 'DEV',
+						deployer :{
+							selected: "container.kubernetes.remote"
+						}
 					}
 				];
 

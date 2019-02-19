@@ -1,6 +1,7 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../../helper.js");
+var cicdModel = helper.requireModule("./models/cicd.js");
 var utils = helper.requireModule('./lib/cd/index.js');
 var cd;
 var config = helper.requireModule('./config.js');
@@ -550,7 +551,7 @@ describe("testing services.js", function () {
 				commit: "test",
 				ciProvider: "test",
 			};
-			cd.cdDeploy(config, req, deployer, helpers, function (error, body) {
+			cd.cdDeploy(config, req, deployer, helpers, cicdModel, function (error, body) {
 				assert.ok(body);
 				done();
 			});

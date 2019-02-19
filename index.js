@@ -2153,7 +2153,7 @@ service.init(function () {
 	service.post("/cd/deploy", function (req, res) {
 		initBLModel(req, res, dashboardBL.cd.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.cdDeploy(config, req, deployer, dashboardBL.cd.helper, function (error, data) {
+				BL.cdDeploy(config, req, deployer, dashboardBL.cd.helper, dashboardBL.cd.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.jsonp(req.soajs.buildResponse(error, data));
 				});
@@ -2517,7 +2517,6 @@ service.init(function () {
 	 */
 	service.get("/gitAccounts/getYaml", function (req, res) {
 		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
-
 			checkConnection(BL, req, res, function () {
 				BL.getFile(config, req, dashboardBL.git.driver, deployer, dashboardBL.git.helper, dashboardBL.git.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
@@ -2536,7 +2535,12 @@ service.init(function () {
 	service.get("/gitAccounts/getBranches", function (req, res) {
 		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.getBranches(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, function (error, data) {
+				let models = {
+					serviceModel: dashboardBL.services.model,
+					daemonModel: dashboardBL.daemons.model,
+					gitModel: dashboardBL.git.model
+				};
+				BL.getBranches(config, req, dashboardBL.git.driver, dashboardBL.git.helper, models, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

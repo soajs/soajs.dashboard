@@ -643,7 +643,8 @@ describe("testing host.js", function () {
 				env: 'dev',
 				serviceName: 'urac',
 				serviceType: 'service',
-				'operation': 'reloadRegistry'
+				'operation': 'reloadRegistry',
+				'serviceVersion': '1'
 			};
 			host.maintenance(config, soajs, function (error, body) {
 				assert.ifError(error);
@@ -677,6 +678,7 @@ describe("testing host.js", function () {
 			soajs.inputmaskData = {
 				env: 'dev',
 				serviceName: 'controller',
+				'serviceVersion': '1',
 				serviceType: 'service',
 				operation: 'awarenessStat'
 			};
@@ -713,7 +715,8 @@ describe("testing host.js", function () {
 				env: 'dev',
 				serviceName: 'oauth',
 				serviceType: 'service',
-				'operation': 'loadProvision'
+				'operation': 'loadProvision',
+				'serviceVersion': '1'
 			};
 			host.maintenance(config, soajs, function (error, body) {
 				assert.ifError(error);
@@ -748,7 +751,8 @@ describe("testing host.js", function () {
 				env: 'dev',
 				serviceName: 'my_daemon',
 				serviceType: 'daemon',
-				'operation': 'daemonStats'
+				'operation': 'daemonStats',
+				'serviceVersion': '1'
 			};
 			host.maintenance(config, soajs, function (error, body) {
 				assert.ifError(error);
@@ -757,7 +761,7 @@ describe("testing host.js", function () {
 			});
 		});
 		
-		it("Fail operation not permitted for service typ", function (done) {
+		it("Fail operation not permitted for service type", function (done) {
 			stubMongo.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
@@ -783,7 +787,8 @@ describe("testing host.js", function () {
 				env: 'dev',
 				serviceName: 'my_service',
 				serviceType: 'service',
-				'operation': 'daemonStats'
+				'operation': 'daemonStats',
+				'serviceVersion': '1'
 			};
 			host.maintenance(config, soajs, function (error, body) {
 				done();
