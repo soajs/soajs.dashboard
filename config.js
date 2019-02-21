@@ -3519,7 +3519,7 @@ module.exports = {
 							"version": {
 								"type": "object",
 								"properties": {
-									"v": { "type": "string", "required": true, "pattern": /v[0-9]+$/ },
+									"v": { "type": "string", "required": true, "pattern": /v[0-9]*\.?[0-9]*$/ },
 									"branch": { "type": "string", "required": false, "minLengh": 1 },
 									"strategy": { "type": "string", "enum": ["notify", "update"], "required": false },
 									"deploy": { "type": "boolean", "required": false },

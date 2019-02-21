@@ -4,6 +4,8 @@ var helper = require("../../../helper.js");
 var utils1 = helper.requireModule('./lib/git/index.js');
 var helpers1 = helper.requireModule('./lib/git/helper.js');
 var configFile1 = helper.requireModule('./lib/git/getConfig.js');
+var daemonModel = helper.requireModule('./models/services.js');
+var serviceModel = helper.requireModule('./models/daemons.js');
 
 let soajsUtils = require('soajs.core.libs').utils;
 let configFile = soajsUtils.cloneObj(configFile1);
@@ -442,7 +444,12 @@ describe("testing git.js", function () {
 				"name": "sample__Single",
 				"type": "service"
 			};
-			lib.getBranches(config, req, gitDriver, helpers, gitModel, function (error) {
+			let models = {
+				serviceModel: serviceModel,
+				daemonModel: daemonModel,
+				gitModel: gitModel
+			};
+			lib.getBranches(config, req, gitDriver, helpers, models, function (error, body) {
 				assert.ok(error);
 				assert.equal(error.code, 759);
 				done();
@@ -480,8 +487,13 @@ describe("testing git.js", function () {
 				"name": "sampleSuccessSingle",
 				"type": "service"
 			};
-
-			lib.getBranches(config, req, gitDriver, helpers, gitModel, function (error, body) {
+			
+			let models = {
+				serviceModel: serviceModel,
+				daemonModel: daemonModel,
+				gitModel: gitModel
+			};
+			lib.getBranches(config, req, gitDriver, helpers, models, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -513,8 +525,14 @@ describe("testing git.js", function () {
 				"name": "singleDaemon1",
 				"type": "daemon"
 			};
-
-			lib.getBranches(config, req, gitDriver, helpers, gitModel, function (error, body) {
+			
+			
+			let models = {
+				serviceModel: serviceModel,
+				daemonModel: daemonModel,
+				gitModel: gitModel
+			};
+			lib.getBranches(config, req, gitDriver, helpers, models, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -833,7 +851,13 @@ describe("testing git.js", function () {
 				"repo": "github",
 				"id": '592be42296fe4eac1ccab1be'
 			};
-			lib.deactivateRepo(config, req, gitDriver, helpers, gitModel, {}, {}, function (error, body) {
+			let models = {
+				cloudBL: {},
+				serviceModel: serviceModel,
+				daemonModel: daemonModel,
+				gitModel: gitModel
+			};
+			lib.deactivateRepo(config, req, gitDriver, helpers, models, {}, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -856,7 +880,13 @@ describe("testing git.js", function () {
 				"repo": "github",
 				"id": '592be42296fe4eac1ccab1be'
 			};
-			lib.deactivateRepo(config, req, gitDriver, helpers, gitModel, {}, {}, function (error, body) {
+			let models = {
+				cloudBL: {},
+				serviceModel: serviceModel,
+				daemonModel: daemonModel,
+				gitModel: gitModel
+			};
+			lib.deactivateRepo(config, req, gitDriver, helpers, models, {}, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -893,7 +923,13 @@ describe("testing git.js", function () {
 				"repo": "github",
 				"id": '592be42296fe4eac1ccab1be'
 			};
-			lib.deactivateRepo(config, req, gitDriver, helpers, gitModel, {}, {}, function (error, body) {
+			let models = {
+				cloudBL: {},
+				serviceModel: serviceModel,
+				daemonModel: daemonModel,
+				gitModel: gitModel
+			};
+			lib.deactivateRepo(config, req, gitDriver, helpers, models, {}, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -909,7 +945,13 @@ describe("testing git.js", function () {
 				"repo": "github",
 				"id": '592be42296fe4eac1ccab1be'
 			};
-			lib.deactivateRepo(config, req, gitDriver, helpers, gitModel, {}, {}, function (error, body) {
+			let models = {
+				cloudBL: {},
+				serviceModel: serviceModel,
+				daemonModel: daemonModel,
+				gitModel: gitModel
+			};
+			lib.deactivateRepo(config, req, gitDriver, helpers, models, {}, function (error, body) {
 				assert.ok(error);
 				done();
 			});

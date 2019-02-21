@@ -19,10 +19,12 @@ var dashboardBL = {
 		module: require("./lib/tenant/index.js")
 	},
 	services: {
-		module: require("./lib/services/index.js")
+		module: require("./lib/services/index.js"),
+		model: require('./models/services.js')
 	},
 	daemons: {
-		module: require("./lib/daemons/index.js")
+		module: require("./lib/daemons/index.js"),
+		model: require('./models/daemons.js')
 	},
 	swagger: {
 		module: require("./lib/swagger/index.js")
@@ -43,7 +45,8 @@ var dashboardBL = {
 	},
 	cd: {
 		module: require("./lib/cd/index.js"),
-		helper: require("./lib/cd/helper.js")
+		helper: require("./lib/cd/helper.js"),
+		model: require("./models/cicd.js")
 	},
 	git: {
 		module: require('./lib/git/index.js'),
@@ -2085,7 +2088,7 @@ service.init(function () {
 	service.get("/cd", function (req, res) {
 		initBLModel(req, res, dashboardBL.cd.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.getConfig(config, req, dashboardBL.cd.helper, function (error, data) {
+				BL.getConfig(config, req, dashboardBL.cd.helper, dashboardBL.cd.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.jsonp(req.soajs.buildResponse(error, data));
 				});
@@ -2150,7 +2153,7 @@ service.init(function () {
 	service.post("/cd/deploy", function (req, res) {
 		initBLModel(req, res, dashboardBL.cd.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.cdDeploy(config, req, deployer, dashboardBL.cd.helper, function (error, data) {
+				BL.cdDeploy(config, req, deployer, dashboardBL.cd.helper, dashboardBL.cd.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.jsonp(req.soajs.buildResponse(error, data));
 				});
@@ -2514,7 +2517,6 @@ service.init(function () {
 	 */
 	service.get("/gitAccounts/getYaml", function (req, res) {
 		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
-
 			checkConnection(BL, req, res, function () {
 				BL.getFile(config, req, dashboardBL.git.driver, deployer, dashboardBL.git.helper, dashboardBL.git.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
@@ -2533,7 +2535,12 @@ service.init(function () {
 	service.get("/gitAccounts/getBranches", function (req, res) {
 		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.getBranches(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, function (error, data) {
+				let models = {
+					serviceModel: dashboardBL.services.model,
+					daemonModel: dashboardBL.daemons.model,
+					gitModel: dashboardBL.git.model
+				};
+				BL.getBranches(config, req, dashboardBL.git.driver, dashboardBL.git.helper, models, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -2558,7 +2565,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Deactivate a repository
 	 * @param {String} API route
@@ -2568,7 +2575,13 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (cloudBL) {
 			initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
 				checkConnection(BL, req, res, function () {
-					BL.deactivateRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, cloudBL, deployer, function (error, data) {
+					let models = {
+						cloudBL,
+						serviceModel: dashboardBL.services.model,
+						daemonModel: dashboardBL.daemons.model,
+						gitModel: dashboardBL.git.model
+					};
+					BL.deactivateRepo(config, req, dashboardBL.git.driver, dashboardBL.git.helper, models, deployer, function (error, data) {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
 					});
@@ -2625,7 +2638,7 @@ service.init(function () {
 	service.post("/services/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.services.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.list(config, req, res, function (error, data) {
+				BL.list(config, req, res, dashboardBL.services.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

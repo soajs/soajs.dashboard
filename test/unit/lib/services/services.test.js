@@ -2,6 +2,7 @@
 var assert = require("assert");
 var helper = require("../../../helper.js");
 var utils = helper.requireModule('./lib/services/index.js');
+var servicesModel = helper.requireModule('./models/services.js');
 var services;
 let stubMongo = {
 	checkForMongo: function (soajs) {
@@ -113,8 +114,8 @@ describe("testing services.js", function () {
 				}
 				return cb(null, services);
 			};
-
-			services.list(config, req, {}, function (error, body) {
+x
+			services.list(config, req, {}, servicesModel, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -133,7 +134,7 @@ describe("testing services.js", function () {
 			req.soajs.inputmaskData = {
 				includeEnvs: []
 			};
-			services.list(config, req, {}, function (error, body) {
+			services.list(config, req, {}, servicesModel, function (error, body) {
 				// assert.ok(body);
 				done();
 			});

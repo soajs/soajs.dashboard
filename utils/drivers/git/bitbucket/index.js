@@ -222,12 +222,14 @@ var driver = {
 								.replace('%REPO_NAME%', options.repo)
 								.replace('%BRANCH%', options.ref || 'master')
 								.replace('%FILE_PATH%', options.path);
-						
+						var configSHA = options.repo + options.path;
+						var hash = crypto.createHash(config.gitAccounts.bitbucket_enterprise.hash.algorithm);
+						configSHA = hash.update(configSHA).digest('hex');
 						return cb(null, {
 							token: options.token,
 							downloadLink: downloadLink,
 							content: response
-						});
+						}, configSHA);
 					});
 				});
 			});

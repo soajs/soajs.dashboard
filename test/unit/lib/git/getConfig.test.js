@@ -104,7 +104,7 @@ describe("testing get config git.js", function () {
 		
 		it("success 1: soa.js", function (done) {
 			var configGenerator = {
-				generate: function (soajsFilePath, swaggerFilePath, cb) {
+				generate: function (req, soajsFilePath, swaggerFilePath, cb) {
 					return cb(null, "module.exports = {};");
 				}
 			};
