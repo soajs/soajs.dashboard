@@ -114,7 +114,6 @@ describe("testing services.js", function () {
 				}
 				return cb(null, services);
 			};
-x
 			services.list(config, req, {}, servicesModel, function (error, body) {
 				// assert.ok(body);
 				done();
