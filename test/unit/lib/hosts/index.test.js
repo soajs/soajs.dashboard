@@ -2,6 +2,7 @@
 var assert = require("assert");
 var helper = require("../../../helper.js");
 var utils = helper.requireModule('./lib/hosts/index.js');
+var controllersModel = helper.requireModule("./models/controllers.js");
 var mongo = helper.requireModule('./models/mongo.js');
 const sinon = require('sinon');
 var host;
@@ -349,7 +350,10 @@ describe("testing host.js", function () {
 			soajs.inputmaskData = {
 				env: 'dev'
 			};
-			host.awareness(config, soajs, function (error, body) {
+			let model = {
+				controllersModel: controllersModel
+			};
+			host.awareness(config, soajs, model, function (error, body) {
 				assert.ok(body);
 				done();
 			});

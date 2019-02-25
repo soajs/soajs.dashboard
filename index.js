@@ -36,6 +36,9 @@ var dashboardBL = {
 		module: require("./lib/hosts/index.js"),
 		helper: require("./lib/hosts/helper.js")
 	},
+	controllers: {
+		model: require('./models/controllers.js')
+	},
 	catalog: {
 		module: require("./lib/catalog/index.js")
 	},
@@ -1479,9 +1482,12 @@ service.init(function () {
 	 * @param {Function} API middleware
 	 */
 	service.get("/hosts/awareness", function (req, res) {
+		let model = {
+			controllersModel :  dashboardBL.controllers.model
+		};
 		initBLModel(req, res, dashboardBL.hosts.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.awareness(config, req.soajs, function (error, data) {
+				BL.awareness(config, req.soajs, model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
