@@ -30,26 +30,25 @@ function checkIfError(error, options, cb, callback) {
 var lib = {
 
 	"authenticate": function (options) {
-		var bitbucketClient;
-		var domain = 'https://' + config.gitAccounts.bitbucket_enterprise.apiDomain.replace('%PROVIDER_DOMAIN%', options.domain);
+		var localBitbucketClient;
+		var domain = config.gitAccounts.bitbucket_enterprise.apiDomain.replace('%PROVIDER_DOMAIN%', options.domain);
 		if (options.access === 'public') {
-			bitbucketClient = new BitbucketClient(domain);
+            localBitbucketClient = new BitbucketClient(domain);
 		} else {
 			// has the form username:password
 			var credentials = options.token.split(':');
 
-			bitbucketClient = new BitbucketClient(domain, {
+            localBitbucketClient = new BitbucketClient(domain, {
 				type: 'basic',
 				username: credentials[0],
 				password: credentials[1]
 			});
 		}
-		return bitbucketClient;
+		return localBitbucketClient;
 	},
 
 	"checkUserRecord": function (options, cb) {
-		var domain = 'https://' + config.gitAccounts.bitbucket_enterprise.apiDomain.replace('%PROVIDER_DOMAIN%', options.domain);
-		var tempClient = new BitbucketClient(domain);
+		var tempClient = lib.authenticate(options);
 
 		tempClient.users.getUser(options.owner)
 			.then(function (user) {

@@ -45,26 +45,18 @@ var driver = {
 					if (options.access === 'public') { //in case of public access, no tokens are created, just verify that user/org exists and save
 						driver.helper.checkUserRecord(options, function (error) {
 							checkIfError(error, {}, cb, function () {
-								bitbucketClient = driver.helper.authenticate(options);
 								data.saveNewAccount(soajs, model, options, cb);
 							});
 						});
 					}
 					else if (options.access === 'private') {
+                        options.token = options.owner + ":" + options.password;
 						driver.helper.checkUserRecord(options, function (error) {
 							checkIfError(error, {}, cb, function () {
-								options.token = options.owner + ":" + options.password;
-								var domain = 'https://' + config.gitAccounts.bitbucket_enterprise.apiDomain.replace('%PROVIDER_DOMAIN%', options.domain);
-								var tempClient = new BitbucketClient(domain, {
-									type: 'basic',
-									username: options.owner,
-									password: options.password
-								});
-								// if able to get user's settings, it means we have valid credentials
-								tempClient.settings.get(options.owner)
+                                bitbucketClient = driver.helper.authenticate(options);
+                                bitbucketClient.settings.get(options.owner)
 									.then(function () {
 										delete options.password;
-										bitbucketClient = driver.helper.authenticate(options);
 										
 										options.token = new Buffer(options.token).toString('base64');
 										data.saveNewAccount(soajs, model, options, cb);
@@ -74,7 +66,7 @@ var driver = {
 									})
 									.finally(function () {
 										// delete temp client
-										tempClient = null;
+                                        bitbucketClient = null;
 									});
 							});
 						});
@@ -127,7 +119,7 @@ var driver = {
 	
 	"getBranches": function (soajs, data, model, options, cb) {
 		data.getAccount(soajs, model, options, function (error, accountRecord) {
-			checkIfError(error, {}, cb, function () {
+			checkIfError(error || !accountRecord, {}, cb, function () {
 				options.domain = accountRecord.domain;
 				
 				if (accountRecord.token) {
@@ -212,37 +204,41 @@ var driver = {
 	},
 	
 	"getAnyContent": function (soajs, data, model, options, cb) {
-		if (options.accountRecord.token) {
-			options.token = new Buffer(options.accountRecord.token, 'base64').toString();
-			options.domain = options.accountRecord.domain;
-			bitbucketClient = driver.helper.authenticate(options);
-		}
-		
-		driver.helper.getRepoContent(options, bitbucketClient, function (error, response) {
-			checkIfError(error, {}, cb, function () {
-				// bitbucket Client returns file content as an array of lines
-				// concatenate them in one string
-				var content = "";
-				for (var i = 0; i < response.lines.length; ++i) {
-					content += response.lines[i].text + "\n";
-				}
-				
-				var downloadLink = 'https://' + config.gitAccounts.bitbucket_enterprise.downloadUrl
-						.replace('%PROVIDER_DOMAIN%', options.domain)
-						.replace('%PROJECT_NAME%', options.project)
-						.replace('%REPO_NAME%', options.repo)
-						.replace('%PATH%', options.path)
-						.replace('%BRANCH%', options.ref || 'master');
-				var configSHA = options.repo + options.path;
-				var hash = crypto.createHash(config.gitAccounts.bitbucket_enterprise.hash.algorithm);
-				configSHA = hash.update(configSHA).digest('hex');
-				return cb(null, {
-					token: options.token,
-					downloadLink: downloadLink,
-					content: content
-				}, configSHA);
-			});
-		});
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
+            checkIfError(error || !accountRecord, {}, cb, function () {
+                if (accountRecord.token) {
+                    options.token = new Buffer(accountRecord.token, 'base64').toString();
+                    options.domain = accountRecord.domain;
+                    bitbucketClient = driver.helper.authenticate(options);
+                }
+
+                driver.helper.getRepoContent(options, bitbucketClient, function (error, response) {
+                    checkIfError(error, {}, cb, function () {
+                        // bitbucket Client returns file content as an array of lines
+                        // concatenate them in one string
+                        var content = "";
+                        for (var i = 0; i < response.lines.length; ++i) {
+                            content += response.lines[i].text + "\n";
+                        }
+
+                        var downloadLink = config.gitAccounts.bitbucket_enterprise.downloadUrl
+                            .replace('%PROVIDER_DOMAIN%', options.domain)
+                            .replace('%PROJECT_NAME%', options.project)
+                            .replace('%REPO_NAME%', options.repo)
+                            .replace('%PATH%', options.path)
+                            .replace('%BRANCH%', options.ref || 'master');
+                        var configSHA = options.repo + options.path;
+                        var hash = crypto.createHash(config.gitAccounts.bitbucket_enterprise.hash.algorithm);
+                        configSHA = hash.update(configSHA).digest('hex');
+                        return cb(null, {
+                            token: options.token,
+                            downloadLink: downloadLink,
+                            content: content
+                        }, configSHA);
+                    });
+                });
+            });
+        });
 	}
 };
 
