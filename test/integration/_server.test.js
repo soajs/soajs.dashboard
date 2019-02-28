@@ -76,8 +76,8 @@ describe("importing sample data", function () {
 			dashboard = helper.requireModule('./index');
 			setTimeout(function () {
 				done();
-			}, 3000);
-		}, 3000);
+			}, 6000);
+		}, 6000);
 	});
 	
 	it("Update hosts entries", (done) => {
