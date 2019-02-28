@@ -76,7 +76,7 @@ describe("importing sample data", function () {
 			dashboard = helper.requireModule('./index');
 			setTimeout(function () {
 				done();
-			}, 10000);
+			}, 20000);
 		}, 6000);
 	});
 	
