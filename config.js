@@ -1287,9 +1287,9 @@ module.exports = {
 				"serviceVersion": {
 					"source": ['query.serviceVersion'],
 					"required": false,
-					"default": 1,
+					"default": "1",
 					"validation": {
-						"type": "number"
+						"type": "string"
 					}
 				},
 				"operation": {
@@ -2140,9 +2140,9 @@ module.exports = {
 				"serviceVersion": {
 					"source": ['body.serviceVersion'],
 					"required": false,
-					"default": 1,
+                    "default": "1",
 					"validation": {
-						"type": "number"
+						"type": "string"
 					}
 				},
 			},
@@ -2164,9 +2164,9 @@ module.exports = {
 				"serviceVersion": {
 					"source": ['body.serviceVersion'],
 					"required": false,
-					"default": 1,
+					"default": "1",
 					"validation": {
-						"type": "number"
+						"type": "string"
 					}
 				},
 			},
@@ -3617,7 +3617,7 @@ module.exports = {
 									"type": "string", "required": true
 								},
 								"serviceVersion": {
-									"type": "number", "minimum": 1, "required": false
+									"type": "string", "required": false
 								}
 							}
 						}
@@ -3821,9 +3821,8 @@ module.exports = {
 										"pattern": /^[a-z0-9\-]+$/
 									},
 									"serviceVersion": {
-										"type": "number",
+										"type": "string",
 										"required": true,
-										"min": 1
 									},
 									"serviceGroup": {
 										"type": "string",
@@ -3948,7 +3947,7 @@ module.exports = {
 				"serviceVersion": {
 					"source": ['query.serviceVersion', 'body.serviceVersion'],
 					"required": true,
-					"validation": { "type": "number", "minimum": 1 }
+					"validation": { "type": "string"}
 				},
 				"requestTimeout": {
 					"source": ['query.requestTimeout', 'body.requestTimeout'],
@@ -5671,7 +5670,7 @@ module.exports = {
 				"serviceVersion": {
 					"source": ['query.serviceVersion', 'body.serviceVersion'],
 					"required": true,
-					"validation": { "type": "number", "minimum": 1 }
+					"validation": { "type": "string" }
 				},
 				"requestTimeout": {
 					"source": ['query.requestTimeout', 'body.requestTimeout'],
