@@ -1,7 +1,7 @@
 {
   "name": "soajs.dashboard",
   "description": "soajs dashboard service",
-  "version": "2.5.0",
+  "version": "2.5.5",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -64,6 +64,6 @@
 
     "unzip2": "0.2.5",
     "url-clean": "^1.0.2",
-    "yamljs": "0.2.8"
+    "yamljs": "0.3.0"
   }
 }

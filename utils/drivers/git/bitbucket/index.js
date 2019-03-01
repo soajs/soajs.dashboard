@@ -208,34 +208,37 @@ var driver = {
 	},
 	
 	getAnyContent: function (soajs, data, model, options, cb) {
-		driver.helper.checkAuthToken(soajs, options, model, options.accountRecord, function (error, updated, newTokenInfo) {
-			checkIfError(error, {}, cb, function () {
-				if (updated) {
-					options.token = newTokenInfo.token;
-					options.tokenInfo = newTokenInfo.tokenInfo;
-				}
-				
-				driver.helper.getRepoContent(options, function (error, response) {
-					checkIfError(error, {}, cb, function () {
-						var downloadLink = config.gitAccounts.bitbucket.apiDomain + config.gitAccounts.bitbucket.routes.getContent
-								.replace('%USERNAME%', options.user)
-								.replace('%REPO_NAME%', options.repo)
-								.replace('%BRANCH%', options.ref || 'master')
-								.replace('%FILE_PATH%', options.path);
-						var configSHA = options.repo + options.path;
-						var hash = crypto.createHash(config.gitAccounts.bitbucket_enterprise.hash.algorithm);
-						configSHA = hash.update(configSHA).digest('hex');
-						return cb(null, {
-							token: options.token,
-							downloadLink: downloadLink,
-							content: response
-						}, configSHA);
-					});
-				});
-			});
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
+            checkIfError(error, {}, cb, function () {
+                driver.helper.checkAuthToken(soajs, options, model, options.accountRecord, function (error, updated, newTokenInfo) {
+                    checkIfError(error, {}, cb, function () {
+                        if (updated) {
+                            options.token = newTokenInfo.token;
+                            options.tokenInfo = newTokenInfo.tokenInfo;
+                        }
+
+                        driver.helper.getRepoContent(options, function (error, response) {
+                            checkIfError(error, {}, cb, function () {
+                                var downloadLink = config.gitAccounts.bitbucket.apiDomain + config.gitAccounts.bitbucket.routes.getContent
+                                    .replace('%USERNAME%', options.user)
+                                    .replace('%REPO_NAME%', options.repo)
+                                    .replace('%BRANCH%', options.ref || 'master')
+                                    .replace('%FILE_PATH%', options.path);
+                                var configSHA = options.repo + options.path;
+                                var hash = crypto.createHash(config.gitAccounts.bitbucket_enterprise.hash.algorithm);
+                                configSHA = hash.update(configSHA).digest('hex');
+                                return cb(null, {
+                                    token: options.token,
+                                    downloadLink: downloadLink,
+                                    content: response
+                                }, configSHA);
+                            });
+                        });
+                    });
+                });
+            });
 		});
 	}
-	
 };
 
 module.exports = driver;

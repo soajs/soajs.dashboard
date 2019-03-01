@@ -11,7 +11,7 @@ let yamlComplex = "swagger: '2.0'\ninfo:\n    version: 1.0.0\n    title: www\nho
 let context = {
 	soajs: {
 		config: {
-			serviceVersion: 1,
+			serviceVersion: "1",
 			serviceName: 'test',
 			serviceGroup: 'test',
 			servicePort: 4321,

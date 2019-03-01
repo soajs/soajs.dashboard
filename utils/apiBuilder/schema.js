@@ -39,8 +39,7 @@ module.exports = {
 			"type": "boolean"
 		},
 		"serviceVersion": {
-			"type": "number",
-			"min": 1,
+			"type": "string",
 			"required": true
 		},
 		"serviceName": {
