@@ -130,6 +130,29 @@ describe("importing sample data", function () {
 		});
 	});
 	
+	it("check if dashboard is ready", function (done) {
+		let counter = 0;
+		let params = {
+			"uri": "http://127.0.0.1:5003/heartbeat",
+			"headers": {
+				"content-type": "application/json"
+			}
+		};
+		function checkDashboard(){
+			helper.requester("get", params, (err)=>{
+				counter++;
+				if (err && counter < 10){
+					setTimeout(function () {
+						checkDashboard();
+					}, 2000);
+				}
+				else {
+					done();
+				}
+			});
+		}
+		checkDashboard();
+	});
 	after(function (done) {
 		setTimeout(function () {
 			require("./soajs.templates.test.js");
