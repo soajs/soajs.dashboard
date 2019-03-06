@@ -13,7 +13,8 @@ var dashboardBL = {
 		module: require("./lib/customRegistry/index.js")
 	},
 	product: {
-		module: require("./lib/product/index.js")
+		module: require("./lib/product/index.js"),
+		model: require('./models/products.js')
 	},
 	tenant: {
 		module: require("./lib/tenant/index.js")
@@ -855,6 +856,22 @@ service.init(function () {
 			});
 		});
 	});
+	
+	/**
+	 * Update a product scope
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/product/scope/update", function (req, res) {
+		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.updateScope(config, req, res, dashboardBL.product.model, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
 
 	/**
 	 * List available products
@@ -864,7 +881,7 @@ service.init(function () {
 	service.get("/product/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.list(config, req, res, function (error, data) {
+				BL.list(config, req, res, dashboardBL.product.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -880,7 +897,7 @@ service.init(function () {
 	service.get("/console/product/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.listConsole(config, req, res, function (error, data) {
+				BL.listConsole(config, req, res, dashboardBL.product.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -896,7 +913,7 @@ service.init(function () {
 	service.get("/product/get", function (req, res) {
 		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.get(config, req, res, function (error, data) {
+				BL.get(config, req, res, dashboardBL.product.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

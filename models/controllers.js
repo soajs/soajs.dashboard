@@ -15,7 +15,7 @@ var methods = {
 				return cb(null, records);
 			}
 			async.map(records, function(record, callback) {
-				methods.sanitize(record, callback);
+				methods.unsanitize(record, callback);
 			}, cb);
 		});
 	},
@@ -25,7 +25,7 @@ var methods = {
 			if (err){
 				return cb(err);
 			}
-			methods.sanitize(record, cb);
+			methods.unsanitize(record, cb);
 		});
 	},
 	"removeEntry": function (soajs, model, opts, cb) {
@@ -36,7 +36,7 @@ var methods = {
 		opts.collection = collName;
 		model.updateEntry(soajs, opts, cb);
 	},
-	"sanitize": function (record, cb) {
+	"unsanitize": function (record, cb) {
 		if(record && record.data && record.data.services && Object.keys(record.data.services).length > 0){
 			async.each(record.data.services, function(service, callback) {
 				if(service && service.versions && Object.keys(service.versions).length > 0){

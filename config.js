@@ -4935,6 +4935,21 @@ module.exports = {
 				}
 			},
 			
+			"/product/scope/update": {
+				_apiInfo: {
+					"l": "Update Product Package",
+					"group": "Product"
+				},
+				"commonFields": ['id', 'acl', 'soajs_project'],
+				"scope": {
+					"source": ["body.scope"],
+					"required": true,
+					"validation": {
+						"type": "object"
+					}
+				}
+			},
+			
 			"/tenant/update": {
 				_apiInfo: {
 					"l": "Update Tenant",
