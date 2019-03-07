@@ -51,31 +51,15 @@ var methods = {
 		}, cb);
 	},
 	"unsanitize": function (record, cb) {
-		async.parallel([
-				function (callback) {
-					if (record.scope && record.scope.acl && Object.keys(record.scope.acl > 0)) {
-						let scope = record.scope.acl;
-						santizeAcl(scope, () => {
-							record.scope.acl = scope;
-							return callback();
-						});
-					} else {
-						return callback();
-					}
-					
-				},
-				function (callback) {
-					if (record.packages && Object.keys(record.packages > 0)) {
-						loopThroupProduct(record, callback);
-					} else {
-						return callback();
-					}
-				}
-			],
-			function () {
+		if (record.scope && record.scope.acl && Object.keys(record.scope.acl > 0)) {
+			let scope = record.scope.acl;
+			santizeAcl(scope, () => {
+				record.scope.acl = scope;
 				return cb(null, record);
 			});
-		
+		} else {
+			return cb(null, record);
+		}
 		
 		function santizeAcl(acl, cb) {
 			async.eachOf(acl, function (env, envKey, call) {
@@ -88,20 +72,6 @@ var methods = {
 					acl[envKey][serviceKey] = sanitizedVersion;
 					callback();
 				}, call);
-			}, cb);
-		}
-		
-		function loopThroupProduct(record, cb) {
-			async.each(record.packages, function (pack, call) {
-				if (pack.acl && Object.keys(pack.acl > 0)) {
-					let acl = pack.acl;
-					santizeAcl(pack.acl, () => {
-						pack.acl = acl;
-						return call();
-					});
-				} else {
-					return call();
-				}
 			}, cb);
 		}
 	}
