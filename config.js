@@ -2848,7 +2848,7 @@ module.exports = {
 			"/tenant/acl/get": { //TODO: should be changed from post to get
 				_apiInfo: {
 					"l": "Get Current Tenant Access Level",
-					"group": "Tenant"
+					"group": "Private Tenant ACL"
 				},
 				"commonFields": ['id', 'soajs_project']
 			},
@@ -3560,7 +3560,7 @@ module.exports = {
 			"/cd/deploy": {
 				"_apiInfo": {
 					"l": "Trigger CD Deployment",
-					"group": "Continuous Delivery"
+					"group": "Continuous Delivery Deployment"
 				},
 				"commonFields": ['soajs_project'],
 				"deploy_token": {
