@@ -920,7 +920,23 @@ service.init(function () {
 			});
 		});
 	});
-
+	
+	/**
+	 * Purge a specific product
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/product/purge", function (req, res) {
+		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.purgeProduct(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
 	/**
 	 * Get package of specific product
 	 * @param {String} API route

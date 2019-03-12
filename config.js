@@ -972,6 +972,14 @@ module.exports = {
 				}
 			},
 			
+			"/product/purge": {
+				_apiInfo: {
+					"l": "Purge Product",
+					"group": "Product"
+				},
+				"commonFields": ['id', 'description', 'soajs_project']
+			},
+			
 			"/product/packages/list": {
 				_apiInfo: {
 					"l": "List Product Packages",
