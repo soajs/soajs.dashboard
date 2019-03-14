@@ -60,7 +60,7 @@
     "shortid": "^2.2.4",
 
     "soajs": "2.4.1",
-    "soajs.core.drivers": "3.1.1",
+    "soajs.core.drivers": "3.5.1",
 
     "unzip2": "0.2.5",
     "url-clean": "^1.0.2",
