@@ -943,7 +943,7 @@ module.exports = {
 			"/console/product/list": {
 				_apiInfo: {
 					"l": "List Console Products",
-					"group": "Product"
+					"group": "Console Product"
 				},
 				"commonFields": ['soajs_project']
 			},
@@ -1055,7 +1055,7 @@ module.exports = {
 			"/console/tenant/list": {
 				_apiInfo: {
 					"l": "List Console Tenants",
-					"group": "Tenant"
+					"group": "Console Tenant"
 				},
 				"commonFields": ['soajs_project'],
 				"type": {
@@ -5919,7 +5919,7 @@ module.exports = {
 			"/cloud/vm": {
 				"_apiInfo": {
 					"l": "Modify Virtual Machine Layer",
-					"group": "HA Cloud"
+					"group": "Owner HA Cloud"
 				},
 				"commonFields": ['soajs_project', 'id', 'env'],
 				
@@ -5949,7 +5949,7 @@ module.exports = {
 			"/infra/extras": {
 				"_apiInfo": {
 					"l": "Update Infra component",
-					"group": "HA Cloud"
+					"group": "Owner HA Cloud"
 				},
 				"commonFields": ['soajs_project'],
 				'envCode': {
