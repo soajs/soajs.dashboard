@@ -304,27 +304,27 @@ var lib = {
 					break;
 				}
 			}
-			if (!found) {
-				//USING THE SAME RECORD FORMAT AS GITHUB API RESPONSES
-				var repoInfo = oneRepo.name.split('/');
-				var newRepo = {
-					full_name: oneRepo.name,
-					owner: {
-						login: repoInfo[0]
-					},
-					name: repoInfo[1],
-					status: 'deleted',
-					type: oneRepo.type,
-					git: oneRepo.git
-				};
-				if (oneRepo.configBranch){
-					newRepo.configBranch = oneRepo.configBranch;
-				}
-				if(multi && multi.length > 0){
-					newRepo.multi = multi;
-				}
-				allRepos.push(newRepo);
-			}
+			// if (!found) {
+			// 	//USING THE SAME RECORD FORMAT AS GITHUB API RESPONSES
+			// 	var repoInfo = oneRepo.name.split('/');
+			// 	var newRepo = {
+			// 		full_name: oneRepo.name,
+			// 		owner: {
+			// 			login: repoInfo[0]
+			// 		},
+			// 		name: repoInfo[1],
+			// 		status: 'deleted',
+			// 		type: oneRepo.type,
+			// 		git: oneRepo.git
+			// 	};
+			// 	if (oneRepo.configBranch){
+			// 		newRepo.configBranch = oneRepo.configBranch;
+			// 	}
+			// 	if(multi && multi.length > 0){
+			// 		newRepo.multi = multi;
+			// 	}
+			// 	allRepos.push(newRepo);
+			// }
 		});
 
 		return cb(allRepos);
