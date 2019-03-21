@@ -2716,6 +2716,54 @@ service.init(function () {
 			});
 		});
 	});
+	
+	/**
+	 * List Service favorite
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/services/favorite/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.services.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.getFavorites(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Add Service to favorite
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/services/favorite", function (req, res) {
+		initBLModel(req, res, dashboardBL.services.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.setFavorite(config, req, res, dashboardBL.services.model, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Delete Service from favorite
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.delete("/services/favorite", function (req, res) {
+		initBLModel(req, res, dashboardBL.services.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.deleteFavorite(config, req, res, dashboardBL.services.model, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
 	/**
 	 * Daemons features
 	 */

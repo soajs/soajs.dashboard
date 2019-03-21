@@ -175,5 +175,97 @@ describe("testing services.js", function () {
 		});
 
 	});
+	describe("list favorites", function () {
+		before(() => {
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				return cb(null, {});
+			};
+		});
+		after(() => {
+		});
+		
+		it("Success getFavorites", function (done) {
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				return cb(null, {});
+			};
+			req.soajs.inputmaskData = {
+				username: "owner",
+				type: 'apiCatalog'
+			};
+			req.soajs.urac = {
+				username: "owner",
+				"_id": 1
+			};
+			services.getFavorites(config, req, {}, function (error, body) {
+				done();
+			});
+		});
+		it("Success getFavorites user not found", function (done) {
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				return cb(null, {});
+			};
+			req.soajs.inputmaskData = {
+				username: "ownernotfound",
+				type: 'apiCatalog'
+			};
+			req.soajs.urac = {
+				username: "owner",
+				"_id": 1
+			};
+			services.getFavorites(config, req, {}, function (error, body) {
+				done();
+			});
+		});
+		
+	});
+	describe("set favorite", function () {
+		before(() => {
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				return cb(null, {});
+			};
+		});
+		after(() => {
+		});
+		
+		it("Success setFavorite", function (done) {
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				return cb(null, {name: 'test'});
+			};
+			req.soajs.inputmaskData = {
+				service: 'test',
+				type: 'apiCatalog'
+			};
+			
+			services.setFavorite(config, req, {}, servicesModel,  function (error, body) {
+				done();
+			});
+		});
+		
+	});
+	describe("delete favorite", function () {
+		before(() => {
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				return cb(null, {});
+			};
+		});
+		after(() => {
+		});
+		
+		it("Success deleteFavorite", function (done) {
+			stubMongo.findEntry = function (soajs, opts, cb) {
+				return cb(null, {name: 'test'});
+			};
+			req.soajs.inputmaskData = {
+				service: 'test',
+				type: 'apiCatalog'
+			};
+			
+			services.deleteFavorite(config, req, {}, servicesModel, function (error, body) {
+				// assert.ok(body);
+				done();
+			});
+		});
+		
+	});
 	
 });

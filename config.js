@@ -1237,6 +1237,51 @@ module.exports = {
 				}
 			},
 			
+			"/services/favorite": {
+				"_apiInfo": {
+					"l": "Add Service to Favorites",
+					"group": "Services"
+				},
+				"commonFields": ['soajs_project'],
+				'service': {
+					'source': ['query.service'],
+					'required': true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'type': {
+					'source': ['query.type'],
+					'required': true,
+					"validation": {
+						"enum": ['apiCatalog'],
+						"type": "string"
+					}
+				}
+			},
+			"/services/favorite/list": {
+				"_apiInfo": {
+					"l": "Delete Service from Favorites",
+					"group": "Services"
+				},
+				"commonFields": ['soajs_project'],
+				'username': {
+					'source': ['query.username'],
+					'required': true,
+					'validation': {
+						'type': 'string'
+					}
+				},
+				'type': {
+					'source': ['query.type'],
+					'required': true,
+					"validation": {
+						"enum": ['apiCatalog'],
+						"type": "string"
+					}
+				}
+			},
+			
 			"/daemons/groupConfig/serviceConfig/list": {
 				_apiInfo: {
 					"l": "List Service Configuration",
@@ -6536,6 +6581,29 @@ module.exports = {
 					"required": false,
 					"source": ['query.id'],
 					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
+			"/services/favorite": {
+				"_apiInfo": {
+					"l": "Delete Service from Favorites",
+					"group": "Services"
+				},
+				"commonFields": ['soajs_project'],
+				'service': {
+					'source': ['query.service'],
+					'required': true,
+					'validation': {
+						'type': 'string'
+					}
+				},
+				'type': {
+					'source': ['query.type'],
+					'required': true,
+					"validation": {
+						"enum": ['apiCatalog'],
 						"type": "string"
 					}
 				}
