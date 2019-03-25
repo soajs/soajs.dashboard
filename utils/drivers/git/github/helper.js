@@ -214,7 +214,20 @@ var lib = {
 			// options.qs.affiliation = 'owner, collaborator';
 
 			request.get(reqOptions, function (error, response, body) {
-				return cb(error, (body) ? JSON.parse(body) : []);
+				if (error){
+					return cb(error);
+				}
+				if (body){
+					try {
+						return cb(null, JSON.parse(body));
+					}
+					catch (e) {
+						return cb(null, []);
+					}
+				}
+				else {
+					return cb(null, []);
+				}
 			});
 		}
 		else if (options && options.owner && options.type) {
@@ -223,7 +236,20 @@ var lib = {
 				reqOptions.qs.type = 'all';
 
 				request.get(reqOptions, function (error, response, body) {
-					return cb(error, (body) ? JSON.parse(body) : []);
+					if (error){
+						return cb(error);
+					}
+					if (body){
+						try {
+							return cb(null, JSON.parse(body));
+						}
+						catch (e) {
+							return cb(null, []);
+						}
+					}
+					else {
+						return cb(null, []);
+					}
 				});
 			}
 			else if (options.type === 'organization') {
