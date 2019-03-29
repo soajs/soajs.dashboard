@@ -7,14 +7,13 @@ var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d
 var util = require("soajs.core.libs").utils;
 
 function executeMyRequest(params, apiPath, method, cb) {
-	if (cb && typeof(cb) === 'function') {
+	if (cb && typeof (cb) === 'function') {
 		requester(apiPath, method, params, function (error, body) {
 			assert.ifError(error);
 			assert.ok(body);
 			return cb(body);
 		});
-	}
-	else {
+	} else {
 		return requester(apiPath, method, params);
 	}
 	
@@ -44,14 +43,13 @@ function executeMyRequest(params, apiPath, method, cb) {
 			options.qs = params.qs;
 		}
 		
-		if (cb && typeof(cb) === 'function') {
+		if (cb && typeof (cb) === 'function') {
 			request[method](options, function (error, response, body) {
 				assert.ifError(error);
 				assert.ok(body);
 				return cb(null, body);
 			});
-		}
-		else {
+		} else {
 			return options;
 		}
 	}
@@ -64,7 +62,7 @@ describe("Swagger", function () {
 				var params = {
 					"form": {
 						"data": {
-							"input": { "number": 10 },
+							"input": {"number": 10},
 							"imfv": {
 								"type": "number"
 							}
@@ -81,7 +79,7 @@ describe("Swagger", function () {
 				var params = {
 					"form": {
 						"data": {
-							"input": { "number": 10 },
+							"input": {"number": 10},
 							"imfv": {
 								"number": {
 									"source": "body"
@@ -100,7 +98,7 @@ describe("Swagger", function () {
 				var params = {
 					"form": {
 						"data": {
-							"input": { "number": 10 },
+							"input": {"number": 10},
 							"imfv": {
 								"number": {
 									"source": []
@@ -255,7 +253,7 @@ describe("Swagger", function () {
 						"serviceName": "mytestservice",
 						"serviceGroup": "Swagger",
 						"servicePort": 4100,
-						"serviceVersion": 1,
+						"serviceVersion": "1",
 						"requestTimeout": 30,
 						"requestTimeoutRenewal": 5,
 						"extKeyRequired": false,
@@ -334,7 +332,7 @@ describe("Swagger", function () {
 					done();
 				});
 			});
-
+			
 			it("fail - service port taken", function (done) {
 				var params = util.cloneObj(oParams);
 				params.form.data.service.serviceName = "somethingelse";
@@ -343,7 +341,7 @@ describe("Swagger", function () {
 					done();
 				});
 			});
-
+			
 			it("remove temp service", function (done) {
 				var condition = {
 					"name": oParams.form.data.service.serviceName
@@ -364,7 +362,7 @@ describe("Swagger", function () {
 					done();
 				});
 			});
-
+			
 			it("fail - invalid mapping of inputs", function (done) {
 				var params = util.cloneObj(oParams);
 				params.form.data.yaml = fs.readFileSync(__dirname + "/swagger.invalid.test.yaml", "utf8").toString();
@@ -393,7 +391,7 @@ describe("Swagger", function () {
 			});
 		});
 	});
-
+	
 	describe("Testing swagger/generateExistingService", function () {
 		it("success", function (done) {
 			var params = {
@@ -407,5 +405,5 @@ describe("Swagger", function () {
 			});
 		});
 	});
-
+	
 });

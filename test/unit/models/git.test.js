@@ -14,7 +14,8 @@ var soajs = {
 		info: function (data) {
 			
 		}
-	}
+	},
+	inputmaskData: {}
 };
 var mongoStub = {
 	checkForMongo: function (soajs) {
@@ -132,5 +133,147 @@ describe("testing models git.js", function () {
 			});
 		});
 	});
-
+	
+	describe("testing saveNewAccount", function () {
+		it("success 1", function (done) {
+			options = {
+			
+			};
+			models.saveNewAccount(soajs, mongoStub, options, function () {
+				done();
+			});
+		});
+	});
+	
+	describe("testing removeAccount", function () {
+		it("success 1", function (done) {
+			options = {
+			
+			};
+			models.removeAccount(soajs, mongoStub, options, function () {
+				done();
+			});
+		});
+	});
+	
+	describe("testing listGitAccounts", function () {
+		it("success 1", function (done) {
+			soajs.inputmaskData.fullList = true;
+			soajs.inputmaskData.rms = true;
+			options = {
+			
+			};
+			models.listGitAccounts(soajs, mongoStub, function () {
+				soajs.inputmaskData = {
+					accountRecord : {
+						repos: []
+					}
+				};
+				done();
+			});
+		});
+	});
+	describe("testing listGitAccountsWithRepos", function () {
+		it("success 1", function (done) {
+			options = {
+			
+			};
+			models.listGitAccountsWithRepos(soajs, mongoStub, function () {
+				done();
+			});
+		});
+	});
+	
+	describe("testing addRepoToAccount", function () {
+		it("success 1", function (done) {
+			options = {
+				repo :{
+					name : "test"
+				}
+			};
+			soajs.inputmaskData = {
+				accountRecord : {
+					repos: [{
+						name: "test"
+					}]
+				}
+			};
+			models.addRepoToAccount(soajs, mongoStub, options, function () {
+				done();
+			});
+		});
+	});
+	
+	describe("testing removeRepoFromAccount", function () {
+		it("success 1", function (done) {
+			options = {
+				repoLabel : "test"
+			};
+			soajs.inputmaskData.branch = "testBranch";
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, {
+					repos: [
+						{
+							name : "test",
+							git : {
+								branch : [
+									{
+										name : "testBranch"
+									}
+									
+								]
+							}
+						}
+					]
+				});
+			};
+			models.removeRepoFromAccount(soajs, mongoStub, options, function () {
+				done();
+			});
+		});
+		
+		it("success 1", function (done) {
+			options = {
+				repoLabel : "test2"
+			};
+			soajs.inputmaskData.branch = "testBranch";
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, {
+					repos: [
+						{
+							name : "test",
+							git : {
+								branch : [
+									{
+										name : "testBranch"
+									}
+								
+								]
+							}
+						}
+					]
+				});
+			};
+			models.removeRepoFromAccount(soajs, mongoStub, options, function () {
+				done();
+			});
+		});
+	});
+	
+	describe("testing updateRepoInfo", function () {
+		it("success 1", function (done) {
+			options = {
+				value: {
+					sha : "123",
+					swaggerSHA: "1234"
+				}
+			};
+			soajs.inputmaskData.branches = {
+				name: 	"testBranch"
+			};
+			models.updateRepoInfo(soajs, mongoStub, options, function () {
+				done();
+			});
+		});
+	});
 });

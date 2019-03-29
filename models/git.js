@@ -104,14 +104,17 @@ var methods = {
 			fields: {}
 		};
 		opts.fields['$addToSet'] = {'repos': options.repo};
-		for (let x = 0; x < soajs.inputmaskData.accountRecord.repos.length; x++) {
-			if (soajs.inputmaskData.accountRecord.repos[x].name === options.repo.name) {
-				soajs.inputmaskData.accountRecord.repos[x].git = options.repo.git;
-				delete opts.fields['$addToSet'];
-				opts.fields['$set'] = {'repos': soajs.inputmaskData.accountRecord.repos};
-				break;
+		if (soajs.inputmaskData.accountRecord && soajs.inputmaskData.accountRecord.repos){
+			for (let x = 0; x < soajs.inputmaskData.accountRecord.repos.length; x++) {
+				if (soajs.inputmaskData.accountRecord.repos[x].name === options.repo.name) {
+					soajs.inputmaskData.accountRecord.repos[x].git = options.repo.git;
+					delete opts.fields['$addToSet'];
+					opts.fields['$set'] = {'repos': soajs.inputmaskData.accountRecord.repos};
+					break;
+				}
 			}
 		}
+		
 		model.updateEntry(soajs, opts, cb);
     },
 	
