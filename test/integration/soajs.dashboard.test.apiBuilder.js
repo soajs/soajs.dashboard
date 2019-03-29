@@ -128,41 +128,6 @@ describe("DASHBOARD TESTS: API Builder", function () {
 		});
 	});
 	
-	it("Success - will add services 2", function (done) {
-		let params = {
-			form: {
-				"mainType": "passThroughs",
-				"serviceName": "test",
-				"serviceGroup": "group",
-				"servicePort": 5555,
-				"requestTimeout": 30,
-				"requestTimeoutRenewal": 5,
-				"path": "/test",
-				"port": 6666,
-				"versions": {
-					"1": {
-						"url": "/sdsd",
-						"oauth": true,
-						"extKeyRequired": false,
-						"urac": true,
-						"urac_Profile": true,
-						"provision_ACL": false,
-						"swagger": {
-							"swaggerInput": "swagger: \"2.0\"\ninfo:\n  version: \"1.0.0\"\n  title: express demo\nhost: dev-api.mydomain.com\nbasePath: /express\nschemes:\n  - http\npaths:\n  /tidbit/hello:\n    get:\n      tags:\n        - hello\n      summary: Hello World\n      parameters:\n        - name: username\n          in: query\n          required: true\n          type: string\n        - name: lastname\n          in: query\n          required: true\n          type: string",
-							"swaggerInputType": "text"
-						}
-					}
-				}
-			}
-		};
-		executeMyRequest(params, 'apiBuilder/add', 'post', function (body) {
-			assert.deepEqual(body.result, true);
-			assert.ok(body.data);
-			done();
-		});
-	});
-	
-	
 	it("Success - will list endpoints", function (done) {
 		let params = {
 			qs: {
@@ -355,14 +320,46 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			}
 		};
 		executeMyRequest(params, 'apiBuilder/add', 'post', function (body) {
-			console.log(JSON.stringify(body, null, 2))
 			assert.deepEqual(body.result, true);
 			sampleEndpointID = body.data._id;
 			assert.ok(body.data);
 			done();
 		});
 	});
-	
+	it("Success - will add services 2", function (done) {
+		let params = {
+			form: {
+				"id": sampleEndpointID,
+				"mainType": "passThroughs",
+				"serviceName": "test",
+				"serviceGroup": "group",
+				"servicePort": 5555,
+				"requestTimeout": 30,
+				"requestTimeoutRenewal": 5,
+				"path": "/test",
+				"port": 6666,
+				"versions": {
+					"1": {
+						"url": "/sdsd",
+						"oauth": true,
+						"extKeyRequired": false,
+						"urac": true,
+						"urac_Profile": true,
+						"provision_ACL": false,
+						"swagger": {
+							"swaggerInput": "swagger: \"2.0\"\ninfo:\n  version: \"1.0.0\"\n  title: express demo\nhost: dev-api.mydomain.com\nbasePath: /express\nschemes:\n  - http\npaths:\n  /tidbit/hello:\n    get:\n      tags:\n        - hello\n      summary: Hello World\n      parameters:\n        - name: username\n          in: query\n          required: true\n          type: string\n        - name: lastname\n          in: query\n          required: true\n          type: string",
+							"swaggerInputType": "text"
+						}
+					}
+				}
+			}
+		};
+		executeMyRequest(params, 'apiBuilder/edit', 'put', function (body) {
+			assert.deepEqual(body.result, true);
+			assert.ok(body.data);
+			done();
+		});
+	});
 	it("Success - Publish endpoint", function (done) {
 		let params = {
 			qs: {
