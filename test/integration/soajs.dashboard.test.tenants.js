@@ -314,7 +314,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 			describe("list console product tests", function () {
 				it("success - will list product", function (done) {
 					executeMyRequest({}, 'console/product/list', 'get', function (body) {
-						console.log(JSON.stringify(body, null, 2))
 						assert.ok(body.data);
 						done();
 					});

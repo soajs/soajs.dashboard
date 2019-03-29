@@ -314,7 +314,7 @@ var swagger = {
 		context.yaml = jsonAPISchema;
 		
 		swagger.preMapApisValidation(jsonAPISchema, function (errorDescription) {
-			if (errorDescription) {
+			if (errorDescription && context.soajs.mainType !== 'passThroughs') {
 				let error = {
 					code: 853,
 					msg: errorDescription
