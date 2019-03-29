@@ -18,7 +18,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 		assert.ok(body);
 		return cb(body);
 	});
-
+	
 	function requester(apiName, method, params, cb) {
 		let options = {
 			uri: 'http://localhost:4000/dashboard/' + apiName,
@@ -28,7 +28,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 			},
 			json: true
 		};
-
+		
 		if (params.headers) {
 			for (let h in params.headers) {
 				if (params.headers.hasOwnProperty(h)) {
@@ -36,15 +36,15 @@ function executeMyRequest(params, apiPath, method, cb) {
 				}
 			}
 		}
-
+		
 		if (params.form) {
 			options.body = params.form;
 		}
-
+		
 		if (params.qs) {
 			options.qs = params.qs;
 		}
-
+		
 		request[method](options, function (error, response, body) {
 			assert.ifError(error);
 			assert.ok(body);
@@ -54,12 +54,12 @@ function executeMyRequest(params, apiPath, method, cb) {
 }
 
 describe("DASHBOARD TESTS: API Builder", function () {
-
+	
 	let sampleID = '';
 	let sampleEndpointID = '';
 	let ImfvSchema;
 	let swaggerInput = fs.readFileSync(__dirname + "/swagger-no-response.test.yaml", "utf8").toString();
-
+	
 	it("Success - will list endpoints", function (done) {
 		let params = {
 			qs: {
@@ -73,7 +73,19 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
+	it("Success - will list endpoints", function (done) {
+		let params = {
+			qs: {
+				mainType: "endpoints"
+			}
+		};
+		executeMyRequest(params, 'apiBuilder/list', 'get', function (body) {
+			assert.ok(body.data);
+			done();
+		});
+	});
+	
 	it("Success - will get endpoint", function (done) {
 		let params = {
 			qs: {
@@ -86,7 +98,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 	it("Success - will add services 1", function (done) {
 		let params = {
 			form: {
@@ -115,7 +127,54 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
+	it("Success - will add services 2", function (done) {
+		let params = {
+			form: {
+				"mainType": "passThroughs",
+				"serviceName": "test",
+				"serviceGroup": "group",
+				"servicePort": 5555,
+				"requestTimeout": 30,
+				"requestTimeoutRenewal": 5,
+				"path": "/test",
+				"port": 6666,
+				"versions": {
+					"1": {
+						"url": "/sdsd",
+						"oauth": true,
+						"extKeyRequired": false,
+						"urac": true,
+						"urac_Profile": true,
+						"provision_ACL": false,
+						"swagger": {
+							"swaggerInput": "swagger: \"2.0\"\ninfo:\n  version: \"1.0.0\"\n  title: express demo\nhost: dev-api.mydomain.com\nbasePath: /express\nschemes:\n  - http\npaths:\n  /tidbit/hello:\n    get:\n      tags:\n        - hello\n      summary: Hello World\n      parameters:\n        - name: username\n          in: query\n          required: true\n          type: string\n        - name: lastname\n          in: query\n          required: true\n          type: string",
+							"swaggerInputType": "text"
+						}
+					}
+				}
+			}
+		};
+		executeMyRequest(params, 'apiBuilder/add', 'post', function (body) {
+			assert.deepEqual(body.result, true);
+			assert.ok(body.data);
+			done();
+		});
+	});
+	
+	
+	it("Success - will list endpoints", function (done) {
+		let params = {
+			qs: {
+				mainType: "passThroughs"
+			}
+		};
+		executeMyRequest(params, 'apiBuilder/list', 'get', function (body) {
+			assert.ok(body.data);
+			done();
+		});
+	});
+	
 	it("Success - will add endpoint 2", function (done) {
 		let params = {
 			form: {
@@ -136,7 +195,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 	it("Fail - try to publish without schemas", function (done) {
 		let params = {
 			qs: {
@@ -149,8 +208,8 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
-
+	
+	
 	it("Success - will edit endpoint", function (done) {
 		let params = {
 			form: {
@@ -179,16 +238,16 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 	it("Success - will get getResources", function (done) {
 		let params = {};
-
+		
 		executeMyRequest(params, 'apiBuilder/getResources', 'get', function (body) {
 			assert.ok(body.data);
 			done();
 		});
 	});
-
+	
 	it("Success - will update route authentication method", function (done) {
 		let params = {
 			qs: {
@@ -204,7 +263,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 	it("Success - will convert Swagger string to an IMFV SOAJS object", function (done) {
 		let params = {
 			qs: {
@@ -220,7 +279,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 	it("Success - will convert IMFV SOAJS object to a Swagger string", function (done) {
 		let params = {
 			qs: {
@@ -236,13 +295,13 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 	it("Success - will update endpoint's schemas 1", function (done) {
 		let params = {
 			qs: {
 				mainType: "endpoints",
 				endpointId: sampleEndpointID,
-
+				
 			},
 			form: {
 				schemas: ImfvSchema,
@@ -254,7 +313,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 	it("Success - Publish endpoint", function (done) {
 		let params = {
 			qs: {
@@ -267,7 +326,69 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
+	it("Success - will add services 2", function (done) {
+		let params = {
+			form: {
+				"mainType": "passThroughs",
+				"serviceName": "test",
+				"serviceGroup": "group",
+				"servicePort": 5555,
+				"requestTimeout": 30,
+				"requestTimeoutRenewal": 5,
+				"path": "/test",
+				"port": 6666,
+				"versions": {
+					"1": {
+						"url": "/sdsd",
+						"oauth": true,
+						"extKeyRequired": false,
+						"urac": true,
+						"urac_Profile": true,
+						"provision_ACL": false,
+						"swagger": {
+							"swaggerInput": "swagger: \"2.0\"\ninfo:\n  version: \"1.0.0\"\n  title: express demo\nhost: dev-api.mydomain.com\nbasePath: /express\nschemes:\n  - http\npaths:\n  /tidbit/hello:\n    get:\n      tags:\n        - hello\n      summary: Hello World\n      parameters:\n        - name: username\n          in: query\n          required: true\n          type: string\n        - name: lastname\n          in: query\n          required: true\n          type: string",
+							"swaggerInputType": "text"
+						}
+					}
+				}
+			}
+		};
+		executeMyRequest(params, 'apiBuilder/add', 'post', function (body) {
+			console.log(JSON.stringify(body, null, 2))
+			assert.deepEqual(body.result, true);
+			sampleEndpointID = body.data._id;
+			assert.ok(body.data);
+			done();
+		});
+	});
+	
+	it("Success - Publish endpoint", function (done) {
+		let params = {
+			qs: {
+				mainType: "passThroughs",
+				endpointId: sampleEndpointID
+			}
+		};
+		executeMyRequest(params, 'apiBuilder/publish', 'get', function (body) {
+			assert.ok(body);
+			done();
+		});
+	});
+	
+	it("Success - will get endpoint", function (done) {
+		let params = {
+			qs: {
+				mainType: "passThroughs",
+				id: sampleEndpointID,
+			}
+		};
+		executeMyRequest(params, 'apiBuilder/get', 'get', function (body) {
+			assert.ok(body.data);
+			done();
+		});
+	});
+	
 	it("Success - will update endpoint's schemas 2", function (done) {
 		let params = {
 			qs: {
@@ -310,7 +431,7 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 	it("Success - will delete endpoint", function (done) {
 		let params = {
 			qs: {
@@ -323,5 +444,5 @@ describe("DASHBOARD TESTS: API Builder", function () {
 			done();
 		});
 	});
-
+	
 });
