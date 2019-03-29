@@ -3172,8 +3172,7 @@ module.exports = {
 							},
 							"version": {
 								"required": false,
-								"type": "number",
-								"minimum": 1
+								"type": "string"
 							},
 							"daemonGroup": {
 								"required": false,
