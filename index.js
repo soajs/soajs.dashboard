@@ -31,7 +31,8 @@ var dashboardBL = {
 		module: require("./lib/swagger/index.js")
 	},
 	apiBuilder: {
-		module: require("./lib/apiBuilder/index.js")
+		module: require("./lib/apiBuilder/index.js"),
+		model: require('./models/api_Builder_passThroughs')
 	},
 	hosts: {
 		module: require("./lib/hosts/index.js"),
@@ -3351,7 +3352,7 @@ service.init(function () {
 	service.get("/apiBuilder/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.list(config, req, res, function (error, data) {
+				BL.list(config, req, res, dashboardBL.apiBuilder.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -3362,7 +3363,7 @@ service.init(function () {
 	service.get("/apiBuilder/get", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.get(config, req, res, function (error, data) {
+				BL.get(config, req, res, dashboardBL.apiBuilder.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -3373,7 +3374,7 @@ service.init(function () {
 	service.get("/apiBuilder/publish", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.publish(config, req, res, function (error, data) {
+				BL.publish(config, req, res, dashboardBL.apiBuilder.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -3439,7 +3440,7 @@ service.init(function () {
 	service.put("/apiBuilder/edit", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.edit(config, req, res, function (error, data) {
+				BL.edit(config, req, res, dashboardBL.apiBuilder.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

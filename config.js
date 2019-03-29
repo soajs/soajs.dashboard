@@ -82,12 +82,12 @@ module.exports = {
 		osDisks: {
 			functionName: 'listDisks',
 			schemaName: 'osDisk',
-			specialInput: { type: 'os' }
+			specialInput: {type: 'os'}
 		},
 		dataDisks: {
 			functionName: 'listDisks',
 			schemaName: 'dataDisk',
-			specialInput: { type: 'data' }
+			specialInput: {type: 'data'}
 		},
 		loadBalancers: {
 			functionName: 'listLoadBalancers',
@@ -193,7 +193,7 @@ module.exports = {
 		}
 	},
 	
-	"console":{
+	"console": {
 		"product": "DSBRD"
 	},
 	
@@ -258,16 +258,16 @@ module.exports = {
 				"validation": {
 					"type": "object",
 					"properties": {
-						"clusterType": { "type": "string" },
-						"URLParam": { "type": "object", "properties": {} },
-						"servers": { "type": "array", "items": { "type": "object", "required": true } },
-						"extraParam": { "type": "object", "properties": {} },
-						"streaming": { "type": "object", "properties": {} },
+						"clusterType": {"type": "string"},
+						"URLParam": {"type": "object", "properties": {}},
+						"servers": {"type": "array", "items": {"type": "object", "required": true}},
+						"extraParam": {"type": "object", "properties": {}},
+						"streaming": {"type": "object", "properties": {}},
 						"credentials": {
 							"type": "object",
 							"properties": {
-								"username": { "type": "string" },
-								"password": { "type": "string" }
+								"username": {"type": "string"},
+								"password": {"type": "string"}
 							}
 						}
 					}
@@ -283,10 +283,10 @@ module.exports = {
 							"required": true,
 							"type": "object",
 							"properties": {
-								"maxPoolSize": { "type": "integer", "required": true },
-								"authorization": { "type": "boolean", "required": true },
-								"requestTimeout": { "type": "integer", "required": true, "min": 20, "max": 60 },
-								"requestTimeoutRenewal": { "type": "integer", "required": true, "min": 0 }
+								"maxPoolSize": {"type": "integer", "required": true},
+								"authorization": {"type": "boolean", "required": true},
+								"requestTimeout": {"type": "integer", "required": true, "min": 20, "max": 60},
+								"requestTimeoutRenewal": {"type": "integer", "required": true, "min": 0}
 							}
 						},
 						"config": serviceConfig
@@ -401,13 +401,13 @@ module.exports = {
 				"validation": {
 					"type": "object",
 					"properties": {
-						"type": { "required": true, "type": "string", "enum": ['manual', 'container'] },
-						"selected": { "type": "string", "required": false },
+						"type": {"required": true, "type": "string", "enum": ['manual', 'container']},
+						"selected": {"type": "string", "required": false},
 						"docker": {
 							"type": "object",
 							"required": false,
 							"properties": {
-								"selected": { "type": "string", "required": false },
+								"selected": {"type": "string", "required": false},
 								"boot2docker": {
 									"type": "object",
 									"required": false
@@ -433,7 +433,7 @@ module.exports = {
 			"extKeyRequired": {
 				"source": ['body.extKeyRequired'],
 				"required": true,
-				"validation": { "type": "boolean" }
+				"validation": {"type": "boolean"}
 			},
 			
 			"urac": {
@@ -467,12 +467,12 @@ module.exports = {
 			"requestTimeout": {
 				"source": ['body.requestTimeout'],
 				"required": true,
-				"validation": { "type": "integer", "min": 0 }
+				"validation": {"type": "integer", "min": 0}
 			},
 			"requestTimeoutRenewal": {
 				"source": ['body.requestTimeoutRenewal'],
 				"required": true,
-				"validation": { "type": "integer", "min": 0 }
+				"validation": {"type": "integer", "min": 0}
 			},
 			'apis': {
 				"required": true,
@@ -484,10 +484,10 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"l": { "type": "string", "required": true },
-							"v": { "type": "string", "required": true },
-							"group": { "type": "string", "required": true },
-							"groupMain": { "type": "boolean", "required": false }
+							"l": {"type": "string", "required": true},
+							"v": {"type": "string", "required": true},
+							"group": {"type": "string", "required": true},
+							"groupMain": {"type": "boolean", "required": false}
 						}
 					}
 				}
@@ -635,7 +635,7 @@ module.exports = {
 				'required': true,
 				'validation': {
 					'type': 'array',
-					'items': { 'type': 'string' }
+					'items': {'type': 'string'}
 				}
 			},
 			"env": {
@@ -1334,7 +1334,7 @@ module.exports = {
 					"default": 1,
 					"validation": {
 						"type": "string",
-						"enum": ['service','daemon']
+						"enum": ['service', 'daemon']
 					}
 				},
 				"serviceVersion": {
@@ -1972,7 +1972,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["endpoints", "services"]
+						"enum": ["endpoints", "services", "passThroughs"]
 					}
 				}
 			},
@@ -1988,13 +1988,13 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["endpoints", "services"]
+						"enum": ["endpoints", "services", "passThroughs"]
 					}
 				},
 				"id": {
 					"source": ['query.id'],
 					"required": true,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
 				}
 			},
 			
@@ -2009,13 +2009,13 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["endpoints"]
+						"enum": ["endpoints", "passThroughs"]
 					}
 				},
 				"endpointId": {
 					"source": ['query.endpointId'],
 					"required": true,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
 				}
 			},
 			
@@ -2193,7 +2193,7 @@ module.exports = {
 				"serviceVersion": {
 					"source": ['body.serviceVersion'],
 					"required": false,
-                    "default": "1",
+					"default": "1",
 					"validation": {
 						"type": "string"
 					}
@@ -2258,7 +2258,7 @@ module.exports = {
 					"validation": {
 						"type": "array",
 						"uniqueItems": true,
-						"items": { "type": "string", "required": true }
+						"items": {"type": "string", "required": true}
 					}
 				},
 				"deployment": {
@@ -2267,7 +2267,7 @@ module.exports = {
 					"validation": {
 						"type": "array",
 						"uniqueItems": true,
-						"items": { "type": "string", "required": true }
+						"items": {"type": "string", "required": true}
 					}
 				},
 				"endpoints": {
@@ -2276,7 +2276,7 @@ module.exports = {
 					"validation": {
 						"type": "array",
 						"uniqueItems": true,
-						"items": { "type": "string", "required": true }
+						"items": {"type": "string", "required": true}
 					}
 				},
 				"iac": {
@@ -2320,7 +2320,7 @@ module.exports = {
 					'required': false,
 					"validation": {
 						"type": "array",
-						'items': { 'type': 'string' }
+						'items': {'type': 'string'}
 					}
 				}
 			},
@@ -2373,17 +2373,17 @@ module.exports = {
 				"name": {
 					"source": ['body.name'],
 					"required": true,
-					"validation": { "type": "string", "required": true }
+					"validation": {"type": "string", "required": true}
 				},
 				"cluster": {
 					"source": ['body.cluster'],
 					"required": true,
-					"validation": { "type": "string", "required": true }
+					"validation": {"type": "string", "required": true}
 				},
 				"tenantSpecific": {
 					"source": ['body.tenantSpecific'],
 					"required": false,
-					"validation": { "type": "boolean", "required": true }
+					"validation": {"type": "boolean", "required": true}
 				},
 				"sessionInfo": {
 					"source": ['body.sessionInfo'],
@@ -2392,11 +2392,11 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"store": { "type": "object", "required": true },
-							"dbName": { "type": "string", "required": true },
-							"expireAfter": { "type": "integer", "required": true },
-							"collection": { "type": "string", "required": true },
-							"stringify": { "type": "boolean", "required": true }
+							"store": {"type": "object", "required": true},
+							"dbName": {"type": "string", "required": true},
+							"expireAfter": {"type": "integer", "required": true},
+							"collection": {"type": "string", "required": true},
+							"stringify": {"type": "boolean", "required": true}
 						}
 					}
 				}
@@ -2557,7 +2557,7 @@ module.exports = {
 						"type": "object",
 						"default": {},
 						"properties": {
-							"deploy": { "type": "boolean", "required": true },
+							"deploy": {"type": "boolean", "required": true},
 							"options": {
 								"type": "object",
 								"required": false,
@@ -2589,9 +2589,9 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
-							"cpuLimit": { "required": false, "type": "string" },
-							"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
+							"memoryLimit": {"required": false, "type": "number", "default": 209715200},
+							"cpuLimit": {"required": false, "type": "string"},
+							"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
 							"replication": {
 								"required": false,
 								"type": "object",
@@ -2601,12 +2601,12 @@ module.exports = {
 										"type": "string",
 										"enum": ['replicated', 'global', 'deployment', 'daemonset']
 									},
-									"replicas": { "required": false, "type": "number", "minimum": 1 }
+									"replicas": {"required": false, "type": "number", "minimum": 1}
 								}
 							},
-							"region": { "required": false, "type": "string" },
-							"infra": { "required": false, "type": "string" },
-							"type": { "required": false, "type": "string" },
+							"region": {"required": false, "type": "string"},
+							"infra": {"required": false, "type": "string"},
+							"type": {"required": false, "type": "string"},
 							"vmConfiguration": {
 								"required": false,
 								"type": "object"
@@ -2628,10 +2628,10 @@ module.exports = {
 										"type": "object",
 										"required": false,
 										"properties": {
-											"repo": { "type": "string", "required": true },
-											"branch": { "type": "string", "required": true },
-											"commit": { "type": "string", "required": false },
-											"path": { "type": "string", "required": false }
+											"repo": {"type": "string", "required": true},
+											"branch": {"type": "string", "required": true},
+											"commit": {"type": "string", "required": false},
+											"path": {"type": "string", "required": false}
 										}
 									}
 								}
@@ -2640,16 +2640,16 @@ module.exports = {
 								"type": "object",
 								"required": false,
 								"properties": {
-									"prefix": { "required": false, "type": "string" },
-									"name": { "required": false, "type": "string" },
-									"tag": { "required": false, "type": "string" },
+									"prefix": {"required": false, "type": "string"},
+									"name": {"required": false, "type": "string"},
+									"tag": {"required": false, "type": "string"},
 									"registrySecret": {"required": false, "type": "string"}
 								}
 							},
 							"env": {
 								"type": ["object", "null"],
 								"required": false,
-								"additionalProperties": { "type": "string" }
+								"additionalProperties": {"type": "string"}
 							},
 							"type": {
 								"required": true,
@@ -2677,8 +2677,8 @@ module.exports = {
 								"required": false,
 								"type": "object",
 								"properties": {
-									"gcName": { "required": true, "type": "string" },
-									"gcVersion": { "required": true, "type": "number", "minimum": 1 }
+									"gcName": {"required": true, "type": "string"},
+									"gcVersion": {"required": true, "type": "number", "minimum": 1}
 								}
 							},
 							"secrets": {
@@ -2688,9 +2688,9 @@ module.exports = {
 									"type": "object",
 									"required": true,
 									"properties": {
-										"name": { "type": "string", "required": true },
-										"type": { "type": "string", "required": false },
-										"mountPath": { "type": "string", "required": true }
+										"name": {"type": "string", "required": true},
+										"type": {"type": "string", "required": false},
+										"mountPath": {"type": "string", "required": true}
 									}
 								}
 							},
@@ -2702,8 +2702,8 @@ module.exports = {
 									"type": "object",
 									"required": true,
 									"properties": {
-										"name": { "type": "string", "required": true },
-										"port": { "type": "number", "required": false, "min": 1, "max": 2766 }
+										"name": {"type": "string", "required": true},
+										"port": {"type": "number", "required": false, "min": 1, "max": 2766}
 									}
 								}
 							}
@@ -2979,7 +2979,7 @@ module.exports = {
 					'required': false,
 					'validation': {
 						'type': 'array',
-						'items': { 'type': 'string' }
+						'items': {'type': 'string'}
 					}
 				}
 			},
@@ -3012,7 +3012,7 @@ module.exports = {
 					'required': false,
 					'validation': {
 						'type': 'array',
-						'items': { 'type': 'string' }
+						'items': {'type': 'string'}
 					}
 				},
 				'getGroupConfigs': {
@@ -3050,10 +3050,10 @@ module.exports = {
 					"validation": {
 						"type": "object",
 						"properties": {
-							"owner": { "required": true, "type": "string" },
-							"repo": { "required": true, "type": "string" },
-							"branch": { "required": true, "type": "string" },
-							"commit": { "required": false, "type": "string" }
+							"owner": {"required": true, "type": "string"},
+							"repo": {"required": true, "type": "string"},
+							"branch": {"required": true, "type": "string"},
+							"commit": {"required": false, "type": "string"}
 						}
 					}
 				},
@@ -3063,9 +3063,9 @@ module.exports = {
 					"validation": {
 						"type": "object",
 						"properties": {
-							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
-							"cpuLimit": { "required": false, "type": "string" },
-							"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
+							"memoryLimit": {"required": false, "type": "number", "default": 209715200},
+							"cpuLimit": {"required": false, "type": "string"},
+							"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
 							"replication": {
 								"required": false,
 								"type": "object",
@@ -3075,17 +3075,17 @@ module.exports = {
 										"type": "string",
 										"enum": ['replicated', 'global', 'deployment', 'daemonset']
 									},
-									"replicas": { "required": false, "type": "number", "minimum": 1 }
+									"replicas": {"required": false, "type": "number", "minimum": 1}
 								}
 							},
-							"region": { "required": false, "type": "string" },
-							"infra": { "required": false, "type": "string" },
-							"type": { "required": false, "type": "string" },
+							"region": {"required": false, "type": "string"},
+							"infra": {"required": false, "type": "string"},
+							"type": {"required": false, "type": "string"},
 							"vmConfiguration": {
 								"required": false,
 								"type": "object",
 								"properties": {
-									"vmLayer": { "required": true, "type": "string" },
+									"vmLayer": {"required": true, "type": "string"},
 								}
 							},
 						}
@@ -3101,8 +3101,8 @@ module.exports = {
 								"type": "object",
 								"required": true,
 								"properties": {
-									"min": { "type": "number", "minimum": 1, "required": true },
-									"max": { "type": "number", "minimum": 1, "required": true }
+									"min": {"type": "number", "minimum": 1, "required": true},
+									"max": {"type": "number", "minimum": 1, "required": true}
 								}
 							},
 							"metrics": {
@@ -3114,7 +3114,7 @@ module.exports = {
 										"type": "object",
 										"required": true,
 										"properties": {
-											"percent": { "type": "number", "minimum": 1, "required": true }
+											"percent": {"type": "number", "minimum": 1, "required": true}
 										}
 									}
 								}
@@ -3136,10 +3136,10 @@ module.exports = {
 										"type": "object",
 										"required": false,
 										"properties": {
-											"repo": { "type": "string", "required": true },
-											"branch": { "type": "string", "required": true },
-											"commit": { "type": "string", "required": false },
-											"path": { "type": "string", "required": false }
+											"repo": {"type": "string", "required": true},
+											"branch": {"type": "string", "required": true},
+											"commit": {"type": "string", "required": false},
+											"path": {"type": "string", "required": false}
 										}
 									}
 								}
@@ -3148,9 +3148,9 @@ module.exports = {
 								"type": "object",
 								"required": false,
 								"properties": {
-									"prefix": { "required": false, "type": "string" },
-									"name": { "required": false, "type": "string" },
-									"tag": { "required": false, "type": "string" },
+									"prefix": {"required": false, "type": "string"},
+									"name": {"required": false, "type": "string"},
+									"tag": {"required": false, "type": "string"},
 								}
 							},
 							"env": {
@@ -3183,8 +3183,8 @@ module.exports = {
 								"required": false,
 								"type": "object",
 								"properties": {
-									"gcName": { "required": true, "type": "string" },
-									"gcVersion": { "required": true, "type": "number", "minimum": 1 }
+									"gcName": {"required": true, "type": "string"},
+									"gcVersion": {"required": true, "type": "number", "minimum": 1}
 								}
 							},
 							"secrets": {
@@ -3194,9 +3194,9 @@ module.exports = {
 									"type": "object",
 									"required": true,
 									"properties": {
-										"name": { "type": "string", "required": true },
-										"type": { "type": "string", "required": false },
-										"mountPath": { "type": "string", "required": true }
+										"name": {"type": "string", "required": true},
+										"type": {"type": "string", "required": false},
+										"mountPath": {"type": "string", "required": true}
 									}
 								}
 							},
@@ -3208,8 +3208,8 @@ module.exports = {
 									"type": "object",
 									"required": true,
 									"properties": {
-										"name": { "type": "string", "required": true },
-										"port": { "type": "number", "required": false, "min": 1, "max": 2766 }
+										"name": {"type": "string", "required": true},
+										"port": {"type": "number", "required": false, "min": 1, "max": 2766}
 									}
 								}
 							}
@@ -3553,15 +3553,15 @@ module.exports = {
 					"validation": {
 						"type": "object",
 						"properties": {
-							"env": { "type": "string", "required": true },
-							"serviceName": { "type": "string", "required": true },
+							"env": {"type": "string", "required": true},
+							"serviceName": {"type": "string", "required": true},
 							"default": {
 								"type": "object",
 								"properties": {
-									"status": { "type": "string", "required": false },
-									"branch": { "type": "string", "required": false, "minLengh": 1 },
-									"strategy": { "type": "string", "enum": ["notify", "update"], "required": false },
-									"deploy": { "type": "boolean", "required": false },
+									"status": {"type": "string", "required": false},
+									"branch": {"type": "string", "required": false, "minLengh": 1},
+									"strategy": {"type": "string", "enum": ["notify", "update"], "required": false},
+									"deploy": {"type": "boolean", "required": false},
 									"options": {
 										"type": "object",
 										"properties": cdOptions
@@ -3572,11 +3572,11 @@ module.exports = {
 							"version": {
 								"type": "object",
 								"properties": {
-									"v": { "type": "string", "required": true, "pattern": /v[0-9]*\.?[0-9]*$/ },
-									"branch": { "type": "string", "required": false, "minLengh": 1 },
-									"strategy": { "type": "string", "enum": ["notify", "update"], "required": false },
-									"deploy": { "type": "boolean", "required": false },
-									"status": { "type": "string", "required": false },
+									"v": {"type": "string", "required": true, "pattern": /v[0-9]*\.?[0-9]*$/},
+									"branch": {"type": "string", "required": false, "minLengh": 1},
+									"strategy": {"type": "string", "enum": ["notify", "update"], "required": false},
+									"deploy": {"type": "boolean", "required": false},
+									"status": {"type": "string", "required": false},
 									"options": {
 										"type": "object",
 										"properties": cdOptions
@@ -3602,8 +3602,8 @@ module.exports = {
 					"validation": {
 						"type": "object",
 						"properties": {
-							"env": { "type": "string", "required": true },
-							"pause": { "type": "boolean", "required": false }
+							"env": {"type": "string", "required": true},
+							"pause": {"type": "boolean", "required": false}
 						},
 						"additionalProperties": false
 					}
@@ -3930,9 +3930,9 @@ module.exports = {
 										"items": {
 											"type": "object",
 											"properties": {
-												"prefix": { "type": "string" },
-												"name": { "type": "string", "required": true },
-												"multitenant": { "type": "boolean" }
+												"prefix": {"type": "string"},
+												"name": {"type": "string", "required": true},
+												"multitenant": {"type": "boolean"}
 											}
 										},
 										"minItems": 1,
@@ -3976,7 +3976,826 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["endpoints", "services"]
+						"enum": ["endpoints", "services", "passThroughs"]
+					}
+				},
+				"src": {
+					"source": ['body.src'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"additionalProperties": false,
+						"properties": {
+							"provider": {
+								"type": "string",
+								"required": false,
+								"default": "endpoint"
+							},
+							"urls": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"version": {
+											"type": "string",
+											"required": true
+										},
+										"url": {
+											"type": "string",
+											"required": true
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"port": {
+					"required": false,
+					"source": ['body.port'],
+					"validation":{
+						"type": "integer"
+					}
+				},
+				"path": {
+					"required": false,
+					"source": ['body.path'],
+					"validation":{
+						"type": "string"
+					}
+				},
+				"versions": {
+					"required": false,
+					"source": ['body.versions'],
+					"validation":{
+						"type": "object",
+						"patternProperties": {
+							'\\^\\(d\\+\\.\\)\\?\\(d\\+\\.\\)\\?\\(\\*\\|d\\+\\)\\$': {
+								"type": "object",
+								"properties": {
+									"extKeyRequired": {
+										"type": "boolean"
+									},
+									"oauth": {
+										"type": "boolean"
+									},
+									"urac_Profile": {
+										"type": "boolean"
+									},
+									"urac": {
+										"type": "boolean"
+									},
+									"urac_ACL": {
+										"type": "boolean"
+									},
+									"provision_ACL": {
+										"type": "boolean"
+									},
+									"swagger": {
+										"type": "boolean"
+									},
+									"acl": {
+										"type": "boolean"
+									},
+									"url": {
+										"type": "string"
+									},
+									"swaggerInput": {
+										"type": "string"
+									},
+									"errors": {
+										"oneOf": [
+											{
+												"type": "object",
+												"required": false,
+												"patternProperties": {
+													"^[0-9]+$": {
+														"type": "string",
+														"required": true,
+														"minLength": 5
+													}
+												}
+											},
+											{
+												"type": "string",
+												"required": false
+											}
+										]
+									},
+									"schema": {
+										"oneOf": [
+											{
+												"type": "object",
+												"required": true,
+												"properties": {
+													"commonFields": {
+														"oneOf": [
+															{
+																"type": "string",
+																"required": true,
+																"pattern": "^/[^/]+(/[^/]+)*$"
+															},
+															{
+																"type": "object",
+																"additionalProperties": {
+																	"type": "object",
+																	"properties": {
+																		"required": {
+																			"type": "boolean",
+																			"required": true
+																		},
+																		"source": {
+																			"type": "array",
+																			"minItems": 1,
+																			"items": {
+																				"type": "string"
+																			},
+																			"required": true
+																		},
+																		"validation": {
+																			"oneOf": [
+																				{
+																					"type": "object",
+																					"required": true,
+																					"additionalProperties": true
+																				},
+																				{
+																					"type": "string",
+																					"required": true
+																				}
+																			]
+																		}
+																	}
+																}
+															}
+														]
+													},
+													"patternProperties": {
+														"oneOf": [
+															{
+																"^/[a-zA-Z0-9_.-]+$": {
+																	"type": "object",
+																	"properties": {
+																		"method": {
+																			"type": "string",
+																			"required": false,
+																			"enum": [
+																				"GET",
+																				"POST",
+																				"PUT",
+																				"DELETE",
+																				"DEL"
+																			]
+																		},
+																		"mw": {
+																			"type": "string",
+																			"required": false,
+																			"pattern": "^/[^/]+(/[^/]+)*$"
+																		},
+																		"imfv": {
+																			"required": false,
+																			"type": "object",
+																			"properties": {
+																				"commonFields": {
+																					"type": "array",
+																					"required": false,
+																					"items": {
+																						"type": "string"
+																					},
+																					"uniqueItems": true
+																				},
+																				"custom": {
+																					"oneOf": [
+																						{
+																							"type": "string",
+																							"required": false,
+																							"pattern": "^/[^/]+(/[^/]+)*$"
+																						},
+																						{
+																							"type": "object",
+																							"required": false,
+																							"properties": {
+																								"required": {
+																									"type": "boolean",
+																									"required": true
+																								},
+																								"source": {
+																									"type": "array",
+																									"minItems": 1,
+																									"items": {
+																										"type": "string"
+																									},
+																									"required": true
+																								},
+																								"validation": {
+																									"oneOf": [
+																										{
+																											"type": "object",
+																											"required": true,
+																											"additionalProperties": true
+																										},
+																										{
+																											"type": "string",
+																											"required": true
+																										}
+																									]
+																								}
+																							}
+																						}
+																					]
+																				}
+																			}
+																		},
+																		"_apiInfo": {
+																			"requried": true,
+																			"type": "object",
+																			"properties": {
+																				"l": {
+																					"type": "string",
+																					"requried": true
+																				},
+																				"group": {
+																					"type": "string",
+																					"requried": true
+																				},
+																				"groupMain": {
+																					"type": "boolean"
+																				}
+																			}
+																		},
+																		"commonFields": {
+																			"type": "array",
+																			"minItems": 1,
+																			"items": {
+																				"type": "string"
+																			}
+																		},
+																		"additionalProperties": {
+																			"type": "object",
+																			"properties": {
+																				"required": {
+																					"type": "boolean",
+																					"required": true
+																				},
+																				"source": {
+																					"type": "array",
+																					"minItems": 1,
+																					"items": {
+																						"type": "string"
+																					},
+																					"required": true
+																				},
+																				"validation": {
+																					"oneOf": [
+																						{
+																							"type": "object",
+																							"required": true,
+																							"additionalProperties": true
+																						},
+																						{
+																							"type": "string",
+																							"required": true
+																						}
+																					]
+																				}
+																			}
+																		}
+																	}
+																}
+															},
+															{
+																"type": "object",
+																"required": true,
+																"patternProperties": {
+																	"^/[a-zA-Z0-9_.-]+$": {
+																		"type": "object",
+																		"properties": {
+																			"method": {
+																				"type": "string",
+																				"required": false,
+																				"enum": [
+																					"GET",
+																					"POST",
+																					"PUT",
+																					"DELETE",
+																					"DEL"
+																				]
+																			},
+																			"mw": {
+																				"type": "string",
+																				"required": false,
+																				"pattern": "^/[^/]+(/[^/]+)*$"
+																			},
+																			"imfv": {
+																				"required": false,
+																				"type": "object",
+																				"properties": {
+																					"commonFields": {
+																						"type": "array",
+																						"required": false,
+																						"items": {
+																							"type": "string"
+																						},
+																						"uniqueItems": true
+																					},
+																					"custom": {
+																						"oneOf": [
+																							{
+																								"type": "string",
+																								"required": false,
+																								"pattern": "^/[^/]+(/[^/]+)*$"
+																							},
+																							{
+																								"type": "object",
+																								"required": false,
+																								"properties": {
+																									"required": {
+																										"type": "boolean",
+																										"required": true
+																									},
+																									"source": {
+																										"type": "array",
+																										"minItems": 1,
+																										"items": {
+																											"type": "string"
+																										},
+																										"required": true
+																									},
+																									"validation": {
+																										"oneOf": [
+																											{
+																												"type": "object",
+																												"required": true,
+																												"additionalProperties": true
+																											},
+																											{
+																												"type": "string",
+																												"required": true
+																											}
+																										]
+																									}
+																								}
+																							}
+																						]
+																					}
+																				}
+																			},
+																			"_apiInfo": {
+																				"requried": true,
+																				"type": "object",
+																				"properties": {
+																					"l": {
+																						"type": "string",
+																						"requried": true
+																					},
+																					"group": {
+																						"type": "string",
+																						"requried": true
+																					},
+																					"groupMain": {
+																						"type": "boolean"
+																					}
+																				}
+																			},
+																			"commonFields": {
+																				"type": "array",
+																				"minItems": 1,
+																				"items": {
+																					"type": "string"
+																				}
+																			},
+																			"additionalProperties": {
+																				"type": "object",
+																				"properties": {
+																					"required": {
+																						"type": "boolean",
+																						"required": true
+																					},
+																					"source": {
+																						"type": "array",
+																						"minItems": 1,
+																						"items": {
+																							"type": "string"
+																						},
+																						"required": true
+																					},
+																					"validation": {
+																						"oneOf": [
+																							{
+																								"type": "object",
+																								"required": true,
+																								"additionalProperties": true
+																							},
+																							{
+																								"type": "string",
+																								"required": true
+																							}
+																						]
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														]
+													}
+												}
+											},
+											{
+												"type": "string",
+												"required": false
+											}
+										]
+									}
+								}
+							}
+						},
+						"additionalProperties": {
+							"type": "object",
+							"patternProperties": {
+								'\\^\\(d\\+\\.\\)\\?\\(d\\+\\.\\)\\?\\(\\*\\|d\\+\\)\\$': {
+									"type": "object",
+									"properties": {
+										"extKeyRequired": {
+											"type": "boolean"
+										},
+										"oauth": {
+											"type": "boolean"
+										},
+										"urac_Profile": {
+											"type": "boolean"
+										},
+										"urac": {
+											"type": "boolean"
+										},
+										"urac_ACL": {
+											"type": "boolean"
+										},
+										"provision_ACL": {
+											"type": "boolean"
+										},
+										"swagger": {
+											"type": "boolean"
+										},
+										"acl": {
+											"type": "boolean"
+										},
+										"url": {
+											"type": "string"
+										},
+										"swaggerInput": {
+											"type": "string"
+										},
+										"errors": {
+											"oneOf": [
+												{
+													"type": "object",
+													"required": false,
+													"patternProperties": {
+														"^[0-9]+$": {
+															"type": "string",
+															"required": true,
+															"minLength": 5
+														}
+													}
+												},
+												{
+													"type": "string",
+													"required": false
+												}
+											]
+										},
+										"schema": {
+											"oneOf": [
+												{
+													"type": "object",
+													"required": true,
+													"properties": {
+														"commonFields": {
+															"oneOf": [
+																{
+																	"type": "string",
+																	"required": true,
+																	"pattern": "^/[^/]+(/[^/]+)*$"
+																},
+																{
+																	"type": "object",
+																	"additionalProperties": {
+																		"type": "object",
+																		"properties": {
+																			"required": {
+																				"type": "boolean",
+																				"required": true
+																			},
+																			"source": {
+																				"type": "array",
+																				"minItems": 1,
+																				"items": {
+																					"type": "string"
+																				},
+																				"required": true
+																			},
+																			"validation": {
+																				"oneOf": [
+																					{
+																						"type": "object",
+																						"required": true,
+																						"additionalProperties": true
+																					},
+																					{
+																						"type": "string",
+																						"required": true
+																					}
+																				]
+																			}
+																		}
+																	}
+																}
+															]
+														},
+														"patternProperties": {
+															"oneOf": [
+																{
+																	"^/[a-zA-Z0-9_.-]+$": {
+																		"type": "object",
+																		"properties": {
+																			"method": {
+																				"type": "string",
+																				"required": false,
+																				"enum": [
+																					"GET",
+																					"POST",
+																					"PUT",
+																					"DELETE",
+																					"DEL"
+																				]
+																			},
+																			"mw": {
+																				"type": "string",
+																				"required": false,
+																				"pattern": "^/[^/]+(/[^/]+)*$"
+																			},
+																			"imfv": {
+																				"required": false,
+																				"type": "object",
+																				"properties": {
+																					"commonFields": {
+																						"type": "array",
+																						"required": false,
+																						"items": {
+																							"type": "string"
+																						},
+																						"uniqueItems": true
+																					},
+																					"custom": {
+																						"oneOf": [
+																							{
+																								"type": "string",
+																								"required": false,
+																								"pattern": "^/[^/]+(/[^/]+)*$"
+																							},
+																							{
+																								"type": "object",
+																								"required": false,
+																								"properties": {
+																									"required": {
+																										"type": "boolean",
+																										"required": true
+																									},
+																									"source": {
+																										"type": "array",
+																										"minItems": 1,
+																										"items": {
+																											"type": "string"
+																										},
+																										"required": true
+																									},
+																									"validation": {
+																										"oneOf": [
+																											{
+																												"type": "object",
+																												"required": true,
+																												"additionalProperties": true
+																											},
+																											{
+																												"type": "string",
+																												"required": true
+																											}
+																										]
+																									}
+																								}
+																							}
+																						]
+																					}
+																				}
+																			},
+																			"_apiInfo": {
+																				"requried": true,
+																				"type": "object",
+																				"properties": {
+																					"l": {
+																						"type": "string",
+																						"requried": true
+																					},
+																					"group": {
+																						"type": "string",
+																						"requried": true
+																					},
+																					"groupMain": {
+																						"type": "boolean"
+																					}
+																				}
+																			},
+																			"commonFields": {
+																				"type": "array",
+																				"minItems": 1,
+																				"items": {
+																					"type": "string"
+																				}
+																			},
+																			"additionalProperties": {
+																				"type": "object",
+																				"properties": {
+																					"required": {
+																						"type": "boolean",
+																						"required": true
+																					},
+																					"source": {
+																						"type": "array",
+																						"minItems": 1,
+																						"items": {
+																							"type": "string"
+																						},
+																						"required": true
+																					},
+																					"validation": {
+																						"oneOf": [
+																							{
+																								"type": "object",
+																								"required": true,
+																								"additionalProperties": true
+																							},
+																							{
+																								"type": "string",
+																								"required": true
+																							}
+																						]
+																					}
+																				}
+																			}
+																		}
+																	}
+																},
+																{
+																	"type": "object",
+																	"required": true,
+																	"patternProperties": {
+																		"^/[a-zA-Z0-9_.-]+$": {
+																			"type": "object",
+																			"properties": {
+																				"method": {
+																					"type": "string",
+																					"required": false,
+																					"enum": [
+																						"GET",
+																						"POST",
+																						"PUT",
+																						"DELETE",
+																						"DEL"
+																					]
+																				},
+																				"mw": {
+																					"type": "string",
+																					"required": false,
+																					"pattern": "^/[^/]+(/[^/]+)*$"
+																				},
+																				"imfv": {
+																					"required": false,
+																					"type": "object",
+																					"properties": {
+																						"commonFields": {
+																							"type": "array",
+																							"required": false,
+																							"items": {
+																								"type": "string"
+																							},
+																							"uniqueItems": true
+																						},
+																						"custom": {
+																							"oneOf": [
+																								{
+																									"type": "string",
+																									"required": false,
+																									"pattern": "^/[^/]+(/[^/]+)*$"
+																								},
+																								{
+																									"type": "object",
+																									"required": false,
+																									"properties": {
+																										"required": {
+																											"type": "boolean",
+																											"required": true
+																										},
+																										"source": {
+																											"type": "array",
+																											"minItems": 1,
+																											"items": {
+																												"type": "string"
+																											},
+																											"required": true
+																										},
+																										"validation": {
+																											"oneOf": [
+																												{
+																													"type": "object",
+																													"required": true,
+																													"additionalProperties": true
+																												},
+																												{
+																													"type": "string",
+																													"required": true
+																												}
+																											]
+																										}
+																									}
+																								}
+																							]
+																						}
+																					}
+																				},
+																				"_apiInfo": {
+																					"requried": true,
+																					"type": "object",
+																					"properties": {
+																						"l": {
+																							"type": "string",
+																							"requried": true
+																						},
+																						"group": {
+																							"type": "string",
+																							"requried": true
+																						},
+																						"groupMain": {
+																							"type": "boolean"
+																						}
+																					}
+																				},
+																				"commonFields": {
+																					"type": "array",
+																					"minItems": 1,
+																					"items": {
+																						"type": "string"
+																					}
+																				},
+																				"additionalProperties": {
+																					"type": "object",
+																					"properties": {
+																						"required": {
+																							"type": "boolean",
+																							"required": true
+																						},
+																						"source": {
+																							"type": "array",
+																							"minItems": 1,
+																							"items": {
+																								"type": "string"
+																							},
+																							"required": true
+																						},
+																						"validation": {
+																							"oneOf": [
+																								{
+																									"type": "object",
+																									"required": true,
+																									"additionalProperties": true
+																								},
+																								{
+																									"type": "string",
+																									"required": true
+																								}
+																							]
+																						}
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															]
+														}
+													}
+												},
+												{
+													"type": "string",
+													"required": false
+												}
+											]
+										}
+									}
+								}
+							}
+						}
 					}
 				},
 				"serviceName": {
@@ -3990,32 +4809,32 @@ module.exports = {
 				"serviceGroup": {
 					"source": ['query.serviceGroup', 'body.serviceGroup'],
 					"required": true,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
 				},
 				"servicePort": {
 					"source": ['query.servicePort', 'body.servicePort'],
 					"required": true,
-					"validation": { "type": "number", "minimum": 1 }
+					"validation": {"type": "number", "minimum": 1}
 				},
 				"serviceVersion": {
 					"source": ['query.serviceVersion', 'body.serviceVersion'],
-					"required": true,
-					"validation": { "type": "string"}
+					"required": false,
+					"validation": {"type": "string"}
 				},
 				"requestTimeout": {
 					"source": ['query.requestTimeout', 'body.requestTimeout'],
 					"required": true,
-					"validation": { "type": "number", "minimum": 1 }
+					"validation": {"type": "number", "minimum": 1}
 				},
 				"requestTimeoutRenewal": {
 					"source": ['query.requestTimeoutRenewal', 'body.requestTimeoutRenewal'],
 					"required": true,
-					"validation": { "type": "number", "minimum": 1 }
+					"validation": {"type": "number", "minimum": 1}
 				},
 				"defaultAuthentication": {
 					"source": ['query.defaultAuthentication', 'body.defaultAuthentication'],
 					"required": false,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
 				},
 				"epType": {
 					"source": ['query.epType', 'body.epType'],
@@ -4029,18 +4848,18 @@ module.exports = {
 					"source": ['query.oauth', 'body.oauth'],
 					"required": false,
 					"default": false,
-					"validation": { "type": "boolean" }
+					"validation": {"type": "boolean"}
 				},
 				"extKeyRequired": {
 					"source": ['query.extKeyRequired', 'body.extKeyRequired'],
 					"required": false,
 					"default": false,
-					"validation": { "type": "boolean" }
+					"validation": {"type": "boolean"}
 				},
 				"swaggerInput": {
 					"source": ['query.swaggerInput', 'body.swaggerInput'],
 					"required": false,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
 				},
 				"authentications": {
 					"source": ['query.authentications', 'body.authentications'],
@@ -4069,8 +4888,8 @@ module.exports = {
 						"type": "object",
 						"additionalProperties": false,
 						"properties": {
-							"cpu": { "type": "string" },
-							"memory": { "type": "string" }
+							"cpu": {"type": "string"},
+							"memory": {"type": "string"}
 						}
 					}
 				},
@@ -4092,28 +4911,28 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["endpoints", "services"]
+						"enum": ["endpoints", "services", "passThroughs"]
 					}
 				},
 				"endpointId": {
 					"source": ['query.endpointId', 'body.endpointId'],
 					"required": true,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
 				},
 				"schemaKey": {
 					"source": ['query.schemaKey', 'body.schemaKey'],
 					"required": true,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
 				},
 				"routeKey": {
 					"source": ['query.routeKey', 'body.routeKey'],
 					"required": true,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
 				},
 				"authentication": {
 					"source": ['query.authentication', 'body.authentication'],
 					"required": false,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
 				}
 			},
 			
@@ -4128,13 +4947,13 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["endpoints", "services"]
+						"enum": ["endpoints", "services", "passThroughs"]
 					}
 				},
 				"id": {
 					"source": ['query.id', 'body.id'],
 					"required": true,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
 				},
 				"swagger": {
 					"source": ['query.swagger', 'body.swagger'],
@@ -4156,13 +4975,13 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["endpoints", "services"]
+						"enum": ["endpoints", "services", "passThroughs"]
 					}
 				},
 				"id": {
 					"source": ['query.id', 'body.id'],
 					"required": true,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
 				},
 				"schema": {
 					"source": ['query.schema', 'body.schema'],
@@ -4194,17 +5013,17 @@ module.exports = {
 				"env": {
 					"source": ['body.env'],
 					"required": true,
-					"validation": { "type": "string", "required": true }
+					"validation": {"type": "string", "required": true}
 				},
 				"type": {
 					"source": ['body.type'],
 					"required": false,
-					"validation": { "type": "string", "required": true }
+					"validation": {"type": "string", "required": true}
 				},
 				"namespace": {
 					"source": ['body.namespace'],
 					"required": false,
-					"validation": { "type": "string", "required": false }
+					"validation": {"type": "string", "required": false}
 				},
 				"data": {
 					"source": ['body.data'],
@@ -4628,19 +5447,19 @@ module.exports = {
 								"required": false,
 								"type": "object",
 								"properties": {
-									"owner": { "required": true, "type": "string" },
-									"repo": { "required": true, "type": "string" },
-									"branch": { "required": true, "type": "string" },
-									"commit": { "required": false, "type": "string" }
+									"owner": {"required": true, "type": "string"},
+									"repo": {"required": true, "type": "string"},
+									"branch": {"required": true, "type": "string"},
+									"commit": {"required": false, "type": "string"}
 								}
 							},
 							"deployConfig": {
 								"required": true,
 								"type": "object",
 								"properties": {
-									"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
-									"cpuLimit": { "required": false, "type": "string" },
-									"isKubernetes": { "required": false, "type": "boolean" },
+									"memoryLimit": {"required": false, "type": "number", "default": 209715200},
+									"cpuLimit": {"required": false, "type": "string"},
+									"isKubernetes": {"required": false, "type": "boolean"},
 									"replication": {
 										"required": false,
 										"type": "object",
@@ -4650,17 +5469,17 @@ module.exports = {
 												"type": "string",
 												"enum": ['replicated', 'global', 'deployment', 'daemonset']
 											},
-											"replicas": { "required": false, "type": "number", "minimum": 1 }
+											"replicas": {"required": false, "type": "number", "minimum": 1}
 										}
 									},
-									"region": { "required": false, "type": "string" },
-									"infra": { "required": false, "type": "string" },
-									"type": { "required": false, "type": "string" },
+									"region": {"required": false, "type": "string"},
+									"infra": {"required": false, "type": "string"},
+									"type": {"required": false, "type": "string"},
 									"vmConfiguration": {
 										"required": false,
 										"type": "object",
 										"properties": {
-											"vmLayer": { "required": true, "type": "string" },
+											"vmLayer": {"required": true, "type": "string"},
 										}
 									},
 								}
@@ -4673,8 +5492,8 @@ module.exports = {
 										"type": "object",
 										"required": true,
 										"properties": {
-											"min": { "type": "number", "minimum": 1, "required": true },
-											"max": { "type": "number", "minimum": 1, "required": true }
+											"min": {"type": "number", "minimum": 1, "required": true},
+											"max": {"type": "number", "minimum": 1, "required": true}
 										}
 									},
 									"metrics": {
@@ -4685,7 +5504,7 @@ module.exports = {
 												"type": "object",
 												"required": true,
 												"properties": {
-													"percent": { "type": "number", "minimum": 1, "required": true }
+													"percent": {"type": "number", "minimum": 1, "required": true}
 												}
 											}
 										}
@@ -4794,22 +5613,22 @@ module.exports = {
 				"prefix": {
 					"source": ['body.prefix'],
 					"required": false,
-					"validation": { "type": "string", "required": false }
+					"validation": {"type": "string", "required": false}
 				},
 				"name": {
 					"source": ['body.name'],
 					"required": true,
-					"validation": { "type": "string", "required": true }
+					"validation": {"type": "string", "required": true}
 				},
 				"cluster": {
 					"source": ['body.cluster'],
 					"required": true,
-					"validation": { "type": "string", "required": true }
+					"validation": {"type": "string", "required": true}
 				},
 				"tenantSpecific": {
 					"source": ['body.tenantSpecific'],
 					"required": false,
-					"validation": { "type": "boolean", "required": true }
+					"validation": {"type": "boolean", "required": true}
 				},
 				"sessionInfo": {
 					"source": ['body.sessionInfo'],
@@ -4818,11 +5637,11 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"store": { "type": "object", "required": true },
-							"dbName": { "type": "string", "required": true },
-							"expireAfter": { "type": "integer", "required": true },
-							"collection": { "type": "string", "required": true },
-							"stringify": { "type": "boolean", "required": true }
+							"store": {"type": "object", "required": true},
+							"dbName": {"type": "string", "required": true},
+							"expireAfter": {"type": "integer", "required": true},
+							"collection": {"type": "string", "required": true},
+							"stringify": {"type": "boolean", "required": true}
 						}
 					}
 				}
@@ -4837,7 +5656,7 @@ module.exports = {
 				"prefix": {
 					"source": ['body.prefix'],
 					"required": false,
-					"validation": { "type": "string", "required": false }
+					"validation": {"type": "string", "required": false}
 				}
 			},
 			
@@ -4891,7 +5710,7 @@ module.exports = {
 						"type": "object",
 						"default": {},
 						"properties": {
-							"deploy": { "type": "boolean", "required": true },
+							"deploy": {"type": "boolean", "required": true},
 							"options": {
 								"type": "object",
 								"required": false,
@@ -5344,16 +6163,16 @@ module.exports = {
 						"type": "object",
 						"required": false,
 						"properties": {
-							"branch": { "type": "string", "required": false },
-							"commit": { "type": "string", "required": false },
-							"memory": { "type": "number", "required": false, "minimum": 0 },
+							"branch": {"type": "string", "required": false},
+							"commit": {"type": "string", "required": false},
+							"memory": {"type": "number", "required": false, "minimum": 0},
 							"image": {
 								"type": "object",
 								"required": false,
 								"properties": {
-									"prefix": { "required": false, "type": "string" },
-									"name": { "required": false, "type": "string" },
-									"tag": { "required": false, "type": "string" },
+									"prefix": {"required": false, "type": "string"},
+									"name": {"required": false, "type": "string"},
+									"tag": {"required": false, "type": "string"},
 								}
 							},
 							"env": {
@@ -5388,11 +6207,11 @@ module.exports = {
 							"replicas": {
 								"type": "object",
 								"properties": {
-									"min": { "type": "number", "minimum": 1, "required": true },
-									"max": { "type": "number", "minimum": 1, "required": true }
+									"min": {"type": "number", "minimum": 1, "required": true},
+									"max": {"type": "number", "minimum": 1, "required": true}
 								}
 							},
-							"metrics": { "type": "object", "required": true }
+							"metrics": {"type": "object", "required": true}
 						}
 					}
 				},
@@ -5404,8 +6223,8 @@ module.exports = {
 						"items": {
 							"type": "object",
 							"properties": {
-								"id": { "type": "string", "required": true },
-								"type": { "type": "string", "required": true, "enum": ["deployment"] }
+								"id": {"type": "string", "required": true},
+								"type": {"type": "string", "required": true, "enum": ["deployment"]}
 							}
 						}
 					}
@@ -5428,8 +6247,8 @@ module.exports = {
 							"replicas": {
 								"type": "object",
 								"properties": {
-									"min": { "type": "number", "minimum": 1, "required": true },
-									"max": { "type": "number", "minimum": 1, "required": true }
+									"min": {"type": "number", "minimum": 1, "required": true},
+									"max": {"type": "number", "minimum": 1, "required": true}
 								}
 							},
 							"metrics": {
@@ -5440,7 +6259,7 @@ module.exports = {
 									"cpu": {
 										"type": "object",
 										"properties": {
-											"percent": { "type": "number", "minimum": 1, "required": true }
+											"percent": {"type": "number", "minimum": 1, "required": true}
 										}
 									}
 								}
@@ -5653,9 +6472,9 @@ module.exports = {
 						"items": {
 							"type": "object",
 							"properties": {
-								"name": { "type": "string", "required": true },
-								"value": { "type": "string", "required": false },
-								"public": { "type": "boolean", "required": false }
+								"name": {"type": "string", "required": true},
+								"value": {"type": "string", "required": false},
+								"public": {"type": "boolean", "required": false}
 							}
 						}
 					}
@@ -5709,13 +6528,801 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["endpoints", "services"]
+						"enum": ["endpoints", "services", "passThroughs"]
 					}
 				},
 				"id": {
 					"source": ['query.id', 'body.id'],
 					"required": true,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
+				},
+				"port": {
+					"required": false,
+					"source": ['body.port'],
+					"validation":{
+						"type": "integer"
+					}
+				},
+				"path": {
+					"required": false,
+					"source": ['body.path'],
+					"validation":{
+						"type": "string"
+					}
+				},
+				"versions": {
+					"required": false,
+					"source": ['body.versions'],
+					"validation":{
+						"type": "object",
+						"patternProperties": {
+							'\\^\\(d\\+\\.\\)\\?\\(d\\+\\.\\)\\?\\(\\*\\|d\\+\\)\\$': {
+								"type": "object",
+								"properties": {
+									"extKeyRequired": {
+										"type": "boolean"
+									},
+									"oauth": {
+										"type": "boolean"
+									},
+									"urac_Profile": {
+										"type": "boolean"
+									},
+									"urac": {
+										"type": "boolean"
+									},
+									"urac_ACL": {
+										"type": "boolean"
+									},
+									"provision_ACL": {
+										"type": "boolean"
+									},
+									"swagger": {
+										"type": "boolean"
+									},
+									"acl": {
+										"type": "boolean"
+									},
+									"url": {
+										"type": "string"
+									},
+									"swaggerInput": {
+										"type": "string"
+									},
+									"errors": {
+										"oneOf": [
+											{
+												"type": "object",
+												"required": false,
+												"patternProperties": {
+													"^[0-9]+$": {
+														"type": "string",
+														"required": true,
+														"minLength": 5
+													}
+												}
+											},
+											{
+												"type": "string",
+												"required": false
+											}
+										]
+									},
+									"schema": {
+										"oneOf": [
+											{
+												"type": "object",
+												"required": true,
+												"properties": {
+													"commonFields": {
+														"oneOf": [
+															{
+																"type": "string",
+																"required": true,
+																"pattern": "^/[^/]+(/[^/]+)*$"
+															},
+															{
+																"type": "object",
+																"additionalProperties": {
+																	"type": "object",
+																	"properties": {
+																		"required": {
+																			"type": "boolean",
+																			"required": true
+																		},
+																		"source": {
+																			"type": "array",
+																			"minItems": 1,
+																			"items": {
+																				"type": "string"
+																			},
+																			"required": true
+																		},
+																		"validation": {
+																			"oneOf": [
+																				{
+																					"type": "object",
+																					"required": true,
+																					"additionalProperties": true
+																				},
+																				{
+																					"type": "string",
+																					"required": true
+																				}
+																			]
+																		}
+																	}
+																}
+															}
+														]
+													},
+													"patternProperties": {
+														"oneOf": [
+															{
+																"^/[a-zA-Z0-9_.-]+$": {
+																	"type": "object",
+																	"properties": {
+																		"method": {
+																			"type": "string",
+																			"required": false,
+																			"enum": [
+																				"GET",
+																				"POST",
+																				"PUT",
+																				"DELETE",
+																				"DEL"
+																			]
+																		},
+																		"mw": {
+																			"type": "string",
+																			"required": false,
+																			"pattern": "^/[^/]+(/[^/]+)*$"
+																		},
+																		"imfv": {
+																			"required": false,
+																			"type": "object",
+																			"properties": {
+																				"commonFields": {
+																					"type": "array",
+																					"required": false,
+																					"items": {
+																						"type": "string"
+																					},
+																					"uniqueItems": true
+																				},
+																				"custom": {
+																					"oneOf": [
+																						{
+																							"type": "string",
+																							"required": false,
+																							"pattern": "^/[^/]+(/[^/]+)*$"
+																						},
+																						{
+																							"type": "object",
+																							"required": false,
+																							"properties": {
+																								"required": {
+																									"type": "boolean",
+																									"required": true
+																								},
+																								"source": {
+																									"type": "array",
+																									"minItems": 1,
+																									"items": {
+																										"type": "string"
+																									},
+																									"required": true
+																								},
+																								"validation": {
+																									"oneOf": [
+																										{
+																											"type": "object",
+																											"required": true,
+																											"additionalProperties": true
+																										},
+																										{
+																											"type": "string",
+																											"required": true
+																										}
+																									]
+																								}
+																							}
+																						}
+																					]
+																				}
+																			}
+																		},
+																		"_apiInfo": {
+																			"requried": true,
+																			"type": "object",
+																			"properties": {
+																				"l": {
+																					"type": "string",
+																					"requried": true
+																				},
+																				"group": {
+																					"type": "string",
+																					"requried": true
+																				},
+																				"groupMain": {
+																					"type": "boolean"
+																				}
+																			}
+																		},
+																		"commonFields": {
+																			"type": "array",
+																			"minItems": 1,
+																			"items": {
+																				"type": "string"
+																			}
+																		},
+																		"additionalProperties": {
+																			"type": "object",
+																			"properties": {
+																				"required": {
+																					"type": "boolean",
+																					"required": true
+																				},
+																				"source": {
+																					"type": "array",
+																					"minItems": 1,
+																					"items": {
+																						"type": "string"
+																					},
+																					"required": true
+																				},
+																				"validation": {
+																					"oneOf": [
+																						{
+																							"type": "object",
+																							"required": true,
+																							"additionalProperties": true
+																						},
+																						{
+																							"type": "string",
+																							"required": true
+																						}
+																					]
+																				}
+																			}
+																		}
+																	}
+																}
+															},
+															{
+																"type": "object",
+																"required": true,
+																"patternProperties": {
+																	"^/[a-zA-Z0-9_.-]+$": {
+																		"type": "object",
+																		"properties": {
+																			"method": {
+																				"type": "string",
+																				"required": false,
+																				"enum": [
+																					"GET",
+																					"POST",
+																					"PUT",
+																					"DELETE",
+																					"DEL"
+																				]
+																			},
+																			"mw": {
+																				"type": "string",
+																				"required": false,
+																				"pattern": "^/[^/]+(/[^/]+)*$"
+																			},
+																			"imfv": {
+																				"required": false,
+																				"type": "object",
+																				"properties": {
+																					"commonFields": {
+																						"type": "array",
+																						"required": false,
+																						"items": {
+																							"type": "string"
+																						},
+																						"uniqueItems": true
+																					},
+																					"custom": {
+																						"oneOf": [
+																							{
+																								"type": "string",
+																								"required": false,
+																								"pattern": "^/[^/]+(/[^/]+)*$"
+																							},
+																							{
+																								"type": "object",
+																								"required": false,
+																								"properties": {
+																									"required": {
+																										"type": "boolean",
+																										"required": true
+																									},
+																									"source": {
+																										"type": "array",
+																										"minItems": 1,
+																										"items": {
+																											"type": "string"
+																										},
+																										"required": true
+																									},
+																									"validation": {
+																										"oneOf": [
+																											{
+																												"type": "object",
+																												"required": true,
+																												"additionalProperties": true
+																											},
+																											{
+																												"type": "string",
+																												"required": true
+																											}
+																										]
+																									}
+																								}
+																							}
+																						]
+																					}
+																				}
+																			},
+																			"_apiInfo": {
+																				"requried": true,
+																				"type": "object",
+																				"properties": {
+																					"l": {
+																						"type": "string",
+																						"requried": true
+																					},
+																					"group": {
+																						"type": "string",
+																						"requried": true
+																					},
+																					"groupMain": {
+																						"type": "boolean"
+																					}
+																				}
+																			},
+																			"commonFields": {
+																				"type": "array",
+																				"minItems": 1,
+																				"items": {
+																					"type": "string"
+																				}
+																			},
+																			"additionalProperties": {
+																				"type": "object",
+																				"properties": {
+																					"required": {
+																						"type": "boolean",
+																						"required": true
+																					},
+																					"source": {
+																						"type": "array",
+																						"minItems": 1,
+																						"items": {
+																							"type": "string"
+																						},
+																						"required": true
+																					},
+																					"validation": {
+																						"oneOf": [
+																							{
+																								"type": "object",
+																								"required": true,
+																								"additionalProperties": true
+																							},
+																							{
+																								"type": "string",
+																								"required": true
+																							}
+																						]
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														]
+													}
+												}
+											},
+											{
+												"type": "string",
+												"required": false
+											}
+										]
+									}
+								}
+							}
+						},
+						"additionalProperties": {
+							"type": "object",
+							"patternProperties": {
+								'\\^\\(d\\+\\.\\)\\?\\(d\\+\\.\\)\\?\\(\\*\\|d\\+\\)\\$': {
+									"type": "object",
+									"properties": {
+										"extKeyRequired": {
+											"type": "boolean"
+										},
+										"oauth": {
+											"type": "boolean"
+										},
+										"urac_Profile": {
+											"type": "boolean"
+										},
+										"urac": {
+											"type": "boolean"
+										},
+										"urac_ACL": {
+											"type": "boolean"
+										},
+										"provision_ACL": {
+											"type": "boolean"
+										},
+										"swagger": {
+											"type": "boolean"
+										},
+										"acl": {
+											"type": "boolean"
+										},
+										"url": {
+											"type": "string"
+										},
+										"swaggerInput": {
+											"type": "string"
+										},
+										"errors": {
+											"oneOf": [
+												{
+													"type": "object",
+													"required": false,
+													"patternProperties": {
+														"^[0-9]+$": {
+															"type": "string",
+															"required": true,
+															"minLength": 5
+														}
+													}
+												},
+												{
+													"type": "string",
+													"required": false
+												}
+											]
+										},
+										"schema": {
+											"oneOf": [
+												{
+													"type": "object",
+													"required": true,
+													"properties": {
+														"commonFields": {
+															"oneOf": [
+																{
+																	"type": "string",
+																	"required": true,
+																	"pattern": "^/[^/]+(/[^/]+)*$"
+																},
+																{
+																	"type": "object",
+																	"additionalProperties": {
+																		"type": "object",
+																		"properties": {
+																			"required": {
+																				"type": "boolean",
+																				"required": true
+																			},
+																			"source": {
+																				"type": "array",
+																				"minItems": 1,
+																				"items": {
+																					"type": "string"
+																				},
+																				"required": true
+																			},
+																			"validation": {
+																				"oneOf": [
+																					{
+																						"type": "object",
+																						"required": true,
+																						"additionalProperties": true
+																					},
+																					{
+																						"type": "string",
+																						"required": true
+																					}
+																				]
+																			}
+																		}
+																	}
+																}
+															]
+														},
+														"patternProperties": {
+															"oneOf": [
+																{
+																	"^/[a-zA-Z0-9_.-]+$": {
+																		"type": "object",
+																		"properties": {
+																			"method": {
+																				"type": "string",
+																				"required": false,
+																				"enum": [
+																					"GET",
+																					"POST",
+																					"PUT",
+																					"DELETE",
+																					"DEL"
+																				]
+																			},
+																			"mw": {
+																				"type": "string",
+																				"required": false,
+																				"pattern": "^/[^/]+(/[^/]+)*$"
+																			},
+																			"imfv": {
+																				"required": false,
+																				"type": "object",
+																				"properties": {
+																					"commonFields": {
+																						"type": "array",
+																						"required": false,
+																						"items": {
+																							"type": "string"
+																						},
+																						"uniqueItems": true
+																					},
+																					"custom": {
+																						"oneOf": [
+																							{
+																								"type": "string",
+																								"required": false,
+																								"pattern": "^/[^/]+(/[^/]+)*$"
+																							},
+																							{
+																								"type": "object",
+																								"required": false,
+																								"properties": {
+																									"required": {
+																										"type": "boolean",
+																										"required": true
+																									},
+																									"source": {
+																										"type": "array",
+																										"minItems": 1,
+																										"items": {
+																											"type": "string"
+																										},
+																										"required": true
+																									},
+																									"validation": {
+																										"oneOf": [
+																											{
+																												"type": "object",
+																												"required": true,
+																												"additionalProperties": true
+																											},
+																											{
+																												"type": "string",
+																												"required": true
+																											}
+																										]
+																									}
+																								}
+																							}
+																						]
+																					}
+																				}
+																			},
+																			"_apiInfo": {
+																				"requried": true,
+																				"type": "object",
+																				"properties": {
+																					"l": {
+																						"type": "string",
+																						"requried": true
+																					},
+																					"group": {
+																						"type": "string",
+																						"requried": true
+																					},
+																					"groupMain": {
+																						"type": "boolean"
+																					}
+																				}
+																			},
+																			"commonFields": {
+																				"type": "array",
+																				"minItems": 1,
+																				"items": {
+																					"type": "string"
+																				}
+																			},
+																			"additionalProperties": {
+																				"type": "object",
+																				"properties": {
+																					"required": {
+																						"type": "boolean",
+																						"required": true
+																					},
+																					"source": {
+																						"type": "array",
+																						"minItems": 1,
+																						"items": {
+																							"type": "string"
+																						},
+																						"required": true
+																					},
+																					"validation": {
+																						"oneOf": [
+																							{
+																								"type": "object",
+																								"required": true,
+																								"additionalProperties": true
+																							},
+																							{
+																								"type": "string",
+																								"required": true
+																							}
+																						]
+																					}
+																				}
+																			}
+																		}
+																	}
+																},
+																{
+																	"type": "object",
+																	"required": true,
+																	"patternProperties": {
+																		"^/[a-zA-Z0-9_.-]+$": {
+																			"type": "object",
+																			"properties": {
+																				"method": {
+																					"type": "string",
+																					"required": false,
+																					"enum": [
+																						"GET",
+																						"POST",
+																						"PUT",
+																						"DELETE",
+																						"DEL"
+																					]
+																				},
+																				"mw": {
+																					"type": "string",
+																					"required": false,
+																					"pattern": "^/[^/]+(/[^/]+)*$"
+																				},
+																				"imfv": {
+																					"required": false,
+																					"type": "object",
+																					"properties": {
+																						"commonFields": {
+																							"type": "array",
+																							"required": false,
+																							"items": {
+																								"type": "string"
+																							},
+																							"uniqueItems": true
+																						},
+																						"custom": {
+																							"oneOf": [
+																								{
+																									"type": "string",
+																									"required": false,
+																									"pattern": "^/[^/]+(/[^/]+)*$"
+																								},
+																								{
+																									"type": "object",
+																									"required": false,
+																									"properties": {
+																										"required": {
+																											"type": "boolean",
+																											"required": true
+																										},
+																										"source": {
+																											"type": "array",
+																											"minItems": 1,
+																											"items": {
+																												"type": "string"
+																											},
+																											"required": true
+																										},
+																										"validation": {
+																											"oneOf": [
+																												{
+																													"type": "object",
+																													"required": true,
+																													"additionalProperties": true
+																												},
+																												{
+																													"type": "string",
+																													"required": true
+																												}
+																											]
+																										}
+																									}
+																								}
+																							]
+																						}
+																					}
+																				},
+																				"_apiInfo": {
+																					"requried": true,
+																					"type": "object",
+																					"properties": {
+																						"l": {
+																							"type": "string",
+																							"requried": true
+																						},
+																						"group": {
+																							"type": "string",
+																							"requried": true
+																						},
+																						"groupMain": {
+																							"type": "boolean"
+																						}
+																					}
+																				},
+																				"commonFields": {
+																					"type": "array",
+																					"minItems": 1,
+																					"items": {
+																						"type": "string"
+																					}
+																				},
+																				"additionalProperties": {
+																					"type": "object",
+																					"properties": {
+																						"required": {
+																							"type": "boolean",
+																							"required": true
+																						},
+																						"source": {
+																							"type": "array",
+																							"minItems": 1,
+																							"items": {
+																								"type": "string"
+																							},
+																							"required": true
+																						},
+																						"validation": {
+																							"oneOf": [
+																								{
+																									"type": "object",
+																									"required": true,
+																									"additionalProperties": true
+																								},
+																								{
+																									"type": "string",
+																									"required": true
+																								}
+																							]
+																						}
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															]
+														}
+													}
+												},
+												{
+													"type": "string",
+													"required": false
+												}
+											]
+										}
+									}
+								}
+							}
+						}
+					}
 				},
 				"serviceName": {
 					"source": ['query.serviceName', 'body.serviceName'],
@@ -5728,32 +7335,117 @@ module.exports = {
 				"serviceGroup": {
 					"source": ['query.serviceGroup', 'body.serviceGroup'],
 					"required": true,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
 				},
 				"servicePort": {
 					"source": ['query.servicePort', 'body.servicePort'],
 					"required": true,
-					"validation": { "type": "number", "minimum": 1 }
+					"validation": {"type": "number", "minimum": 1}
 				},
 				"serviceVersion": {
 					"source": ['query.serviceVersion', 'body.serviceVersion'],
-					"required": true,
-					"validation": { "type": "string" }
+					"required": false,
+					"validation": {"type": "string"}
 				},
 				"requestTimeout": {
 					"source": ['query.requestTimeout', 'body.requestTimeout'],
 					"required": true,
-					"validation": { "type": "number", "minimum": 1 }
+					"validation": {"type": "number", "minimum": 1}
 				},
 				"requestTimeoutRenewal": {
 					"source": ['query.requestTimeoutRenewal', 'body.requestTimeoutRenewal'],
 					"required": true,
-					"validation": { "type": "number", "minimum": 1 }
+					"validation": {"type": "number", "minimum": 1}
 				},
 				"defaultAuthentication": {
 					"source": ['query.defaultAuthentication', 'body.defaultAuthentication'],
 					"required": false,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
+				},
+				"src": {
+					"source": ['body.src'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"additionalProperties": false,
+						"properties": {
+							"provider": {
+								"type": "string",
+								"required": true
+							},
+							"url": {
+								"type": "string",
+								"required": false
+							},
+							"urls": {
+								"type": "array",
+								"required": true,
+								"items": {
+									"type": "object",
+									"properties": {
+										"version": {
+											"type": "string",
+											"required": true
+										},
+										"url": {
+											"type": "string",
+											"required": true
+										}
+									}
+								}
+							},
+							"swagger": {
+								"type": "array",
+								"required": true,
+								"items": {
+									"type": "object",
+									"properties": {
+										"version": {
+											"type": "string",
+											"required": true
+										},
+										"content": {
+											"type": "object",
+											"required": true,
+											"properties": {
+												"type": {
+													"type": "string",
+													"required": true,
+													"enum": ["text", "url", "git"]
+												},
+												"url": {
+													"type": "string",
+													"required": false,
+												},
+												"git": {
+													"type": "object",
+													"required": false,
+													"properties": {
+														"gitid": {
+															"type": "string",
+															"required": true
+														},
+														"repo": {
+															"type": "string",
+															"required": true
+														},
+														"branch": {
+															"type": "string",
+															"required": true
+														}
+													}
+												},
+												"content": {
+													"type": "string",
+													"required": false,
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 				},
 				"epType": {
 					"source": ['query.epType', 'body.epType'],
@@ -5767,13 +7459,13 @@ module.exports = {
 					"source": ['query.oauth', 'body.oauth'],
 					"required": false,
 					"default": false,
-					"validation": { "type": "boolean" }
+					"validation": {"type": "boolean"}
 				},
 				"extKeyRequired": {
 					"source": ['query.extKeyRequired', 'body.extKeyRequired'],
 					"required": false,
 					"default": false,
-					"validation": { "type": "boolean" }
+					"validation": {"type": "boolean"}
 				},
 				"authentications": {
 					"source": ['query.authentications', 'body.authentications'],
@@ -5843,9 +7535,9 @@ module.exports = {
 						"items": {
 							"type": "object",
 							"properties": {
-								"prefix": { "type": "string" },
-								"name": { "type": "string", "required": true },
-								"multitenant": { "type": "boolean" }
+								"prefix": {"type": "string"},
+								"name": {"type": "string", "required": true},
+								"multitenant": {"type": "boolean"}
 							}
 						},
 						"minItems": 1,
@@ -5865,19 +7557,19 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["endpoints", "services"]
+						"enum": ["endpoints", "services", "passThroughs"]
 					}
 				},
 				"endpointId": {
 					"source": ['query.endpointId', 'body.endpointId'],
 					"required": true,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
 				},
 				"convert": {
 					"source": ['query.convert', 'body.convert'],
 					"required": false,
 					"default": true,
-					"validation": { "type": "boolean" }
+					"validation": {"type": "boolean"}
 				},
 				"schemas": {
 					"source": ['body.schemas'],
@@ -6046,7 +7738,7 @@ module.exports = {
 				"force": {
 					"source": ['query.force'],
 					"required": true, "default": false,
-					"validation": { "type": "boolean" }
+					"validation": {"type": "boolean"}
 				},
 				'code': {
 					'source': ['query.code'],
@@ -6073,7 +7765,7 @@ module.exports = {
 				"name": {
 					"source": ['query.name'],
 					"required": true,
-					"validation": { "type": "string", "required": true }
+					"validation": {"type": "string", "required": true}
 				}
 			},
 			
@@ -6451,13 +8143,13 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["endpoints", "services"]
+						"enum": ["endpoints", "services", "passThroughs"]
 					}
 				},
 				"id": {
 					"source": ['query.id', 'body.id'],
 					"required": true,
-					"validation": { "type": "string" }
+					"validation": {"type": "string"}
 				}
 			},
 			
