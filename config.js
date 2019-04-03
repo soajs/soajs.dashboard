@@ -1949,7 +1949,7 @@ module.exports = {
 					"source": ['query.version'],
 					"required": false,
 					"validation": {
-						"type": "integer"
+						"type": "string"
 					}
 				},
 				"type": {
@@ -4022,6 +4022,11 @@ module.exports = {
 					"validation":{
 						"type": "string"
 					}
+				},
+				"simulateUrl": {
+					"source": ['body.simulateUrl'],
+					"required": false,
+					"validation": {"type": "string"}
 				},
 				"versions": {
 					"required": false,
@@ -7358,6 +7363,11 @@ module.exports = {
 				},
 				"defaultAuthentication": {
 					"source": ['query.defaultAuthentication', 'body.defaultAuthentication'],
+					"required": false,
+					"validation": {"type": "string"}
+				},
+				"simulateUrl": {
+					"source": ['body.simulateUrl'],
 					"required": false,
 					"validation": {"type": "string"}
 				},
