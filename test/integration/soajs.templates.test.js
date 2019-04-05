@@ -37,7 +37,6 @@ function executeMyRequest(params, apiPath, method, cb) {
 		if (params.qs) {
 			options.qs = params.qs;
 		}
-		
 		request[method](options, function (error, response, body) {
 			assert.ifError(error);
 			assert.ok(body);
