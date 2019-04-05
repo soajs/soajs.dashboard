@@ -1994,7 +1994,15 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				"owner": {
+					"source": ['query.owner'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
 				}
+				
 			},
 			
 			"/apiBuilder/list": {
