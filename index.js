@@ -2564,9 +2564,20 @@ service.init(function () {
 				});
 			});
 		});
-
 	});
-
+	
+	service.get("/gitAccounts/getAnyFile", function (req, res) {
+		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.getAnyFile(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	
 	/**
 	 * Get repository barnches
 	 * @param {String} API route

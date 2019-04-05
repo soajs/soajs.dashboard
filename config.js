@@ -1961,6 +1961,42 @@ module.exports = {
 				}
 			},
 			
+			"/gitAccounts/getAnyFile": {
+				"_apiInfo": {
+					"l": "Get Any file",
+					"group": "Git Accounts"
+				},
+				'commonFields': ['soajs_project'],
+				"accountId": {
+					"source": ['query.accountId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"repo": {
+					"source": ['query.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"filepath": {
+					"source": ['query.filepath'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"branch": {
+					"source": ['query.branch'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
 			"/apiBuilder/list": {
 				"_apiInfo": {
 					"l": "List Endpoints",
@@ -4067,6 +4103,27 @@ module.exports = {
 									"swaggerInput": {
 										"type": "string"
 									},
+									"swaggerType": {
+										"type": "string",
+										"enum": ["git", "text", "url"]
+									},
+									"git": {
+										"type": "object",
+										"properties": {
+											"branch": {
+												"type": "string"
+											},
+											"filepath": {
+												"type": "string"
+											},
+											"gitId": {
+												"type": "string"
+											},
+											"repo": {
+												"type": "string"
+											}
+										}
+									},
 									"errors": {
 										"oneOf": [
 											{
@@ -4450,6 +4507,27 @@ module.exports = {
 										},
 										"swaggerInput": {
 											"type": "string"
+										},
+										"swaggerType": {
+											"type": "string",
+											"enum": ["git", "text", "url"]
+										},
+										"git": {
+											"type": "object",
+											"properties": {
+												"branch": {
+													"type": "string"
+												},
+												"filepath": {
+													"type": "string"
+												},
+												"gitId": {
+													"type": "string"
+												},
+												"repo": {
+													"type": "string"
+												}
+											}
 										},
 										"errors": {
 											"oneOf": [
@@ -6593,6 +6671,27 @@ module.exports = {
 									"swaggerInput": {
 										"type": "string"
 									},
+									"swaggerType": {
+										"type": "string",
+										"enum": ["git", "text", "url"]
+									},
+									"git": {
+										"type": "object",
+										"properties": {
+											"branch": {
+												"type": "string"
+											},
+											"filepath": {
+												"type": "string"
+											},
+											"gitId": {
+												"type": "string"
+											},
+											"repo": {
+												"type": "string"
+											}
+										}
+									},
 									"errors": {
 										"oneOf": [
 											{
@@ -6976,6 +7075,27 @@ module.exports = {
 										},
 										"swaggerInput": {
 											"type": "string"
+										},
+										"swaggerType": {
+											"type": "string",
+											"enum": ["git", "text", "url"]
+										},
+										"git": {
+											"type": "object",
+											"properties": {
+												"branch": {
+													"type": "string"
+												},
+												"filepath": {
+													"type": "string"
+												},
+												"gitId": {
+													"type": "string"
+												},
+												"repo": {
+													"type": "string"
+												}
+											}
 										},
 										"errors": {
 											"oneOf": [
