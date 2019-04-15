@@ -4072,6 +4072,44 @@ module.exports = {
 					"required": false,
 					"validation": {"type": "string"}
 				},
+				"soa": {
+					"source": ['body.soa'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"additionalProperties": false,
+						"properties": {
+							"type": {
+								"type": "string",
+								"required": true,
+								"default": "text"
+							},
+							"git": {
+								"required": false,
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
+									"branch": {
+										"type": "string",
+										"required": true
+									},
+									"gitId": {
+										"type": "string",
+										"required": true
+									},
+									"owner": {
+										"type": "string",
+										"required": true
+									},
+									"repo": {
+										"type": "string",
+										"required": true
+									}
+								}
+							}
+						}
+					}
+				},
 				"versions": {
 					"required": false,
 					"source": ['body.versions'],
@@ -4082,53 +4120,101 @@ module.exports = {
 								"type": "object",
 								"properties": {
 									"extKeyRequired": {
-										"type": "boolean"
+										"type": "boolean",
+										"required": false,
 									},
 									"oauth": {
-										"type": "boolean"
+										"type": "boolean",
+										"required": false,
 									},
 									"urac_Profile": {
-										"type": "boolean"
+										"type": "boolean",
+										"required": false,
 									},
 									"urac": {
-										"type": "boolean"
+										"type": "boolean",
+										"required": false,
 									},
 									"urac_ACL": {
-										"type": "boolean"
+										"type": "boolean",
+										"required": false,
 									},
 									"provision_ACL": {
-										"type": "boolean"
+										"type": "boolean",
+										"required": false,
 									},
 									"swagger": {
-										"type": "boolean"
-									},
-									"acl": {
-										"type": "boolean"
+										"type": "object",
+										"required": false,
+										"properties": {
+											"swaggerInput": {
+												"type": "string",
+												"required": false,
+											},
+											"swaggerType": {
+												"type": "string",
+												"enum": ["git", "text", "url"],
+												"required": false,
+											},
+											"git": {
+												"type": "object",
+												"properties": {
+													"branch": {
+														"type": "string"
+													},
+													"filepath": {
+														"type": "string"
+													},
+													"gitId": {
+														"type": "string"
+													},
+													"repo": {
+														"type": "string"
+													},
+													"owner": {
+														"type": "string"
+													}
+												},
+												"required": false,
+											},
+										}
 									},
 									"url": {
-										"type": "string"
-									},
-									"swaggerInput": {
-										"type": "string"
-									},
-									"swaggerType": {
 										"type": "string",
-										"enum": ["git", "text", "url"]
+										"required": true,
 									},
-									"git": {
+									"soaVersion": {
+										"required": false,
 										"type": "object",
+										"additionalProperties": false,
 										"properties": {
-											"branch": {
-												"type": "string"
+											"type": {
+												"type": "string",
+												"required": true,
+												"default": "text"
 											},
-											"filepath": {
-												"type": "string"
-											},
-											"gitId": {
-												"type": "string"
-											},
-											"repo": {
-												"type": "string"
+											"git": {
+												"required": false,
+												"additionalProperties": false,
+												"type": "object",
+												"properties": {
+													"branch": {
+														"type": "string",
+														"required": true
+													},
+													"gitId": {
+														"type": "string",
+														"required": true
+													},
+													"owner": {
+														"type": "string",
+														"required": true
+													},
+													"repo": {
+														"type": "string",
+														"required": true
+													}
+												}
 											}
 										}
 									},
@@ -4487,53 +4573,101 @@ module.exports = {
 									"type": "object",
 									"properties": {
 										"extKeyRequired": {
-											"type": "boolean"
+											"type": "boolean",
+											"required": false,
 										},
 										"oauth": {
-											"type": "boolean"
+											"type": "boolean",
+											"required": false,
 										},
 										"urac_Profile": {
-											"type": "boolean"
+											"type": "boolean",
+											"required": false,
 										},
 										"urac": {
-											"type": "boolean"
+											"type": "boolean",
+											"required": false,
 										},
 										"urac_ACL": {
-											"type": "boolean"
+											"type": "boolean",
+											"required": false,
 										},
 										"provision_ACL": {
-											"type": "boolean"
+											"type": "boolean",
+											"required": false,
 										},
 										"swagger": {
-											"type": "boolean"
-										},
-										"acl": {
-											"type": "boolean"
+											"type": "object",
+											"required": false,
+											"properties": {
+												"swaggerInput": {
+													"type": "string",
+													"required": false,
+												},
+												"swaggerType": {
+													"type": "string",
+													"enum": ["git", "text", "url"],
+													"required": false,
+												},
+												"git": {
+													"type": "object",
+													"properties": {
+														"branch": {
+															"type": "string"
+														},
+														"filepath": {
+															"type": "string"
+														},
+														"gitId": {
+															"type": "string"
+														},
+														"repo": {
+															"type": "string"
+														},
+														"owner": {
+															"type": "string"
+														}
+													},
+													"required": false,
+												},
+											}
 										},
 										"url": {
-											"type": "string"
-										},
-										"swaggerInput": {
-											"type": "string"
-										},
-										"swaggerType": {
 											"type": "string",
-											"enum": ["git", "text", "url"]
+											"required": true,
 										},
-										"git": {
+										"soaVersion": {
+											"required": false,
 											"type": "object",
+											"additionalProperties": false,
 											"properties": {
-												"branch": {
-													"type": "string"
+												"type": {
+													"type": "string",
+													"required": true,
+													"default": "text"
 												},
-												"filepath": {
-													"type": "string"
-												},
-												"gitId": {
-													"type": "string"
-												},
-												"repo": {
-													"type": "string"
+												"git": {
+													"required": false,
+													"additionalProperties": false,
+													"type": "object",
+													"properties": {
+														"branch": {
+															"type": "string",
+															"required": true
+														},
+														"gitId": {
+															"type": "string",
+															"required": true
+														},
+														"owner": {
+															"type": "string",
+															"required": true
+														},
+														"repo": {
+															"type": "string",
+															"required": true
+														}
+													}
 												}
 											}
 										},
@@ -4913,12 +5047,12 @@ module.exports = {
 				},
 				"requestTimeout": {
 					"source": ['query.requestTimeout', 'body.requestTimeout'],
-					"required": true,
+					"required": false,
 					"validation": {"type": "number", "minimum": 1}
 				},
 				"requestTimeoutRenewal": {
 					"source": ['query.requestTimeoutRenewal', 'body.requestTimeoutRenewal'],
-					"required": true,
+					"required": false,
 					"validation": {"type": "number", "minimum": 1}
 				},
 				"defaultAuthentication": {
@@ -6640,6 +6774,44 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				"soa": {
+					"source": ['body.soa'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"additionalProperties": false,
+						"properties": {
+							"type": {
+								"type": "string",
+								"required": true,
+								"default": "text"
+							},
+							"git": {
+								"required": false,
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
+									"branch": {
+										"type": "string",
+										"required": true
+									},
+									"gitId": {
+										"type": "string",
+										"required": true
+									},
+									"owner": {
+										"type": "string",
+										"required": true
+									},
+									"repo": {
+										"type": "string",
+										"required": true
+									}
+								}
+							}
+						}
+					}
+				},
 				"versions": {
 					"required": false,
 					"source": ['body.versions'],
@@ -6650,53 +6822,101 @@ module.exports = {
 								"type": "object",
 								"properties": {
 									"extKeyRequired": {
-										"type": "boolean"
+										"type": "boolean",
+										"required": false,
 									},
 									"oauth": {
-										"type": "boolean"
+										"type": "boolean",
+										"required": false,
 									},
 									"urac_Profile": {
-										"type": "boolean"
+										"type": "boolean",
+										"required": false,
 									},
 									"urac": {
-										"type": "boolean"
+										"type": "boolean",
+										"required": false,
 									},
 									"urac_ACL": {
-										"type": "boolean"
+										"type": "boolean",
+										"required": false,
 									},
 									"provision_ACL": {
-										"type": "boolean"
+										"type": "boolean",
+										"required": false,
 									},
 									"swagger": {
-										"type": "boolean"
-									},
-									"acl": {
-										"type": "boolean"
+										"type": "object",
+										"required": false,
+										"properties": {
+											"swaggerInput": {
+												"type": "string",
+												"required": false,
+											},
+											"swaggerType": {
+												"type": "string",
+												"enum": ["git", "text", "url"],
+												"required": false,
+											},
+											"git": {
+												"type": "object",
+												"properties": {
+													"branch": {
+														"type": "string"
+													},
+													"filepath": {
+														"type": "string"
+													},
+													"gitId": {
+														"type": "string"
+													},
+													"repo": {
+														"type": "string"
+													},
+													"owner": {
+														"type": "string"
+													}
+												},
+												"required": false,
+											},
+										}
 									},
 									"url": {
-										"type": "string"
-									},
-									"swaggerInput": {
-										"type": "string"
-									},
-									"swaggerType": {
 										"type": "string",
-										"enum": ["git", "text", "url"]
+										"required": true,
 									},
-									"git": {
+									"soaVersion": {
+										"required": false,
 										"type": "object",
+										"additionalProperties": false,
 										"properties": {
-											"branch": {
-												"type": "string"
+											"type": {
+												"type": "string",
+												"required": true,
+												"default": "text"
 											},
-											"filepath": {
-												"type": "string"
-											},
-											"gitId": {
-												"type": "string"
-											},
-											"repo": {
-												"type": "string"
+											"git": {
+												"required": false,
+												"additionalProperties": false,
+												"type": "object",
+												"properties": {
+													"branch": {
+														"type": "string",
+														"required": true
+													},
+													"gitId": {
+														"type": "string",
+														"required": true
+													},
+													"owner": {
+														"type": "string",
+														"required": true
+													},
+													"repo": {
+														"type": "string",
+														"required": true
+													}
+												}
 											}
 										}
 									},
@@ -7055,53 +7275,101 @@ module.exports = {
 									"type": "object",
 									"properties": {
 										"extKeyRequired": {
-											"type": "boolean"
+											"type": "boolean",
+											"required": false,
 										},
 										"oauth": {
-											"type": "boolean"
+											"type": "boolean",
+											"required": false,
 										},
 										"urac_Profile": {
-											"type": "boolean"
+											"type": "boolean",
+											"required": false,
 										},
 										"urac": {
-											"type": "boolean"
+											"type": "boolean",
+											"required": false,
 										},
 										"urac_ACL": {
-											"type": "boolean"
+											"type": "boolean",
+											"required": false,
 										},
 										"provision_ACL": {
-											"type": "boolean"
+											"type": "boolean",
+											"required": false,
 										},
 										"swagger": {
-											"type": "boolean"
-										},
-										"acl": {
-											"type": "boolean"
+											"type": "object",
+											"required": false,
+											"properties": {
+												"swaggerInput": {
+													"type": "string",
+													"required": false,
+												},
+												"swaggerType": {
+													"type": "string",
+													"enum": ["git", "text", "url"],
+													"required": false,
+												},
+												"git": {
+													"type": "object",
+													"properties": {
+														"branch": {
+															"type": "string"
+														},
+														"filepath": {
+															"type": "string"
+														},
+														"gitId": {
+															"type": "string"
+														},
+														"repo": {
+															"type": "string"
+														},
+														"owner": {
+															"type": "string"
+														}
+													},
+													"required": false,
+												},
+											}
 										},
 										"url": {
-											"type": "string"
-										},
-										"swaggerInput": {
-											"type": "string"
-										},
-										"swaggerType": {
 											"type": "string",
-											"enum": ["git", "text", "url"]
+											"required": true,
 										},
-										"git": {
+										"soaVersion": {
+											"required": false,
 											"type": "object",
+											"additionalProperties": false,
 											"properties": {
-												"branch": {
-													"type": "string"
+												"type": {
+													"type": "string",
+													"required": true,
+													"default": "text"
 												},
-												"filepath": {
-													"type": "string"
-												},
-												"gitId": {
-													"type": "string"
-												},
-												"repo": {
-													"type": "string"
+												"git": {
+													"required": false,
+													"additionalProperties": false,
+													"type": "object",
+													"properties": {
+														"branch": {
+															"type": "string",
+															"required": true
+														},
+														"gitId": {
+															"type": "string",
+															"required": true
+														},
+														"owner": {
+															"type": "string",
+															"required": true
+														},
+														"repo": {
+															"type": "string",
+															"required": true
+														}
+													}
 												}
 											}
 										},
@@ -7481,12 +7749,12 @@ module.exports = {
 				},
 				"requestTimeout": {
 					"source": ['query.requestTimeout', 'body.requestTimeout'],
-					"required": true,
+					"required": false,
 					"validation": {"type": "number", "minimum": 1}
 				},
 				"requestTimeoutRenewal": {
 					"source": ['query.requestTimeoutRenewal', 'body.requestTimeoutRenewal'],
-					"required": true,
+					"required": false,
 					"validation": {"type": "number", "minimum": 1}
 				},
 				"defaultAuthentication": {
