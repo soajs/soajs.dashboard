@@ -62,7 +62,7 @@ var driver = {
 								delete options.password;
 								delete options.action;
 								driver.helper.checkUserRecord(options, function (error, record) {
-									checkIfError(error, {}, cb, function () {
+									checkIfError(error || record.error, {}, cb, function () {
 										options.owner = record.username;
 										return data.saveNewAccount(soajs, model, options, cb);
 									});
@@ -104,7 +104,7 @@ var driver = {
 							options.tokenInfo = newTokenInfo.tokenInfo;
 						}
 						driver.helper.getAllRepos(options, function (error, result) {
-							checkIfError(error, {}, cb, function () {
+							checkIfError(error || result.error, {}, cb, function () {
 								result = driver.helper.buildReposArray(result);
 								checkIfError(!result, {}, cb, function () {
 									driver.helper.addReposStatus(result, accountRecord.repos, function (repos) {

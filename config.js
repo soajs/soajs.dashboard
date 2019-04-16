@@ -8529,7 +8529,7 @@ module.exports = {
 				},
 				"username": {
 					"source": ['query.username'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string"
 					}

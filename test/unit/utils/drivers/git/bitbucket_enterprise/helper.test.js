@@ -25,33 +25,9 @@ describe("testing git/bitbucket helper.js", function () {
 		});
 		
 		it("Success - TODO", function (done) {
-			
-			// // mocking a constructor ....
-			// const sinon = require('sinon');
-			//
-			// var BitbucketClient = require('bitbucket-server-nodejs').Client;
-			// let x = sinon.createStubInstance(BitbucketClient);
-			// x.Client = sinon.stub();
-			// x.Client = {
-			//
-			// };
-			//
-			// // var BitbucketClient = require('bitbucket-server-nodejs');
-			// // var bitInstance = new BitbucketClient("https://test/rest/api/1.0");
-			// // var BitbucketClientUsers = bitInstance.users;
-			// console.log("zzz");
-			// // console.log(BitbucketClientUsers);
-			// console.log("zzz");
-			// // serviceStub = sinon.stub(x, "constructor", (domain) =>
-			// // 	{
-			// // 		return Promise(function(fulfill, rejct){
-			// // 			fulfill("waw");
-			// // 		})
-			// // 	}
-			// // );
-			
 			options.domain = "test";
 			options.owner = "test";
+			options.password = "test";
 			
 			driverHelper.checkUserRecord(options, function (error, body) {
 				done();
@@ -61,7 +37,7 @@ describe("testing git/bitbucket helper.js", function () {
 	
 	describe("testing getRepoBranches", function () {
 		it("Success", function (done) {
-			
+			options.token = "test:1233";
 			driverHelper.getRepoBranches(options, function (error, body) {
 				// assert.ok(body);
 				done();
