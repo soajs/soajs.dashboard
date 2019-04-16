@@ -41,7 +41,6 @@
   },
   "dependencies": {
     "async": "2.1.4",
-    "bitbucket-server-nodejs": "^2.10.0",
     "compare-versions": "3.0.1",
     "cron": "1.2.1",
     "easy-zip": "0.0.4",
