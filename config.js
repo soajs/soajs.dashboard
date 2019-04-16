@@ -130,12 +130,12 @@ module.exports = {
 	
 	"gitAccounts": {
 		"bitbucket": {
-			apiDomain: 'https://api.bitbucket.org/1.0',
+			apiDomain: 'https://api.bitbucket.org/2.0',
 			routes: {
-				getUserRecord: '/users/%USERNAME%',
-				getAllRepos: '/user/repositories',
-				getContent: '/repositories/%USERNAME%/%REPO_NAME%/raw/%BRANCH%/%FILE_PATH%',
-				getBranches: '/repositories/%USERNAME%/%REPO_NAME%/branches'
+				getUserRecord: '/user',
+				getAllRepos: '/repositories/%USERNAME%',
+				getContent: '/repositories/%USERNAME%/%REPO_NAME%/src/%BRANCH%/%FILE_PATH%',
+				getBranches: '/repositories/%USERNAME%/%REPO_NAME%/refs/branches'
 			},
 			oauth: {
 				domain: 'https://bitbucket.org/site/oauth2/access_token'
@@ -167,6 +167,12 @@ module.exports = {
 			},
 			// required for OAuth
 			apiDomain: '%PROVIDER_DOMAIN%/rest/api/1.0',
+			routes: {
+				getUserRecord: '/projects',
+				getAllRepos: '/repos',
+				getContent: '/projects/%PROJECT_NAME%/repos/%REPO_NAME%/browse',
+				getBranches: '/projects/%PROJECT_NAME%/repos/%REPO_NAME%/branches'
+			},
 			downloadUrl: '%PROVIDER_DOMAIN%/projects/%PROJECT_NAME%/repos/%REPO_NAME%/browse/%PATH%?at=%BRANCH%&raw'
 		},
 		"github": {
