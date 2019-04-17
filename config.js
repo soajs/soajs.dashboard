@@ -6098,6 +6098,13 @@ module.exports = {
 						"enum": ["urac", "miniurac", "off"]
 					}
 				},
+				"pin": {
+					"source": ['body.pin'],
+					"required": false,
+					"validation": {
+						"type": "object"
+					}
+				},
 			},
 			
 			"/tenant/oauth/users/update": {

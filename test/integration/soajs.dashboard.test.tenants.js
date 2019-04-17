@@ -1209,7 +1209,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"secret": "my secret key",
 							"redirectURI": "http://www.myredirecturi2.com/",
 							"oauthType": "urac",
-							"availableEnv": ["dashboard", "dev", "stg"]
+							"availableEnv": ["dashboard", "dev", "stg"],
+							"pin": {
+								"test": {
+									"enabled" : true
+								}
+							}
 						}
 					};
 					executeMyRequest(params, 'tenant/oauth/update/', 'put', function (body) {
@@ -1222,7 +1227,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"grants": ["password", "refresh_token"],
 								"type": 2,
 								"disabled": 0,
-								"loginMode": "urac"
+								"loginMode": "urac",
+								"pin": {
+									"test": {
+										"enabled" : true
+									}
+								}
 							});
 							done();
 						});
