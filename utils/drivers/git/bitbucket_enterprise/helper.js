@@ -187,7 +187,9 @@ var lib = {
 			"limit": options.per_page ? options.per_page : 100,
 			"start": options.page && options.page > 0 ?  options.page - 1 : 0
 		};
-		
+		if (options.name) {
+			opts.qs.name = options.name;
+		}
 		requester(opts, (err, res) => {
 			if (err) {
 				return cb(err);

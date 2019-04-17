@@ -12,17 +12,16 @@ var config = require('../../../../config.js');
 function checkIfError(error, options, cb, callback) {
 	if (error) {
 		if (options && options.code) {
-			if (typeof(error) === 'object' && error.code) {
+			if (typeof (error) === 'object' && error.code) {
 				error.code = options.code;
-			}
-			else {
+			} else {
 				error = {
 					code: options.code,
 					message: options.message || error
 				};
 			}
 		}
-		if(!error.code && error.statusCode){
+		if (!error.code && error.statusCode) {
 			error.code = error.statusCode;
 		}
 		return cb(error);
@@ -40,7 +39,7 @@ var driver = {
 	login: function (soajs, data, model, options, cb) {
 		data.checkIfAccountExists(soajs, model, options, function (error, count) {
 			checkIfError(error, {}, cb, function () {
-				checkIfError(count > 0, { code: 752, message: 'Account already added' }, cb, function () {
+				checkIfError(count > 0, {code: 752, message: 'Account already added'}, cb, function () {
 					if (options.access === 'public') { //in case of public access, no tokens are created, just verify that user/org exists and save
 						driver.helper.checkUserRecord(options, function (error, record) {
 							checkIfError(error, {}, cb, function () {
@@ -48,8 +47,7 @@ var driver = {
 								return data.saveNewAccount(soajs, model, options, cb);
 							});
 						});
-					}
-					else if (options.access === 'private') {//create token for account and save
+					} else if (options.access === 'private') {//create token for account and save
 						driver.helper.createAuthToken(options, function (error, tokenInfo) {
 							checkIfError(error, {}, cb, function () {
 								options.token = tokenInfo.access_token;
@@ -106,9 +104,14 @@ var driver = {
 						driver.helper.getAllRepos(options, function (error, result) {
 							checkIfError(error || result.error, {}, cb, function () {
 								result = driver.helper.buildReposArray(result);
-								checkIfError(!result, {}, cb, function () {
-									driver.helper.addReposStatus(result, accountRecord.repos, function (repos) {
-										return cb(null, repos);
+								driver.helper.getAllReposWithAccess(options, function (error, resultAccess) {
+									checkIfError(error || result.error, {}, cb, function () {
+										result = result.concat(driver.helper.buildReposArrayWithAccess(resultAccess));
+										checkIfError(!result, {}, cb, function () {
+											driver.helper.addReposStatus(result, accountRecord.repos, function (repos) {
+												return cb(null, repos);
+											});
+										});
 									});
 								});
 							});
@@ -155,8 +158,7 @@ var driver = {
 					if (updated) {
 						options.token = newTokenInfo.token;
 						options.tokenInfo = newTokenInfo.tokenInfo;
-					}
-					else {
+					} else {
 						options.token = accountRecord.token;
 						options.tokenInfo = accountRecord.tokenInfo;
 					}
@@ -190,8 +192,7 @@ var driver = {
 											}
 											try {
 												repoConfig = require(fileInfo.configFilePath);
-											}
-											catch (e) {
+											} catch (e) {
 												soajs.log.error(e);
 											}
 											repoConfig = repoConfig || {"type": "custom"};

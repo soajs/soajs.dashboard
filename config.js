@@ -134,6 +134,7 @@ module.exports = {
 			routes: {
 				getUserRecord: '/user',
 				getAllRepos: '/repositories/%USERNAME%',
+				getAllReposWithAccess: '/user/permissions/repositories',
 				getContent: '/repositories/%USERNAME%/%REPO_NAME%/src/%BRANCH%/%FILE_PATH%',
 				getBranches: '/repositories/%USERNAME%/%REPO_NAME%/refs/branches'
 			},
@@ -1858,6 +1859,13 @@ module.exports = {
 					"required": false,
 					"validation": {
 						"type": "boolean"
+					}
+				},
+				"name": {
+					"source": ['query.name'],
+					"required": false,
+					"validation": {
+						"type": "string"
 					}
 				}
 			},

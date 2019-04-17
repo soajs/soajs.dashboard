@@ -113,6 +113,34 @@ var bitbucket = {
 				authorization: 'Bearer ' + data.token
 			};
 		}
+		options.qs = {
+			"limit": options.per_page ? options.per_page : 100,
+			"start": options.page && options.page > 0 ?  options.page - 1 : 0
+		};
+		if (data.name){
+			options.qs.q = `name~"${data.name}"`;
+		}
+		return requester(options, cb);
+	},
+	
+	getAllReposWithAccess: function (data, cb) {
+		var options = {
+			method: 'GET'
+		};
+		
+		options.url = config.gitAccounts.bitbucket.apiDomain + config.gitAccounts.bitbucket.routes.getAllReposWithAccess;
+		if (data.token) {
+			options.headers = {
+				authorization: 'Bearer ' + data.token
+			};
+		}
+		options.qs = {
+			"pagelen": options.per_page ? options.per_page : 100,
+			"start": options.page  ?  options.page  : 1
+		};
+		if (data.name){
+			options.qs.q = `repository.name~"${data.name}"`;
+		}
 		return requester(options, cb);
 	},
 	
@@ -219,6 +247,10 @@ var lib = {
 		return bitbucket.getAllRepos(options, cb);
 	},
 	
+	getAllReposWithAccess: function (options, cb) {
+		return bitbucket.getAllReposWithAccess(options, cb);
+	},
+	
 	buildReposArray: function (allRepos) {
 		var repos = [];
 		
@@ -233,9 +265,27 @@ var lib = {
 				});
 			});
 		} else {
-			repos = null;
+			repos = [];
 		}
 		
+		return repos;
+	},
+	buildReposArrayWithAccess: function (allRepos) {
+		var repos = [];
+		
+		if (allRepos && allRepos.values && Array.isArray(allRepos.values)) {
+			allRepos.values.forEach(function (oneRepo) {
+				repos.push({
+					full_name: oneRepo.repository.full_name,
+					owner: {
+						login: oneRepo.repository.full_name.split("/")[0]
+					},
+					name: oneRepo.repository.full_name.split("/")[1]
+				});
+			});
+		} else {
+			repos = [];
+		}
 		return repos;
 	},
 	
