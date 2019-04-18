@@ -31,6 +31,7 @@ module.exports = {
 	"urac_Profile": true,
 	"urac_ACL": true,
 	"provision_ACL": true,
+	"urac_GroupConfig": true,
 	"urac": true,
 	"hasher": {
 		"hashIterations": 1024,
@@ -2863,11 +2864,11 @@ module.exports = {
 				},
 				"type": {
 					"source": ['body.type'],
-					"required": false,
+					"required": true,
 					"default": "client",
 					"validation": {
 						"type": "string",
-						"enum": ["admin", "product", "client"]
+						"enum": ["product", "client"]
 					}
 				},
 				"tag": {
@@ -2882,6 +2883,13 @@ module.exports = {
 					"required": false,
 					"validation": {
 						"type": "boolean"
+					}
+				},
+				"subTenant": {
+					"source": ['body.subTenant'],
+					"required": false,
+					"validation": {
+						"type": "string"
 					}
 				},
 			},
