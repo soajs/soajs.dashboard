@@ -143,7 +143,7 @@ var lib = {
 		
 		let lines = [];
 		
-		
+		let max = 1000 * 1000;
 		function getFile (start, cb){
 			opts.qs.start = start;
 			requester(opts, (err, response) => {
@@ -153,7 +153,15 @@ var lib = {
 				if (response.errors){
 					return cb(response.errors);
 				}
-				lines = lines.concat(response.lines);
+				if (response["status-code"] === 404){
+					return cb(response);
+				}
+				if (response.lines){
+					lines = lines.concat(response.lines);
+				}
+				if (opts.qs.start > max){
+					return cb ({message: "File is too Large"});
+				}
 				if (!response.isLastPage) {
 					return getFile((response.start + response.size), cb);
 				} else {
