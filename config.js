@@ -38,6 +38,9 @@ module.exports = {
 		"seedLength": 32
 	},
 	
+	"dashboardSuperUser": {
+		"group": "owner"
+	},
 	"expDateTTL": 86400000,
 	"ncpLimit": 16,
 	
