@@ -60,7 +60,10 @@ var req = {
 				
 			}
 		},
-		inputmaskData: {}
+		inputmaskData: {},
+		urac: {
+			"groups": ["owner"]
+		}
 	}
 };
 var config = helper.requireModule('./config.js');
