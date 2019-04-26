@@ -1,6 +1,3 @@
-/**
- * Created by nicolas on 10/19/16.
- */
 'use strict';
 var soajsCore = require("soajs");
 var Mongo = soajsCore.mongo;

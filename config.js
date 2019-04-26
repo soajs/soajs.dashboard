@@ -1023,22 +1023,6 @@ module.exports = {
 				}
 			},
 			
-			"/permissions/get": {
-				_apiInfo: {
-					"l": "Get Tenant Security Permissions",
-					"group": "Tenant"
-				},
-				"commonFields": ['soajs_project'],
-				"envCode": {
-					"source": ["query.envCode"],
-					"required": false,
-					"validation": {
-						"type": "string",
-						"format": "alphanumeric"
-					}
-				}
-			},
-			
 			"/tenant/list": {
 				_apiInfo: {
 					"l": "List Tenants",
