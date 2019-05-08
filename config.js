@@ -164,8 +164,8 @@ module.exports = {
 			soajsConfigFilesPath: {
 				"soajsFile": "soa.js",
 				"soajsJSONFile": "soa.json",
-				"swaggerFile": "swagger.yml",
-				"swaggerJSONFile": "swagger.json"
+				"swaggerFile": "/swagger.yml",
+				"swaggerJSONFile": "/swagger.json"
 			},
 			"hash": {
 				"algorithm": "sha256"
