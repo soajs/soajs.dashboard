@@ -5449,6 +5449,84 @@ module.exports = {
 						"type": "object"
 					}
 				}
+			},
+			
+			"/services/dashboard": {
+				_apiInfo: {
+					"l": "List Analytic Services",
+					"group": "Services"
+				},
+				"commonFields": ['soajs_project'],
+				"start": {
+					'source': ['query.start'],
+					'required': false,
+					'validation': {
+						'type': 'number',
+						'min': 0
+					}
+				},
+				"limit": {
+					'source': ['query.limit'],
+					'required': false,
+					'validation': {
+						'type': 'number',
+						'min': 0
+					}
+				},
+				"tags": {
+					'source': ['body.tags'],
+					'required': false,
+					'validation': {
+						'type': 'array',
+						"minItems": 1,
+						'items': {
+							'type': "string"
+						}
+					}
+				},
+				"programs": {
+					'source': ['body.tags'],
+					'required': false,
+					'validation': {
+						'type': 'array',
+						"minItems": 1,
+						'items': {
+							'type': "string"
+						}
+					}
+				},
+				"attributes": {
+					'source': ['body.attributes'],
+					'required': false,
+					'validation': {
+						'type': 'object',
+						"patternProperties": {
+							'^/[a-zA-Z0-9_.-]+$': {
+								'type': 'array',
+								"minItems": 1,
+								'items': {
+									'type': "string"
+								}
+							}
+						}
+					}
+				},
+				"keywords": {
+					'source': ['body.keywords'],
+					'required': false,
+					'validation':  {
+						'type': 'object',
+						"properties": {
+							'clients': {
+								'type': 'serviceName'
+							},
+							'backend': {
+								'type': 'serviceGroup'
+							}
+						}
+					}
+				}
+				
 			}
 		},
 		

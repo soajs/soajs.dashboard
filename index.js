@@ -2766,6 +2766,22 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
+	service.post("/services/dashboard", function (req, res) {
+		initBLModel(req, res, dashboardBL.services.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.dashboard(config, req, res, dashboardBL.services.model, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Delete Service from favorite
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.delete("/services/favorite", function (req, res) {
 		initBLModel(req, res, dashboardBL.services.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
