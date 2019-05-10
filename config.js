@@ -5485,7 +5485,7 @@ module.exports = {
 					}
 				},
 				"programs": {
-					'source': ['body.tags'],
+					'source': ['body.programs'],
 					'required': false,
 					'validation': {
 						'type': 'array',
