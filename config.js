@@ -5518,10 +5518,10 @@ module.exports = {
 						'type': 'object',
 						"properties": {
 							'clients': {
-								'type': 'serviceName'
+								'type': 'string'
 							},
 							'backend': {
-								'type': 'serviceGroup'
+								'type': 'string'
 							}
 						}
 					}

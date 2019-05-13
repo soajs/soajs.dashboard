@@ -59,9 +59,14 @@ let schema = {
 		},
 		"attributes": {
 			"type": "object",
-			"properties": {
-				"clients": {"type": "array", "required": true},
-				"backend": {"type": "array", "required": true}
+			"patternProperties": {
+				'^/[a-zA-Z0-9_.-]+$': {
+					'type': 'array',
+					"minItems": 1,
+					'items': {
+						'type': "string"
+					}
+				}
 			},
 			"required": false
 		}
