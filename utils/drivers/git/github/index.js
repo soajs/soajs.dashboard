@@ -191,7 +191,7 @@ var driver = {
 				return cb(null, {
 					token: options.token || null,
 					downloadLink: response.download_url,
-					content: new Buffer(response.content, 'base64').toString()
+					content: response.content ? new Buffer(response.content, 'base64').toString(): response
 				}, response.sha);
 			});
 		});

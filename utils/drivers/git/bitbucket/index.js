@@ -12,17 +12,16 @@ var config = require('../../../../config.js');
 function checkIfError(error, options, cb, callback) {
 	if (error) {
 		if (options && options.code) {
-			if (typeof(error) === 'object' && error.code) {
+			if (typeof (error) === 'object' && error.code) {
 				error.code = options.code;
-			}
-			else {
+			} else {
 				error = {
 					code: options.code,
 					message: options.message || error
 				};
 			}
 		}
-		if(!error.code && error.statusCode){
+		if (!error.code && error.statusCode) {
 			error.code = error.statusCode;
 		}
 		return cb(error);
@@ -40,16 +39,15 @@ var driver = {
 	login: function (soajs, data, model, options, cb) {
 		data.checkIfAccountExists(soajs, model, options, function (error, count) {
 			checkIfError(error, {}, cb, function () {
-				checkIfError(count > 0, { code: 752, message: 'Account already added' }, cb, function () {
+				checkIfError(count > 0, {code: 752, message: 'Account already added'}, cb, function () {
 					if (options.access === 'public') { //in case of public access, no tokens are created, just verify that user/org exists and save
 						driver.helper.checkUserRecord(options, function (error, record) {
 							checkIfError(error, {}, cb, function () {
-								options.owner = record.user.username;
+								options.owner = record.username;
 								return data.saveNewAccount(soajs, model, options, cb);
 							});
 						});
-					}
-					else if (options.access === 'private') {//create token for account and save
+					} else if (options.access === 'private') {//create token for account and save
 						driver.helper.createAuthToken(options, function (error, tokenInfo) {
 							checkIfError(error, {}, cb, function () {
 								options.token = tokenInfo.access_token;
@@ -62,8 +60,8 @@ var driver = {
 								delete options.password;
 								delete options.action;
 								driver.helper.checkUserRecord(options, function (error, record) {
-									checkIfError(error, {}, cb, function () {
-										options.owner = record.user.username;
+									checkIfError(error || record.error, {}, cb, function () {
+										options.owner = record.username;
 										return data.saveNewAccount(soajs, model, options, cb);
 									});
 								});
@@ -104,11 +102,16 @@ var driver = {
 							options.tokenInfo = newTokenInfo.tokenInfo;
 						}
 						driver.helper.getAllRepos(options, function (error, result) {
-							checkIfError(error, {}, cb, function () {
+							checkIfError(error || result.error, {}, cb, function () {
 								result = driver.helper.buildReposArray(result);
-								checkIfError(!result, {}, cb, function () {
-									driver.helper.addReposStatus(result, accountRecord.repos, function (repos) {
-										return cb(null, repos);
+								driver.helper.getAllReposWithAccess(options, function (error, resultAccess) {
+									checkIfError(error || result.error, {}, cb, function () {
+										result = result.concat(driver.helper.buildReposArrayWithAccess(resultAccess));
+										checkIfError(!result, {}, cb, function () {
+											driver.helper.addReposStatus(result, accountRecord.repos, function (repos) {
+												return cb(null, repos);
+											});
+										});
 									});
 								});
 							});
@@ -155,8 +158,7 @@ var driver = {
 					if (updated) {
 						options.token = newTokenInfo.token;
 						options.tokenInfo = newTokenInfo.tokenInfo;
-					}
-					else {
+					} else {
 						options.token = accountRecord.token;
 						options.tokenInfo = accountRecord.tokenInfo;
 					}
@@ -190,8 +192,7 @@ var driver = {
 											}
 											try {
 												repoConfig = require(fileInfo.configFilePath);
-											}
-											catch (e) {
+											} catch (e) {
 												soajs.log.error(e);
 											}
 											repoConfig = repoConfig || {"type": "custom"};
@@ -208,35 +209,30 @@ var driver = {
 	},
 	
 	getAnyContent: function (soajs, data, model, options, cb) {
-        data.getAccount(soajs, model, options, function (error, accountRecord) {
-            checkIfError(error, {}, cb, function () {
-                driver.helper.checkAuthToken(soajs, options, model, options.accountRecord, function (error, updated, newTokenInfo) {
-                    checkIfError(error, {}, cb, function () {
-                        if (updated) {
-                            options.token = newTokenInfo.token;
-                            options.tokenInfo = newTokenInfo.tokenInfo;
-                        }
-
-                        driver.helper.getRepoContent(options, function (error, response) {
-                            checkIfError(error, {}, cb, function () {
-                                var downloadLink = config.gitAccounts.bitbucket.apiDomain + config.gitAccounts.bitbucket.routes.getContent
-                                    .replace('%USERNAME%', options.user)
-                                    .replace('%REPO_NAME%', options.repo)
-                                    .replace('%BRANCH%', options.ref || 'master')
-                                    .replace('%FILE_PATH%', options.path);
-                                var configSHA = options.repo + options.path;
-                                var hash = crypto.createHash(config.gitAccounts.bitbucket_enterprise.hash.algorithm);
-                                configSHA = hash.update(configSHA).digest('hex');
-                                return cb(null, {
-                                    token: options.token,
-                                    downloadLink: downloadLink,
-                                    content: response
-                                }, configSHA);
-                            });
-                        });
-                    });
-                });
-            });
+		driver.helper.checkAuthToken(soajs, options, model, options.accountRecord, function (error, updated, newTokenInfo) {
+			checkIfError(error, {}, cb, function () {
+				if (updated) {
+					options.token = newTokenInfo.token;
+					options.tokenInfo = newTokenInfo.tokenInfo;
+				}
+				driver.helper.getRepoContent(options, function (error, response) {
+					checkIfError(error, {}, cb, function () {
+						var downloadLink = config.gitAccounts.bitbucket.apiDomain + config.gitAccounts.bitbucket.routes.getContent
+							.replace('%USERNAME%', options.user)
+							.replace('%REPO_NAME%', options.repo)
+							.replace('%BRANCH%', options.ref || 'master')
+							.replace('%FILE_PATH%', options.path);
+						var configSHA = options.repo + options.path;
+						var hash = crypto.createHash(config.gitAccounts.bitbucket_enterprise.hash.algorithm);
+						configSHA = hash.update(configSHA).digest('hex');
+						return cb(null, {
+							token: options.token,
+							downloadLink: downloadLink,
+							content: response
+						}, configSHA);
+					});
+				});
+			});
 		});
 	}
 };

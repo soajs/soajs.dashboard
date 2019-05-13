@@ -1,6 +1,3 @@
-/**
- * Created by nicolas on 10/19/16.
- */
 'use strict';
 var soajsCore = require("soajs");
 var Mongo = soajsCore.mongo;
@@ -24,6 +21,7 @@ var templatesCollection = 'templates';
 var endpointCollections = 'api_builder_endpoints';
 var microservicesCollection = 'api_builder_services';
 var infraCollection = 'infra';
+var favoriteCollection = 'favorite';
 var templateStateCollection = 'vm_layers';
 
 var firstRun = true;
@@ -160,6 +158,9 @@ var lib = {
 			//infra collection
 			soajs.mongoDb.createIndex(infraCollection, { 'deployments.environments': 1 }, errorLogger);
 			soajs.mongoDb.createIndex(infraCollection, { 'deployments.technology': 1 }, errorLogger);
+			
+			//favorite collection
+			soajs.mongoDb.createIndex(favoriteCollection, { userid: 1, type: 1 }, errorLogger);
 			
 			soajs.log.debug("Indexes Updated!");
 			firstRun = false;

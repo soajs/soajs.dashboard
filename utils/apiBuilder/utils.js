@@ -4,13 +4,14 @@ var swaggerUtils = require("./swagger");
 var jsonUtils = require("./json");
 
 var utils = {
-	generateSchemaFromSwagger: function (yamlContent, config, callback) {
+	generateSchemaFromSwagger: function (yamlContent, config, mainType, callback) {
 		
 		//global object in this function to hold data that is juggled between functions
 		var context = {
 			yaml: null,
 			soajs: {
-				config
+				config,
+				mainType
 			}
 		};
 		

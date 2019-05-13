@@ -31,7 +31,8 @@ var dashboardBL = {
 		module: require("./lib/swagger/index.js")
 	},
 	apiBuilder: {
-		module: require("./lib/apiBuilder/index.js")
+		module: require("./lib/apiBuilder/index.js"),
+		model: require('./models/api_Builder_passThroughs')
 	},
 	hosts: {
 		module: require("./lib/hosts/index.js"),
@@ -2563,9 +2564,20 @@ service.init(function () {
 				});
 			});
 		});
-
 	});
-
+	
+	service.get("/gitAccounts/getAnyFile", function (req, res) {
+		initBLModel(req, res, dashboardBL.git.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.getAnyFile(config, req, dashboardBL.git.driver, dashboardBL.git.helper, dashboardBL.git.model, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	
 	/**
 	 * Get repository barnches
 	 * @param {String} API route
@@ -2710,6 +2722,54 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.hosts.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.listHostEnv(config, req.soajs, deployer, dashboardBL.hosts.helper, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * List Service favorite
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/services/favorite/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.services.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.getFavorites(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Add Service to favorite
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/services/favorite", function (req, res) {
+		initBLModel(req, res, dashboardBL.services.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.setFavorite(config, req, res, dashboardBL.services.model, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Delete Service from favorite
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.delete("/services/favorite", function (req, res) {
+		initBLModel(req, res, dashboardBL.services.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.deleteFavorite(config, req, res, dashboardBL.services.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -3303,7 +3363,7 @@ service.init(function () {
 	service.get("/apiBuilder/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.list(config, req, res, function (error, data) {
+				BL.list(config, req, res, dashboardBL.apiBuilder.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -3314,7 +3374,7 @@ service.init(function () {
 	service.get("/apiBuilder/get", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.get(config, req, res, function (error, data) {
+				BL.get(config, req, res, dashboardBL.apiBuilder.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -3325,7 +3385,7 @@ service.init(function () {
 	service.get("/apiBuilder/publish", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.publish(config, req, res, function (error, data) {
+				BL.publish(config, req, res, dashboardBL.apiBuilder.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -3391,7 +3451,7 @@ service.init(function () {
 	service.put("/apiBuilder/edit", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				BL.edit(config, req, res, function (error, data) {
+				BL.edit(config, req, res, dashboardBL.apiBuilder.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

@@ -314,7 +314,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 			describe("list console product tests", function () {
 				it("success - will list product", function (done) {
 					executeMyRequest({}, 'console/product/list', 'get', function (body) {
-						console.log(JSON.stringify(body, null, 2))
 						assert.ok(body.data);
 						done();
 					});
@@ -858,7 +857,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": "TSTN",
 							"name": 'test tenant',
 							"email": 'admin@someTenant.com',
-							"description": 'this is a dummy description'
+							"description": 'this is a dummy description',
+							"subTenant": '551286bce603d7e01ab1688e',
+							"type": "client"
 						}
 					};
 					executeMyRequest(params, 'tenant/add', 'post', function (body) {
@@ -879,6 +880,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'tenant/add', 'post', function (body) {
+						console.log(JSON.stringify(body, null, 2))
 						assert.ok(body.data);
 						tstgTenantId = body.data.id;
 						done();
@@ -932,6 +934,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"disabled": 0,
 								"type": 2,
 								"loginMode": "urac"
+							},
+							"tenant": {
+								"code": "DBTN",
+								"id": "551286bce603d7e01ab1688e"
 							}
 						});
 						
@@ -987,6 +993,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"disabled": 0,
 								"type": 2,
 								"loginMode": "urac"
+							},
+							"tenant": {
+								"code": "DBTN",
+								"id": "551286bce603d7e01ab1688e"
 							}
 						});
 						done();
@@ -1093,7 +1103,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": "TSTN",
 							"email": "admin@someTenant.com",
 							"description": 'this is a dummy description',
-							"name": "test tenant"
+							"name": "test tenant",
+							"subTenant": '551286bce603d7e01ab1688e',
+							"type": "client"
 						}
 					};
 					
@@ -1210,7 +1222,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"secret": "my secret key",
 							"redirectURI": "http://www.myredirecturi2.com/",
 							"oauthType": "urac",
-							"availableEnv": ["dashboard", "dev", "stg"]
+							"availableEnv": ["dashboard", "dev", "stg"],
+							"pin": {
+								"test": {
+									"enabled" : true
+								}
+							}
 						}
 					};
 					executeMyRequest(params, 'tenant/oauth/update/', 'put', function (body) {
@@ -1223,7 +1240,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"grants": ["password", "refresh_token"],
 								"type": 2,
 								"disabled": 0,
-								"loginMode": "urac"
+								"loginMode": "urac",
+								"pin": {
+									"test": {
+										"enabled" : true
+									}
+								}
 							});
 							done();
 						});
@@ -2217,7 +2239,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 						form: {
 							'code': "RATE",
 							'name': "Random Tenant",
-							'email': "user@tenantDomain.com"
+							'email': "user@tenantDomain.com",
+							"subTenant": '551286bce603d7e01ab1688e',
+							"type": "client"
 						}
 					};
 					executeMyRequest(params, 'tenant/add', 'post', function (tenant_body) {
@@ -2847,7 +2871,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 					form: {
 						'code': tenantCode,
 						'name': "Dashboard Tenant Key Test",
-						'email': "user@soajs.org"
+						'email': "user@soajs.org",
+						"subTenant": '551286bce603d7e01ab1688e',
+						"type": "client"
 					}
 				};
 				executeMyRequest(params, 'tenant/add', 'post', function (body) {
@@ -3133,7 +3159,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"code": "TSTN",
 						"name": "test tenant",
 						"description": "this is a dummy description",
-						"type": "client"
+						"type": "client",
+						"tenant": {
+							"code": "DBTN",
+							"id": "551286bce603d7e01ab1688e"
+						}
 					});
 					done();
 				});

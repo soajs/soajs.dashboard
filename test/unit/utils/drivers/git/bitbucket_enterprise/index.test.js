@@ -96,7 +96,7 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 	
 	describe("testing getRepos", function () {
 		it("Success", function (done) {
-			driverHelper.getAllRepos = function (options, client, cb) {
+			driverHelper.getAllRepos = function (options, cb) {
 				return cb(null);
 			};
 			driver.getRepos(soajs, data, model, options, function (error, body) {
@@ -108,7 +108,7 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 	
 	describe("testing getBranches", function () {
 		it("Success", function (done) {
-			driverHelper.getRepoBranches = function (options, client, cb) {
+			driverHelper.getRepoBranches = function (options, cb) {
 				return cb(null);
 			};
 			driver.getBranches(soajs, data, model, options, function (error, body) {
@@ -121,7 +121,7 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 	describe("testing getJSONContent", function () {
 		it("Success", function (done) {
 			options.path = '/-/>??.??';
-			driverHelper.getRepoContent = function (options, client, cb) {
+			driverHelper.getRepoContent = function (options, cb) {
 				var content = {
 					lines: [{
 						text: ''
@@ -139,7 +139,7 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 	describe("testing getAnyContent", function () {
 		it("Success", function (done) {
 			options.path = '';
-			driverHelper.getRepoContent = function (options, client, cb) {
+			driverHelper.getRepoContent = function (options, cb) {
 				var content = {
 					lines: [{
 						text: ''

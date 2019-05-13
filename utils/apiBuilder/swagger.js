@@ -4,6 +4,7 @@ var async = require("async");
 var yamljs = require("yamljs");
 var Validator = require('jsonschema').Validator;
 var schema = require("./schema");
+var passThroughsSchema = require("./passThrough-schema");
 
 /**
  * reformat paths/keys having {} and convert them to :
@@ -296,9 +297,12 @@ var swagger = {
 		var jsonAPISchema;
 		try {
 			jsonAPISchema = yamljs.parse(yamlContent);
-		}
-		catch (e) {
-			return callback({ "code": 851, "msg": e.message });
+		} catch (e) {
+			try {
+				jsonAPISchema = JSON.parse(yamlContent);
+			} catch (l) {
+				return callback({"code": 851, "msg": e.message});
+			}
 		}
 		try {
 			swagger.validateYaml(jsonAPISchema);
@@ -310,7 +314,7 @@ var swagger = {
 		context.yaml = jsonAPISchema;
 		
 		swagger.preMapApisValidation(jsonAPISchema, function (errorDescription) {
-			if (errorDescription) {
+			if (errorDescription && context.soajs.mainType !== 'passThroughs') {
 				let error = {
 					code: 853,
 					msg: errorDescription
@@ -322,8 +326,11 @@ var swagger = {
 					context.soajs.config.errors = response.errors;
 					
 					var myValidator = new Validator();
-					
-					var check = myValidator.validate(context.soajs.config, schema);
+					let schemaToBeUsed = schema;
+					if (context.soajs.config.versions){
+						schemaToBeUsed = passThroughsSchema;
+					}
+					var check = myValidator.validate(context.soajs.config, schemaToBeUsed);
 					if (check.valid) {
 						return callback(null, true);
 					}
@@ -358,7 +365,13 @@ var swagger = {
 			//loop in methods
 			for (var oneMethod in yamlJson.paths[onePath]) {
 				if (!yamlJson.paths[onePath][oneMethod].summary || yamlJson.paths[onePath][oneMethod].summary === "") {
-					throw new Error("Please enter a summary for API " + oneMethod + ": " + onePath + " you want to build.");
+					if (yamlJson.paths[onePath][oneMethod].description && yamlJson.paths[onePath][oneMethod].description !== ""){
+						yamlJson.paths[onePath][oneMethod].summary = yamlJson.paths[onePath][oneMethod].description;
+					}
+					else {
+						yamlJson.paths[onePath][oneMethod].summary = "No summary [please add one]";
+						//throw new Error("Please enter a summary for API " + oneMethod + ": " + onePath + " you want to build.");
+					}
 				}
 			}
 		}

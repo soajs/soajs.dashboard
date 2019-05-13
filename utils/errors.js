@@ -302,6 +302,7 @@ var errors = {
 	"921": "No endpoint found",
 	"922": "Please provide either a schema or a swagger object",
 	"923": "Warning! Publish failed. You don't have any api.",
+	"924": "Failed. Missing passThrough configuration.",
 
     "948": "Detected old Schema for volumes, please upgrade",
     "949": "Specify the type for docker volume(s)",

@@ -410,6 +410,22 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 				done();
 			});
 		});
+		
+		
+		it("success - get getAnyFile", function (done) {
+			var params = {
+				qs: {
+					"accountId": "56f1189430f153a571b9c8be",
+					"repo": "soajs.dashboard",
+					"filepath": "configs.js",
+					"branch": "develop",
+				}
+			};
+			executeMyRequest(params, 'gitAccounts/getAnyFile', 'get', function (body) {
+				assert.ok(body);
+				done();
+			});
+		});
 	});
 
 	describe("personal public acc", function () {

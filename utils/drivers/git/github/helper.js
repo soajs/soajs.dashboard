@@ -159,7 +159,8 @@ var lib = {
 			}
 			github.repos.getBranches({
 				user: repoInfo[ 0 ],
-				repo: repoInfo[ 1 ]
+				repo: repoInfo[ 1 ],
+				per_page: 100
 			}, function (error, response) {
 				checkIfError(error && error.message && error.message.indexOf('API rate limit exceeded') !== -1, {
 					code: 776,
@@ -170,6 +171,10 @@ var lib = {
 						message: 'Repository not found'
 					}, cb, function () {//in case of invalid repo info
 						checkIfError(error, { code: 763 }, cb, function () {//generic case
+							//todo add support for
+							//multiple page branches
+							//find a way to parse the link found in response.meta
+							// link: '<https://api.github.com/repositories/222/branches?per_page=10&access_token=2222&page=2>; rel="next", <https://api.github.com/repositories/222/branches?per_page=10&access_token=2222&page=4>; rel="last"',
 							return cb(null, response);
 						});
 					});
@@ -214,7 +219,20 @@ var lib = {
 			// options.qs.affiliation = 'owner, collaborator';
 
 			request.get(reqOptions, function (error, response, body) {
-				return cb(error, (body) ? JSON.parse(body) : []);
+				if (error){
+					return cb(error);
+				}
+				if (body){
+					try {
+						return cb(null, JSON.parse(body));
+					}
+					catch (e) {
+						return cb(null, []);
+					}
+				}
+				else {
+					return cb(null, []);
+				}
 			});
 		}
 		else if (options && options.owner && options.type) {
@@ -223,7 +241,20 @@ var lib = {
 				reqOptions.qs.type = 'all';
 
 				request.get(reqOptions, function (error, response, body) {
-					return cb(error, (body) ? JSON.parse(body) : []);
+					if (error){
+						return cb(error);
+					}
+					if (body){
+						try {
+							return cb(null, JSON.parse(body));
+						}
+						catch (e) {
+							return cb(null, []);
+						}
+					}
+					else {
+						return cb(null, []);
+					}
 				});
 			}
 			else if (options.type === 'organization') {
