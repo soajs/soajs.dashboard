@@ -529,8 +529,6 @@ describe("testing lib/cloud/infra/index.js", function () {
 		it("Success downloadTemplate", function (done) {
 			var res = {};
 			infra.downloadTemplate(config, req.soajs, deployer, res, function (error, body) {
-				console.log(error)
-				console.log(body)
 				done();
 			});
 		});
@@ -542,9 +540,6 @@ describe("testing lib/cloud/infra/index.js", function () {
 		it("Success onboardVM", function (done) {
 			req.soajs.inputmaskData.env = "dev";
 			infra.onboardVM(config, req, req.soajs, deployer, function (error, body) {
-				console.log("?????????")
-				console.log(error)
-				console.log(body)
 				done();
 			});
 		});
