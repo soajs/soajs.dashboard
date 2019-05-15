@@ -33,6 +33,7 @@ var utils = {
 			if (error) {
 				return callback(error);
 			}
+			
 			return callback(null, output);
 		});
 	},
