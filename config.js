@@ -4065,14 +4065,14 @@ module.exports = {
 				"port": {
 					"required": false,
 					"source": ['body.port'],
-					"validation":{
+					"validation": {
 						"type": "integer"
 					}
 				},
 				"path": {
 					"required": false,
 					"source": ['body.path'],
-					"validation":{
+					"validation": {
 						"type": "string"
 					}
 				},
@@ -4122,7 +4122,7 @@ module.exports = {
 				"versions": {
 					"required": false,
 					"source": ['body.versions'],
-					"validation":{
+					"validation": {
 						"type": "object",
 						"patternProperties": {
 							'\\^\\(d\\+\\.\\)\\?\\(d\\+\\.\\)\\?\\(\\*\\|d\\+\\)\\$': {
@@ -5130,6 +5130,55 @@ module.exports = {
 					"source": ['body.schemas'],
 					"required": false,
 					"validation": serviceSchema.contract
+				},
+				"description": {
+					"source": ['body.description'],
+					"required": false,
+					"validation":
+						{
+							"type": "string",
+						}
+				},
+				"program": {
+					"source": ['body.program'],
+					"required": false,
+					"validation":
+						{"type": "array", "minItems": 1}
+				},
+				"tab": {
+					"source": ['body.tab'],
+					"required": false,
+					"validation":
+						{
+							"type": "object",
+							"properties": {
+								"main": {"type": "string", "required": true},
+								"sub": {"type": "string", "required": true}
+							}
+						}
+				},
+				"attributes": {
+					"source": ['body.attributes'],
+					"required": false,
+					"validation":
+						{
+							"type": "object",
+							"patternProperties": {
+								'^/[a-zA-Z0-9_.-]+$': {
+									'type': 'array',
+									"minItems": 1,
+									'items': {
+										'type': "string"
+									}
+								}
+							}
+						}
+				},
+				"tags": {
+					"source": ['body.tags'],
+					"required": false,
+					"validation":
+						{"type": "array", "minItems": 1}
 				}
 			},
 			
@@ -5514,7 +5563,7 @@ module.exports = {
 				"keywords": {
 					'source': ['body.keywords'],
 					'required': false,
-					'validation':  {
+					'validation': {
 						'type': 'object',
 						"properties": {
 							'clients': {
@@ -6857,14 +6906,14 @@ module.exports = {
 				"port": {
 					"required": false,
 					"source": ['body.port'],
-					"validation":{
+					"validation": {
 						"type": "integer"
 					}
 				},
 				"path": {
 					"required": false,
 					"source": ['body.path'],
-					"validation":{
+					"validation": {
 						"type": "string"
 					}
 				},
@@ -6909,7 +6958,7 @@ module.exports = {
 				"versions": {
 					"required": false,
 					"source": ['body.versions'],
-					"validation":{
+					"validation": {
 						"type": "object",
 						"patternProperties": {
 							'\\^\\(d\\+\\.\\)\\?\\(d\\+\\.\\)\\?\\(\\*\\|d\\+\\)\\$': {

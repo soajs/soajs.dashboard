@@ -48,7 +48,7 @@ let schema = {
 		"provision_ACL": {"type": "boolean", "required": false},
 		"multitenant": {"type": "boolean", "required": false},
 		"description": {"type": "string", "required": false},
-		"program": {"type": "array", "required": false},
+		"program": {"type": "array", "required": false, "minItems": 1},
 		"tab": {
 			"type": "object",
 			"properties": {
@@ -57,6 +57,7 @@ let schema = {
 			},
 			"required": false
 		},
+		"tags": {"type": "array", "required": false, "minItems": 1},
 		"attributes": {
 			"type": "object",
 			"patternProperties": {
