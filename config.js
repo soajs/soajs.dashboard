@@ -2933,6 +2933,13 @@ module.exports = {
 					"validation": {
 						"type": "boolean"
 					}
+				},
+				"label": {
+					"source": ['body.label'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
 			
@@ -6283,6 +6290,13 @@ module.exports = {
 				"commonFields": ['id', 'appId', 'key', 'extKey', 'expDate', 'device', 'geo', 'soajs_project'],
 				"extKeyEnv": {
 					"source": ['query.extKeyEnv'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"label": {
+					"source": ['body.label'],
 					"required": true,
 					"validation": {
 						"type": "string"
