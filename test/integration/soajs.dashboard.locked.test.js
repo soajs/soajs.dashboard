@@ -430,7 +430,8 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 							'expDate': expDateValue,
 							'device': {},
 							'geo': {},
-							'env': 'DASHBOARD'
+							'env': 'DASHBOARD',
+							'label': "test"
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
@@ -456,7 +457,8 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 							'extKey': appExtKey,
 							'expDate': expDateValue,
 							'device': {},
-							'geo': {}
+							'geo': {},
+							'label': "test"
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/update/', 'put', function (body) {

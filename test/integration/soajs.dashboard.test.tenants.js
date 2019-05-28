@@ -95,22 +95,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 				
-				it('fail - missing params', function (done) {
-					var params = {
-						form: {
-							"name": "test product",
-							"description": 'this is a dummy description'
-						}
-					};
-					executeMyRequest(params, 'product/add', 'post', function (body) {
-						assert.deepEqual(body.errors.details[0], {
-							"code": 172,
-							"message": "Missing required field: code"
-						});
-						
-						done();
-					});
-				});
 				
 				it('fail - product exists', function (done) {
 					var params = {
@@ -420,35 +404,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 							done();
 							
 						});
-					});
-				});
-				
-				it('fail - missing params', function (done) {
-					var params = {
-						qs: { 'id': productId },
-						form: {
-							"name": "basic package",
-							"description": 'this is a dummy description',
-							"_TTL": '12',
-							"acl": {
-								"urac": {
-									'access': false,
-									'apis': {
-										'/account/changeEmail': {
-											'access': true
-										}
-									}
-								}
-							}
-						}
-					};
-					executeMyRequest(params, 'product/packages/add', 'post', function (body) {
-						assert.deepEqual(body.errors.details[0], {
-							"code": 172,
-							"message": "Missing required field: code"
-						});
-						
-						done();
 					});
 				});
 				it("fail add - wrong product id", function (done) {
@@ -887,18 +842,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 				
-				it('fail - missing params', function (done) {
-					var params = {
-						form: {
-							"name": "test tenant",
-							"description": 'this is a dummy description'
-						}
-					};
-					executeMyRequest(params, 'tenant/add', 'post', function (body) {
-						assert.deepEqual(body.errors.details[0].code, 172);
-						done();
-					});
-				});
 				
 				it('fail - tenant exists', function (done) {
 					var params = {
@@ -2141,7 +2084,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'geo': {
 								'x': 'yyy'
 							},
-							'env': 'STG'
+							'env': 'STG',
+							'label': "werwer"
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
@@ -2166,7 +2110,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'geo': {
 								'x': 'y'
 							},
-							'env': 'DEV'
+							'env': 'DEV',
+							'label': "werwer"
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
@@ -2189,7 +2134,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'geo': {
 								'x': 'y'
 							},
-							'env': 'DEV'
+							'env': 'DEV',
+							'label': "werewewer"
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
@@ -2224,7 +2170,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'geo': {
 								'x': 'yyy'
 							},
-							'env': 'STG'
+							'env': 'STG',
+							'label': "werwer"
 						});
 						done();
 					});
@@ -2274,7 +2221,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 										"key": key_body.data.key
 									},
 									form: {
-										"env": "DEV"
+										"env": "DEV","label": "dsdas"
+										
 									}
 								};
 								executeMyRequest(params, 'tenant/application/key/ext/add', 'post', function (extKey_body) {
@@ -2287,7 +2235,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 											"key": key_body.data.key
 										},
 										form: {
-											"env": "DEV"
+											"env": "DEV",
+											"label": "dsdas"
 										}
 									};
 									executeMyRequest(params, 'tenant/application/key/ext/add', 'post', function (extKeyTwo_body) {
@@ -2363,7 +2312,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 									'geo': {
 										'x': 'y'
 									},
-									'env': 'STG'
+									'env': 'STG',
+									"label": "dsdaasdasds"
 								}
 							};
 							
@@ -2390,7 +2340,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'geo': {
 								'x': 'y'
 							},
-							'env': 'QAAAAA'
+							'env': 'QAAAAA',
+							"label": "dsdas"
 						}
 					};
 					
@@ -2420,7 +2371,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 							},
 							'geo': {
 								'x': 'y'
-							}
+							},
+							"label": "qweqweq"
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/update/', 'put', function (body) {
@@ -2445,7 +2397,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 							},
 							'geo': {
 								'x': 'y'
-							}
+							},
+							'label': "werwer"
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/update/', 'put', function (body) {
@@ -2471,7 +2424,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 							},
 							'geo': {
 								'x': 'y'
-							}
+							},
+							"label": "dsdas"
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/update/', 'put', function (body) {
@@ -2506,7 +2460,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 								'x': 'y'
 							},
 							'dashboardAccess': true,
-							'env': 'DASHBOARD'
+							'env': 'DASHBOARD',
+							"label": "qweqweq"
 						});
 						done();
 					});
@@ -2633,7 +2588,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'geo': {
 								'xxx': 'yyy'
 							},
-							'env': 'STG'
+							'env': 'STG',
+							'label': "qweqweq"
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
@@ -2912,7 +2868,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 									"key": key
 								},
 								form: {
-									'env': 'DEV'
+									'env': 'DEV',
+									"label": "qweqweq"
 								}
 							};
 							executeMyRequest(params, 'tenant/application/key/ext/add', 'post', function (body) {
@@ -3129,14 +3086,16 @@ describe("DASHBOARD UNIT Tests:", function () {
 											"dashboardAccess": false,
 											"device": { 'a': 'b' },
 											"geo": { 'x': 'y' },
-											"env": 'STG'
+											"env": 'STG',
+											"label": "dsdaasdasds"
 										},
 										{
 											"expDate": new Date(expDateValue).getTime() + config.expDateTTL,
 											"dashboardAccess": false,
 											"device": { 'aa': 'bb' },
 											"geo": { 'xxx': 'yyy' },
-											"env": 'STG'
+											"env": 'STG',
+											"label": "qweqweq"
 										}
 									],
 									"config": {

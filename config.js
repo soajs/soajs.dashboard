@@ -2806,7 +2806,7 @@ module.exports = {
 				"commonFields": ['description', 'name', 'soajs_project'],
 				"code": {
 					"source": ['body.code'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string",
 						"format": "alphanumeric",
@@ -2824,7 +2824,7 @@ module.exports = {
 				"commonFields": ['id', 'name', 'description', '_TTL', 'acl', 'soajs_project'],
 				"code": {
 					"source": ["body.code"],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string",
 						"format": "alphanumeric",
@@ -2842,7 +2842,7 @@ module.exports = {
 				"commonFields": ['name', 'description', 'soajs_project'],
 				"code": {
 					"source": ['body.code'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string",
 						"format": "alphanumeric",
