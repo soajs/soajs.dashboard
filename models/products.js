@@ -51,7 +51,7 @@ var methods = {
 		}, cb);
 	},
 	"unsanitize": function (record, cb) {
-		if (record.scope && record.scope.acl && Object.keys(record.scope.acl > 0)) {
+		if (record && record.scope && record.scope.acl && Object.keys(record.scope.acl > 0)) {
 			let scope = record.scope.acl;
 			santizeAcl(scope, () => {
 				record.scope.acl = scope;
