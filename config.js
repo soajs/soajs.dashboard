@@ -5581,6 +5581,13 @@ module.exports = {
 							}
 						}
 					}
+				},
+				"includeSOAJS" : {
+					'source': ['body.includeSOAJS'],
+					'required': false,
+					'validation': {
+						'type': 'boolean'
+					}
 				}
 				
 			}
