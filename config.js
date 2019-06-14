@@ -1918,7 +1918,14 @@ module.exports = {
 					"l": "Get Yaml file",
 					"group": "Git Accounts"
 				},
-				'commonFields': ['soajs_project', 'env'],
+				'commonFields': ['soajs_project'],
+				"env": {
+					"source": ['query.env','body.env'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
 				"owner": {
 					"source": ['query.owner'],
 					"required": true,
