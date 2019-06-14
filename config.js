@@ -5580,10 +5580,10 @@ module.exports = {
 					'validation': {
 						'type': 'object',
 						"properties": {
-							'clients': {
+							'serviceName': {
 								'type': 'string'
 							},
-							'backend': {
+							'serviceGroup': {
 								'type': 'string'
 							}
 						}
@@ -5658,7 +5658,29 @@ module.exports = {
 							}
 						}
 					}
-				}
+				},
+				"includeSOAJS" : {
+					'source': ['body.includeSOAJS'],
+					'required': false,
+					'validation': {
+						'type': 'boolean'
+					}
+				},
+				"keywords": {
+					'source': ['body.keywords'],
+					'required': false,
+					'validation': {
+						'type': 'object',
+						"properties": {
+							'serviceName': {
+								'type': 'string'
+							},
+							'serviceGroup': {
+								'type': 'string'
+							}
+						}
+					}
+				},
 			}
 		},
 		
