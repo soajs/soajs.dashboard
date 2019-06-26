@@ -4216,6 +4216,11 @@ module.exports = {
 												"required": true,
 												"default": "text"
 											},
+											"content": {
+												"type": "string",
+												"required": false,
+												"default": "text"
+											},
 											"git": {
 												"required": false,
 												"additionalProperties": false,

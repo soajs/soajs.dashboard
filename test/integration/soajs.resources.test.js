@@ -609,7 +609,7 @@ describe("Testing Resources Functionality", function() {
             });
         });
 
-        it("fail - trying to update resource owned by owner as user1", function(done) {
+        it.skip("fail - trying to update resource owned by owner as user1", function(done) {
             params = {
                 qs: {
                     access_token: access_token_user1,
@@ -652,7 +652,7 @@ describe("Testing Resources Functionality", function() {
             });
         });
 
-        it("success - will list resources as user1, get permission set to true only for cluster2", function(done) {
+        it.skip("success - will list resources as user1, get permission set to true only for cluster2", function(done) {
             params = {
                 qs: {
                     access_token: access_token_user1,
@@ -775,7 +775,7 @@ describe("Testing Resources Functionality", function() {
             });
         });
 
-        it("fail - trying to delete as user1 a resource created by owner", function(done) {
+        it.skip("fail - trying to delete as user1 a resource created by owner", function(done) {
             params = {
                 qs: {
                     env: 'dev',
