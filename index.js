@@ -1,6 +1,7 @@
 'use strict';
 var soajs = require('soajs');
 var config = require('./config.js');
+config.packagejson = require("./package.json");
 
 var dashboardBL = {
 	environment: {
