@@ -59,7 +59,7 @@
     "rimraf": "2.5.4",
     "shortid": "^2.2.4",
 
-    "soajs": "2.5.0",
+    "soajs": "2.5.1",
     "soajs.core.drivers": "3.5.7",
 
     "unzip2": "0.2.5",
