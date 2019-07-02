@@ -6029,6 +6029,22 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				"port": {
+					"source": ['body.port'],
+					"required": false,
+					"default": "80",
+					"validation": {
+						"type": "number"
+					}
+				},
+				"protocol": {
+					"source": ['body.protocol'],
+					"required": false,
+					"default": "http",
+					"validation": {
+						"type": "string"
+					}
+				},
 				"portalPrefix": {
 					"source": ['body.portalPrefix'],
 					"required": false,
