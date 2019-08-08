@@ -85,6 +85,21 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 				});
 			});
 		});
+		
+		describe("list dashboard test", function () {
+			it("success - will get dashboard list services", function (done) {
+				executeMyRequest({}, 'services/dashboard/services', 'post', function (body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+			it("success - will get dashboard list apiRoutes", function (done) {
+				executeMyRequest({}, 'services/dashboard/apiRoutes', 'post', function (body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+		});
 
 		describe("update service settings tests", function () {
 

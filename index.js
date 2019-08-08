@@ -1,6 +1,7 @@
 'use strict';
 var soajs = require('soajs');
 var config = require('./config.js');
+config.packagejson = require("./package.json");
 
 var dashboardBL = {
 	environment: {
@@ -2754,6 +2755,38 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.services.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.setFavorite(config, req, res, dashboardBL.services.model, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Get Analytics for Services
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/services/dashboard/services", function (req, res) {
+		initBLModel(req, res, dashboardBL.services.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.dashboardServices(config, req, res, dashboardBL.services.model, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Get analytics for Api Routes
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/services/dashboard/apiRoutes", function (req, res) {
+		initBLModel(req, res, dashboardBL.services.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.dashboardApiRoutes(config, req, res, dashboardBL.services.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

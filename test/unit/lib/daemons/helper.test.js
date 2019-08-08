@@ -82,7 +82,7 @@ describe("testing lib/daemons/helper.js", function () {
 		inputmaskData: {
 			"timeZone": "America/Los_Angeles",
 			"cronTime": "*/5	*	*	*	*",
-			"cronTimeDate": "2019-05-26T11:51:07.547Z"
+			"cronTimeDate": "2030-05-26T11:51:07.547Z"
 		},
 		tenant: {}
 	};

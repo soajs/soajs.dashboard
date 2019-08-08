@@ -129,7 +129,7 @@ module.exports = function (grunt) {
 		copy: {
 			main: {
 				files: [
-					{expand: true, src: ['lib/templates/*/*.txt', 'templates/swagger/tmpl/*.txt', 'templates/ci/*', 'templates/environment/*'], dest: 'test/coverage/instrument/', filter: 'isFile'},
+					{expand: true, src: ['package.json', 'lib/templates/*/*.txt', 'templates/swagger/tmpl/*.txt', 'templates/ci/*', 'templates/environment/*'], dest: 'test/coverage/instrument/', filter: 'isFile'},
 				]
 			}
 		},

@@ -164,8 +164,8 @@ module.exports = {
 			soajsConfigFilesPath: {
 				"soajsFile": "soa.js",
 				"soajsJSONFile": "soa.json",
-				"swaggerFile": "swagger.yml",
-				"swaggerJSONFile": "swagger.json"
+				"swaggerFile": "/swagger.yml",
+				"swaggerJSONFile": "/swagger.json"
 			},
 			"hash": {
 				"algorithm": "sha256"
@@ -1918,7 +1918,14 @@ module.exports = {
 					"l": "Get Yaml file",
 					"group": "Git Accounts"
 				},
-				'commonFields': ['soajs_project', 'env'],
+				'commonFields': ['soajs_project'],
+				"env": {
+					"source": ['query.env','body.env'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
 				"owner": {
 					"source": ['query.owner'],
 					"required": true,
@@ -2806,7 +2813,7 @@ module.exports = {
 				"commonFields": ['description', 'name', 'soajs_project'],
 				"code": {
 					"source": ['body.code'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string",
 						"format": "alphanumeric",
@@ -2824,7 +2831,7 @@ module.exports = {
 				"commonFields": ['id', 'name', 'description', '_TTL', 'acl', 'soajs_project'],
 				"code": {
 					"source": ["body.code"],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string",
 						"format": "alphanumeric",
@@ -2842,7 +2849,7 @@ module.exports = {
 				"commonFields": ['name', 'description', 'soajs_project'],
 				"code": {
 					"source": ['body.code'],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string",
 						"format": "alphanumeric",
@@ -2932,6 +2939,13 @@ module.exports = {
 					"default": false,
 					"validation": {
 						"type": "boolean"
+					}
+				},
+				"label": {
+					"source": ['body.label'],
+					"required": true,
+					"validation": {
+						"type": "string"
 					}
 				}
 			},
@@ -4065,14 +4079,14 @@ module.exports = {
 				"port": {
 					"required": false,
 					"source": ['body.port'],
-					"validation":{
+					"validation": {
 						"type": "integer"
 					}
 				},
 				"path": {
 					"required": false,
 					"source": ['body.path'],
-					"validation":{
+					"validation": {
 						"type": "string"
 					}
 				},
@@ -4122,7 +4136,7 @@ module.exports = {
 				"versions": {
 					"required": false,
 					"source": ['body.versions'],
-					"validation":{
+					"validation": {
 						"type": "object",
 						"patternProperties": {
 							'\\^\\(d\\+\\.\\)\\?\\(d\\+\\.\\)\\?\\(\\*\\|d\\+\\)\\$': {
@@ -4200,6 +4214,11 @@ module.exports = {
 											"type": {
 												"type": "string",
 												"required": true,
+												"default": "text"
+											},
+											"content": {
+												"type": "string",
+												"required": false,
 												"default": "text"
 											},
 											"git": {
@@ -5130,6 +5149,55 @@ module.exports = {
 					"source": ['body.schemas'],
 					"required": false,
 					"validation": serviceSchema.contract
+				},
+				"description": {
+					"source": ['body.description'],
+					"required": false,
+					"validation":
+						{
+							"type": "string",
+						}
+				},
+				"program": {
+					"source": ['body.program'],
+					"required": false,
+					"validation":
+						{"type": "array", "minItems": 1}
+				},
+				"tab": {
+					"source": ['body.tab'],
+					"required": false,
+					"validation":
+						{
+							"type": "object",
+							"properties": {
+								"main": {"type": "string", "required": true},
+								"sub": {"type": "string", "required": true}
+							}
+						}
+				},
+				"attributes": {
+					"source": ['body.attributes'],
+					"required": false,
+					"validation":
+						{
+							"type": "object",
+							"patternProperties": {
+								'^/[a-zA-Z0-9_.-]+$': {
+									'type': 'array',
+									"minItems": 1,
+									'items': {
+										'type': "string"
+									}
+								}
+							}
+						}
+				},
+				"tags": {
+					"source": ['body.tags'],
+					"required": false,
+					"validation":
+						{"type": "array", "minItems": 1}
 				}
 			},
 			
@@ -5449,6 +5517,175 @@ module.exports = {
 						"type": "object"
 					}
 				}
+			},
+			
+			"/services/dashboard/services": {
+				_apiInfo: {
+					"l": "List Analytic Services",
+					"group": "Services"
+				},
+				"commonFields": ['soajs_project'],
+				"start": {
+					'source': ['query.start'],
+					'required': false,
+					'validation': {
+						'type': 'number',
+						'min': 0
+					}
+				},
+				"limit": {
+					'source': ['query.limit'],
+					'required': false,
+					'validation': {
+						'type': 'number',
+						'min': 0
+					}
+				},
+				"tags": {
+					'source': ['body.tags'],
+					'required': false,
+					'validation': {
+						'type': 'array',
+						"minItems": 1,
+						'items': {
+							'type': "string"
+						}
+					}
+				},
+				"programs": {
+					'source': ['body.programs'],
+					'required': false,
+					'validation': {
+						'type': 'array',
+						"minItems": 1,
+						'items': {
+							'type': "string"
+						}
+					}
+				},
+				"attributes": {
+					'source': ['body.attributes'],
+					'required': false,
+					'validation': {
+						'type': 'object',
+						"patternProperties": {
+							'^/[a-zA-Z0-9_.-]+$': {
+								'type': 'array',
+								"minItems": 1,
+								'items': {
+									'type': "string"
+								}
+							}
+						}
+					}
+				},
+				"keywords": {
+					'source': ['body.keywords'],
+					'required': false,
+					'validation': {
+						'type': 'object',
+						"properties": {
+							'serviceName': {
+								'type': 'string'
+							},
+							'serviceGroup': {
+								'type': 'string'
+							}
+						}
+					}
+				},
+				"includeSOAJS" : {
+					'source': ['body.includeSOAJS'],
+					'required': false,
+					'validation': {
+						'type': 'boolean'
+					}
+				}
+				
+			},
+			
+			"/services/dashboard/apiRoutes": {
+				_apiInfo: {
+					"l": "List Analytic Services",
+					"group": "Services"
+				},
+				"commonFields": ['soajs_project'],
+				"start": {
+					'source': ['query.start'],
+					'required': false,
+					'validation': {
+						'type': 'number',
+						'min': 0
+					}
+				},
+				"limit": {
+					'source': ['query.limit'],
+					'required': false,
+					'validation': {
+						'type': 'number',
+						'min': 0
+					}
+				},
+				"tags": {
+					'source': ['body.tags'],
+					'required': false,
+					'validation': {
+						'type': 'array',
+						"minItems": 1,
+						'items': {
+							'type': "string"
+						}
+					}
+				},
+				"programs": {
+					'source': ['body.programs'],
+					'required': false,
+					'validation': {
+						'type': 'array',
+						"minItems": 1,
+						'items': {
+							'type': "string"
+						}
+					}
+				},
+				"attributes": {
+					'source': ['body.attributes'],
+					'required': false,
+					'validation': {
+						'type': 'object',
+						"patternProperties": {
+							'^/[a-zA-Z0-9_.-]+$': {
+								'type': 'array',
+								"minItems": 1,
+								'items': {
+									'type': "string"
+								}
+							}
+						}
+					}
+				},
+				"includeSOAJS" : {
+					'source': ['body.includeSOAJS'],
+					'required': false,
+					'validation': {
+						'type': 'boolean'
+					}
+				},
+				"keywords": {
+					'source': ['body.keywords'],
+					'required': false,
+					'validation': {
+						'type': 'object',
+						"properties": {
+							'serviceName': {
+								'type': 'string'
+							},
+							'serviceGroup': {
+								'type': 'string'
+							}
+						}
+					}
+				},
 			}
 		},
 		
@@ -5788,6 +6025,22 @@ module.exports = {
 					"source": ['body.sitePrefix'],
 					"required": false,
 					"default": "site",
+					"validation": {
+						"type": "string"
+					}
+				},
+				"port": {
+					"source": ['body.port'],
+					"required": false,
+					"default": "80",
+					"validation": {
+						"type": "number"
+					}
+				},
+				"protocol": {
+					"source": ['body.protocol'],
+					"required": false,
+					"default": "http",
 					"validation": {
 						"type": "string"
 					}
@@ -6156,6 +6409,13 @@ module.exports = {
 				"commonFields": ['id', 'appId', 'key', 'extKey', 'expDate', 'device', 'geo', 'soajs_project'],
 				"extKeyEnv": {
 					"source": ['query.extKeyEnv'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"label": {
+					"source": ['body.label'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -6779,14 +7039,14 @@ module.exports = {
 				"port": {
 					"required": false,
 					"source": ['body.port'],
-					"validation":{
+					"validation": {
 						"type": "integer"
 					}
 				},
 				"path": {
 					"required": false,
 					"source": ['body.path'],
-					"validation":{
+					"validation": {
 						"type": "string"
 					}
 				},
@@ -6831,7 +7091,7 @@ module.exports = {
 				"versions": {
 					"required": false,
 					"source": ['body.versions'],
-					"validation":{
+					"validation": {
 						"type": "object",
 						"patternProperties": {
 							'\\^\\(d\\+\\.\\)\\?\\(d\\+\\.\\)\\?\\(\\*\\|d\\+\\)\\$': {

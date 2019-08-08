@@ -184,7 +184,7 @@ var driver = {
 	},
 	
 	"getAnyContent": function (soajs, data, model, options, cb) {
-		  if (options.accountRecord.token) {
+		  if (options.accountRecord && options.accountRecord.token) {
                     options.token = new Buffer(options.accountRecord.token, 'base64').toString();
                     options.domain = options.accountRecord.domain;
                 }
