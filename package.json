@@ -1,7 +1,7 @@
 {
   "name": "soajs.dashboard",
   "description": "soajs dashboard service",
-  "version": "2.7.10",
+  "version": "2.7.11",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
