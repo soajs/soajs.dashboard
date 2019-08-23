@@ -28,7 +28,7 @@ module.exports = {
 					"mode": {
 						"required": true,
 						"type": "string",
-						"enum": ['replicated', 'global', 'deployment', 'daemonset']
+						"enum": ['replicated', 'global', 'deployment', 'daemonset', 'cronJob']
 					},
 					"replicas": {"required": false, "type": "number"}
 				}

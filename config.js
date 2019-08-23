@@ -564,7 +564,7 @@ module.exports = {
 			},
 			'processing': {
 				'source': ['body.processing'],
-				'required': true,
+				'required': false,
 				'validation': {
 					'type': 'string',
 					'enum': ['parallel', 'sequential']
@@ -572,9 +572,16 @@ module.exports = {
 			},
 			'order': {
 				'source': ['body.order'],
-				'required': true,
+				'required': false,
 				'validation': {
 					'type': 'array'
+				}
+			},
+			'concurrencyPolicy': {
+				'source': ['body.concurrencyPolicy'],
+				'required': false,
+				'validation': {
+					'type': 'string'
 				}
 			},
 			'jobName': {
@@ -3057,13 +3064,13 @@ module.exports = {
 					"group": "Daemons"
 				},
 				'commonFields': ['soajs_project',
-					'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
+					'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo', 'concurrencyPolicy'],
 				'type': {
 					"required": true,
 					"source": ["body.type"],
 					"validation": {
 						"type": "string",
-						"enum": ["interval", "cron", "once"]
+						"enum": ["interval", "cron", "once", 'cronJob']
 					}
 				}
 			},
@@ -3140,7 +3147,7 @@ module.exports = {
 									"mode": {
 										"required": true,
 										"type": "string",
-										"enum": ['replicated', 'global', 'deployment', 'daemonset']
+										"enum": ['replicated', 'global', 'deployment', 'daemonset', 'cronJob']
 									},
 									"replicas": {"required": false, "type": "number", "minimum": 1}
 								}
@@ -6506,13 +6513,13 @@ module.exports = {
 					"l": "Update Daemon Group Configuration",
 					"group": "Daemons"
 				},
-				'commonFields': ['soajs_project', 'id', 'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
+				'commonFields': ['soajs_project', 'id', 'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo', 'concurrencyPolicy'],
 				'type': {
 					"required": true,
 					"source": ["body.type"],
 					"validation": {
 						"type": "string",
-						"enum": ["interval", "cron", "once"]
+						"enum": ["interval", "cron", "once", "cronJob"]
 					}
 				}
 			},
