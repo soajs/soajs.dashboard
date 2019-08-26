@@ -791,7 +791,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 	});
 	
 	describe("tenants tests", function () {
-		var tenantId, applicationId, key, tstgTenantId;
+		var tenantId, applicationId, key, tstgTenantId, profileTenant;
 		
 		describe("tenant", function () {
 			before(function (done) {
@@ -841,7 +841,22 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-				
+
+				it("success - will add tenant with profile", function (done) {
+					var params = {
+						form: {
+							"code": "TEST",
+							"name": 'Test profile',
+							"email": 'profile@someTenant.com',
+							"description": 'this is a tenant profile test description',
+							"type": "client"
+						}
+					};
+					executeMyRequest(params, 'tenant/add', 'post', function (body) {
+						assert.ok(body.data);
+						done();
+					});
+				});
 				
 				it('fail - tenant exists', function (done) {
 					var params = {
@@ -859,7 +874,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 				
 				it('mongo test', function (done) {
-					
 					mongo.findOne('tenants', { 'code': 'TSTN' }, function (error, tenantRecord) {
 						assert.ifError(error);
 						tenantId = tenantRecord._id.toString();
@@ -895,6 +909,25 @@ describe("DASHBOARD UNIT Tests:", function () {
 						});
 					});
 				});
+
+				it('Get Profile Tenant', function (done) {
+					mongo.findOne('tenants', { 'code': 'TEST' }, function (error, tenantRecord) {
+						assert.ifError(error);
+						profileTenant = tenantRecord._id.toString();
+						delete tenantRecord._id;
+						assert.ok(tenantRecord);
+
+						uracMongo.find('users', { 'tenant.code': 'TEST' }, function (error, data) {
+							assert.ifError(error);
+							assert.ok(data);
+							uracMongo.find('groups', { 'tenant.code': 'TEST' }, function (error, data) {
+								assert.ifError(error);
+								assert.ok(data);
+								done();
+							});
+						});
+					});
+				});
 			});
 			
 			describe("update tenant tests", function () {
@@ -911,6 +944,36 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 					
+				});
+
+				it("success - will update profile tenant", function (done) {
+					var params = {
+						qs: { "id": profileTenant },
+						form: {
+							"description": 'this is a dummy updated description',
+							"name": "test profile tenant updated"
+						}
+					};
+					executeMyRequest(params, 'tenant/update', 'put', function (body) {
+						assert.ok(body.data);
+						done();
+					});
+
+				});
+
+				it("success - will update tenant", function (done) {
+					var params = {
+						qs: { "id": tenantId },
+						form: {
+							"description": 'this is a dummy updated description',
+							"name": "test tenant updated"
+						}
+					};
+					executeMyRequest(params, 'tenant/update', 'put', function (body) {
+						assert.ok(body.data);
+						done();
+					});
+
 				});
 				
 				it("success - will get tenant", function (done) {
