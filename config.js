@@ -2886,6 +2886,13 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				"profile": {
+					"source": ['body.profile'],
+					"required": false,
+					"validation": {
+						"type": "object"
+					}
+				},
 			},
 			
 			"/tenant/oauth/add": {
@@ -6329,7 +6336,14 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
-				}
+				},
+				"profile": {
+					"source": ['body.profile'],
+					"required": false,
+					"validation": {
+						"type": "object"
+					}
+				},
 			},
 			
 			"/tenant/oauth/update": {
