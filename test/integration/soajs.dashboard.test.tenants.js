@@ -845,11 +845,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 				it("success - will add tenant with profile", function (done) {
 					var params = {
 						form: {
-							"code": "TEST",
+							"code": "TES1",
 							"name": 'Test profile',
 							"email": 'profile@someTenant.com',
 							"description": 'this is a tenant profile test description',
-							"type": "client"
+							"type": "product",
+							"profile": {
+								"test": "data"
+							}
 						}
 					};
 					executeMyRequest(params, 'tenant/add', 'post', function (body) {
@@ -911,16 +914,16 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 
 				it('Get Profile Tenant', function (done) {
-					mongo.findOne('tenants', { 'code': 'TEST' }, function (error, tenantRecord) {
+					mongo.findOne('tenants', { 'code': 'TES1' }, function (error, tenantRecord) {
 						assert.ifError(error);
 						profileTenant = tenantRecord._id.toString();
 						delete tenantRecord._id;
 						assert.ok(tenantRecord);
 
-						uracMongo.find('users', { 'tenant.code': 'TEST' }, function (error, data) {
+						uracMongo.find('users', { 'tenant.code': 'TES1' }, function (error, data) {
 							assert.ifError(error);
 							assert.ok(data);
-							uracMongo.find('groups', { 'tenant.code': 'TEST' }, function (error, data) {
+							uracMongo.find('groups', { 'tenant.code': 'TES1' }, function (error, data) {
 								assert.ifError(error);
 								assert.ok(data);
 								done();
@@ -1020,7 +1023,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"email": 'admin2@someTenant.com',
 							"description": 'this is a dummy product description updated',
 							"type": 'client',
-							"tag": 'myTag'
+							"tag": 'myTag',
+							"profile": {
+								"test": "popop"
+							}
 						}
 					};
 					executeMyRequest(params, 'tenant/update', 'put', function (body) {
