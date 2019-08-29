@@ -318,7 +318,6 @@ describe("Testing Custom Registry Functionality", function() {
         before("get user1's c2 custom registry record", function(done) {
             mongo.findOne('custom_registry', { name: 'c2', author: 'user1', plugged: false }, function(error, record) {
                 assert.ifError(error);
-                assert.ifError(!record);
                 customRegCopy = record;
                 customRegCopyId = record._id.toString();
                 delete customRegCopy._id;
@@ -519,7 +518,6 @@ describe("Testing Custom Registry Functionality", function() {
         before("get owner's c1 custom registry record", function(done) {
             mongo.findOne('custom_registry', { name: 'c1', author: 'owner' }, function(error, record) {
                 assert.ifError(error);
-                assert.ifError(!record);
                 customRegCopy = record;
                 customRegCopyId = record._id.toString();
                 done();

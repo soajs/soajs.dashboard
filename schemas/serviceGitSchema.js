@@ -46,6 +46,7 @@ let schema = {
 		"urac_Profile": {"type": "boolean", "required": false},
 		"urac_ACL": {"type": "boolean", "required": false},
 		"provision_ACL": {"type": "boolean", "required": false},
+		"tenant_Profile": {"type": "boolean", "required": false},
 		"multitenant": {"type": "boolean", "required": false},
 		"description": {"type": "string", "required": false},
 		"program": {"type": "array", "required": false, "minItems": 1},

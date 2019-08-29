@@ -1,7 +1,7 @@
 {
   "name": "soajs.dashboard",
   "description": "soajs dashboard service",
-  "version": "2.7.8",
+  "version": "2.7.15",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -27,14 +27,12 @@
     "grunt-env": "0.4.4",
     "grunt-istanbul": "0.7.2",
     "grunt-coveralls": "1.0.1",
-
     "jshint": "2.9.4",
     "lodash": "4.17.11",
     "mocha": "3.2.0",
     "nock": "9.0.13",
     "shelljs": "0.7.5",
     "sinon": "1.17.6",
-
     "soajs.controller": "2.5.*",
     "soajs.mongodb.data": "2.1.*",
     "soajs.oauth": "2.5.*",
@@ -59,8 +57,8 @@
     "rimraf": "2.5.4",
     "shortid": "^2.2.4",
 
-    "soajs": "2.5.5",
-    "soajs.core.drivers": "3.5.12",
+    "soajs": "2.5.10",
+    "soajs.core.drivers": "3.5.16",
 
     "unzip2": "0.2.5",
     "url-clean": "^1.0.2",
