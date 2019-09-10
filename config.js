@@ -1238,32 +1238,9 @@ module.exports = {
 					}
 				}
 			},
-			
-			"/services/favorite": {
+			"/favorite": {
 				"_apiInfo": {
-					"l": "Add Service to Favorites",
-					"group": "Services"
-				},
-				"commonFields": ['soajs_project'],
-				'service': {
-					'source': ['query.service'],
-					'required': true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				'type': {
-					'source': ['query.type'],
-					'required': true,
-					"validation": {
-						"enum": ['apiCatalog'],
-						"type": "string"
-					}
-				}
-			},
-			"/services/favorite/list": {
-				"_apiInfo": {
-					"l": "Delete Service from Favorites",
+					"l": "List Favorites",
 					"group": "Services"
 				},
 				"commonFields": ['soajs_project'],
@@ -1278,7 +1255,7 @@ module.exports = {
 					'source': ['query.type'],
 					'required': true,
 					"validation": {
-						"enum": ['apiCatalog'],
+						"enum": ['apiCatalog', 'daemon'],
 						"type": "string"
 					}
 				}
@@ -5700,7 +5677,29 @@ module.exports = {
 						}
 					}
 				},
-			}
+			},
+			"/favorite": {
+				"_apiInfo": {
+					"l": "Add to Favorites",
+					"group": "Services"
+				},
+				"commonFields": ['soajs_project'],
+				'service': {
+					'source': ['query.service'],
+					'required': true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'type': {
+					'source': ['query.type'],
+					'required': true,
+					"validation": {
+						"enum": ['apiCatalog', 'daemon'],
+						"type": "string"
+					}
+				}
+			},
 		},
 		
 		"put": {
@@ -8980,9 +8979,9 @@ module.exports = {
 				}
 			},
 			
-			"/services/favorite": {
+			"/favorite": {
 				"_apiInfo": {
-					"l": "Delete Service from Favorites",
+					"l": "Delete from Favorites",
 					"group": "Services"
 				},
 				"commonFields": ['soajs_project'],
@@ -8997,7 +8996,7 @@ module.exports = {
 					'source': ['query.type'],
 					'required': true,
 					"validation": {
-						"enum": ['apiCatalog'],
+						"enum": ['apiCatalog', 'daemon'],
 						"type": "string"
 					}
 				}
