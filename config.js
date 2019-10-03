@@ -2224,7 +2224,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["controller", "urac", "oauth"]
+						"enum": ["controller", "urac", "oauth", "multitenant"]
 					}
 				},
 				"serviceVersion": {
@@ -2248,7 +2248,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["controller", "urac", "oauth"]
+						"enum": ["controller", "urac", "oauth", "multitenant"]
 					}
 				},
 				"serviceVersion": {
