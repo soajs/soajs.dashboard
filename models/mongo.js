@@ -64,8 +64,7 @@ var lib = {
 		
 		soajs.mongoDb = new Mongo(provision);
 		if (firstRun) {
-			soajs.mongoDb.createIndex(servicesCollectionName, { port: 1 }, { unique: true }, errorLogger);
-			soajs.mongoDb.createIndex(servicesCollectionName, { name: 1 }, { unique: true }, errorLogger);
+			soajs.mongoDb.createIndex(servicesCollectionName, { name: 1, port: 1 }, { unique: true }, errorLogger);
 			soajs.mongoDb.createIndex(servicesCollectionName, { 'src.owner': 1, 'src.repo': 1 }, errorLogger);
 			soajs.mongoDb.createIndex(servicesCollectionName, {
 				name: 1,
