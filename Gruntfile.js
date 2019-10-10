@@ -193,6 +193,15 @@ module.exports = function (grunt) {
 					'test/integration/_server.test.js'
 				]
 			},
+			usecaseOne: {
+				options: {
+					reporter: 'spec',
+					timeout: 90000
+				},
+				src: [
+					'test/integration/UC1-test-service/index.js'
+				]
+			},
 			saas: {
 				options: {
 					reporter: 'spec',
@@ -224,7 +233,8 @@ module.exports = function (grunt) {
 	process.env.SHOW_LOGS = grunt.option('showLogs');
 	grunt.registerTask("default", ['jshint']);
 	grunt.registerTask("integration", ['env:coverage', 'mochaTest:integration']);
-	grunt.registerTask("unit", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'storeCoverage', 'makeReport']);
+	grunt.registerTask("usecase-1", ['clean', 'copy', 'env:coverage', 'instrument', 'env:coverage', 'mochaTest:usecaseOne']);
+	grunt.registerTask("unit", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'storeCoverage', 'makeReport', 'storeCoverage', 'makeReport']);
 	grunt.registerTask("integration", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:integration', 'storeCoverage', 'makeReport']);
 	grunt.registerTask("saas", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:saas', 'storeCoverage', 'makeReport']);
 	grunt.registerTask("test", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'mochaTest:saas']);
