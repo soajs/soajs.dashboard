@@ -34,6 +34,10 @@ let schema = {
 				"readiness": {
 					"type": "string",
 					"required": true
+				},
+				"commands": {
+					"type": "array",
+					"required": false
 				}
 			},"additionalProperties": false
 		},

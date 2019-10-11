@@ -3361,7 +3361,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats', 'reloadDaemonConf']
+						//"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats', 'reloadDaemonConf']
 					}
 				}
 			},
