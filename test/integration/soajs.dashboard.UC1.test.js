@@ -127,54 +127,57 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 		};
 		executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (response) {
 			console.log(JSON.stringify(response, null, 2));
-			mongo.findOne('services', {'name': "httpmethods"}, function (error, result) {
-				assert.ifError(error);
-				assert.deepEqual(result.versions["1"].apis, [
-					{
-						l: "Some Sum",
-						v: "/testPost",
-						m: "post",
-						group: "test"
-					},
-					{
-						l: "Some Sum",
-						v: "/testPut",
-						m: "put",
-						group: "test"
-					},
-					{
-						l: "Some Sum",
-						v: "/testGet",
-						m: "get",
-						group: "test"
-					},
-					{
-						l: "Some Sum",
-						v: "/testPatch",
-						m: "patch",
-						group: "test"
-					},
-					{
-						l: "Some Sum",
-						v: "/testHead",
-						m: "head",
-						group: "test"
-					},
-					{
-						l: "Some Sum",
-						v: "/testDelete",
-						m: "delete",
-						group: "test"
-					},
-					{
-						l: "Some Sum",
-						v: "/testOther",
-						m: "options",
-						group: "test"
-					}
-				]);
-				done();
-			});
+			setTimeout(function () {
+				mongo.findOne('services', {'name': "httpmethods"}, function (error, result) {
+					assert.ifError(error);
+					assert.deepEqual(result.versions["1"].apis, [
+						{
+							l: "Some Sum",
+							v: "/testPost",
+							m: "post",
+							group: "test"
+						},
+						{
+							l: "Some Sum",
+							v: "/testPut",
+							m: "put",
+							group: "test"
+						},
+						{
+							l: "Some Sum",
+							v: "/testGet",
+							m: "get",
+							group: "test"
+						},
+						{
+							l: "Some Sum",
+							v: "/testPatch",
+							m: "patch",
+							group: "test"
+						},
+						{
+							l: "Some Sum",
+							v: "/testHead",
+							m: "head",
+							group: "test"
+						},
+						{
+							l: "Some Sum",
+							v: "/testDelete",
+							m: "delete",
+							group: "test"
+						},
+						{
+							l: "Some Sum",
+							v: "/testOther",
+							m: "options",
+							group: "test"
+						}
+					]);
+					done();
+				});
+			}, 1000);
+			
 		});
 	});
 	it("success - start express service", function (done) {
