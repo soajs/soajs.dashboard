@@ -126,7 +126,6 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 			}
 		};
 		executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (response) {
-			console.log(JSON.stringify(response, null, 2));
 			setTimeout(function () {
 				mongo.findOne('services', {'name': "httpmethods"}, function (error, result) {
 					assert.ifError(error);
@@ -212,9 +211,9 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 					assert.ok(response);
 					setTimeout(function () {
 						done();
-					}, 1000);
+					}, 5000);
 				});
-			}, 1000);
+			}, 5000);
 		});
 	});
 	it("Test get method", function (done) {
