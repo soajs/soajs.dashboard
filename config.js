@@ -564,7 +564,7 @@ module.exports = {
 			},
 			'processing': {
 				'source': ['body.processing'],
-				'required': true,
+				'required': false,
 				'validation': {
 					'type': 'string',
 					'enum': ['parallel', 'sequential']
@@ -572,9 +572,16 @@ module.exports = {
 			},
 			'order': {
 				'source': ['body.order'],
-				'required': true,
+				'required': false,
 				'validation': {
 					'type': 'array'
+				}
+			},
+			'concurrencyPolicy': {
+				'source': ['body.concurrencyPolicy'],
+				'required': false,
+				'validation': {
+					'type': 'string'
 				}
 			},
 			'jobName': {
@@ -1231,32 +1238,9 @@ module.exports = {
 					}
 				}
 			},
-			
-			"/services/favorite": {
+			"/favorite": {
 				"_apiInfo": {
-					"l": "Add Service to Favorites",
-					"group": "Services"
-				},
-				"commonFields": ['soajs_project'],
-				'service': {
-					'source': ['query.service'],
-					'required': true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				'type': {
-					'source': ['query.type'],
-					'required': true,
-					"validation": {
-						"enum": ['apiCatalog'],
-						"type": "string"
-					}
-				}
-			},
-			"/services/favorite/list": {
-				"_apiInfo": {
-					"l": "Delete Service from Favorites",
+					"l": "List Favorites",
 					"group": "Services"
 				},
 				"commonFields": ['soajs_project'],
@@ -1271,7 +1255,7 @@ module.exports = {
 					'source': ['query.type'],
 					'required': true,
 					"validation": {
-						"enum": ['apiCatalog'],
+						"enum": ['apiCatalog', 'daemon'],
 						"type": "string"
 					}
 				}
@@ -2240,7 +2224,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["controller", "urac", "oauth"]
+						"enum": ["controller", "urac", "oauth", "multitenant"]
 					}
 				},
 				"serviceVersion": {
@@ -2264,7 +2248,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["controller", "urac", "oauth"]
+						"enum": ["controller", "urac", "oauth", "multitenant"]
 					}
 				},
 				"serviceVersion": {
@@ -2886,6 +2870,13 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				"profile": {
+					"source": ['body.profile'],
+					"required": false,
+					"validation": {
+						"type": "object"
+					}
+				},
 			},
 			
 			"/tenant/oauth/add": {
@@ -3057,13 +3048,13 @@ module.exports = {
 					"group": "Daemons"
 				},
 				'commonFields': ['soajs_project',
-					'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
+					'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo', 'concurrencyPolicy'],
 				'type': {
 					"required": true,
 					"source": ["body.type"],
 					"validation": {
 						"type": "string",
-						"enum": ["interval", "cron", "once"]
+						"enum": ["interval", "cron", "once", 'cronJob']
 					}
 				}
 			},
@@ -3140,7 +3131,7 @@ module.exports = {
 									"mode": {
 										"required": true,
 										"type": "string",
-										"enum": ['replicated', 'global', 'deployment', 'daemonset']
+										"enum": ['replicated', 'global', 'deployment', 'daemonset', 'cronJob']
 									},
 									"replicas": {"required": false, "type": "number", "minimum": 1}
 								}
@@ -3370,7 +3361,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats', 'reloadDaemonConf']
+						//"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats', 'reloadDaemonConf']
 					}
 				}
 			},
@@ -5686,7 +5677,29 @@ module.exports = {
 						}
 					}
 				},
-			}
+			},
+			"/favorite": {
+				"_apiInfo": {
+					"l": "Add to Favorites",
+					"group": "Services"
+				},
+				"commonFields": ['soajs_project'],
+				'service': {
+					'source': ['query.service'],
+					'required': true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'type': {
+					'source': ['query.type'],
+					'required': true,
+					"validation": {
+						"enum": ['apiCatalog', 'daemon'],
+						"type": "string"
+					}
+				}
+			},
 		},
 		
 		"put": {
@@ -6329,7 +6342,14 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
-				}
+				},
+				"profile": {
+					"source": ['body.profile'],
+					"required": false,
+					"validation": {
+						"type": "object"
+					}
+				},
 			},
 			
 			"/tenant/oauth/update": {
@@ -6506,13 +6526,13 @@ module.exports = {
 					"l": "Update Daemon Group Configuration",
 					"group": "Daemons"
 				},
-				'commonFields': ['soajs_project', 'id', 'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
+				'commonFields': ['soajs_project', 'id', 'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo', 'concurrencyPolicy'],
 				'type': {
 					"required": true,
 					"source": ["body.type"],
 					"validation": {
 						"type": "string",
-						"enum": ["interval", "cron", "once"]
+						"enum": ["interval", "cron", "once", "cronJob"]
 					}
 				}
 			},
@@ -8959,9 +8979,9 @@ module.exports = {
 				}
 			},
 			
-			"/services/favorite": {
+			"/favorite": {
 				"_apiInfo": {
-					"l": "Delete Service from Favorites",
+					"l": "Delete from Favorites",
 					"group": "Services"
 				},
 				"commonFields": ['soajs_project'],
@@ -8976,7 +8996,7 @@ module.exports = {
 					'source': ['query.type'],
 					'required': true,
 					"validation": {
-						"enum": ['apiCatalog'],
+						"enum": ['apiCatalog', 'daemon'],
 						"type": "string"
 					}
 				}

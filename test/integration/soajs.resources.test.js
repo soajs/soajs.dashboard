@@ -561,7 +561,6 @@ describe("Testing Resources Functionality", function() {
         before('Get sample resource record', function(done) {
             mongo.findOne('resources', { name: 'cluster1' }, function(error, resourceRecord) {
                 assert.ifError(error);
-                assert.ifError(!resourceRecord);
                 sampleResourceCopy = resourceRecord;
                 sampleResourceCopyId = resourceRecord._id.toString();
                 delete sampleResourceCopy._id;

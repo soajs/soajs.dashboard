@@ -2102,9 +2102,6 @@ describe("DASHBOARD Integration Tests:", function () {
 			
 			executeMyRequest(params, 'tenant/delete', 'delete', function (body) {
 				assert.ok(body);
-				if (body.result === false)
-					assert.ifError(body.result);
-				
 				assert.deepEqual(body.errors.details[0], { "code": 462, "message": errorCodes[462] });
 				done();
 			});
@@ -2119,9 +2116,6 @@ describe("DASHBOARD Integration Tests:", function () {
 			};
 			executeMyRequest(params, 'tenant/application/delete', 'delete', function (body) {
 				assert.ok(body);
-				if (body.result === false)
-					assert.ifError(body.result);
-				
 				assert.deepEqual(body.errors.details[0], { "code": 463, "message": errorCodes[463] });
 				done();
 			});
@@ -2137,8 +2131,6 @@ describe("DASHBOARD Integration Tests:", function () {
 			};
 			executeMyRequest(params, 'tenant/application/key/delete', 'delete', function (body) {
 				assert.ok(body);
-				if (body.result === false)
-					assert.ifError(body.result);
 				
 				assert.deepEqual(body.errors.details[0], { "code": 464, "message": errorCodes[464] });
 				done();
@@ -2173,9 +2165,6 @@ describe("DASHBOARD Integration Tests:", function () {
 			};
 			executeMyRequest(params, 'product/delete', 'delete', function (body) {
 				assert.ok(body);
-				if (body.result === false)
-					assert.ifError(body.result);
-				
 				assert.deepEqual(body.errors.details[0], { "code": 466, "message": errorCodes[466] });
 				done();
 			});
@@ -2190,9 +2179,6 @@ describe("DASHBOARD Integration Tests:", function () {
 			};
 			executeMyRequest(params, 'product/packages/delete', 'delete', function (body) {
 				assert.ok(body);
-				if (body.result === false)
-					assert.ifError(body.result);
-				
 				assert.deepEqual(body.errors.details[0], { "code": 467, "message": errorCodes[467] });
 				done();
 			});

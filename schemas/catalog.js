@@ -51,6 +51,11 @@ module.exports = {
 								"required": false
 								//NOTE: removed validation for readinessProbe to allow free schema
 							},
+							"liveinessProbe": {
+								"type": ["object", "null"],
+								"required": false
+								//NOTE: removed validation for readinessProbe to allow free schema
+							},
 							"ports": {
 								"type": "array",
 								"required": false,

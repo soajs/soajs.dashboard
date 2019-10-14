@@ -239,7 +239,7 @@ describe("testing services.js", function () {
 				type: 'apiCatalog'
 			};
 			
-			services.setFavorite(config, req, {}, servicesModel,  function (error, body) {
+			services.setFavorite(config, req, {}, function (error, body) {
 				done();
 			});
 		});
@@ -263,7 +263,7 @@ describe("testing services.js", function () {
 				type: 'apiCatalog'
 			};
 			
-			services.deleteFavorite(config, req, {}, servicesModel, function (error, body) {
+			services.deleteFavorite(config, req, {}, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
