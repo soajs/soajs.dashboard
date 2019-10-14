@@ -175,7 +175,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 					]);
 					done();
 				});
-			}, 1000);
+			}, 5000);
 			
 		});
 	});
