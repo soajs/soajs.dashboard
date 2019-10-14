@@ -179,7 +179,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 			
 		});
 	});
-	it("success - start express service", function (done) {
+	it.skip("success - start express service", function (done) {
 		mock.startServer(null, function (servers) {
 			mockServers = servers;
 		});
@@ -187,7 +187,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 			done();
 		}, 10000);
 	});
-	it("reload controller registry", function (done) {
+	it.skip("reload controller registry", function (done) {
 		var params = {
 			"uri": "http://127.0.0.1:5000/reloadRegistry",
 			"headers": {
@@ -216,7 +216,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 			}, 5000);
 		});
 	});
-	it("Test get method", function (done) {
+	it.skip("Test get method", function (done) {
 		let options = {
 			uri: 'http://127.0.0.1:4000/httpmethods/testGet',
 			headers: {
@@ -235,7 +235,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 			done();
 		});
 	});
-	it("Test post method", function (done) {
+	it.skip("Test post method", function (done) {
 		let options = {
 			uri: 'http://127.0.0.1:4000/httpmethods/testPost',
 			headers: {
@@ -254,7 +254,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 			done();
 		});
 	});
-	it("Test put method", function (done) {
+	it.skip("Test put method", function (done) {
 		let options = {
 			uri: 'http://127.0.0.1:4000/httpmethods/testPut',
 			headers: {
@@ -273,7 +273,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 			done();
 		});
 	});
-	it("Test delete method", function (done) {
+	it.skip("Test delete method", function (done) {
 		let options = {
 			uri: 'http://127.0.0.1:4000/httpmethods/testDelete',
 			headers: {
@@ -292,7 +292,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 			done();
 		});
 	});
-	it("Test patch method", function (done) {
+	it.skip("Test patch method", function (done) {
 		let options = {
 			uri: 'http://127.0.0.1:4000/httpmethods/testPatch',
 			headers: {
@@ -311,7 +311,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 			done();
 		});
 	});
-	it("Test head method", function (done) {
+	it.skip("Test head method", function (done) {
 		let options = {
 			uri: 'http://127.0.0.1:4000/httpmethods/testHead',
 			headers: {
@@ -329,7 +329,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 			done();
 		});
 	});
-	it("Test other method", function (done) {
+	it.skip("Test other method", function (done) {
 		let options = {
 			uri: 'http://127.0.0.1:4000/httpmethods/testOther',
 			headers: {
