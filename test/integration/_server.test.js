@@ -73,15 +73,16 @@ describe("importing sample data", function () {
 		//todo: never change process.env.SOAJS_ENV_WORKDIR to /opt/, contents of the directory will be deleted.
 		process.env.SOAJS_ENV_WORKDIR = __dirname + "/";
 		console.log('test data imported.');
-		controller = require("soajs.controller");
+		
 		setTimeout(function () {
 			urac = require("soajs.urac");
 			oauth = require("soajs.oauth");
 			dashboard = helper.requireModule('./index');
 			setTimeout(function () {
+				controller = require("soajs.controller");
 				done();
 			}, 20000);
-		}, 6000);
+		}, 20000);
 	});
 	
 	it("Update hosts entries", (done) => {
@@ -132,31 +133,6 @@ describe("importing sample data", function () {
 				}, 500);
 			});
 		});
-	});
-	
-	it("check if dashboard is ready", function (done) {
-		let counter = 0;
-		let params = {
-			"uri": "http://127.0.0.1:9003/heartbeat",
-			"headers": {
-				"content-type": "application/json"
-			}
-		};
-		function checkDashboard(){
-			helper.requester("get", params, (err)=>{
-				counter++;
-				console.log(err);
-				if (err && counter < 20){
-					setTimeout(function () {
-						checkDashboard();
-					}, 2000);
-				}
-				else {
-					done();
-				}
-			});
-		}
-		checkDashboard();
 	});
 	after(function (done) {
 		setTimeout(function () {
