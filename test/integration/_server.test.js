@@ -145,6 +145,7 @@ describe("importing sample data", function () {
 		function checkDashboard(){
 			helper.requester("get", params, (err)=>{
 				counter++;
+				console.log(err);
 				if (err && counter < 10){
 					setTimeout(function () {
 						checkDashboard();
