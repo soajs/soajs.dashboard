@@ -182,7 +182,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 		});
 		setTimeout(function () {
 			done();
-		}, 6000);
+		}, 10000);
 	});
 	it("reload controller registry", function (done) {
 		var params = {
