@@ -1,4 +1,8 @@
 "use strict";
+// remove all cashed requires in unit test cases
+Object.keys(require.cache).forEach(function(key) {
+	delete require.cache[key];
+});
 var assert = require('assert');
 var shell = require('shelljs');
 var helper = require("../helper.js");
@@ -157,6 +161,7 @@ describe("importing sample data", function () {
 		setTimeout(function () {
 			require("./soajs.templates.test.js");
 			require("./soajs.infra.test.js");
+			require("./soajs.dashboard.UC1.test");
 			require("./soajs.dashboard.test.swagger.js");
 			require("./soajs.dashboard.locked.test.js");
 			require("./soajs.dashboard.test.tenants.js");
