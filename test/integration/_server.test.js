@@ -137,7 +137,7 @@ describe("importing sample data", function () {
 	it("check if dashboard is ready", function (done) {
 		let counter = 0;
 		let params = {
-			"uri": "http://127.0.0.1:8003/heartbeat",
+			"uri": "http://127.0.0.1:9003/heartbeat",
 			"headers": {
 				"content-type": "application/json"
 			}
