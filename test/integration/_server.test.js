@@ -137,7 +137,7 @@ describe("importing sample data", function () {
 	it("check if dashboard is ready", function (done) {
 		let counter = 0;
 		let params = {
-			"uri": "http://127.0.0.1:5003/heartbeat",
+			"uri": "http://127.0.0.1:8003/heartbeat",
 			"headers": {
 				"content-type": "application/json"
 			}
@@ -146,7 +146,7 @@ describe("importing sample data", function () {
 			helper.requester("get", params, (err)=>{
 				counter++;
 				console.log(err);
-				if (err && counter < 10){
+				if (err && counter < 20){
 					setTimeout(function () {
 						checkDashboard();
 					}, 2000);
