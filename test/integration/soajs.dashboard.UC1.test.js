@@ -60,7 +60,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 	before(function (done) {
 		mongo.findOne('git_accounts', {owner: 'soajs'}, function (error, result) {
 			assert.ifError(error);
-			_id = result[0]._id;
+			_id = result._id;
 			setTimeout(function () {
 				done();
 			}, 100);
@@ -115,7 +115,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 			form: {
 				"provider": "github",
 				"owner": "soajs",
-				"repo": "soajs.test",
+				"repo": "soajs.test.httpmethods",
 				"project": null,
 				"configBranch": "master",
 				"git": {"branches": [{"name": "master", "active": true}]}
