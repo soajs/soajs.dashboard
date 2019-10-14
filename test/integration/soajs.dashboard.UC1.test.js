@@ -125,8 +125,8 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 				"provider": "github"
 			}
 		};
-		console.log(params)
 		executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (response) {
+			console.log(JSON.stringify(response, null, 2));
 			mongo.findOne('services', {'name': "httpmethods"}, function (error, result) {
 				assert.ifError(error);
 				assert.deepEqual(result.versions["1"].apis, [
