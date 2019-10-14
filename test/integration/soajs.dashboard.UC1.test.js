@@ -114,7 +114,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 		let params = {
 			form: {
 				"provider": "github",
-				"owner": "RaghebAD",
+				"owner": "soajs",
 				"repo": "soajs.test",
 				"project": null,
 				"configBranch": "master",
