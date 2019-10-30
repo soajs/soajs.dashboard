@@ -88,3 +88,9 @@ To get the UI running, you need to install several packages:
 More information on how to set up the Dashboard UI is available on the website section [Dashboard UI](https://soajsorg.atlassian.net/wiki/spaces/EX/pages/61673365/How+to+Install).
 
 For More Information about SOAJS Framework, please visit the [Get Started](http://www.soajs.org/getstarted) section.
+
+
+### License
+*Copyright SOAJS All Rights Reserved.*
+
+Use of this source code is governed by an Apache license that can be found in the LICENSE file at the root of this repository.
