@@ -4,35 +4,6 @@ language: node_js
 
 node_js: 8
 
-services:
-  - mongodb
-  - docker
-
-branches:
-  only:
-    - staging
-    - master
-
-addons:
-  apt:
-  hosts:
-    - localhost
-    - dev-controller
-
-before_script:
-  - npm install -g grunt-cli
-  - docker pull soajsorg/soajs
-  - sleep 10
-
-script:
-  - grunt coverage
-
-
-
-language: node_js
-
-node_js: 8
-
 jobs:
   include:
 
