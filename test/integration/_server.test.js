@@ -143,9 +143,10 @@ describe("importing sample data", function () {
 			}
 		};
 		function checkDashboard(){
-			helper.requester("get", params, (err)=>{
+			helper.requester("get", params, (err, res)=>{
 				counter++;
-				if (err && counter < 10){
+				if ((err || !res || !res.result) && counter < 20){
+					console.log(JSON.stringify(res, null, 2));
 					setTimeout(function () {
 						checkDashboard();
 					}, 2000);

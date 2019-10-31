@@ -226,6 +226,7 @@ module.exports = function (grunt) {
 			your_target: {
 				// Target-specific LCOV coverage file
 				src: 'test/coverage/reports/lcov.info'
+				
 			}
 		}
 	});
@@ -233,7 +234,7 @@ module.exports = function (grunt) {
 	process.env.SHOW_LOGS = grunt.option('showLogs');
 	grunt.registerTask("default", ['jshint']);
 	grunt.registerTask("integration", ['env:coverage', 'mochaTest:integration']);
-	grunt.registerTask("UC-1", ['clean', 'copy', 'env:coverage', 'instrument', 'env:coverage', 'mochaTest:UC-1']);
+	grunt.registerTask("UC-1", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:UC-1']);
 	grunt.registerTask("unit", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'storeCoverage', 'makeReport', 'storeCoverage', 'makeReport']);
 	grunt.registerTask("integration", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:integration', 'storeCoverage', 'makeReport']);
 	grunt.registerTask("saas", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:saas', 'storeCoverage', 'makeReport']);
