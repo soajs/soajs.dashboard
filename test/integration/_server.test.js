@@ -137,7 +137,7 @@ describe("importing sample data", function () {
 	it("check if dashboard is ready", function (done) {
 		let counter = 0;
 		let params = {
-			"uri": "http://127.0.0.1:5003/heartbeat",
+			"uri": "http://127.0.0.1:9003/heartbeat",
 			"headers": {
 				"content-type": "application/json"
 			}
@@ -163,7 +163,6 @@ describe("importing sample data", function () {
 		setTimeout(function () {
 			require("./soajs.templates.test.js");
 			require("./soajs.infra.test.js");
-			require("./soajs.dashboard.UC1.test");
 			require("./soajs.dashboard.test.swagger.js");
 			require("./soajs.dashboard.locked.test.js");
 			require("./soajs.dashboard.test.tenants.js");

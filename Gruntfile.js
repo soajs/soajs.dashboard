@@ -110,6 +110,7 @@ module.exports = function (grunt) {
 				// APP_DIR: process.cwd(),
 				SOAJS_TEST_PACKAGE: "DSBRD_DEFLT",
 				SOAJS_DEPLOY_TEST: true,
+				//SOAJS_DEBUG_LOGS: true,
 				APP_DIR_FOR_CODE_COVERAGE: '../test/coverage/instrument/',
 				SOAJS_SRVIP: '127.0.0.1',
 				SOAJS_PROFILE: '',
@@ -238,7 +239,7 @@ module.exports = function (grunt) {
 	grunt.registerTask("unit", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'storeCoverage', 'makeReport', 'storeCoverage', 'makeReport']);
 	grunt.registerTask("integration", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:integration', 'storeCoverage', 'makeReport']);
 	grunt.registerTask("saas", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:saas', 'storeCoverage', 'makeReport']);
-	grunt.registerTask("test", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'mochaTest:saas', 'storeCoverage', 'makeReport']);
+	grunt.registerTask("test", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'mochaTest:UC-1', 'mochaTest:saas', 'storeCoverage', 'makeReport']);
 	grunt.registerTask("coverage", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration','mochaTest:UC-1', 'mochaTest:saas', 'storeCoverage', 'makeReport', 'coveralls']);
 
 };
