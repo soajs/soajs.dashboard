@@ -146,7 +146,8 @@ describe("importing sample data", function () {
 			helper.requester("get", params, (err, res)=>{
 				counter++;
 				if ((err || !res || !res.result) && counter < 20){
-					console.log(JSON.stringify(res, null, 2));
+					if (res) console.log("res:", JSON.stringify(res, null, 2));
+					if (err) console.log("err:", JSON.stringify(err, null, 2));
 					setTimeout(function () {
 						checkDashboard();
 					}, 2000);
