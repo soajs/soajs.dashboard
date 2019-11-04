@@ -147,6 +147,7 @@ var errors = {
 	"621": "The requested service is not deployed in any environment",
 	"622": "We are unable to onBoard your VM instance because we detected a mismatch between the Operating Systems of the Virtual Machine Instance.",
 
+	"630": "Unable to get latest console version",
 	"700": "This Content Schema already Exist",
 	"701": "Invalid Id provided",
 	"702": "Content Schema doesn't exists",

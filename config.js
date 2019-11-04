@@ -1505,6 +1505,13 @@ module.exports = {
 					"validation": {
 						"type": "boolean"
 					}
+				},
+				'soajs': {
+					"source": ['query.soajs'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
 				}
 			},
 			
@@ -2207,8 +2214,23 @@ module.exports = {
 						"uniqueItems": true
 					}
 				}
-			}
+			},
 			
+			"/version": {
+				"_apiInfo": {
+					"l": "Get Console Version",
+					"group": "Console Version"
+				},
+				'commonFields': ['soajs_project']
+			},
+			
+			"/version/check": {
+				"_apiInfo": {
+					"l": "Check Console Version",
+					"group": "Console Version"
+				},
+				'commonFields': ['soajs_project']
+			}
 		},
 		
 		"post": {

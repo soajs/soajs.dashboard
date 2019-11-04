@@ -93,6 +93,10 @@ var dashboardBL = {
 			module: require('./lib/cloud/vm/index.js')
 		}
 	},
+	settings: {
+		module: require("./lib/settings/index.js"),
+		model: require("./models/settings.js")
+	},
 	templates: {
 		module: require("./lib/templates/index.js")
 	}
@@ -3840,6 +3844,34 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.deleteExtras(config, req, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * get console version
+	 */
+	service.get("/version", function(req, res) {
+		initBLModel(req, res, dashboardBL.settings.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.get(config, req, res, dashboardBL.settings.model, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * check console version
+	 */
+	service.get("/version/check", function(req, res) {
+		initBLModel(req, res, dashboardBL.settings.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.check(config, req, res, dashboardBL.settings.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
