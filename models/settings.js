@@ -7,9 +7,9 @@ var methods = {
 		opts.collection = collName;
 		model.findEntry(soajs, opts, cb);
 	},
-	"insertEntry": function (soajs, model, opts, cb) {
+	"updateEntry": function (soajs, model, opts, cb) {
 		opts.collection = collName;
-		model.insertEntry(soajs, opts, cb);
+		model.updateEntry(soajs, opts, cb);
 	},
 };
 

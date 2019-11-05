@@ -205,7 +205,8 @@ module.exports = {
 	},
 	
 	"console": {
-		"product": "DSBRD"
+		"product": "DSBRD",
+		"version": "https://raw.githubusercontent.com/soajs/soajs.installer.versions/master/versions.json"
 	},
 	
 	"errors": require("./utils/errors"),

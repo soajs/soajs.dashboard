@@ -22,7 +22,7 @@ var endpointCollections = 'api_builder_endpoints';
 var microservicesCollection = 'api_builder_services';
 var infraCollection = 'infra';
 var favoriteCollection = 'favorite';
-var templateStateCollection = 'vm_layers';
+var settingsCollection = 'settings';
 
 var firstRun = true;
 var lib = {
@@ -162,6 +162,8 @@ var lib = {
 			//favorite collection
 			soajs.mongoDb.createIndex(favoriteCollection, { userid: 1, type: 1 }, errorLogger);
 			
+			//settings collection
+			soajs.mongoDb.createIndex(settingsCollection, { release: 1}, { unique: true }, errorLogger);
 			soajs.log.debug("Indexes Updated!");
 			firstRun = false;
 		}
