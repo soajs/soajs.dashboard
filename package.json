@@ -1,7 +1,7 @@
 {
   "name": "soajs.dashboard",
   "description": "soajs dashboard service",
-  "version": "2.7.27",
+  "version": "2.7.28",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -38,7 +38,7 @@
     "soajs.urac": "2.5.*"
   },
   "dependencies": {
-    "async": "3.1.0",
+    "async": "2.1.4",
     "compare-versions": "3.5.1",
     "cron": "1.7.2",
     "easy-zip": "0.0.4",
