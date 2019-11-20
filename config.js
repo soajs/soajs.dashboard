@@ -2233,7 +2233,7 @@ module.exports = {
 				'commonFields': ['soajs_project']
 			},
 			
-			"/volumeClaims": {
+			"/volumes/claim": {
 				"_apiInfo": {
 					"l": "List Persistent Volume Claim",
 					"group": "Persistent Volume Claim"
@@ -2241,7 +2241,7 @@ module.exports = {
 				'commonFields': ['soajs_project', 'namespace', 'env']
 			},
 			
-			"/volumeClaim": {
+			"/volume/claim": {
 				_apiInfo: {
 					"l": "Get one  Persistent Volume Claim",
 					"group": "Persistent Volume Claim"
@@ -5371,7 +5371,7 @@ module.exports = {
 				}
 			},
 			
-			"/volumeClaim": {
+			"/volume/claim": {
 				"_apiInfo": {
 					"l": "Add Persistent Volume Claim",
 					"group": "Persistent Volume Claim"
@@ -8962,7 +8962,7 @@ module.exports = {
 				}
 			},
 			
-			"/volumeClaim": {
+			"/volume/claim": {
 				_apiInfo: {
 					"l": "Delete Persistent Volume Claim",
 					"group": "Persistent Volume Claim"

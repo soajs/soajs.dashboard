@@ -3593,7 +3593,7 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.get("/volumeClaims", function (req, res) {
+	service.get("/volume/claims", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.pvc.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.list(config, req.soajs, deployer, function (error, data) {
@@ -3609,7 +3609,7 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.post("/volumeClaim", function (req, res) {
+	service.post("/volume/claim", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.pvc.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.add(config, req.soajs, deployer, function (error, data) {
@@ -3625,7 +3625,7 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.get("/volumeClaim", function (req, res) {
+	service.get("/volume/claim", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.pvc.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.get(config, req.soajs, deployer, function (error, data) {
@@ -3641,7 +3641,7 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.delete("/volumeClaim", function (req, res) {
+	service.delete("/volume/claim", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.pvc.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.delete(config, req.soajs, deployer, function (error, data) {

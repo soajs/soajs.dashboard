@@ -63,8 +63,7 @@ describe("Testing vpc Management", function () {
                 "env": "soajs"
             }
         };
-        executeMyRequest(params, "volumeClaim", 'post', function (result) {
-	        console.log(JSON.stringify(result, null, 2))
+        executeMyRequest(params, "volume/claim", 'post', function (result) {
             assert.ok(result);
             done();
         });
@@ -76,8 +75,7 @@ describe("Testing vpc Management", function () {
                 "env": "DASHBOARD"
             }
         };
-        executeMyRequest(params, "volumeClaims", 'get', function (result) {
-	        console.log(JSON.stringify(result, null, 2))
+        executeMyRequest(params, "volume/claims", 'get', function (result) {
             assert.ok(result);
             done();
         });
@@ -90,8 +88,7 @@ describe("Testing vpc Management", function () {
                 "env": "DASHBOARD"
 			}
 		};
-		executeMyRequest(params, "volumeClaim", 'get', function (result) {
-			console.log(JSON.stringify(result, null, 2))
+		executeMyRequest(params, "volume/claim", 'get', function (result) {
 			assert.ok(result);
 			done();
 		});
@@ -104,8 +101,7 @@ describe("Testing vpc Management", function () {
                 "env": "DASHBOARD"
             }
         };
-        executeMyRequest(params, "volumeClaim", 'delete', function (result) {
-	        console.log(JSON.stringify(result, null, 2))
+        executeMyRequest(params, "volume/laim", 'delete', function (result) {
             assert.ok(result);
             done();
         });
