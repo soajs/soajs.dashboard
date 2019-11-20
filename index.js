@@ -3593,7 +3593,7 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.get("/volume/claims", function (req, res) {
+	service.get("/volumes/claim", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.pvc.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.list(config, req.soajs, deployer, function (error, data) {
