@@ -89,6 +89,9 @@ var dashboardBL = {
 		secrets: {
 			module: require('./lib/cloud/secrets/index.js')
 		},
+		pvc: {
+			module: require('./lib/cloud/pvc/index.js')
+		},
 		vm: {
 			module: require('./lib/cloud/vm/index.js')
 		}
@@ -3575,6 +3578,71 @@ service.init(function () {
 	 */
 	service.delete("/secrets/delete", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.secrets.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.delete(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	
+	/**
+	 * List persistent volume claim
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/volumeClaims", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.pvc.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.list(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Add a new persistent volume claim
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/volumeClaim", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.pvc.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.add(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Get one persistent volume claim
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/volumeClaim", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.pvc.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.get(config, req.soajs, deployer, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Delete a persistent volume claim
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.delete("/volumeClaim", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.pvc.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.delete(config, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);

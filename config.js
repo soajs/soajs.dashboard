@@ -2231,7 +2231,30 @@ module.exports = {
 					"group": "Console Version"
 				},
 				'commonFields': ['soajs_project']
-			}
+			},
+			
+			"/volumeClaims": {
+				"_apiInfo": {
+					"l": "List Persistent Volume Claim",
+					"group": "Persistent Volume Claim"
+				},
+				'commonFields': ['soajs_project', 'namespace', 'env']
+			},
+			
+			"/volumeClaim": {
+				_apiInfo: {
+					"l": "Get one  Persistent Volume Claim",
+					"group": "Persistent Volume Claim"
+				},
+				'commonFields': ['soajs_project', 'namespace', 'env'],
+				"name": {
+					"source": ['query.name'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
 		},
 		
 		"post": {
@@ -5344,6 +5367,54 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				}
+			},
+			
+			"/volumeClaim": {
+				"_apiInfo": {
+					"l": "Add Persistent Volume Claim",
+					"group": "Persistent Volume Claim"
+				},
+				'commonFields': ['soajs_project'],
+				"name": {
+					"source": ['body.name'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"required": true,
+						"format": "lowercase",
+						"pattern": /[a-zA-Z0-9_\-]/
+					}
+				},
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {"type": "string", "required": true}
+				},
+				"namespace": {
+					"source": ['body.namespace'],
+					"required": false,
+					"validation": {"type": "string", "required": false}
+				},
+				"storage": {
+					"source": ['body.storage'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"accessModes": {
+					"source": ['body.accessModes'],
+					"required": true,
+					"validation": {
+						"type": "array",
+						"minItems": 1,
+						"uniqueItems": true,
+						'items': {
+							'type': "string",
+							'enum': ["ReadWriteOnce", "ReadOnlyMany", "ReadWriteMany"]
+						}
 					}
 				}
 			},
@@ -8880,6 +8951,21 @@ module.exports = {
 				_apiInfo: {
 					"l": "Delete Secret",
 					"group": "Secrets"
+				},
+				'commonFields': ['soajs_project', 'namespace', 'env'],
+				"name": {
+					"source": ['query.name'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
+			"/volumeClaim": {
+				_apiInfo: {
+					"l": "Delete Persistent Volume Claim",
+					"group": "Persistent Volume Claim"
 				},
 				'commonFields': ['soajs_project', 'namespace', 'env'],
 				"name": {

@@ -174,6 +174,7 @@ describe("importing sample data", function () {
 			require("./soajs.version.test.js");
 			require("./soajs.hostsdeploy.test.js");
 			require("./soajs.dashboard.test.secrets.js");
+			require("./soajs.dashboard.test.vpc.js");
 			require("./soajs.dashboard.test.ci.js");
 			require("./soajs.cd.test.js");
 			require("./soajs.dashboard.test.gitAccounts.js");
