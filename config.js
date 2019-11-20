@@ -2233,7 +2233,7 @@ module.exports = {
 				'commonFields': ['soajs_project']
 			},
 			
-			"/volumes/claim": {
+			"/volume/claims": {
 				"_apiInfo": {
 					"l": "List Persistent Volume Claim",
 					"group": "Persistent Volume Claim"
