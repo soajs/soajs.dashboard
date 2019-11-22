@@ -271,12 +271,26 @@ var lib = {
 	
 	"findEntries": function (soajs, opts, cb) {
 		lib.checkForMongo(soajs);
-		soajs.mongoDb.find(opts.collection, opts.conditions || {}, opts.fields || null, opts.options || null, cb);
+		let options = {};
+		if (opts.options){
+			options = opts.options;
+		}
+		if (opts.fields){
+			options.fields = opts.fields;
+		}
+		soajs.mongoDb.find(opts.collection, opts.conditions || {}, options, cb);
 	},
 	
 	"findEntry": function (soajs, opts, cb) {
 		lib.checkForMongo(soajs);
-		soajs.mongoDb.findOne(opts.collection, opts.conditions || {}, opts.fields || null, opts.options || null, cb);
+		let options = {};
+		if (opts.options){
+			options = opts.options;
+		}
+		if (opts.fields){
+			options.fields = opts.fields;
+		}
+		soajs.mongoDb.findOne(opts.collection, opts.conditions || {}, options, cb);
 	},
 	
 	"saveEntry": function (soajs, opts, cb) {

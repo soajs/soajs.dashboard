@@ -432,7 +432,7 @@ describe("Testing Custom Registry Functionality", function() {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 assert.equal(body.data.count, 3);
-                assert.equal(body.data.records.length, 3);
+                assert.equal(body.data.records.length, 2);
                 done();
             });
         });
