@@ -59,7 +59,7 @@ module.exports = function (grunt) {
 				"eqnull": true,
 				"esversion": 6,
 				"latedef": "nofunc",
-				"leanswitch": true,
+				// "leanswitch": true,
 				"nonbsp": true,
 				"strict": "global",
 				"varstmt": true,
@@ -67,7 +67,7 @@ module.exports = function (grunt) {
 				"newcap": true,
 				"noarg": true,
 				"undef": true,
-				"unused": false,
+				"unused": true,
 				"laxcomma": true,
 				// "loopfunc": true,
 				"sub": true,
@@ -138,7 +138,12 @@ module.exports = function (grunt) {
 		copy: {
 			main: {
 				files: [
-					{expand: true, src: ['package.json', 'lib/templates/*/*.txt', 'templates/swagger/tmpl/*.txt', 'templates/ci/*', 'templates/environment/*'], dest: 'test/coverage/instrument/', filter: 'isFile'},
+					{
+						expand: true,
+						src: ['package.json', 'lib/templates/*/*.txt', 'templates/swagger/tmpl/*.txt', 'templates/ci/*', 'templates/environment/*'],
+						dest: 'test/coverage/instrument/',
+						filter: 'isFile'
+					},
 				]
 			}
 		},

@@ -5,7 +5,7 @@ const mApp = express();
 
 function startServer(serverConfig, callback) {
 	if (!serverConfig) {
-		serverConfig = {}
+		serverConfig = {};
 	}
 	if (!serverConfig.name) {
 		serverConfig.name = "httpmethods";
@@ -76,11 +76,11 @@ function startServer(serverConfig, callback) {
 	
 	mApp.get('/heartbeat', (req, res) => {
 		mReply.service.route = '/heartbeat';
-		res.json(mReply)
+		res.json(mReply);
 	});
 	mApp.get('/wrench', (req, res) => {
 		mReply.service.route = '/wrench';
-		res.json(mReply)
+		res.json(mReply);
 	});
 	
 	
@@ -93,17 +93,17 @@ function startServer(serverConfig, callback) {
 			"mAppServer": mAppServer,
 			"name": serverConfig.name
 		}
-	)
+	);
 }
 
 function killServer(config) {
 	console.log("killing server ....");
 	
-	config.mAppServer.close((err) => {
+	config.mAppServer.close(() => {
 		console.log("...sAppServer: " + config.name);
 	});
 	
-	config.sAppServer.close((err) => {
+	config.sAppServer.close(() => {
 		console.log("...mAppServer: " + config.name);
 	});
 }

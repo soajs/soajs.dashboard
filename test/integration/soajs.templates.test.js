@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require('assert');
-var request = require("request");
+const request = require("request");
 
 const extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 
@@ -13,7 +13,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 	});
 	
 	function requester(apiName, method, params, cb) {
-		var options = {
+		let options = {
 			uri: 'http://localhost:4000/dashboard/' + apiName,
 			headers: {
 				'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 		};
 		
 		if (params.headers) {
-			for (var h in params.headers) {
+			for (let h in params.headers) {
 				if (params.headers.hasOwnProperty(h)) {
 					options.headers[h] = params.headers[h];
 				}
@@ -70,8 +70,8 @@ describe("Testing Templates Functionality", function () {
 			};
 			
 			executeMyRequest(params, "templates", 'get', function (result) {
-				if (!result.data){
-					console.log(JSON.stringify(result, null, 2))
+				if (!result.data) {
+					console.log(JSON.stringify(result, null, 2)) // replace with ifError
 				}
 				assert.ok(result.data);
 				done();
@@ -101,6 +101,7 @@ describe("Testing Templates Functionality", function () {
 			};
 			
 			executeMyRequest(params, "templates/import", 'post', function (result) {
+				assert.ok(result);
 				done();
 			});
 		});
@@ -140,7 +141,7 @@ describe("Testing Templates Functionality", function () {
 			};
 			
 			executeMyRequest(params, "templates/export", 'post', function (result) {
-				// assert.ok(result.result);
+				assert.ok(result);
 				done();
 			});
 		});

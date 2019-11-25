@@ -1,27 +1,28 @@
 "use strict";
-var assert = require('assert');
-var request = require("request");
-var helper = require("../helper.js");
 
-var config = helper.requireModule('./config');
-var errorCodes = config.errors;
+const assert = require('assert');
+const request = require("request");
+const helper = require("../helper.js");
 
-var Mongo = require("soajs.core.modules").mongo;
-var dbConfig = require("./db.config.test.js");
+const config = helper.requireModule('./config');
+const errorCodes = config.errors;
 
-var dashboardConfig = dbConfig();
+const Mongo = require("soajs.core.modules").mongo;
+const dbConfig = require("./db.config.test.js");
+
+let dashboardConfig = dbConfig();
 dashboardConfig.name = "core_provision";
-var mongo = new Mongo(dashboardConfig);
 
-var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
+const mongo = new Mongo(dashboardConfig);
+
+const extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 
 function debugLog(data) {
 	if (process.env.LOCAL_SOAJS) {
 		if (data) {
 			if (typeof (data) === 'object') {
 				console.log(JSON.stringify(data, null, 2));
-			}
-			else {
+			} else {
 				console.log(data);
 			}
 		}
@@ -34,9 +35,9 @@ function executeMyRequest(params, apiPath, method, cb) {
 		assert.ok(body);
 		return cb(body);
 	});
-
+	
 	function requester(apiName, method, params, cb) {
-		var options = {
+		let options = {
 			uri: 'http://localhost:4000/dashboard/' + apiName,
 			headers: {
 				'Content-Type': 'application/json',
@@ -44,23 +45,23 @@ function executeMyRequest(params, apiPath, method, cb) {
 			},
 			json: true
 		};
-
+		
 		if (params.headers) {
-			for (var h in params.headers) {
+			for (let h in params.headers) {
 				if (params.headers.hasOwnProperty(h)) {
 					options.headers[h] = params.headers[h];
 				}
 			}
 		}
-
+		
 		if (params.form) {
 			options.body = params.form;
 		}
-
+		
 		if (params.qs) {
 			options.qs = params.qs;
 		}
-
+		
 		request[method](options, function (error, response, body) {
 			assert.ifError(error);
 			assert.ok(body);
@@ -70,37 +71,37 @@ function executeMyRequest(params, apiPath, method, cb) {
 }
 
 describe("DASHBOARD Tests: Git Accounts", function () {
-	var gitAccId = "123";
-	var passwordPersonal = process.env.SOAJS_TEST_GIT_PWD;
-	var usernamePersonal = 'soajsTestAccount';
-	var soajsAccId = '56f1189430f153a571b9c8be';
-
-	var repoName1Fail = 'test.fail';
-	var repoName2Fail = 'test.fail2';
-	var repoMultiSuccess = 'test.successMulti';
-	var repoSingleSuccess = 'test.success1';
-	var repoSingleDaemon = 'test.daemon.s';
-	var repoStaticContent = 'testStaticContent';
-
+	let gitAccId = "123";
+	let passwordPersonal = process.env.SOAJS_TEST_GIT_PWD;
+	let usernamePersonal = 'soajsTestAccount';
+	let soajsAccId = '56f1189430f153a571b9c8be';
+	
+	let repoName1Fail = 'test.fail';
+	let repoName2Fail = 'test.fail2';
+	let repoMultiSuccess = 'test.successMulti';
+	let repoSingleSuccess = 'test.success1';
+	let repoSingleDaemon = 'test.daemon.s';
+	let repoStaticContent = 'testStaticContent';
+	
 	before(function (done) {
-		mongo.findOne("git_accounts", { owner: "soajs" }, function (error, record) {
+		mongo.findOne("git_accounts", {owner: "soajs"}, function (error, record) {
 			assert.ifError(error);
 			assert.ok(record);
 			record.repos.forEach(function (oneRepo) {
 				oneRepo.configBranch = "develop";
 			});
-
+			
 			mongo.save("git_accounts", record, function (error) {
 				assert.ifError(error);
 				done();
 			});
 		});
 	});
-
+	
 	describe("github login tests", function () {
-
+		
 		it("fail - wrong pw", function (done) {
-			var params = {
+			let params = {
 				form: {
 					"username": usernamePersonal,
 					"password": '43554',
@@ -117,9 +118,9 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 				done();
 			});
 		});
-
+		
 		it("fail - wrong provider", function (done) {
-			var params = {
+			let params = {
 				form: {
 					"username": usernamePersonal,
 					"password": passwordPersonal,
@@ -137,9 +138,9 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 				done();
 			});
 		});
-
+		
 		it("success - will login - personal private acc", function (done) {
-			var params = {
+			let params = {
 				form: {
 					"username": usernamePersonal,
 					"password": passwordPersonal,
@@ -155,9 +156,9 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 				done();
 			});
 		});
-
+		
 		it("fail - cannot login - Organization acc - already exists", function (done) {
-			var params = {
+			let params = {
 				form: {
 					"username": 'soajs',
 					"label": "Test organization Account",
@@ -172,15 +173,15 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("github accounts tests", function () {
-
+		
 		describe("list accounts", function () {
-
+			
 			it("success - will list", function (done) {
-				var params = {};
+				let params = {};
 				executeMyRequest(params, 'gitAccounts/accounts/list', 'get', function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
@@ -193,15 +194,15 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 				});
 			});
 		});
-
+		
 	});
-
+	
 	describe("personal private acc", function () {
-
+		
 		describe("github getRepos tests", function () {
-
+			
 			it("success - will getRepos", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						"id": gitAccId,
 						"provider": "github",
@@ -214,13 +215,13 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					done();
 				});
 			});
-
+			
 		});
-
+		
 		describe("github activate repo tests", function () {
-
+			
 			it("Test activate", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						"id": gitAccId
 					},
@@ -236,13 +237,13 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					done();
 				});
 			});
-
+			
 		});
-
+		
 		describe("github getBranches tests", function () {
-
+			
 			it("success - will get Branches repo", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						"id": gitAccId,
 						"provider": "github",
@@ -255,15 +256,15 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					done();
 				});
 			});
-
+			
 		});
-
+		
 		describe("github repo tests", function () {
-
+			
 			describe("repo activate tests", function () {
 				
 				it("fail - cannot get Branches for service - wrong name", function (done) {
-					var params = {
+					let params = {
 						qs: {
 							"id": gitAccId,
 							"name": "sample__Single",
@@ -276,13 +277,13 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("repo sync tests", function () {
-
+				
 				it("success - will sync repo - no change", function (done) {
-					var params = {
+					let params = {
 						qs: {
 							"id": gitAccId
 						},
@@ -297,13 +298,13 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("repo deactivate tests", function () {
-
+				
 				it("success - will deactivate single repo", function (done) {
-					var params = {
+					let params = {
 						qs: {
 							"id": gitAccId,
 							owner: usernamePersonal,
@@ -316,11 +317,11 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 						done();
 					});
 				});
-
+				
 			});
-
+			
 		});
-
+		
 	});
 	
 	/**
@@ -331,9 +332,9 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 	 * The user must activate his github/bitbucket account on the dashboard first.
 	 */
 	describe("pull from a repo in github or bitbucket", function () {
-
+		
 		it("success - the user is logged in and provided an existing repo and file path", function (done) {
-			var params = {
+			let params = {
 				qs: {
 					"owner": "soajs",
 					"repo": "soajs.dashboard",
@@ -350,9 +351,9 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 				done();
 			});
 		});
-
+		
 		it("fail - the user isn't logged in", function (done) {
-			var params = {
+			let params = {
 				qs: {
 					"owner": "michel-el-hajj",
 					"repo": "soajs.dashboard",
@@ -370,9 +371,9 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 				done();
 			});
 		});
-
+		
 		it("fail - the repo doesn't exist", function (done) {
-			var params = {
+			let params = {
 				qs: {
 					"owner": "soajs",
 					"repo": "soajs.unknown",
@@ -389,9 +390,9 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 				done();
 			});
 		});
-
+		
 		it("fail - wrong file path", function (done) {
-			var params = {
+			let params = {
 				qs: {
 					"owner": "soajs",
 					"repo": "soajs.dashboard",
@@ -413,7 +414,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 		
 		
 		it("success - get getAnyFile", function (done) {
-			var params = {
+			let params = {
 				qs: {
 					"accountId": "56f1189430f153a571b9c8be",
 					"repo": "soajs.dashboard",
@@ -427,14 +428,14 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 			});
 		});
 	});
-
+	
 	describe("personal public acc", function () {
-		var gitAccId;
-
+		let gitAccId;
+		
 		describe("login", function () {
-
+			
 			it("fail - wrong personal public acc name", function (done) {
-				var params = {
+				let params = {
 					form: {
 						"username": 'xxx_vwq_xx_1gtGHYU_yt_plirf',
 						"label": "Test wrong public Account",
@@ -449,9 +450,9 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will login - personal public acc", function (done) {
-				var params = {
+				let params = {
 					form: {
 						"username": usernamePersonal,
 						"label": "Test personal public Account",
@@ -466,24 +467,24 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					done();
 				});
 			});
-
+			
 		});
 	});
-
+	
 	describe("organization public acc", function () {
-		var orgName = 'soajs';
-		var repoName = 'soajs.examples';
-
+		let orgName = 'soajs';
+		let repoName = 'soajs.examples';
+		
 		describe("login & logout", function () {
 			before(function (done) {
-				mongo.remove('git_accounts', { 'owner': orgName }, function (error) {
+				mongo.remove('git_accounts', {'owner': orgName}, function (error) {
 					assert.ifError(error);
 					done();
 				});
 			});
-
+			
 			it("fail - wrong Organization acc", function (done) {
-				var params = {
+				let params = {
 					form: {
 						"username": 'soajs_wwwwwww',
 						"label": "Test org Account",
@@ -498,9 +499,9 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will login - Organization acc", function (done) {
-				var params = {
+				let params = {
 					form: {
 						"username": orgName,
 						"label": "Test organization Account",
@@ -515,9 +516,9 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					done();
 				});
 			});
-
+			
 			it("will logout org account", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						"username": orgName,
 						"id": gitAccId,
@@ -529,8 +530,8 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					done();
 				});
 			});
-
+			
 		});
-
+		
 	});
 });

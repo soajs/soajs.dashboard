@@ -1,28 +1,31 @@
 "use strict";
-var assert = require('assert');
-var request = require("request");
-var util = require("soajs.core.libs").utils;
-var helper = require("../helper.js");
-var dashboard;
 
-var config = helper.requireModule('./config');
-var errorCodes = config.errors;
+const assert = require('assert');
+const request = require("request");
+const util = require("soajs.core.libs").utils;
+const helper = require("../helper.js");
+let dashboard;
 
-var Mongo = require("soajs.core.modules").mongo;
-var dbConfig = require("./db.config.test.js");
+const config = helper.requireModule('./config');
+const errorCodes = config.errors;
 
-var dashboardConfig = dbConfig();
+const Mongo = require("soajs.core.modules").mongo;
+const dbConfig = require("./db.config.test.js");
+
+let dashboardConfig = dbConfig();
 dashboardConfig.name = "core_provision";
-var mongo = new Mongo(dashboardConfig);
+const mongo = new Mongo(dashboardConfig);
 
-var uracConfig = dbConfig();
+let uracConfig = dbConfig();
 uracConfig.name = 'test_urac';
-var uracMongo = new Mongo(uracConfig);
+const uracMongo = new Mongo(uracConfig); //todo: check not used
 
-var AuthValue;
-var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
-var qaEnvRecord;
-var stgEnvRecord;
+let AuthValue;
+const extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
+let qaEnvRecord;
+
+let stgEnvRecord; //todo: check not used
+
 // /tenant/application/acl/get
 function executeMyRequest(params, apiPath, method, cb) {
 	requester(apiPath, method, params, function (error, body) {
@@ -32,7 +35,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 	});
 	
 	function requester(apiName, method, params, cb) {
-		var options = {
+		let options = {
 			uri: 'http://localhost:4000/dashboard/' + apiName,
 			headers: {
 				'Content-Type': 'application/json',
@@ -42,7 +45,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 		};
 		
 		if (params.headers) {
-			for (var h in params.headers) {
+			for (let h in params.headers) {
 				if (params.headers.hasOwnProperty(h)) {
 					options.headers[h] = params.headers[h];
 				}
@@ -66,17 +69,17 @@ function executeMyRequest(params, apiPath, method, cb) {
 }
 
 describe("DASHBOARD Integration Tests:", function () {
-	var expDateValue = new Date().toISOString();
-	var envId;
-	var qaID;
-	var stgID;
+	let expDateValue = new Date().toISOString();
+	let envId;
+	let qaID;
+	let stgID;
 	after(function (done) {
 		mongo.closeDb();
 		done();
 	});
 	
 	it("get Main Auhtorization token", function (done) {
-		var options = {
+		let options = {
 			uri: 'http://localhost:4000/oauth/authorization',
 			headers: {
 				'Content-Type': 'application/json',
@@ -95,7 +98,7 @@ describe("DASHBOARD Integration Tests:", function () {
 	});
 	
 	describe("environment tests", function () {
-		var validEnvRecord = {
+		let validEnvRecord = {
 			"code": "DEV",
 			"domain": "api.myDomain.com",
 			"apiPrefix": "api",
@@ -383,8 +386,8 @@ describe("DASHBOARD Integration Tests:", function () {
 					}
 				}
 			},
-			"restriction":{
-				"1231231":{
+			"restriction": {
+				"1231231": {
 					"eastus": {
 						group: "grouptest",
 						network: "networktest"
@@ -408,7 +411,7 @@ describe("DASHBOARD Integration Tests:", function () {
 		
 		describe("get environment tests", function () {
 			it("success - get environment/code", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						"code": "dev"
 					}
@@ -421,12 +424,12 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it('success - get environment/id', function (done) {
-				mongo.findOne('environment', { code: 'DEV' }, function (error, envRecord) {
+				mongo.findOne('environment', {code: 'DEV'}, function (error, envRecord) {
 					assert.ifError(error);
 					assert.ok(envRecord);
 					
-					var params = {
-						qs: { 'id': envRecord._id.toString() }
+					let params = {
+						qs: {'id': envRecord._id.toString()}
 					};
 					executeMyRequest(params, 'environment/', 'get', function (body) {
 						assert.ok(body.data);
@@ -437,19 +440,19 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it('fail - invalid environment id provided', function (done) {
-				var params = {
-					qs: { 'id': 'qwrr' }
+				let params = {
+					qs: {'id': 'qwrr'}
 				};
 				executeMyRequest(params, 'environment/', 'get', function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], { "code": 405, "message": errorCodes[405] });
+					assert.deepEqual(body.errors.details[0], {"code": 405, "message": errorCodes[405]});
 					done();
 				});
 			});
 			
 			it('fail - Unable to get the environment records', function (done) {
-				var params = {
-					qs: { 'code': 'freeww' }
+				let params = {
+					qs: {'code': 'freeww'}
 				};
 				executeMyRequest(params, 'environment/', 'get', function (body) {
 					assert.deepEqual(body.data, null);
@@ -458,7 +461,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it('fail - no id or code provided', function (done) {
-				var params = {
+				let params = {
 					qs: {}
 				};
 				executeMyRequest(params, 'environment/', 'get', function (body) {
@@ -484,10 +487,10 @@ describe("DASHBOARD Integration Tests:", function () {
 		describe("add environment tests", function () {
 			
 			it("success - will add STG environment", function (done) {
-				var data2 = util.cloneObj(validEnvRecord);
+				let data2 = util.cloneObj(validEnvRecord);
 				data2.code = 'STG';
-				data2.envType= "manual";
-				data2.deploy= {
+				data2.envType = "manual";
+				data2.deploy = {
 					"selectedDriver": "manual"
 				};
 				data2.templateId = "5acf46c4af4cd3a45f21e2e8";
@@ -496,7 +499,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				delete data2.deployer;
 				delete data2.services;
 				delete data2._id;
-				var params = {
+				let params = {
 					form: {
 						template: {
 							deploy: {
@@ -514,16 +517,16 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will add PROD environment", function (done) {
-				var data3 = util.cloneObj(validEnvRecord);
+				let data3 = util.cloneObj(validEnvRecord);
 				data3.code = 'PROD';
-				data3.envType= "manual";
+				data3.envType = "manual";
 				data3.templateId = "5acf46c4af4cd3a45f21e2e8";
 				delete data3.profile;
 				delete data3.dbs;
 				delete data3.deployer;
 				delete data3.services;
 				delete data3._id;
-				var params = {
+				let params = {
 					form: {
 						template: {
 							gi: {
@@ -543,10 +546,10 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will add testKubLocal environment", function (done) {
-				var data4 = util.cloneObj(qaEnvRecord);
+				let data4 = util.cloneObj(qaEnvRecord);
 				data4.code = 'testKubLocal';
 				data4.templateId = "5acf46c4af4cd3a45f21e2e8";
-				data4.envType= "container";
+				data4.envType = "container";
 				// data4.deploy = {
 				// 	"type": "container",
 				// 	"selectedDriver" : 'kubernetes',
@@ -562,7 +565,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				delete data4.deployer;
 				delete data4.services;
 				delete data4._id;
-				var params = {
+				let params = {
 					form: {
 						template: {
 							gi: {
@@ -582,9 +585,9 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will add testKubRemote environment", function (done) {
-				var data5 = util.cloneObj(qaEnvRecord);
+				let data5 = util.cloneObj(qaEnvRecord);
 				data5.code = 'testKubRemote';
-				data5.envType= "container";
+				data5.envType = "container";
 				data5.templateId = "5acf46c4af4cd3a45f21e2e8";
 				// data5.deploy = {
 				// 	"type": "container",
@@ -605,7 +608,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				delete data5.deployer;
 				delete data5.services;
 				delete data5._id;
-				var params = {
+				let params = {
 					form: {
 						template: {
 							gi: {
@@ -625,9 +628,9 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will add testDockerLocal environment", function (done) {
-				var data6 = util.cloneObj(qaEnvRecord);
+				let data6 = util.cloneObj(qaEnvRecord);
 				data6.code = 'testDockerLocal';
-				data6.envType= "container";
+				data6.envType = "container";
 				data6.templateId = "5acf46c4af4cd3a45f21e2e8";
 				data6.deploy = {
 					"type": "container",
@@ -646,7 +649,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				delete data6.deployer;
 				delete data6.services;
 				delete data6._id;
-				var params = {
+				let params = {
 					form: {
 						template: {
 							gi: {
@@ -666,9 +669,9 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will add testDockerRemote environment", function (done) {
-				var data7 = util.cloneObj(qaEnvRecord);
+				let data7 = util.cloneObj(qaEnvRecord);
 				data7.code = 'testDockerRemote';
-				data7.envType= "container";
+				data7.envType = "container";
 				data7.templateId = "5acf46c4af4cd3a45f21e2e8";
 				data7.deploy = {
 					"type": "container",
@@ -691,7 +694,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				delete data7.deployer;
 				delete data7.services;
 				delete data7._id;
-				var params = {
+				let params = {
 					form: {
 						template: {
 							gi: {
@@ -711,7 +714,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it('fail - missing params', function (done) {
-				var params = {
+				let params = {
 					form: {
 						template: {
 							gi: {
@@ -733,7 +736,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it('fail - environment exists', function (done) {
-				var data1 = util.cloneObj(validEnvRecord)
+				let data1 = util.cloneObj(validEnvRecord);
 				data1.deploy = {
 					"type": "container",
 					"selectedDriver": 'docker',
@@ -750,14 +753,14 @@ describe("DASHBOARD Integration Tests:", function () {
 					sessionName: "sessionName",
 					sessionSecret: "sessionSecret"
 				};
-				data1.envType= "container";
+				data1.envType = "container";
 				data1.templateId = "5acf46c4af4cd3a45f21e2e8";
 				delete data1.profile;
 				delete data1.dbs;
 				delete data1.deployer;
 				delete data1.services;
 				delete data1._id;
-				var params = {
+				let params = {
 					form: {
 						template: {
 							gi: {
@@ -771,7 +774,7 @@ describe("DASHBOARD Integration Tests:", function () {
 					}
 				};
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
-					assert.deepEqual(body.errors.details[0], { "code": 403, "message": errorCodes[403] });
+					assert.deepEqual(body.errors.details[0], {"code": 403, "message": errorCodes[403]});
 					done();
 				});
 			});
@@ -779,11 +782,11 @@ describe("DASHBOARD Integration Tests:", function () {
 		
 		describe("update environment tests", function () {
 			it("success - will update environment", function (done) {
-				var data2 = util.cloneObj(validEnvRecord);
-				data2.envType= "manual";
+				let data2 = util.cloneObj(validEnvRecord);
+				data2.envType = "manual";
 				data2.services.config.session.proxy = "true";
-				var params = {
-					qs: { "id": stgID },
+				let params = {
+					qs: {"id": stgID},
 					form: {
 						"domain": "api.myDomain.com",
 						"profile": data2.profile,
@@ -820,11 +823,11 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will update environment", function (done) {
-				var data2 = util.cloneObj(validEnvRecord);
-				data2.envType= "manual";
+				let data2 = util.cloneObj(validEnvRecord);
+				data2.envType = "manual";
 				data2.services.config.session.proxy = "false";
-				var params = {
-					qs: { "id": stgID },
+				let params = {
+					qs: {"id": stgID},
 					form: {
 						"domain": "api.myDomain.com",
 						"profile": data2.profile,
@@ -861,8 +864,8 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will update environment", function (done) {
-				var params = {
-					qs: { "id": stgID },
+				let params = {
+					qs: {"id": stgID},
 					form: {
 						"domain": "api.myDomain.com",
 						"profile": validEnvRecord.profile,
@@ -898,8 +901,8 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it('fail - missing params', function (done) {
-				var params = {
-					qs: { "id": envId },
+				let params = {
+					qs: {"id": envId},
 					form: {
 						"description": 'this is a dummy description'
 					}
@@ -910,10 +913,10 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it('fail - invalid environment id provided', function (done) {
-				var data5 = util.cloneObj(validEnvRecord);
+				let data5 = util.cloneObj(validEnvRecord);
 				data5.services.config.session.proxy = "true";
-				var params = {
-					qs: { "id": "aaaabbbbccc" },
+				let params = {
+					qs: {"id": "aaaabbbbccc"},
 					form: {
 						"domain": data5.profile,
 						"profile": data5.profile,
@@ -948,7 +951,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it('mongo test', function (done) {
-				mongo.findOne('environment', { 'code': 'DEV' }, function (error, envRecord) {
+				mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
 					assert.ifError(error);
 					envId = envRecord._id.toString();
 					delete envRecord._id;
@@ -957,8 +960,8 @@ describe("DASHBOARD Integration Tests:", function () {
 					if (envRecord.services && envRecord.services.config && envRecord.services.config.session) {
 						delete envRecord.services.config.session.proxy;
 					}
-					var tester = util.cloneObj(validEnvRecord);
-					tester.dbs = { clusters: {}, config: {}, databases: {} };
+					let tester = util.cloneObj(validEnvRecord);
+					tester.dbs = {clusters: {}, config: {}, databases: {}};
 					tester.description = "this is a dummy updated description";
 					delete tester.services.config.session.proxy;
 					delete tester.profile;
@@ -970,7 +973,7 @@ describe("DASHBOARD Integration Tests:", function () {
 		
 		describe("delete environment tests", function () {
 			it('fail - missing params', function (done) {
-				var params = {
+				let params = {
 					qs: {}
 				};
 				executeMyRequest(params, 'environment/delete', 'delete', function (body) {
@@ -983,8 +986,8 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it('fail - invalid environment id provided', function (done) {
-				var params = {
-					qs: { 'id': 'aaaabbcdddd' }
+				let params = {
+					qs: {'id': 'aaaabbcdddd'}
 				};
 				executeMyRequest(params, 'environment/delete', 'delete', function (body) {
 					done();
@@ -1022,7 +1025,7 @@ describe("DASHBOARD Integration Tests:", function () {
 		
 		describe("Get environment status tests", function () {
 			it("success - will get environment status", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						code: 'PROD',
 						activate: false
@@ -1038,10 +1041,10 @@ describe("DASHBOARD Integration Tests:", function () {
 	});
 	
 	describe("login tests", function () {
-		var auth, access_token;
+		let auth, access_token;
 		
 		it("success - did not specify environment code, old acl", function (done) {
-			var options = {
+			let options = {
 				uri: 'http://localhost:4000/oauth/token',
 				headers: {
 					'Content-Type': 'application/json',
@@ -1059,7 +1062,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				assert.ifError(error);
 				assert.ok(body);
 				access_token = body.access_token;
-				var params = {
+				let params = {
 					qs: {
 						access_token: access_token
 					}
@@ -1080,7 +1083,7 @@ describe("DASHBOARD Integration Tests:", function () {
 		});
 		
 		// it("success - specified environment code, old acl", function (done) {
-		// 	var params = {
+		// 	let params = {
 		// 		qs: {
 		// 			access_token: access_token,
 		// 			envCode: 'DEV'
@@ -1095,7 +1098,7 @@ describe("DASHBOARD Integration Tests:", function () {
 	});
 	
 	describe("testing settings for logged in users", function () {
-		var access_token;
+		let access_token;
 		
 		// it("fail - should not work for non-logged in users", function (done) {
 		// 	executeMyRequest({}, 'permissions/get', 'get', function (body) {
@@ -1106,7 +1109,7 @@ describe("DASHBOARD Integration Tests:", function () {
 		// });
 		
 		it("success - should work for logged in users", function (done) {
-			var options = {
+			let options = {
 				uri: 'http://localhost:4000/oauth/token',
 				headers: {
 					'Content-Type': 'application/json',
@@ -1129,10 +1132,10 @@ describe("DASHBOARD Integration Tests:", function () {
 		});
 		
 		describe("settings tests", function () {
-			var tenantId, applicationId, key, extKey, oauthUserId;
+			let tenantId, applicationId, key, extKey, oauthUserId;
 			
 			before("update environment records to include session database in order to be able to proceed", function (done) {
-				var update = {
+				let update = {
 					'$set': {
 						"dbs": {
 							"clusters": {
@@ -1180,7 +1183,7 @@ describe("DASHBOARD Integration Tests:", function () {
 						}
 					}
 				};
-				mongo.update("environment", {}, update, { multi: true }, function (error) {
+				mongo.update("environment", {}, update, {multi: true}, function (error) {
 					assert.ifError(error);
 					done();
 				});
@@ -1211,7 +1214,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will update tenant", function (done) {
-				var params = {
+				let params = {
 					'qs': {
 						'access_token': access_token
 					},
@@ -1229,7 +1232,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will add oauth", function (done) {
-				var params = {
+				let params = {
 					'qs': {
 						'access_token': access_token
 					},
@@ -1244,7 +1247,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				executeMyRequest(params, 'settings/tenant/oauth/add/', 'post', function (body) {
 					assert.ok(body.data);
 					
-					mongo.findOne('tenants', { 'code': 'test' }, function (error, tenantRecord) {
+					mongo.findOne('tenants', {'code': 'test'}, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.deepEqual(tenantRecord.oauth, {
 							"secret": "my secret key",
@@ -1262,7 +1265,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will update oauth", function (done) {
-				var params = {
+				let params = {
 					'qs': {
 						'access_token': access_token
 					},
@@ -1275,7 +1278,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				};
 				executeMyRequest(params, 'settings/tenant/oauth/update/', 'put', function (body) {
 					assert.ok(body.data);
-					mongo.findOne('tenants', { 'code': 'test' }, function (error, tenantRecord) {
+					mongo.findOne('tenants', {'code': 'test'}, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.deepEqual(tenantRecord.oauth, {
 							"secret": "shhh this is a secret",
@@ -1321,7 +1324,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will return oauth obj", function (done) {
-				var params = {
+				let params = {
 					'qs': {
 						'access_token': access_token
 					},
@@ -1339,7 +1342,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will add oauth user", function (done) {
-				var params = {
+				let params = {
 					'qs': {
 						'access_token': access_token
 					},
@@ -1350,7 +1353,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				};
 				
 				executeMyRequest(params, 'settings/tenant/oauth/users/add/', 'post', function (body) {
-					mongo.findOne('oauth_urac', { 'userId': 'oauth_user' }, function (error, tenantRecord) {
+					mongo.findOne('oauth_urac', {'userId': 'oauth_user'}, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.ok(tenantRecord);
 						assert.equal(tenantRecord.userId, "oauth_user");
@@ -1362,7 +1365,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will update oauth users", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						'access_token': access_token,
 						uId: oauthUserId
@@ -1374,7 +1377,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				};
 				executeMyRequest(params, 'settings/tenant/oauth/users/update/', 'put', function (body) {
 					assert.ok(body.data);
-					mongo.findOne('oauth_urac', { 'userId': 'oauth_user_up' }, function (error, tenantRecord) {
+					mongo.findOne('oauth_urac', {'userId': 'oauth_user_up'}, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.ok(tenantRecord);
 						assert.equal(tenantRecord.userId, 'oauth_user_up');
@@ -1410,7 +1413,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			
 			it("success - will list applications", function (done) {
 				applicationId = "5550b473373137a130ebbb68";
-				var newApplication = {
+				let newApplication = {
 					"product": "TPROD",
 					"package": "TPROD_BASIC",
 					"appId": mongo.ObjectId(applicationId),
@@ -1418,10 +1421,10 @@ describe("DASHBOARD Integration Tests:", function () {
 					"_TTL": 604800000,
 					"keys": []
 				};
-				var push = {
-					'$push': { 'applications': newApplication }
+				let push = {
+					'$push': {'applications': newApplication}
 				};
-				mongo.update('tenants', { '_id': mongo.ObjectId(tenantId) }, push, {
+				mongo.update('tenants', {'_id': mongo.ObjectId(tenantId)}, push, {
 					'upsert': false,
 					'safe': true
 				}, function (error) {
@@ -1443,7 +1446,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will add key", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						'access_token': access_token,
 						'appId': applicationId
@@ -1452,7 +1455,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				executeMyRequest(params, 'settings/tenant/application/key/add', 'post', function (body) {
 					assert.ok(body.data);
 					
-					mongo.findOne('tenants', { '_id': mongo.ObjectId(tenantId) }, function (error, tenantRecord) {
+					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.ok(tenantRecord);
 						key = tenantRecord.applications[tenantRecord.applications.length - 1].keys[0].key.toString();
@@ -1462,7 +1465,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will list key", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						'access_token': access_token,
 						appId: applicationId
@@ -1477,7 +1480,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will add ext key for STG", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						'access_token': access_token,
 						appId: applicationId,
@@ -1496,7 +1499,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				};
 				executeMyRequest(params, 'settings/tenant/application/key/ext/add/', 'post', function (body) {
 					assert.ok(body.data);
-					mongo.findOne('tenants', { '_id': mongo.ObjectId(tenantId) }, function (error, tenantRecord) {
+					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.ok(tenantRecord);
 						extKey = tenantRecord.applications[tenantRecord.applications.length - 1].keys[0].extKeys[0].extKey;
@@ -1506,7 +1509,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will update ext key STG", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						'access_token': access_token,
 						appId: applicationId,
@@ -1531,7 +1534,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will delete ext key STG", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						'access_token': access_token,
 						appId: applicationId,
@@ -1549,7 +1552,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will list ext key", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						'access_token': access_token,
 						appId: applicationId,
@@ -1565,7 +1568,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will update configuration", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						'access_token': access_token,
 						appId: applicationId,
@@ -1590,7 +1593,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will list configuration", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						'access_token': access_token,
 						appId: applicationId,
@@ -1601,8 +1604,8 @@ describe("DASHBOARD Integration Tests:", function () {
 					assert.ok(body.data);
 					assert.deepEqual(body.data, {
 						dev: {
-							mail: { 'a': 'b' },
-							urac: { 'x': 'y' }
+							mail: {'a': 'b'},
+							urac: {'x': 'y'}
 						}
 					});
 					
@@ -1611,7 +1614,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will delete key", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						'access_token': access_token,
 						'appId': applicationId,
@@ -1631,7 +1634,7 @@ describe("DASHBOARD Integration Tests:", function () {
 		
 		describe("list platforms", function () {
 			before(function (done) {
-				mongo.remove("fs.files", {}, (error)=> {
+				mongo.remove("fs.files", {}, (error) => {
 					assert.ifError(error);
 					mongo.insert("fs.files", [
 						{
@@ -1710,7 +1713,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will list platforms and available certificates", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						env: 'DEV'
 					}
@@ -1726,7 +1729,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			it("fail - missing required params", function (done) {
 				executeMyRequest({}, "environment/platforms/list", 'get', function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], { 'code': 172, 'message': 'Missing required field: env' });
+					assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
 					done();
 				});
 			});
@@ -1735,7 +1738,7 @@ describe("DASHBOARD Integration Tests:", function () {
 		describe("attach platform", function () {
 			
 			it("success - will attach platform", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						env: 'TEST'
 					},
@@ -1758,11 +1761,11 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 		});
-
+		
 		describe("update platform", function () {
-
+			
 			it("Invalid Env", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						env: 'TEST'
 					},
@@ -1771,19 +1774,19 @@ describe("DASHBOARD Integration Tests:", function () {
 						config: {}
 					}
 				};
-
+				
 				executeMyRequest(params, "environment/platforms/deployer/update", 'put', function (body) {
 					assert.ok(body.errors);
 					done();
 				});
 			});
-
+			
 		});
-
+		
 		describe("detach platform", function () {
 			
 			it("success - will detach platform", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						env: 'TEST'
 					}
@@ -1800,11 +1803,11 @@ describe("DASHBOARD Integration Tests:", function () {
 	
 	describe("hosts tests", function () {
 		// TODO: fill deployer object for all ENV records
-		var hosts = [], hostsCount = 0;
+		let hosts = [], hostsCount = 0;
 		describe("list Hosts", function () {
 			
 			it("success - will get hosts list", function (done) {
-				executeMyRequest({ qs: { 'env': 'dev' } }, 'hosts/list', 'get', function (body) {
+				executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function (body) {
 					assert.ok(body.data);
 					hostsCount = body.data.hosts.length;
 					done();
@@ -1827,7 +1830,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will get an empty list", function (done) {
-				executeMyRequest({ qs: { 'env': 'dev' } }, 'hosts/list', 'get', function (body) {
+				executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function (body) {
 					assert.ok(body.data);
 					assert.equal(body.data.hosts.length, 0);
 					done();
@@ -1845,7 +1848,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will get hosts list", function (done) {
-				executeMyRequest({ qs: { 'env': 'dev' } }, 'hosts/list', 'get', function (body) {
+				executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function (body) {
 					assert.ok(body.data);
 					assert.ok(body.data.hosts.length > 0);
 					assert.equal(body.data.hosts.length, hostsCount);
@@ -1855,14 +1858,14 @@ describe("DASHBOARD Integration Tests:", function () {
 		});
 		//testing the services API in which env are deployed
 		describe("return environments where a service is deployed", function () {
-			var swaggerDev = {
+			let swaggerDev = {
 				"env": "dev",
 				"name": "swaggersample",
 				"ip": "127.0.0.1",
 				"hostname": "dashboard",
 				"version": 1
 			};
-			var swaggerDash = {
+			let swaggerDash = {
 				"env": "prod",
 				"name": "swaggersample",
 				"ip": "127.0.0.1",
@@ -1870,13 +1873,13 @@ describe("DASHBOARD Integration Tests:", function () {
 				"version": 1
 			};
 			it("success - will get the env list in case the service has more than 1 env", function (done) {
-				mongo.update("environment", { code: { $in: ["DEV", "PROD"] } }, { "$unset": { "sensitive": "" } }, function (error) {
+				mongo.update("environment", {code: {$in: ["DEV", "PROD"]}}, {"$unset": {"sensitive": ""}}, function (error) {
 					assert.ifError(error);
 					mongo.insert('hosts', swaggerDash, function (error) {
 						assert.ifError(error);
 						mongo.insert('hosts', swaggerDev, function (error) {
 							assert.ifError(error);
-							executeMyRequest({ qs: { 'service': 'swaggersample' } }, 'services/env/list', 'get', function (body) {
+							executeMyRequest({qs: {'service': 'swaggersample'}}, 'services/env/list', 'get', function (body) {
 								assert.ok(body.result);
 								assert.ok(body.data.dev.domain);
 								assert.ok(body.data.dev.tenants);
@@ -1888,7 +1891,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - will get the env list in case the service has one env", function (done) {
-				executeMyRequest({ qs: { 'service': 'dashboard' } }, 'services/env/list', 'get', function (body) {
+				executeMyRequest({qs: {'service': 'dashboard'}}, 'services/env/list', 'get', function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data.dev.domain);
 					assert.ok(body.data.dev.tenants);
@@ -1897,7 +1900,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it.skip("fail - service doesn't exist", function (done) {
-				executeMyRequest({ qs: { 'service': 'noService' } }, 'services/env/list', 'get', function (body) {
+				executeMyRequest({qs: {'service': 'noService'}}, 'services/env/list', 'get', function (body) {
 					assert.equal(body.result, false);
 					done();
 				});
@@ -1907,7 +1910,7 @@ describe("DASHBOARD Integration Tests:", function () {
 		describe("list Controllers", function () {
 			
 			it("success - will get hosts list", function (done) {
-				executeMyRequest({ qs: { 'env': 'dev' } }, 'hosts/awareness', 'get', function (body) {
+				executeMyRequest({qs: {'env': 'dev'}}, 'hosts/awareness', 'get', function (body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -1920,7 +1923,7 @@ describe("DASHBOARD Integration Tests:", function () {
 		describe("list cloud nodes ", function () {
 			
 			it("fail - will get nodes list", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						'env': 'qa'
 					}
@@ -1931,7 +1934,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				});
 			});
 			it("fail - will add node", function (done) {
-				var params = {
+				let params = {
 					form: {
 						'env': 'qa',
 						'host': "test",
@@ -1944,7 +1947,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				});
 			});
 			it("fail - will update node", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						'env': 'qa',
 						'nodeId': 'nodeTest',
@@ -1961,7 +1964,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("fail - will remove node", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						'env': 'qa',
 						'nodeId': 'nodeId'
@@ -1979,11 +1982,11 @@ describe("DASHBOARD Integration Tests:", function () {
 	describe("change tenant security key", function () {
 		
 		describe("will change tenant security key", function () {
-			var Authorization, access_token;
-			var newKey = "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974";
+			let Authorization, access_token;
+			let newKey = "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974";
 			
 			it("get Auhtorization token", function (done) {
-				var options = {
+				let options = {
 					uri: 'http://localhost:4000/oauth/authorization',
 					headers: {
 						'Content-Type': 'application/json',
@@ -2001,11 +2004,11 @@ describe("DASHBOARD Integration Tests:", function () {
 			});
 			
 			it("success - change security key", function (done) {
-				mongo.findOne('environment', { 'code': 'DEV' }, function (error, envRecord) {
+				mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
 					assert.ifError(error);
 					assert.ok(envRecord);
 					//Login first
-					var options = {
+					let options = {
 						uri: 'http://localhost:4000/oauth/token',
 						headers: {
 							'Content-Type': 'application/json',
@@ -2025,7 +2028,7 @@ describe("DASHBOARD Integration Tests:", function () {
 						assert.ok(body);
 						access_token = body.access_token;
 						
-						var params = {
+						let params = {
 							headers: {
 								key: newKey
 							},
@@ -2050,7 +2053,7 @@ describe("DASHBOARD Integration Tests:", function () {
 		
 		describe("fail - logged in user is not the owner of the app", function () {
 			it("reload controller provision", function (done) {
-				var params = {
+				let params = {
 					"uri": "http://127.0.0.1:5000/loadProvision",
 					"headers": {
 						"content-type": "application/json"
@@ -2069,11 +2072,11 @@ describe("DASHBOARD Integration Tests:", function () {
 	});
 	
 	describe("prevent operator from removing tenant/application/key/extKey/product/package he is currently logged in with", function () {
-		var tenantId, appId, key, tenantExtKey, productCode, productId, packageCode, params;
+		let tenantId, appId, key, tenantExtKey, productCode, productId, packageCode, params;
 		
 		before(function (done) {
 			//get tenant/product info from db
-			mongo.findOne('tenants', { 'code': "test" }, function (error, record) {
+			mongo.findOne('tenants', {'code': "test"}, function (error, record) {
 				assert.ifError(error);
 				assert.ok(record);
 				tenantId = record._id.toString();
@@ -2083,7 +2086,7 @@ describe("DASHBOARD Integration Tests:", function () {
 				productCode = record.applications[0].product;
 				packageCode = record.applications[0].package;
 				
-				mongo.findOne('products', { 'code': productCode }, function (error, record) {
+				mongo.findOne('products', {'code': productCode}, function (error, record) {
 					assert.ifError(error);
 					assert.ok(record);
 					productId = record._id.toString();
@@ -2102,7 +2105,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			
 			executeMyRequest(params, 'tenant/delete', 'delete', function (body) {
 				assert.ok(body);
-				assert.deepEqual(body.errors.details[0], { "code": 462, "message": errorCodes[462] });
+				assert.deepEqual(body.errors.details[0], {"code": 462, "message": errorCodes[462]});
 				done();
 			});
 		});
@@ -2116,7 +2119,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			};
 			executeMyRequest(params, 'tenant/application/delete', 'delete', function (body) {
 				assert.ok(body);
-				assert.deepEqual(body.errors.details[0], { "code": 463, "message": errorCodes[463] });
+				assert.deepEqual(body.errors.details[0], {"code": 463, "message": errorCodes[463]});
 				done();
 			});
 		});
@@ -2132,7 +2135,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			executeMyRequest(params, 'tenant/application/key/delete', 'delete', function (body) {
 				assert.ok(body);
 				
-				assert.deepEqual(body.errors.details[0], { "code": 464, "message": errorCodes[464] });
+				assert.deepEqual(body.errors.details[0], {"code": 464, "message": errorCodes[464]});
 				done();
 			});
 		});
@@ -2152,7 +2155,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			executeMyRequest(params, 'tenant/application/key/ext/delete', 'post', function (body) {
 				assert.ok(body);
 				assert.ok(body.errors);
-				assert.deepEqual(body.errors.details[0], { "code": 465, "message": errorCodes[465] });
+				assert.deepEqual(body.errors.details[0], {"code": 465, "message": errorCodes[465]});
 				done();
 			});
 		});
@@ -2165,7 +2168,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			};
 			executeMyRequest(params, 'product/delete', 'delete', function (body) {
 				assert.ok(body);
-				assert.deepEqual(body.errors.details[0], { "code": 466, "message": errorCodes[466] });
+				assert.deepEqual(body.errors.details[0], {"code": 466, "message": errorCodes[466]});
 				done();
 			});
 		});
@@ -2179,7 +2182,7 @@ describe("DASHBOARD Integration Tests:", function () {
 			};
 			executeMyRequest(params, 'product/packages/delete', 'delete', function (body) {
 				assert.ok(body);
-				assert.deepEqual(body.errors.details[0], { "code": 467, "message": errorCodes[467] });
+				assert.deepEqual(body.errors.details[0], {"code": 467, "message": errorCodes[467]});
 				done();
 			});
 		});

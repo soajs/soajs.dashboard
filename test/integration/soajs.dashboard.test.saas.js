@@ -1,22 +1,23 @@
 "use strict";
-var assert = require('assert');
-var request = require("request");
-var util = require("soajs.core.libs").utils;
-var helper = require("../helper.js");
-var dashboard;
 
-var config = helper.requireModule('./config');
-var errorCodes = config.errors;
+const assert = require('assert');
+const request = require("request");
+const util = require("soajs.core.libs").utils;
+const helper = require("../helper.js");
+let dashboard;
 
-var Mongo = require("soajs.core.modules").mongo;
-var dbConfig = require("./db.config.test.js");
+const config = helper.requireModule('./config');
+const errorCodes = config.errors;
 
-var dashboardConfig = dbConfig();
+const Mongo = require("soajs.core.modules").mongo;
+const dbConfig = require("./db.config.test.js");
+
+let dashboardConfig = dbConfig();
 dashboardConfig.name = "demo_core_provision";
-var mongo = new Mongo(dashboardConfig);
+const mongo = new Mongo(dashboardConfig);
 
-var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f7ad78ebb7347db3fc9875cb10c2bce39bbf8aabacf9e00420afb580b15698c04ce10d659d1972ebc53e76b6bbae0c113bee1e23062800bc830e4c329ca913fefebd1f1222295cf2eb5486224044b4d0c';
-var qaEnvRecord;
+const extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f7ad78ebb7347db3fc9875cb10c2bce39bbf8aabacf9e00420afb580b15698c04ce10d659d1972ebc53e76b6bbae0c113bee1e23062800bc830e4c329ca913fefebd1f1222295cf2eb5486224044b4d0c';
+let qaEnvRecord;
 
 function executeMyRequest(params, apiPath, method, cb) {
 	requester(apiPath, method, params, function (error, body) {
@@ -24,9 +25,9 @@ function executeMyRequest(params, apiPath, method, cb) {
 		assert.ok(body);
 		return cb(body);
 	});
-
+	
 	function requester(apiName, method, params, cb) {
-		var options = {
+		let options = {
 			uri: 'http://localhost:4000/dashboard/' + apiName,
 			headers: {
 				'Content-Type': 'application/json',
@@ -34,23 +35,23 @@ function executeMyRequest(params, apiPath, method, cb) {
 			},
 			json: true
 		};
-
+		
 		if (params.headers) {
-			for (var h in params.headers) {
+			for (let h in params.headers) {
 				if (params.headers.hasOwnProperty(h)) {
 					options.headers[h] = params.headers[h];
 				}
 			}
 		}
-
+		
 		if (params.form) {
 			options.body = params.form;
 		}
-
+		
 		if (params.qs) {
 			options.qs = params.qs;
 		}
-
+		
 		request[method](options, function (error, response, body) {
 			assert.ifError(error);
 			assert.ok(body);
@@ -60,13 +61,13 @@ function executeMyRequest(params, apiPath, method, cb) {
 }
 
 describe("DASHBOARD Saas Integration Tests:", function () {
-	var envId;
-	var qaID;
+	let envId;
+	let qaID;
 	before(function (done) {
 		process.env.SOAJS_SAAS = "true";
 		done();
 	});
-
+	
 	after(function (done) {
 		delete process.env.SOAJS_SAAS;
 		mongo.closeDb();
@@ -74,7 +75,7 @@ describe("DASHBOARD Saas Integration Tests:", function () {
 	});
 	
 	describe("environment tests", function () {
-		var validEnvRecord = {
+		let validEnvRecord = {
 			"code": "DEV",
 			"domain": "api.myDomain.com",
 			"apiPrefix": "api",
@@ -362,7 +363,7 @@ describe("DASHBOARD Saas Integration Tests:", function () {
 		before(function (done) {
 			mongo.remove('environment', {}, function (error) {
 				assert.ifError(error);
-
+				
 				mongo.insert('environment', validEnvRecord, function (error) {
 					assert.ifError(error);
 					mongo.insert('environment', qaEnvRecord, function (error) {
@@ -372,10 +373,10 @@ describe("DASHBOARD Saas Integration Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("add environment tests", function () {
 			it("success - will add TEST environment - SaaS", function (done) {
-				var data2 = util.cloneObj(validEnvRecord);
+				let data2 = util.cloneObj(validEnvRecord);
 				data2.code = 'TEST';
 				data2.services.config.session.proxy = "true";
 				data2.templateId = "5acf46c4af4cd3a45f21e2ea";
@@ -384,7 +385,7 @@ describe("DASHBOARD Saas Integration Tests:", function () {
 				delete data2.dbs;
 				delete data2.services;
 				delete data2._id;
-				var params = {
+				let params = {
 					form: {
 						template: {
 							gi: {
@@ -409,19 +410,19 @@ describe("DASHBOARD Saas Integration Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it('mongo test', function (done) {
-				mongo.findOne('environment', { 'code': 'DEV' }, function (error, envRecord) {
+				mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
 					assert.ifError(error);
 					envId = envRecord._id.toString();
 					delete envRecord._id;
 					delete envRecord.profile;
-
-					var tester = util.cloneObj(validEnvRecord);
+					
+					let tester = util.cloneObj(validEnvRecord);
 					delete tester.profile;
 					delete tester._id;
 					assert.deepEqual(envRecord, tester);
-					mongo.findOne('environment', { 'code': 'QA' }, function (error, qaRecord) {
+					mongo.findOne('environment', {'code': 'QA'}, function (error, qaRecord) {
 						assert.ifError(error);
 						qaID = qaRecord._id.toString();
 						delete qaRecord._id;
@@ -432,7 +433,7 @@ describe("DASHBOARD Saas Integration Tests:", function () {
 				});
 			});
 		});
-
+		
 	});
-
+	
 });
