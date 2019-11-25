@@ -54,18 +54,25 @@ module.exports = function (grunt) {
 		jshint: {
 			options: {
 				"bitwise": true,
+				"curly": true,
 				"eqeqeq": true,
+				"eqnull": true,
+				"esversion": 6,
+				"latedef": "nofunc",
+				"leanswitch": true,
+				"nonbsp": true,
+				"strict": "global",
+				"varstmt": true,
 				"forin": true,
 				"newcap": true,
 				"noarg": true,
 				"undef": true,
 				"unused": false,
-				"eqnull": true,
 				"laxcomma": true,
-				"loopfunc": true,
+				// "loopfunc": true,
 				"sub": true,
-				"supernew": true,
-				"validthis": true,
+				// "supernew": true,
+				// "validthis": true,
 				"node": true,
 				"maxerr": 100,
 				"indent": 2,
@@ -80,7 +87,9 @@ module.exports = function (grunt) {
 				ignores: ['test/coverage/**/*.js']
 			},
 			files: {
-				src: ['service/**/*.js']
+				src: ['service/**/*.js', 'config.js', 'index.js', 'Gruntfile.js',
+					'lib/*.js', 'models/*.js', 'test/helper.js', 'test/unit/**/*.js',
+					'test/integration/*.js', 'test/profiles/*.js']
 			},
 			gruntfile: {
 				src: 'Gruntfile.js'
@@ -95,7 +104,7 @@ module.exports = function (grunt) {
 		//     }
 		//   }
 		// },
-
+		
 		env: {
 			mochaTest: {
 				// NODE_ENV: 'test',
@@ -110,14 +119,13 @@ module.exports = function (grunt) {
 				// APP_DIR: process.cwd(),
 				SOAJS_TEST_PACKAGE: "DSBRD_DEFLT",
 				SOAJS_DEPLOY_TEST: true,
-				//SOAJS_DEBUG_LOGS: true,
 				APP_DIR_FOR_CODE_COVERAGE: '../test/coverage/instrument/',
 				SOAJS_SRVIP: '127.0.0.1',
 				SOAJS_PROFILE: '',
 				SOAJS_ENV: 'dev'
 			}
 		},
-
+		
 		clean: {
 			doc: {
 				src: ['doc/']
@@ -126,7 +134,7 @@ module.exports = function (grunt) {
 				src: ['test/coverage/']
 			}
 		},
-
+		
 		copy: {
 			main: {
 				files: [
@@ -134,7 +142,7 @@ module.exports = function (grunt) {
 				]
 			}
 		},
-
+		
 		instrument: {
 			files: [
 				'config.js',
@@ -158,13 +166,13 @@ module.exports = function (grunt) {
 				basePath: 'test/coverage/instrument/'
 			}
 		},
-
+		
 		storeCoverage: {
 			options: {
 				dir: 'test/coverage/reports'
 			}
 		},
-
+		
 		makeReport: {
 			src: 'test/coverage/reports/**/*.json',
 			options: {
@@ -173,7 +181,7 @@ module.exports = function (grunt) {
 				print: 'detail'
 			}
 		},
-
+		
 		mochaTest: {
 			unit: {
 				options: {
@@ -194,15 +202,6 @@ module.exports = function (grunt) {
 					'test/integration/_server.test.js'
 				]
 			},
-			"UC-1": {
-				options: {
-					reporter: 'spec',
-					timeout: 90000
-				},
-				src: [
-					'test/integration/_server.UC1.test.js'
-				]
-			},
 			saas: {
 				options: {
 					reporter: 'spec',
@@ -213,12 +212,12 @@ module.exports = function (grunt) {
 				]
 			}
 		},
-
+		
 		coveralls: {
 			options: {
 				// LCOV coverage file relevant to every target
 				src: 'test/coverage/reports/lcov.info',
-
+				
 				// When true, grunt-coveralls will only print a warning rather than
 				// an error, to prevent CI builds from failing unnecessarily (e.g. if
 				// coveralls.io is down). Optional, defaults to false.
@@ -227,19 +226,17 @@ module.exports = function (grunt) {
 			your_target: {
 				// Target-specific LCOV coverage file
 				src: 'test/coverage/reports/lcov.info'
-				
 			}
 		}
 	});
-
+	
 	process.env.SHOW_LOGS = grunt.option('showLogs');
 	grunt.registerTask("default", ['jshint']);
 	grunt.registerTask("integration", ['env:coverage', 'mochaTest:integration']);
-	grunt.registerTask("UC-1", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:UC-1']);
-	grunt.registerTask("unit", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'storeCoverage', 'makeReport', 'storeCoverage', 'makeReport']);
+	grunt.registerTask("unit", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'storeCoverage', 'makeReport']);
 	grunt.registerTask("integration", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:integration', 'storeCoverage', 'makeReport']);
 	grunt.registerTask("saas", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:saas', 'storeCoverage', 'makeReport']);
-	grunt.registerTask("test", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'mochaTest:UC-1', 'mochaTest:saas', 'storeCoverage', 'makeReport']);
-	grunt.registerTask("coverage", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration','mochaTest:UC-1', 'mochaTest:saas', 'storeCoverage', 'makeReport', 'coveralls']);
-
+	grunt.registerTask("test", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'mochaTest:saas']);
+	grunt.registerTask("coverage", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'mochaTest:saas', 'storeCoverage', 'makeReport', 'coveralls']);
+	
 };
