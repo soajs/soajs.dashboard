@@ -1,9 +1,9 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/environment/status.js');
-var statusUtils = helper.requireModule("./lib/environment/statusUtils");
-var sinon = require('sinon');
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const utils = helper.requireModule('./lib/environment/status.js');
+const statusUtils = helper.requireModule("./lib/environment/statusUtils");
+const sinon = require('sinon');
 
 function stubStatusUtils(error) {
 	sinon
@@ -25,8 +25,9 @@ function stubStatusUtils(error) {
 		.stub(statusUtils, 'resources')
 		.yields(error, true);
 }
-var timer = 500;
-var req = {
+
+let timer = 500;
+let req = {
 	soajs: {
 		registry: {
 			coreDB: {
@@ -34,7 +35,7 @@ var req = {
 					name: 'core_provision',
 					prefix: '',
 					servers: [
-						{ host: '127.0.0.1', port: 27017 }
+						{host: '127.0.0.1', port: 27017}
 					],
 					credentials: null,
 					streaming: {
@@ -57,13 +58,13 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-
+			
 			},
 			error: function (data) {
-
+			
 			},
 			info: function (data) {
-
+			
 			}
 		},
 		inputmaskData: {},
@@ -80,7 +81,7 @@ var req = {
 		}
 	}
 };
-var mongoStub = {
+let mongoStub = {
 	findEntry: function (soajs, opts, cb) {
 		cb(null, {
 			"productize": {
@@ -107,11 +108,11 @@ var mongoStub = {
 		return true;
 	}
 };
-var BL = {
+let BL = {
 	model: mongoStub
 };
-var config = {};
-var template = {
+let config = {};
+let template = {
 	"type": "_template",
 	"name": "MGTT",
 	"description": "Mike Generic Test Template",
@@ -332,9 +333,9 @@ var template = {
 							}
 						}
 					],
-					"status":{
+					"status": {
 						"done": true,
-						"data":[
+						"data": [
 							{
 								"db": "mongo id of this resource"
 							}
@@ -346,60 +347,60 @@ var template = {
 		deployments: {
 			pre: {
 				"infra.cluster.deploy": {
-					"imfv" : [
+					"imfv": [
 						{
-							"command":{
-								"method" : "post",
-								"routeName" : "/bridge/executeDriver",
-								"data" : {
-									"type" : "infra",
-									"name" : "google",
-									"driver" : "google",
-									"command" : "deployCluster",
-									"project" : "demo",
-									"options" : {
-										"region" : "us-east1-b",
-										"workernumber" : 3,
-										"workerflavor" : "n1-standard-2",
-										"regionLabel" : "us-east1-b",
-										"technology" : "kubernetes",
-										"envCode" : "PORTAL"
+							"command": {
+								"method": "post",
+								"routeName": "/bridge/executeDriver",
+								"data": {
+									"type": "infra",
+									"name": "google",
+									"driver": "google",
+									"command": "deployCluster",
+									"project": "demo",
+									"options": {
+										"region": "us-east1-b",
+										"workernumber": 3,
+										"workerflavor": "n1-standard-2",
+										"regionLabel": "us-east1-b",
+										"technology": "kubernetes",
+										"envCode": "PORTAL"
 									}
 								}
 							},
-							"check" : {
-								"id" : {
-									"type" : "string",
+							"check": {
+								"id": {
+									"type": "string",
 									"required": true
 								}
 							}
 						},
 						{
-							"recursive" : {
-								"max" : 5,
+							"recursive": {
+								"max": 5,
 								"delay": 300
 							},
-							"check" : {
-								"id" : {
-									"type" : "string",
+							"check": {
+								"id": {
+									"type": "string",
 									"required": true
 								},
-								"ip" : {
-									"type" : "string",
+								"ip": {
+									"type": "string",
 									"required": true
 								}
 							},
 							"command": {
-								"method" : "post",
-								"routeName" : "/bridge/executeDriver",
-								"data" : {
-									"type" : "infra",
-									"name" : "google",
-									"driver" : "google",
-									"command" : "getDeployClusterStatus",
-									"project" : "demo",
-									"options" : {
-										"envCode" : "PORTAL"
+								"method": "post",
+								"routeName": "/bridge/executeDriver",
+								"data": {
+									"type": "infra",
+									"name": "google",
+									"driver": "google",
+									"command": "getDeployClusterStatus",
+									"project": "demo",
+									"options": {
+										"envCode": "PORTAL"
 									}
 								}
 							}
@@ -410,22 +411,22 @@ var template = {
 						"data": {
 							"id": "kaza",
 							"ip": "kaza",
-							"dns": { "a":"b" }
+							"dns": {"a": "b"}
 						},
-						"rollback" : {
-							"command":{
-								"method" : "post",
-								"routeName" : "/bridge/executeDriver",
+						"rollback": {
+							"command": {
+								"method": "post",
+								"routeName": "/bridge/executeDriver",
 								"params": {},
-								"data" : {
-									"type" : "infra",
-									"name" : "google",
-									"driver" : "google",
-									"command" : "deleteCluster",
-									"project" : "demo",
-									"options" : {
-										"envCode" : "PORTAL",
-										"force" : true
+								"data": {
+									"type": "infra",
+									"name": "google",
+									"driver": "google",
+									"command": "deleteCluster",
+									"project": "demo",
+									"options": {
+										"envCode": "PORTAL",
+										"force": true
 									}
 								}
 							}
@@ -473,9 +474,7 @@ var template = {
 							type: 'custom'
 						}
 					],
-					"status": {
-					
-					}
+					"status": {}
 					
 				},
 				'deployments__dot__resources__dot__nginx': {
@@ -522,31 +521,31 @@ var template = {
 				"infra.dns": {
 					"imfv": [
 						{
-							"recursive" : {
-								"max" : 5,
+							"recursive": {
+								"max": 5,
 								"delay": 300
 							},
-							"check" : {
-								"dns" : {
-									"type" : "object",
+							"check": {
+								"dns": {
+									"type": "object",
 									"required": true
 								},
-								"ip" : {
-									"type" : "string",
+								"ip": {
+									"type": "string",
 									"required": true
 								}
 							},
 							"command": {
-								"method" : "post",
-								"routeName" : "/bridge/executeDriver",
-								"data" : {
-									"type" : "infra",
-									"name" : "google",
-									"driver" : "google",
-									"command" : "getDNSInfo",
-									"project" : "demo",
-									"options" : {
-										"envCode" : "PORTAL"
+								"method": "post",
+								"routeName": "/bridge/executeDriver",
+								"data": {
+									"type": "infra",
+									"name": "google",
+									"driver": "google",
+									"command": "getDNSInfo",
+									"project": "demo",
+									"options": {
+										"envCode": "PORTAL"
 									}
 								}
 							}
@@ -556,7 +555,7 @@ var template = {
 						"done": true,
 						"data": {
 							"ip": "kaza",
-							"dns": { "a":"b" }
+							"dns": {"a": "b"}
 						}
 					},
 				}
@@ -564,7 +563,7 @@ var template = {
 		}
 	}
 };
-var errorTemplate = {
+let errorTemplate = {
 	"type": "_template",
 	"name": "MGTT",
 	"description": "Mike Generic Test Template",
@@ -756,7 +755,7 @@ var errorTemplate = {
 		}
 	}
 };
-var environmentRecord = {
+let environmentRecord = {
 	_id: '5a58d942ace01a5325fa3e4c',
 	code: 'DASHBORAD',
 	deployer: {
@@ -810,20 +809,20 @@ describe("testing lib/environment/status.js", function () {
 	describe("testing validateDeploymentInputs", function () {
 		it("Success", function (done) {
 			stubStatusUtils(null);
-			utils.validateDeploymentInputs(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)),{_id:123}, function (err, body) {
+			utils.validateDeploymentInputs(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)), {_id: 123}, function (err, body) {
 				assert.ok(body);
 				sinon.restore(statusUtils);
 				done();
-			})
+			});
 		});
 		
 		it("Errors", function (done) {
 			stubStatusUtils(null);
-			utils.validateDeploymentInputs(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(errorTemplate)),{_id:123}, function (err, body) {
+			utils.validateDeploymentInputs(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(errorTemplate)), {_id: 123}, function (err, body) {
 				assert.ok(err);
 				sinon.restore(statusUtils);
 				done();
-			})
+			});
 		});
 	});
 	
@@ -833,31 +832,31 @@ describe("testing lib/environment/status.js", function () {
 			req.soajs.inputmaskData = {
 				resume: true
 			};
-			utils.resumeDeployment(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)),{_id:123}, function (err, body) {
+			utils.resumeDeployment(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)), {_id: 123}, function (err, body) {
 				setTimeout(() => {
 					assert.ok(body);
 					sinon.restore(statusUtils);
 					done();
 				}, timer);
-			})
+			});
 		});
 		
 		it("Error", function (done) {
 			stubStatusUtils(true);
-			req.soajs.inputmaskData= {
+			req.soajs.inputmaskData = {
 				resume: true
 			};
 			BL.model.saveEntry = function (soajs, opts, cb) {
 				cb(true, true);
 			};
 			
-			utils.resumeDeployment(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)),{_id:123}, function (err, body) {
+			utils.resumeDeployment(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)), {_id: 123}, function (err, body) {
 				setTimeout(() => {
 					assert.ok(body);
 					sinon.restore(statusUtils);
 					done();
 				}, timer);
-			})
+			});
 		});
 	});
 	
@@ -865,26 +864,26 @@ describe("testing lib/environment/status.js", function () {
 		it("Success", function (done) {
 			stubStatusUtils(null);
 			req.soajs.inputmaskData = {};
-			utils.checkProgress(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)),{_id:123}, function (err, body) {
+			utils.checkProgress(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)), {_id: 123}, function (err, body) {
 				setTimeout(() => {
 					assert.ok(body);
 					sinon.restore(statusUtils);
 					done();
 				}, timer);
-			})
+			});
 		});
 		it.skip("Success", function (done) {
 			stubStatusUtils(null);
 			req.soajs.inputmaskData = {
 				rollback: true
 			};
-			utils.checkProgress(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)),{_id:123}, function (err, body) {
+			utils.checkProgress(req, BL, config, environmentRecord, JSON.parse(JSON.stringify(template)), {_id: 123}, function (err, body) {
 				setTimeout(() => {
 					assert.ok(body);
 					sinon.restore(statusUtils);
 					done();
 				}, timer);
-			})
+			});
 		});
 	});
 });

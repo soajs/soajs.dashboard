@@ -1,40 +1,39 @@
 "use strict";
 const sinon = require('sinon');
-var assert = require("assert");
-const formidable = require('formidable');
-var helper = require("../../../helper.js");
-var status = helper.requireModule('./lib/templates/helper.js');
-var async = require('async');
+const assert = require("assert");
+const formidable = require('formidable'); //todo: check unused
+const helper = require("../../../helper.js");
+const status = helper.requireModule('./lib/templates/helper.js');
+const async = require('async'); //todo: check unused
 let template = require('./schema/newTemplate.js');
 
 let templatesTest = require('./schema/templates.js');
 
 function stubStatusUtils(error) {
-	sinon
-		.stub(status, 'ci')
+	sinon.stub(status, 'ci')
 		.yields(error, true);
-
-	sinon
-		.stub(status, 'cd')
+	
+	sinon.stub(status, 'cd')
 		.yields(error, true);
-	sinon
-		.stub(status, 'daemon')
+	
+	sinon.stub(status, 'daemon')
 		.yields(error, true);
-	sinon
-		.stub(status, 'endpoint')
+	
+	sinon.stub(status, 'endpoint')
 		.yields(error, true);
-	sinon
-		.stub(status, 'productization')
+	
+	sinon.stub(status, 'productization')
 		.yields(error, true);
-	sinon
-		.stub(status, 'tenant')
+	
+	sinon.stub(status, 'tenant')
 		.yields(error, true);
-	sinon
-		.stub(status, 'repos')
+	
+	sinon.stub(status, 'repos')
 		.yields(error, true);
-	sinon
-		.stub(status, 'resources')
+	
+	sinon.stub(status, 'resources')
 		.yields(error, true);
+	
 }
 
 let repoModel = {
@@ -52,7 +51,7 @@ const lib = {
 			if (typeof (data.error) === 'object') {
 				req.soajs.log.error(data.error);
 			}
-			return mainCb({ "code": data.code, "msg": data.config.errors[data.code] });
+			return mainCb({"code": data.code, "msg": data.config.errors[data.code]});
 		} else {
 			if (cb) {
 				return cb();
@@ -67,37 +66,37 @@ let configAll = {
 			"serviceName": {
 				"source": ['query.serviceName', 'body.serviceName'],
 				"required": true,
-				"validation": { "type": "string" }
+				"validation": {"type": "string"}
 			},
 			"serviceGroup": {
 				"source": ['query.serviceGroup', 'body.serviceGroup'],
 				"required": true,
-				"validation": { "type": "string" }
+				"validation": {"type": "string"}
 			},
 			"servicePort": {
 				"source": ['query.servicePort', 'body.servicePort'],
 				"required": true,
-				"validation": { "type": "number", "minimum": 1 }
+				"validation": {"type": "number", "minimum": 1}
 			},
 			"serviceVersion": {
 				"source": ['query.serviceVersion', 'body.serviceVersion'],
 				"required": true,
-				"validation": { "type": "number", "minimum": 1 }
+				"validation": {"type": "number", "minimum": 1}
 			},
 			"requestTimeout": {
 				"source": ['query.requestTimeout', 'body.requestTimeout'],
 				"required": true,
-				"validation": { "type": "number", "minimum": 1 }
+				"validation": {"type": "number", "minimum": 1}
 			},
 			"requestTimeoutRenewal": {
 				"source": ['query.requestTimeoutRenewal', 'body.requestTimeoutRenewal'],
 				"required": true,
-				"validation": { "type": "number", "minimum": 1 }
+				"validation": {"type": "number", "minimum": 1}
 			},
 			"defaultAuthentication": {
 				"source": ['query.defaultAuthentication', 'body.defaultAuthentication'],
 				"required": false,
-				"validation": { "type": "string" }
+				"validation": {"type": "string"}
 			},
 			"epType": {
 				"source": ['query.epType', 'body.epType'],
@@ -111,18 +110,18 @@ let configAll = {
 				"source": ['query.oauth', 'body.oauth'],
 				"required": false,
 				"default": false,
-				"validation": { "type": "boolean" }
+				"validation": {"type": "boolean"}
 			},
 			"extKeyRequired": {
 				"source": ['query.extKeyRequired', 'body.extKeyRequired'],
 				"required": false,
 				"default": false,
-				"validation": { "type": "boolean" }
+				"validation": {"type": "boolean"}
 			},
 			"swaggerInput": {
 				"source": ['query.swaggerInput', 'body.swaggerInput'],
 				"required": false,
-				"validation": { "type": "string" }
+				"validation": {"type": "string"}
 			},
 			"authentications": {
 				"source": ['query.authentications', 'body.authentications'],
@@ -151,15 +150,15 @@ let configAll = {
 					"type": "object",
 					"additionalProperties": false,
 					"properties": {
-						"cpu": { "type": "string" },
-						"memory": { "type": "string" }
+						"cpu": {"type": "string"},
+						"memory": {"type": "string"}
 					}
 				}
 			},
 			"schemas": {
 				"source": ['body.schemas'],
 				"required": false,
-				"validation": { "type": "string" }
+				"validation": {"type": "string"}
 			}
 		}
 	}
@@ -174,9 +173,9 @@ let context = {
 	}
 };
 
-var environment;
+let environment;
 
-var req = {
+let req = {
 	soajs: {
 		registry: {
 			coreDB: {
@@ -184,7 +183,7 @@ var req = {
 					name: 'core_provision',
 					prefix: '',
 					servers: [
-						{ host: '127.0.0.1', port: 27017 }
+						{host: '127.0.0.1', port: 27017}
 					],
 					credentials: null,
 					streaming: {
@@ -207,13 +206,13 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-
+			
 			},
 			error: function (data) {
-
+			
 			},
 			info: function (data) {
-
+			
 			}
 		},
 		inputmaskData: {},
@@ -226,11 +225,10 @@ var req = {
 							return {
 								errors: []
 							};
-						}
-						else {
+						} else {
 							//invalid
 							return {
-								errors: [{ error: 'msg' }]
+								errors: [{error: 'msg'}]
 							};
 						}
 					}
@@ -240,11 +238,11 @@ var req = {
 	}
 };
 
-var config = {
+let config = {
 	"errors": {}
 };
 
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -253,14 +251,14 @@ var mongoStub = {
 	},
 	findEntry: function (soajs, opts, cb) {
 		if (opts.collection === 'templates') {
-			cb(null, template)
+			cb(null, template);
 		}
 		cb(null, {
 			metadata: {}
 		});
 	},
 	findEntries: function (soajs, opts, cb) {
-
+		
 		cb(null, [{
 			"_id": '5512867be603d7e01ab1688d',
 			"locked": true,
@@ -306,7 +304,7 @@ var mongoStub = {
 			]
 		}]);
 	},
-
+	
 	countEntries: function (soajs, opts, cb) {
 		cb(null, 0);
 	},
@@ -315,7 +313,7 @@ var mongoStub = {
 			ObjectId: function () {
 				return data;
 			}
-		}
+		};
 	},
 	removeEntry: function (soajs, opts, cb) {
 		cb(null, true);
@@ -344,39 +342,39 @@ let test = {
 };
 
 describe("testing helper.js", function () {
-
+	
 	describe("testing helper", function () {
-
+		
 		describe("checkMandatoryTemplateSchema", function () {
-
+			
 			it("Success checkMandatory ", function (done) {
 				req.soajs.validator = {
 					validate: function () {
 						return {
 							valid: true
-						}
+						};
 					}
 				};
-
+				
 				status.checkMandatoryTemplateSchema(req, test, lib, context, req.soajs.validator, 40000, function (error, result) {
 					done();
 				});
 			});
-
+			
 			it("Fail checkMandatory ", function (done) {
 				req.soajs.validator = {
 					validate: function () {
 						return {
 							errors: ['errrorrrr']
-						}
+						};
 					}
 				};
-
+				
 				status.checkMandatoryTemplateSchema(req, test, lib, context, req.soajs.validator, 40000, function (result, error) {
 					done();
 				});
 			});
-
+			
 			it("check for container restrictions", function (done) {
 				let context1 = {
 					config: configAll,
@@ -386,15 +384,15 @@ describe("testing helper.js", function () {
 						ci: ["testing"]
 					}
 				};
-
+				
 				req.soajs.validator = {
 					validate: function () {
 						return {
 							valid: true
-						}
+						};
 					}
 				};
-
+				
 				status.checkMandatoryTemplateSchema(req, test, lib, context1, req.soajs.validator, 40000, function (error, result) {
 					assert.deepEqual(context1.template.restriction.deployment, ['container']);
 					done();
@@ -415,7 +413,7 @@ describe("testing helper.js", function () {
 					validate: function () {
 						return {
 							valid: true
-						}
+						};
 					}
 				};
 				
@@ -424,14 +422,14 @@ describe("testing helper.js", function () {
 				});
 			});
 		});
-
+		
 		describe("populateTemplate", function () {
 			it("Success populateTemplate ", function (done) {
 				req.soajs.validator = {
 					validate: function () {
 						return {
 							errors: ['errrorrrr']
-						}
+						};
 					}
 				};
 				let newTemplate = JSON.parse(JSON.stringify(template));
@@ -450,7 +448,7 @@ describe("testing helper.js", function () {
 				done();
 			});
 		});
-
+		
 		describe("checkDuplicate", function () {
 			it("Success  ", function (done) {
 				req.soajs.validator = {
@@ -459,7 +457,7 @@ describe("testing helper.js", function () {
 							validate: function () {
 								return {
 									valid: true
-								}
+								};
 							}
 						};
 					}
@@ -489,14 +487,14 @@ describe("testing helper.js", function () {
 						}
 					]
 				};
-
+				
 				status.checkDuplicate(req, test, context, lib, function (result, error) {
 					sinon.restore(status);
 					done();
 				});
 			});
 		});
-
+		
 		describe("fetchDataFromDB", function () {
 			it("Success  ", function (done) {
 				req.soajs.validator = {
@@ -505,7 +503,7 @@ describe("testing helper.js", function () {
 							validate: function () {
 								return {
 									valid: true
-								}
+								};
 							}
 						};
 					}
@@ -520,7 +518,7 @@ describe("testing helper.js", function () {
 				});
 			});
 		});
-
+		
 		describe("saveContent", function () {
 			it("Success  ", function (done) {
 				req.soajs.validator = {
@@ -529,12 +527,12 @@ describe("testing helper.js", function () {
 							validate: function () {
 								return {
 									valid: true
-								}
+								};
 							}
 						};
 					}
 				};
-
+				
 				stubStatusUtils();
 				status.saveContent(req, test, context, lib, function (result, error) {
 					sinon.restore(status);
@@ -542,7 +540,7 @@ describe("testing helper.js", function () {
 				});
 			});
 		});
-
+		
 		describe("generateDeploymentTemplate", function () {
 			it("Success  ", function (done) {
 				req.soajs.validator = {
@@ -551,12 +549,12 @@ describe("testing helper.js", function () {
 							validate: function () {
 								return {
 									valid: true
-								}
+								};
 							}
 						};
 					}
 				};
-
+				
 				stubStatusUtils();
 				status.generateDeploymentTemplate(req, config, test, context, lib, function (result, error) {
 					sinon.restore(status);
@@ -564,7 +562,7 @@ describe("testing helper.js", function () {
 				});
 			});
 		});
-
+		
 		describe("cleanUp", function () {
 			it("Success ", function (done) {
 				req.soajs.validator = {
@@ -573,24 +571,24 @@ describe("testing helper.js", function () {
 							validate: function () {
 								return {
 									valid: true
-								}
+								};
 							}
 						};
 					}
 				};
-
+				
 				stubStatusUtils();
 				status.mergeToTemplate(req, config, test, context, lib, function (result, error) {
 					sinon.restore(status);
 				});
-
+				
 				status.cleanUp(req.soajs, 'test', function (result, error) {
 					sinon.restore(status);
 					done();
 				});
 			});
 		});
-
+		
 		describe("ci calling ", function () {
 			it("Success ", function (done) {
 				let newTemplate = JSON.parse(JSON.stringify(template));
@@ -627,13 +625,13 @@ describe("testing helper.js", function () {
 						}
 					}
 				};
-
+				
 				status.ci("check", req, newContext, test, lib, function (result, error) {
 					done();
 				});
 			});
 		});
-
+		
 		describe("cd calling ", function () {
 			it("Success ", function (done) {
 				let newTemplate = JSON.parse(JSON.stringify(template));
@@ -650,12 +648,12 @@ describe("testing helper.js", function () {
 											"required": true,
 											"additionalProperties": false,
 											"properties": {
-												"name": { "type": "string", "required": true },
-												"locked": { "type": "boolean", "required": false },
-												"active": { "type": "boolean", "required": false },
-												"type": { "type": "string", "required": true },
-												"subtype": { "type": "string", "required": false },
-												"description": { "type": "string", "required": true },
+												"name": {"type": "string", "required": true},
+												"locked": {"type": "boolean", "required": false},
+												"active": {"type": "boolean", "required": false},
+												"type": {"type": "string", "required": true},
+												"subtype": {"type": "string", "required": false},
+												"description": {"type": "string", "required": true},
 												"recipe": {
 													"type": "object",
 													"required": true,
@@ -677,15 +675,15 @@ describe("testing helper.js", function () {
 																			"type": "string",
 																			"required": false
 																		},
-																		"name": { "type": "string", "required": true },
-																		"tag": { "type": "string", "required": true },
+																		"name": {"type": "string", "required": true},
+																		"tag": {"type": "string", "required": true},
 																		"pullPolicy": {
 																			"type": "string",
 																			"required": false
 																		}
 																	}
 																},
-
+																
 																"readinessProbe": {
 																	"type": "object",
 																	"required": false
@@ -850,18 +848,18 @@ describe("testing helper.js", function () {
 										}
 									}
 								},
-
+								
 							}
 						}
 					}
 				};
-
+				
 				status.cd("check", req, newContext, test, lib, function (result, error) {
 					done();
 				});
 			});
 		});
-
+		
 		describe("daemon calling ", function () {
 			it("Success ", function (done) {
 				let newTemplate = JSON.parse(JSON.stringify(template));
@@ -876,13 +874,13 @@ describe("testing helper.js", function () {
 					errors: [],
 					dbData: {}
 				};
-
+				
 				status.daemon("check", req, newContext, test, lib, function (result, error) {
 					done();
 				});
 			});
 		});
-
+		
 		describe("endpoint endpoint ", function () {
 			it("Success ", function (done) {
 				let newTemplate = JSON.parse(JSON.stringify(template));
@@ -904,37 +902,37 @@ describe("testing helper.js", function () {
 									"serviceName": {
 										"source": ['query.serviceName', 'body.serviceName'],
 										"required": true,
-										"validation": { "type": "string" }
+										"validation": {"type": "string"}
 									},
 									"serviceGroup": {
 										"source": ['query.serviceGroup', 'body.serviceGroup'],
 										"required": true,
-										"validation": { "type": "string" }
+										"validation": {"type": "string"}
 									},
 									"servicePort": {
 										"source": ['query.servicePort', 'body.servicePort'],
 										"required": true,
-										"validation": { "type": "number", "minimum": 1 }
+										"validation": {"type": "number", "minimum": 1}
 									},
 									"serviceVersion": {
 										"source": ['query.serviceVersion', 'body.serviceVersion'],
 										"required": true,
-										"validation": { "type": "number", "minimum": 1 }
+										"validation": {"type": "number", "minimum": 1}
 									},
 									"requestTimeout": {
 										"source": ['query.requestTimeout', 'body.requestTimeout'],
 										"required": true,
-										"validation": { "type": "number", "minimum": 1 }
+										"validation": {"type": "number", "minimum": 1}
 									},
 									"requestTimeoutRenewal": {
 										"source": ['query.requestTimeoutRenewal', 'body.requestTimeoutRenewal'],
 										"required": true,
-										"validation": { "type": "number", "minimum": 1 }
+										"validation": {"type": "number", "minimum": 1}
 									},
 									"defaultAuthentication": {
 										"source": ['query.defaultAuthentication', 'body.defaultAuthentication'],
 										"required": false,
-										"validation": { "type": "string" }
+										"validation": {"type": "string"}
 									},
 									"epType": {
 										"source": ['query.epType', 'body.epType'],
@@ -948,18 +946,18 @@ describe("testing helper.js", function () {
 										"source": ['query.oauth', 'body.oauth'],
 										"required": false,
 										"default": false,
-										"validation": { "type": "boolean" }
+										"validation": {"type": "boolean"}
 									},
 									"extKeyRequired": {
 										"source": ['query.extKeyRequired', 'body.extKeyRequired'],
 										"required": false,
 										"default": false,
-										"validation": { "type": "boolean" }
+										"validation": {"type": "boolean"}
 									},
 									"swaggerInput": {
 										"source": ['query.swaggerInput', 'body.swaggerInput'],
 										"required": false,
-										"validation": { "type": "string" }
+										"validation": {"type": "string"}
 									},
 									"authentications": {
 										"source": ['query.authentications', 'body.authentications'],
@@ -988,8 +986,8 @@ describe("testing helper.js", function () {
 											"type": "object",
 											"additionalProperties": false,
 											"properties": {
-												"cpu": { "type": "string" },
-												"memory": { "type": "string" }
+												"cpu": {"type": "string"},
+												"memory": {"type": "string"}
 											}
 										}
 									},
@@ -1006,13 +1004,13 @@ describe("testing helper.js", function () {
 						}
 					},
 				};
-
+				
 				status.endpoint("check", req, newContext, test, lib, function (result, error) {
 					done();
 				});
 			});
 		});
-
+		
 		describe("productization calling ", function () {
 			it("Success ", function (done) {
 				let newTemplate = JSON.parse(JSON.stringify(template));
@@ -1025,13 +1023,13 @@ describe("testing helper.js", function () {
 						}
 					}
 				};
-
+				
 				status.productization("check", req, newContext, test, lib, function (result, error) {
 					done();
 				});
 			});
 		});
-
+		
 		describe("repos calling ", function () {
 			it("Success ", function (done) {
 				let newTemplate = JSON.parse(JSON.stringify(template));
@@ -1044,13 +1042,13 @@ describe("testing helper.js", function () {
 						}
 					}
 				};
-
+				
 				status.repos("check", req, newContext, test, lib, function (result, error) {
 					done();
 				});
 			});
 		});
-
+		
 		describe("resources calling ", function () {
 			it("Success ", function (done) {
 				let newTemplate = JSON.parse(JSON.stringify(template));
@@ -1063,13 +1061,13 @@ describe("testing helper.js", function () {
 						}
 					}
 				};
-
+				
 				status.resources("check", req, newContext, test, lib, function (result, error) {
 					done();
 				});
 			});
 		});
-
+		
 		describe("tenant calling", function () {
 			it("Success  ", function (done) {
 				let newTemplate = JSON.parse(JSON.stringify(template));
@@ -1082,12 +1080,12 @@ describe("testing helper.js", function () {
 						}
 					}
 				};
-
+				
 				status.tenant("check", req, newContext, test, lib, function (result, error) {
 					done();
 				});
 			});
 		});
-
+		
 	});
 });

@@ -1,15 +1,18 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/hosts/index.js');
-var controllersModel = helper.requireModule("./models/controllers.js");
-var mongo = helper.requireModule('./models/mongo.js');
-const sinon = require('sinon');
-var host;
-var config = helper.requireModule('./config.js');
-var deployer = helper.deployer;
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const utils = helper.requireModule('./lib/hosts/index.js');
+const controllersModel = helper.requireModule("./models/controllers.js");
 
-var helpers = helper.requireModule('./lib/hosts/helper.js');
+//todo: check unused
+const mongo = helper.requireModule('./models/mongo.js');
+const sinon = require('sinon');
+
+let host;
+const config = helper.requireModule('./config.js');
+const deployer = helper.deployer;
+
+const helpers = helper.requireModule('./lib/hosts/helper.js');
 
 let stubMongo = {
 	checkForMongo: function (soajs) {
@@ -48,7 +51,7 @@ let stubMongo = {
 	switchConnection: function (soajs) {
 	}
 };
-var envRecord = {
+let envRecord = {
 	_id: '',
 	code: 'DEV',
 	deployer: {
@@ -89,7 +92,7 @@ var envRecord = {
 };
 
 describe("testing host.js", function () {
-	var soajs = {
+	let soajs = {
 		registry: {
 			name: 'dev',
 			environment: 'dev',
@@ -133,7 +136,7 @@ describe("testing host.js", function () {
 	};
 	
 	deployer.listServices = function (data, cb) {
-		var arr = [
+		let arr = [
 			{
 				labels: {
 					'soajs.env.code': 'dev',
@@ -176,7 +179,7 @@ describe("testing host.js", function () {
 	});
 	
 	describe("list", function () {
-		var envs = [{
+		let envs = [{
 			_id: '',
 			code: 'DEV',
 			deployer: {
@@ -200,7 +203,7 @@ describe("testing host.js", function () {
 				}
 			}
 		}];
-		var tenants = [
+		let tenants = [
 			{
 				_id: '',
 				applications: []
@@ -236,7 +239,7 @@ describe("testing host.js", function () {
 	});
 	
 	describe("listHostEnv", function () {
-		var envs = [{
+		let envs = [{
 			_id: '',
 			code: 'DEV',
 			deployer: {
@@ -260,11 +263,11 @@ describe("testing host.js", function () {
 				}
 			}
 		}];
-		var tenants = [
+		let tenants = [
 			{
 				_id: '',
 				applications: [],
-				deployments : [
+				deployments: [
 					{
 						environments: ['XXX'] // or DEV to test the other path
 					}
@@ -278,7 +281,7 @@ describe("testing host.js", function () {
 		
 		it("Success listHostEnv", function (done) {
 			stubMongo.distinctEntries = function (soajs, opts, cb) {
-				var hosts = ['dev', 'prod'];
+				let hosts = ['dev', 'prod'];
 				return cb(null, hosts);
 			};
 			soajs.inputmaskData = {
@@ -299,7 +302,7 @@ describe("testing host.js", function () {
 	});
 	
 	describe("awareness", function () {
-		var envs = [{
+		let envs = [{
 			_id: '',
 			code: 'DEV',
 			deployer: {
@@ -323,7 +326,7 @@ describe("testing host.js", function () {
 				}
 			}
 		}];
-		var tenants = [
+		let tenants = [
 			{
 				_id: '',
 				applications: []
@@ -360,7 +363,7 @@ describe("testing host.js", function () {
 		});
 	});
 	
-	describe("start", function() {
+	describe("start", function () {
 		let envRecord = {
 			_id: '',
 			code: 'DEV',
@@ -385,7 +388,7 @@ describe("testing host.js", function () {
 				}
 			},
 			services: {
-				config:{
+				config: {
 					ports: {
 						controller: 6000,
 						maintenanceInc: 1000
@@ -399,13 +402,11 @@ describe("testing host.js", function () {
 			stubMongo.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}
-				else if(opts.collection === 'hosts'){
-					if(counter === 0){
-						counter ++;
+				} else if (opts.collection === 'hosts') {
+					if (counter === 0) {
+						counter++;
 						return cb(null, null);
-					}
-					else{
+					} else {
 						let serviceHost = {
 							"_id": '5be039a9914c0d532ebfc285',
 							"env": "dev",
@@ -417,8 +418,7 @@ describe("testing host.js", function () {
 						};
 						return cb(null, serviceHost);
 					}
-				}
-				else{
+				} else {
 					return cb(null, {});
 				}
 			};
@@ -439,11 +439,9 @@ describe("testing host.js", function () {
 			stubMongo.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}
-				else if(opts.collection === 'hosts'){
+				} else if (opts.collection === 'hosts') {
 					return cb(null, null);
-				}
-				else{
+				} else {
 					return cb(null, {});
 				}
 			};
@@ -465,8 +463,7 @@ describe("testing host.js", function () {
 			stubMongo.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}
-				else if(opts.collection === 'hosts'){
+				} else if (opts.collection === 'hosts') {
 					return cb(null, null);
 				}
 				return cb(null, {});
@@ -478,13 +475,13 @@ describe("testing host.js", function () {
 			};
 			host.start(config, soajs, function (error) {
 				assert.ok(error);
-				assert.deepEqual(error, { code: 524, msg: 'The requested service is not found!' });
+				assert.deepEqual(error, {code: 524, msg: 'The requested service is not found!'});
 				done();
 			});
 		});
 	});
 	
-	describe("stop", function() {
+	describe("stop", function () {
 		let envRecord = {
 			_id: '',
 			code: 'DEV',
@@ -509,7 +506,7 @@ describe("testing host.js", function () {
 				}
 			},
 			services: {
-				config:{
+				config: {
 					ports: {
 						controller: 6000,
 						maintenanceInc: 1000
@@ -522,8 +519,7 @@ describe("testing host.js", function () {
 			stubMongo.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}
-				else if(opts.collection === 'hosts'){
+				} else if (opts.collection === 'hosts') {
 					let serviceHost = {
 						"_id": '5be039a9914c0d532ebfc285',
 						"env": "dev",
@@ -534,8 +530,7 @@ describe("testing host.js", function () {
 						"port": 10001
 					};
 					return cb(null, serviceHost);
-				}
-				else{
+				} else {
 					return cb(null, {});
 				}
 			};
@@ -556,8 +551,7 @@ describe("testing host.js", function () {
 			stubMongo.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}
-				else if(opts.collection === 'hosts'){
+				} else if (opts.collection === 'hosts') {
 					let serviceHost = {
 						"_id": '5be039a9914c0d532ebfc285',
 						"env": "dev",
@@ -568,8 +562,7 @@ describe("testing host.js", function () {
 						"port": 6000
 					};
 					return cb(null, serviceHost);
-				}
-				else{
+				} else {
 					return cb(null, {});
 				}
 			};
@@ -587,7 +580,7 @@ describe("testing host.js", function () {
 		});
 	});
 	
-	describe("maintenance", function() {
+	describe("maintenance", function () {
 		let envRecord = {
 			_id: '',
 			code: 'DEV',
@@ -612,7 +605,7 @@ describe("testing host.js", function () {
 				}
 			},
 			services: {
-				config:{
+				config: {
 					ports: {
 						controller: 6000,
 						maintenanceInc: 1000
@@ -625,8 +618,7 @@ describe("testing host.js", function () {
 			stubMongo.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}
-				else if(opts.collection === 'hosts'){
+				} else if (opts.collection === 'hosts') {
 					let serviceHost = {
 						"_id": '5be039a9914c0d532ebfc285',
 						"env": "dev",
@@ -637,8 +629,7 @@ describe("testing host.js", function () {
 						"port": 10001
 					};
 					return cb(null, serviceHost);
-				}
-				else{
+				} else {
 					return cb(null, {});
 				}
 			};
@@ -661,8 +652,7 @@ describe("testing host.js", function () {
 			stubMongo.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}
-				else if(opts.collection === 'hosts'){
+				} else if (opts.collection === 'hosts') {
 					let serviceHost = {
 						"_id": '5be039a9914c0d532ebfc285',
 						"env": "dev",
@@ -673,8 +663,7 @@ describe("testing host.js", function () {
 						"port": 6000
 					};
 					return cb(null, serviceHost);
-				}
-				else{
+				} else {
 					return cb(null, {});
 				}
 			};
@@ -697,8 +686,7 @@ describe("testing host.js", function () {
 			stubMongo.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}
-				else if(opts.collection === 'hosts'){
+				} else if (opts.collection === 'hosts') {
 					let serviceHost = {
 						"_id": '5be039a9914c0d532ebfc285',
 						"env": "dev",
@@ -709,8 +697,7 @@ describe("testing host.js", function () {
 						"port": 10002
 					};
 					return cb(null, serviceHost);
-				}
-				else{
+				} else {
 					return cb(null, {});
 				}
 			};
@@ -733,8 +720,7 @@ describe("testing host.js", function () {
 			stubMongo.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}
-				else if(opts.collection === 'hosts'){
+				} else if (opts.collection === 'hosts') {
 					let serviceHost = {
 						"_id": '5be039a9914c0d532ebfc285',
 						"env": "dev",
@@ -745,8 +731,7 @@ describe("testing host.js", function () {
 						"port": 10005
 					};
 					return cb(null, serviceHost);
-				}
-				else{
+				} else {
 					return cb(null, {});
 				}
 			};
@@ -769,8 +754,7 @@ describe("testing host.js", function () {
 			stubMongo.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}
-				else if(opts.collection === 'hosts'){
+				} else if (opts.collection === 'hosts') {
 					let serviceHost = {
 						"_id": '5be039a9914c0d532ebfc285',
 						"env": "dev",
@@ -781,8 +765,7 @@ describe("testing host.js", function () {
 						"port": 10005
 					};
 					return cb(null, serviceHost);
-				}
-				else{
+				} else {
 					return cb(null, {});
 				}
 			};

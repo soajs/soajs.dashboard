@@ -1,10 +1,10 @@
 "use strict";
-var async = require("async");
-var helper = require("../../../../helper.js");
-var config = require("../../../../../config.js");
-var utils = helper.requireModule('./lib/environment/drivers/tenants.js');
+const async = require("async");
+const helper = require("../../../../helper.js");
+const config = require("../../../../../config.js");
+const utils = helper.requireModule('./lib/environment/drivers/tenants.js');
 
-var req = {
+let req = {
 	soajs: {
 		registry: {
 			coreDB: {
@@ -35,13 +35,13 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-
+			
 			},
 			error: function (data) {
-
+			
 			},
 			info: function (data) {
-
+			
 			}
 		},
 		inputmaskData: {},
@@ -58,7 +58,7 @@ var req = {
 		}
 	}
 };
-var mongoStub = {
+let mongoStub = {
 	findEntry: function (soajs, opts, cb) {
 		cb(null, {
 			"productize": {
@@ -85,7 +85,7 @@ var mongoStub = {
 		return true;
 	}
 };
-var BL = {
+let BL = {
 	customRegistry: {
 		module: {}
 	},
@@ -114,7 +114,7 @@ var BL = {
 		module: {}
 	}
 };
-var template = {
+let template = {
 	"type": "_template",
 	"name": "MGTT",
 	"description": "Mike Generic Test Template",
@@ -208,7 +208,7 @@ var template = {
 									],
 									"config": {
 										"urac": {
-											link : {
+											link: {
 												"addUser": "http://%domain%/#/setNewPassword",
 											}
 										}
@@ -472,7 +472,7 @@ var template = {
 						}
 					],
 					"status": {}
-
+					
 				},
 				'deployments.resources.nginx': {
 					imfv: [
@@ -534,7 +534,7 @@ let tenantRecord = {
 	},
 	"code": "MIKE",
 	"name": "Dashboard Tenant",
-
+	
 	"description": "Mike Tenant Description",
 	"applications": [
 		{
@@ -631,7 +631,7 @@ let tenantRecord = {
 		}
 	]
 };
-var environmentRecord = {
+let environmentRecord = {
 	_id: '5a58d942ace01a5325fa3e4c',
 	code: 'DASHBOARD',
 	deployer: {
@@ -682,7 +682,7 @@ var environmentRecord = {
 	profile: ''
 };
 
-var lib = {
+let lib = {
 	initBLModel: function (module, modelName, cb) {
 		return cb(null, {
 			add: function (context, req, data, cb) {
@@ -697,7 +697,7 @@ var lib = {
 			addApplication: function (context, req, data, cb) {
 				return cb(null, true);
 			},
-			saveOAuth: function (context, code, message, req, data,  cb) {
+			saveOAuth: function (context, code, message, req, data, cb) {
 				return cb(null, true);
 			},
 			createApplicationKey: function (context, req, provision, data, cb) {
@@ -715,11 +715,11 @@ var lib = {
 		return cb(null, true);
 	}
 };
-var context = {};
+let context = {};
 describe("testing tenants.js", function () {
-
+	
 	describe("testing validate", function () {
-
+		
 		it("fail does not support deploying tenants", function (done) {
 			context = {
 				BL: BL,
@@ -736,9 +736,9 @@ describe("testing tenants.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success", function (done) {
 			context = {
 				BL: BL,
@@ -755,12 +755,12 @@ describe("testing tenants.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 	});
-
+	
 	describe("testing deploy", function () {
-
+		
 		it("success products already deployed", function (done) {
 			context = {
 				BL: BL,
@@ -780,9 +780,9 @@ describe("testing tenants.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success tenants with no data entries", function (done) {
 			context = {
 				BL: BL,
@@ -800,9 +800,9 @@ describe("testing tenants.js", function () {
 			context.template.content.tenant.data = [];
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success products with tenant entry already created", function (done) {
 			context = {
 				BL: BL,
@@ -830,9 +830,9 @@ describe("testing tenants.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success products with a package", function (done) {
 			context = {
 				BL: BL,
@@ -850,9 +850,9 @@ describe("testing tenants.js", function () {
 			delete context.template.deploy.database.steps["tenant"].status;
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success products with no package found", function (done) {
 			lib = {
 				initBLModel: function (module, modelName, cb) {
@@ -861,7 +861,7 @@ describe("testing tenants.js", function () {
 							return cb(null, tenantRecord);
 						},
 						get: function (context, req, data, cb) {
-							return cb(null,tenantRecord);
+							return cb(null, tenantRecord);
 						},
 						delete: function (context, req, data, cb) {
 							return cb(null, true);
@@ -869,7 +869,7 @@ describe("testing tenants.js", function () {
 						addApplication: function (context, req, data, cb) {
 							return cb(null, true);
 						},
-						saveOAuth: function (context, code, message, req, data,  cb) {
+						saveOAuth: function (context, code, message, req, data, cb) {
 							return cb(null, true);
 						},
 						createApplicationKey: function (context, req, provision, data, cb) {
@@ -902,13 +902,13 @@ describe("testing tenants.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 	});
-
+	
 	describe("testing rollback", function () {
-
+		
 		it("success tenants no status", function (done) {
 			context = {
 				BL: BL,
@@ -926,9 +926,9 @@ describe("testing tenants.js", function () {
 			delete context.template.deploy.database.steps["tenant"].status;
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success tenants not done", function (done) {
 			context = {
 				BL: BL,
@@ -948,9 +948,9 @@ describe("testing tenants.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success tenants ", function (done) {
 			lib = {
 				initBLModel: function (module, modelName, cb) {
@@ -964,7 +964,7 @@ describe("testing tenants.js", function () {
 							return cb(null, tenantRecord);
 						},
 						get: function (context, req, data, cb) {
-							return cb(null,tenantRecord);
+							return cb(null, tenantRecord);
 						},
 						delete: function (context, req, data, cb) {
 							return cb(null, true);
@@ -972,7 +972,7 @@ describe("testing tenants.js", function () {
 						addApplication: function (context, req, data, cb) {
 							return cb(null, true);
 						},
-						saveOAuth: function (context, code, message, req, data,  cb) {
+						saveOAuth: function (context, code, message, req, data, cb) {
 							return cb(null, true);
 						},
 						createApplicationKey: function (context, req, provision, data, cb) {
@@ -1008,16 +1008,16 @@ describe("testing tenants.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success tenants with no entries", function (done) {
 			context.template.content.tenant.data = [];
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success with tenant found", function (done) {
 			context = {
 				BL: BL,
@@ -1055,7 +1055,7 @@ describe("testing tenants.js", function () {
 						addApplication: function (context, req, data, cb) {
 							return cb(null, true);
 						},
-						saveOAuth: function (context, code, message, req, data,  cb) {
+						saveOAuth: function (context, code, message, req, data, cb) {
 							return cb(null, true);
 						},
 						createApplicationKey: function (context, req, provision, data, cb) {
@@ -1131,9 +1131,9 @@ describe("testing tenants.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success with no applications", function (done) {
 			context = {
 				BL: BL,
@@ -1172,7 +1172,7 @@ describe("testing tenants.js", function () {
 						addApplication: function (context, req, data, cb) {
 							return cb(null, true);
 						},
-						saveOAuth: function (context, code, message, req, data,  cb) {
+						saveOAuth: function (context, code, message, req, data, cb) {
 							return cb(null, true);
 						},
 						createApplicationKey: function (context, req, provision, data, cb) {
@@ -1248,7 +1248,7 @@ describe("testing tenants.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 	})
 });

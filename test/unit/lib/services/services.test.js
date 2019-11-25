@@ -1,9 +1,9 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/services/index.js');
-var servicesModel = helper.requireModule('./models/services.js');
-var services;
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const utils = helper.requireModule('./lib/services/index.js');
+const servicesModel = helper.requireModule('./models/services.js');
+let services;
 let stubMongo = {
 	checkForMongo: function (soajs) {
 		return true;
@@ -18,7 +18,7 @@ let stubMongo = {
 		return cb(null, soajs.inputmaskData.id);
 	},
 	findEntry: function (soajs, opts, cb) {
-		cb(null, { metadata: {} });
+		cb(null, {metadata: {}});
 	},
 	findEntries: function (soajs, opts, cb) {
 		cb(null, []);
@@ -42,7 +42,7 @@ let stubMongo = {
 		return true;
 	}
 };
-var req = {
+let req = {
 	soajs: {
 		registry: {
 			coreDB: {
@@ -66,26 +66,26 @@ var req = {
 		}
 	}
 };
-var config = helper.requireModule('./config.js');
+let config = helper.requireModule('./config.js');
 
 describe("testing services.js", function () {
 	
 	describe("testing init", function () {
-
+		
 		it("No Model Requested", function (done) {
 			utils.init(null, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Model Name not found", function (done) {
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Init model", function (done) {
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
@@ -94,9 +94,9 @@ describe("testing services.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("list", function () {
 		before(() => {
 			req.soajs.inputmaskData = {};
@@ -106,12 +106,12 @@ describe("testing services.js", function () {
 		});
 		after(() => {
 		});
-
+		
 		it("Success list", function (done) {
 			stubMongo.findEntries = function (soajs, opts, cb) {
-				// var colName = 'services';
-				// var envColName = 'environment';
-				var services = [];
+				// let colName = 'services';
+				// let envColName = 'environment';
+				let services = [];
 				if (opts.collection === 'services') {
 					return cb(null, services);
 				}
@@ -122,12 +122,12 @@ describe("testing services.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success list with includeEnvs", function (done) {
 			stubMongo.findEntries = function (soajs, opts, cb) {
-				// var colName = 'services';
-				// var envColName = 'environment';
-				var services = [];
+				// let colName = 'services';
+				// let envColName = 'environment';
+				let services = [];
 				if (opts.collection === 'services') {
 					return cb(null, services);
 				}
@@ -141,10 +141,10 @@ describe("testing services.js", function () {
 				done();
 			});
 		});
-
-
+		
+		
 	});
-
+	
 	describe("updateSettings", function () {
 		before(() => {
 			stubMongo.findEntry = function (soajs, opts, cb) {
@@ -153,12 +153,12 @@ describe("testing services.js", function () {
 		});
 		after(() => {
 		});
-
+		
 		it("Success updateSettings", function (done) {
 			stubMongo.findEntries = function (soajs, opts, cb) {
-				// var colName = 'services';
-				// var envColName = 'environment';
-				var services = [];
+				// let colName = 'services';
+				// let envColName = 'environment';
+				let services = [];
 				if (opts.collection === 'services') {
 					return cb(null, services);
 				}
@@ -170,13 +170,13 @@ describe("testing services.js", function () {
 				id: "58b979deca8151ce00f366d9",
 				settings: {}
 			};
-
+			
 			services.updateSettings(config, req, {}, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
 		});
-
+		
 	});
 	describe("list favorites", function () {
 		before(() => {

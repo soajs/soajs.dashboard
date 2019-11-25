@@ -8,16 +8,16 @@
  */
 
 "use strict";
-var assert = require("assert");
-var testHelper = require("../../../helper.js");
-var config = testHelper.requireModule('./config.js');
+const assert = require("assert");
+const testHelper = require("../../../helper.js");
+const config = testHelper.requireModule('./config.js');
 
-var gitHelper = testHelper.requireModule('./lib/git/helper.js');
-var getConfig = testHelper.requireModule('./lib/git/getConfig.js');
+let gitHelper = testHelper.requireModule('./lib/git/helper.js');
+const getConfig = testHelper.requireModule('./lib/git/getConfig.js');
 
 let soajsUtils = require('soajs.core.libs').utils;
 
-var gitDriver = {
+let gitDriver = {
 	logout: function (soajs, gitModel, model, options, cb) {
 		return cb(null);
 	},
@@ -28,7 +28,7 @@ var gitDriver = {
 		return cb(null, {});
 	},
 	getJSONContent: function (soajs, gitModel, model, obj, cb) {
-		var repoConfig = {
+		let repoConfig = {
 			type: ''
 		};
 		if (obj.accountId === '123multi' && obj.path === '/config.js') {
@@ -39,11 +39,11 @@ var gitDriver = {
 				]
 			};
 		}
-		var configSHA = 'hash';
+		let configSHA = 'hash';
 		cb(null, repoConfig, configSHA);
 	},
 	getRepos: function (soajs, data, model, options, cb) {
-		var repos = [
+		let repos = [
 			{
 				id: 55780678,
 				name: 'deployDemo',
@@ -62,7 +62,7 @@ var gitDriver = {
 		return cb(null, repos);
 	},
 	getBranches: function (soajs, data, model, options, cb) {
-		var branches = {
+		let branches = {
 			"branches": [
 				{
 					"name": "master",
@@ -76,10 +76,10 @@ var gitDriver = {
 		return cb(null, branches);
 	}
 };
-var gitModel = {};
+let gitModel = {};
 
 describe("testing get config git.js", function () {
-	var soajs = {
+	let soajs = {
 		registry: {
 			"coreDB": {
 				registryLocation: {}
@@ -96,14 +96,14 @@ describe("testing get config git.js", function () {
 		inputmaskData: {},
 		tenant: {}
 	};
-	var req = {
+	let req = {
 		soajs: soajs
 	};
 	
 	describe("getSOAFile", function () {
 		
 		it("success 1: soa.js", function (done) {
-			var configGenerator = {
+			let configGenerator = {
 				generate: function (req, soajsFilePath, swaggerFilePath, cb) {
 					return cb(null, "module.exports = {};");
 				}
@@ -133,7 +133,7 @@ describe("testing get config git.js", function () {
 	describe("getConfigFile", function () {
 		
 		it("success 1: config.js", function (done) {
-			var configGenerator = {
+			let configGenerator = {
 				generate: function (soajsFilePath, swaggerFilePath, cb) {
 					return cb(null, "module.exports = {};");
 				}

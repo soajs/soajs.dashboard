@@ -1,17 +1,17 @@
 "use strict";
 const sinon = require('sinon');
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var statusUtils = helper.requireModule("./lib/environment/statusUtils.js");
-var customReg = helper.requireModule("./lib/environment/drivers/customReg");
-var products = helper.requireModule("./lib/environment/drivers/products");
-var tenants = helper.requireModule("./lib/environment/drivers/tenants");
-var secrets = helper.requireModule("./lib/environment/drivers/secrets");
-var repos = helper.requireModule("./lib/environment/drivers/repos");
-var resources = helper.requireModule("./lib/environment/drivers/resources");
-var infra = helper.requireModule("./lib/environment/drivers/infra");
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const statusUtils = helper.requireModule("./lib/environment/statusUtils.js");
+const customReg = helper.requireModule("./lib/environment/drivers/customReg");
+const products = helper.requireModule("./lib/environment/drivers/products");
+const tenants = helper.requireModule("./lib/environment/drivers/tenants");
+const secrets = helper.requireModule("./lib/environment/drivers/secrets");
+const repos = helper.requireModule("./lib/environment/drivers/repos");
+const resources = helper.requireModule("./lib/environment/drivers/resources");
+const infra = helper.requireModule("./lib/environment/drivers/infra");
 
-var req = {
+let req = {
 	soajs: {
 		registry: {},
 		log: {
@@ -28,15 +28,15 @@ var req = {
 		inputmaskData: {}
 	}
 };
-var context = {};
-var BLModule = {
-	init: function(modelName, cb){
+let context = {};
+let BLModule = {
+	init: function (modelName, cb) {
 		return cb(null, true);
 	}
 };
-var modelName = {};
-var data = {};
-var mainCb = function(data){
+let modelName = {};
+let data = {};
+let mainCb = function (data) {
 	return data;
 };
 describe("testing statusUtils.js", function () {
@@ -61,18 +61,16 @@ describe("testing statusUtils.js", function () {
 		
 		it("Success", function (done) {
 			data = {
-				error : {
-				
-				},
-				config :{
+				error: {},
+				config: {
 					errors: {
 						1: "error"
 					}
 				},
 				code: "1"
 			};
-			statusUtils.checkReturnError(req, function(){
-				done()
+			statusUtils.checkReturnError(req, function () {
+				done();
 			}, data, function (error, body) {
 				done();
 			});

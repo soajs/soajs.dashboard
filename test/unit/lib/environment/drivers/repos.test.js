@@ -1,10 +1,10 @@
 "use strict";
-var async = require("async");
-var helper = require("../../../../helper.js");
-var config = require("../../../../../config.js");
-var utils = helper.requireModule('./lib/environment/drivers/repos.js');
+const async = require("async");
+const helper = require("../../../../helper.js");
+const config = require("../../../../../config.js");
+const utils = helper.requireModule('./lib/environment/drivers/repos.js');
 
-var req = {
+let req = {
 	soajs: {
 		registry: {
 			coreDB: {
@@ -12,7 +12,7 @@ var req = {
 					name: 'core_provision',
 					prefix: '',
 					servers: [
-						{ host: '127.0.0.1', port: 27017 }
+						{host: '127.0.0.1', port: 27017}
 					],
 					credentials: null,
 					streaming: {
@@ -58,7 +58,7 @@ var req = {
 		}
 	}
 };
-var mongoStub = {
+let mongoStub = {
 	findEntry: function (soajs, opts, cb) {
 		cb(null, {
 			"productize": {
@@ -85,22 +85,22 @@ var mongoStub = {
 		return true;
 	}
 };
-var BL = {
-	customRegistry :{},
+let BL = {
+	customRegistry: {},
 	model: mongoStub,
-	cd : {
-		module : {}
+	cd: {
+		module: {}
 	},
-	cloud :{
-		deploy :{
-			module :{}
+	cloud: {
+		deploy: {
+			module: {}
 		},
-		services :{
-			module :{}
+		services: {
+			module: {}
 		},
 	}
 };
-var template = {
+let template = {
 	"type": "_template",
 	"name": "MGTT",
 	"description": "Mike Generic Test Template",
@@ -321,9 +321,9 @@ var template = {
 							}
 						}
 					],
-					"status":{
+					"status": {
 						"done": true,
-						"data":[
+						"data": [
 							{
 								"db": "mongo id of this resource"
 							}
@@ -374,9 +374,7 @@ var template = {
 							type: 'custom'
 						}
 					],
-					"status": {
-					
-					}
+					"status": {}
 					
 				},
 				'deployments.resources.nginx': {
@@ -423,7 +421,7 @@ var template = {
 		}
 	}
 };
-var environmentRecord = {
+let environmentRecord = {
 	_id: '5a58d942ace01a5325fa3e4c',
 	code: 'DASHBORAD',
 	deployer: {
@@ -472,33 +470,35 @@ var environmentRecord = {
 	profile: ''
 };
 
-var lib = {
-	initBLModel : function(module, modelName, cb){
+let lib = {
+	initBLModel: function (module, modelName, cb) {
 		return cb(null, {
-			add : function (context, req, data, cb) {
+			add: function (context, req, data, cb) {
 				return cb(null, true);
 			},
-			delete : function (context, req, data, cb) {
+			delete: function (context, req, data, cb) {
 				return cb(null, true);
 			},
-			saveConfig : function (context, req, data, cb) {
+			saveConfig: function (context, req, data, cb) {
 				return cb(null, true);
 			},
-			deployService : function (config, req, deployer, cb) {
-				return cb(null, {service: {
+			deployService: function (config, req, deployer, cb) {
+				return cb(null, {
+					service: {
 						id: "1"
-					}});
+					}
+				});
 			},
-			deleteService : function (context, req, data, cb) {
+			deleteService: function (context, req, data, cb) {
 				return cb(true);
 			}
 		});
 	},
-	checkReturnError: function(req, {}, {}, cb){
+	checkReturnError: function (req, {}, {}, cb) {
 		return cb(null, true);
 	}
 };
-var context = {};
+let context = {};
 describe("testing repos.js", function () {
 	
 	describe("testing validate", function () {
@@ -508,11 +508,11 @@ describe("testing repos.js", function () {
 				BL: BL,
 				environmentRecord: environmentRecord,
 				template: {
-					content : {}
+					content: {}
 				},
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.repo.controller",
@@ -554,7 +554,7 @@ describe("testing repos.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("fail Invalid all inputs ", function (done) {
@@ -564,7 +564,7 @@ describe("testing repos.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.repo.controller",
@@ -573,15 +573,13 @@ describe("testing repos.js", function () {
 						"repo",
 						"controller"
 					],
-					"inputs": [
-					
-					]
+					"inputs": []
 				}
 			};
 			
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("fail bad inputs", function (done) {
@@ -591,7 +589,7 @@ describe("testing repos.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.repo.controller",
@@ -607,7 +605,7 @@ describe("testing repos.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success", function (done) {
@@ -617,7 +615,7 @@ describe("testing repos.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.repo.controller",
@@ -659,7 +657,7 @@ describe("testing repos.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success with errors", function (done) {
@@ -669,7 +667,7 @@ describe("testing repos.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.repo.controller",
@@ -709,7 +707,7 @@ describe("testing repos.js", function () {
 					]
 				}
 			};
-			req.soajs.validator= {
+			req.soajs.validator = {
 				Validator: function () {
 					return {
 						validate: function () {
@@ -723,7 +721,7 @@ describe("testing repos.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 	});
 	
@@ -736,7 +734,7 @@ describe("testing repos.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.repo.controller",
@@ -781,9 +779,9 @@ describe("testing repos.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success repos", function (done) {
 			context.template.deploy.deployments.steps["deployments.repo.controller"].status = {
 				done: false
@@ -800,7 +798,7 @@ describe("testing repos.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.repo.controller",
@@ -855,7 +853,7 @@ describe("testing repos.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success repos not controller plus version", function (done) {
@@ -865,7 +863,7 @@ describe("testing repos.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.repo.controller",
@@ -921,12 +919,12 @@ describe("testing repos.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
-
+		
 	});
-
+	
 	describe("testing rollback", function () {
 		it("success repos no status", function (done) {
 			context = {
@@ -975,10 +973,10 @@ describe("testing repos.js", function () {
 					]
 				}
 			};
-			delete  context.template.deploy.deployments.steps["deployments.repo.controller"].status;
+			delete context.template.deploy.deployments.steps["deployments.repo.controller"].status;
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success repos not done", function (done) {
@@ -988,7 +986,7 @@ describe("testing repos.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.repo.controller",
@@ -1033,7 +1031,7 @@ describe("testing repos.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success repos ", function (done) {
@@ -1088,7 +1086,7 @@ describe("testing repos.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success repos with data", function (done) {
@@ -1107,7 +1105,7 @@ describe("testing repos.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 	})
 });

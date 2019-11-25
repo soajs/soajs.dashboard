@@ -1,10 +1,10 @@
 "use strict";
-var async = require("async");
-var helper = require("../../../../helper.js");
-var config = require("../../../../../config.js");
-var utils = helper.requireModule('./lib/environment/drivers/resources.js');
+const async = require("async");
+const helper = require("../../../../helper.js");
+const config = require("../../../../../config.js");
+const utils = helper.requireModule('./lib/environment/drivers/resources.js');
 
-var req = {
+let req = {
 	soajs: {
 		registry: {
 			coreDB: {
@@ -12,7 +12,7 @@ var req = {
 					name: 'core_provision',
 					prefix: '',
 					servers: [
-						{ host: '127.0.0.1', port: 27017 }
+						{host: '127.0.0.1', port: 27017}
 					],
 					credentials: null,
 					streaming: {
@@ -35,13 +35,13 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-
+			
 			},
 			error: function (data) {
-
+			
 			},
 			info: function (data) {
-
+			
 			}
 		},
 		inputmaskData: {},
@@ -58,7 +58,7 @@ var req = {
 		}
 	}
 };
-var mongoStub = {
+let mongoStub = {
 	findEntry: function (soajs, opts, cb) {
 		cb(null, {
 			"productize": {
@@ -85,30 +85,30 @@ var mongoStub = {
 		return true;
 	}
 };
-var BL = {
-	customRegistry :{
-		module : {}
+let BL = {
+	customRegistry: {
+		module: {}
 	},
 	model: mongoStub,
-	cd : {
-		module : {}
+	cd: {
+		module: {}
 	},
-	cloud :{
-		deploy :{
-			module :{}
+	cloud: {
+		deploy: {
+			module: {}
 		},
-		services :{
-			module :{}
+		services: {
+			module: {}
 		},
-		resources :{
-			module :{}
+		resources: {
+			module: {}
 		}
 	},
 	resources: {
-		module : {}
+		module: {}
 	}
 };
-var template = {
+let template = {
 	"type": "_template",
 	"name": "MGTT",
 	"description": "Mike Generic Test Template",
@@ -329,9 +329,9 @@ var template = {
 							}
 						}
 					],
-					"status":{
+					"status": {
 						"done": true,
-						"data":[
+						"data": [
 							{
 								"db": "mongo id of this resource"
 							}
@@ -382,10 +382,8 @@ var template = {
 							type: 'custom'
 						}
 					],
-					"status": {
-
-					}
-
+					"status": {}
+					
 				},
 				'deployments.resources.nginx': {
 					imfv: [
@@ -431,7 +429,7 @@ var template = {
 		}
 	}
 };
-var environmentRecord = {
+let environmentRecord = {
 	_id: '5a58d942ace01a5325fa3e4c',
 	code: 'DASHBORAD',
 	deployer: {
@@ -480,24 +478,26 @@ var environmentRecord = {
 	profile: ''
 };
 
-var lib = {
-	initBLModel : function(module, modelName, cb){
+let lib = {
+	initBLModel: function (module, modelName, cb) {
 		return cb(null, {
-			add : function (context, req, data, cb) {
+			add: function (context, req, data, cb) {
 				return cb(null, true);
 			},
-			delete : function (context, req, data, cb) {
+			delete: function (context, req, data, cb) {
 				return cb(null, true);
 			},
-			saveConfig : function (context, req, data, cb) {
+			saveConfig: function (context, req, data, cb) {
 				return cb(null, true);
 			},
-			deployService : function (config, req, deployer, cb) {
-				return cb(null, {service: {
+			deployService: function (config, req, deployer, cb) {
+				return cb(null, {
+					service: {
 						id: "1"
-					}});
+					}
+				});
 			},
-			deleteService : function (context, req, data, cb) {
+			deleteService: function (context, req, data, cb) {
 				return cb(true);
 			},
 			addResource: function (context, req, data, cb) {
@@ -514,23 +514,23 @@ var lib = {
 			},
 		});
 	},
-	checkReturnError: function(req, {}, {}, cb){
+	checkReturnError: function (req, {}, {}, cb) {
 		return cb(null, true);
 	}
 };
-var context = {};
+let context = {};
 describe("testing resources.js", function () {
-
+	
 	describe("testing validate", function () {
-
+		
 		it("fail does not support deploying repositories", function (done) {
 			context = {
 				BL: BL,
 				environmentRecord: environmentRecord,
-				template: {content :{}},
+				template: {content: {}},
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.resources.nginx",
@@ -580,9 +580,9 @@ describe("testing resources.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("fail Invalid all inputs ", function (done) {
 			context = {
 				BL: BL,
@@ -590,7 +590,7 @@ describe("testing resources.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.resources.nginx",
@@ -599,17 +599,15 @@ describe("testing resources.js", function () {
 						"resources",
 						"nginx"
 					],
-					"inputs": [
-
-					]
+					"inputs": []
 				}
 			};
-
+			
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("fail bad inputs", function (done) {
 			context = {
 				BL: BL,
@@ -617,7 +615,7 @@ describe("testing resources.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.resources.nginx",
@@ -633,9 +631,9 @@ describe("testing resources.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success", function (done) {
 			context = {
 				BL: BL,
@@ -643,7 +641,7 @@ describe("testing resources.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.resources.nginx",
@@ -693,16 +691,16 @@ describe("testing resources.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success with limit", function (done) {
 			context.template.content.deployments.resources.nginx.limit = 1;
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success with sharedEnv", function (done) {
 			context = {
 				BL: BL,
@@ -710,7 +708,7 @@ describe("testing resources.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.resources.nginx",
@@ -761,9 +759,9 @@ describe("testing resources.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success with errors", function (done) {
 			context = {
 				BL: BL,
@@ -771,7 +769,7 @@ describe("testing resources.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.resources.nginx",
@@ -819,7 +817,7 @@ describe("testing resources.js", function () {
 					]
 				}
 			};
-			req.soajs.validator= {
+			req.soajs.validator = {
 				Validator: function () {
 					return {
 						validate: function () {
@@ -833,12 +831,12 @@ describe("testing resources.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 	});
-
+	
 	describe("testing deploy", function () {
-
+		
 		it("success resources already deployed", function (done) {
 			context = {
 				BL: BL,
@@ -846,7 +844,7 @@ describe("testing resources.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:   {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.resources.nginx",
@@ -899,9 +897,9 @@ describe("testing resources.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success resources with shared env", function (done) {
 			context = {
 				BL: BL,
@@ -909,7 +907,7 @@ describe("testing resources.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:   {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.resources.nginx",
@@ -961,18 +959,18 @@ describe("testing resources.js", function () {
 			delete context.template.deploy.deployments.steps["deployments.repo.controller"].status;
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success resources no status", function (done) {
 			context.template.deploy.deployments.steps["deployments.repo.controller"].status = {
 				done: false
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success resources with shared env", function (done) {
 			context = {
 				BL: BL,
@@ -980,7 +978,7 @@ describe("testing resources.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:   {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.resources.nginx",
@@ -1032,9 +1030,9 @@ describe("testing resources.js", function () {
 			delete context.template.deploy.deployments.steps["deployments.repo.controller"].status;
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success resources with deploy inputs empty ", function (done) {
 			context = {
 				BL: BL,
@@ -1042,7 +1040,7 @@ describe("testing resources.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:   {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.resources.nginx",
@@ -1068,11 +1066,11 @@ describe("testing resources.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 	});
-
+	
 	describe("testing rollback", function () {
 		it("success resources no status", function (done) {
 			context = {
@@ -1130,12 +1128,12 @@ describe("testing resources.js", function () {
 					]
 				}
 			};
-			delete  context.template.deploy.deployments.steps["deployments.resources.nginx"].status;
+			delete context.template.deploy.deployments.steps["deployments.resources.nginx"].status;
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success resources not done", function (done) {
 			context = {
 				BL: BL,
@@ -1143,7 +1141,7 @@ describe("testing resources.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.resources.nginx",
@@ -1197,9 +1195,9 @@ describe("testing resources.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success resources no data ", function (done) {
 			context = {
 				BL: BL,
@@ -1207,7 +1205,7 @@ describe("testing resources.js", function () {
 				template: JSON.parse(JSON.stringify(template)),
 				config: config,
 				errors: [],
-				opts:  {
+				opts: {
 					"stage": "deployments",
 					"group": "steps",
 					"stepPath": "deployments.resources.nginx",
@@ -1261,9 +1259,9 @@ describe("testing resources.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success resources with data", function (done) {
 			context.template.deploy.deployments.steps["deployments.resources.nginx"].status = {
 				done: true,
@@ -1275,7 +1273,7 @@ describe("testing resources.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 	})
 });

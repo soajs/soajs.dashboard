@@ -179,5 +179,5 @@ describe("Testing productization", function () {
 			//todo: check unused
 			done();
 		});
-	})
+	});
 });

@@ -1,32 +1,33 @@
 "use strict";
 const sinon = require('sinon');
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/environment/predefinedSteps.js');
-var statusUtils = helper.requireModule("./lib/environment/statusUtils.js");
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const utils = helper.requireModule('./lib/environment/predefinedSteps.js');
+const statusUtils = helper.requireModule("./lib/environment/statusUtils.js");
+
 function stubStatusUtils(error) {
-	sinon
-		.stub(statusUtils, 'custom_registry')
+	sinon.stub(statusUtils, 'custom_registry')
 		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'products')
+	
+	sinon.stub(statusUtils, 'products')
 		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'tenants')
+	
+	sinon.stub(statusUtils, 'tenants')
 		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'secrets')
+	
+	sinon.stub(statusUtils, 'secrets')
 		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'repos')
+	
+	sinon.stub(statusUtils, 'repos')
 		.yields(error, true);
-	sinon
-		.stub(statusUtils, 'resources')
+	
+	sinon.stub(statusUtils, 'resources')
 		.yields(error, true);
+	
 }
 
-var req = {};
-var context = {};
+let req = {};
+let context = {};
 describe("testing predefinedSteps.js", function () {
 	
 	describe("testing custom_registry", function () {

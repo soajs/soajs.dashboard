@@ -1,9 +1,9 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var helpers = helper.requireModule('./lib/hosts/helper.js');
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const helpers = helper.requireModule('./lib/hosts/helper.js');
 
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -11,7 +11,7 @@ var mongoStub = {
 		return cb(null, soajs.inputmaskData.id);
 	},
 	findEntry: function (soajs, opts, cb) {
-		cb(null, { metadata: {} });
+		cb(null, {metadata: {}});
 	},
 	removeEntry: function (soajs, opts, cb) {
 		cb(null, true);
@@ -22,7 +22,7 @@ var mongoStub = {
 };
 
 describe("testing helper host.js", function () {
-	var soajs = {
+	let soajs = {
 		// uracDriver: {},
 		inputmaskData: {},
 		tenant: {
@@ -46,7 +46,7 @@ describe("testing helper host.js", function () {
 	};
 	
 	describe("getTenants", function () {
-		var output;
+		let output;
 		beforeEach(() => {
 			output = {
 				dashboard: {},
@@ -55,7 +55,7 @@ describe("testing helper host.js", function () {
 				}
 			};
 			mongoStub.findEntries = function (soajs, opts, cb) {
-				var tenants = [
+				let tenants = [
 					{
 						_id: '',
 						code: '',
@@ -164,7 +164,7 @@ describe("testing helper host.js", function () {
 					}
 				}
 			};
-			var output = {
+			let output = {
 				dashboard: {},
 				dev: {
 					domain: 'api.api.myDomain.com'
@@ -209,7 +209,7 @@ describe("testing helper host.js", function () {
 							get: {
 								apis: {
 									"/tenant/list": {
-										access: [ 'gold' ]
+										access: ['gold']
 									}
 								}
 							}
@@ -221,7 +221,7 @@ describe("testing helper host.js", function () {
 				},
 				getProfile: function () {
 					return {
-						groups: [ 'gold' ]
+						groups: ['gold']
 					};
 				}
 			};

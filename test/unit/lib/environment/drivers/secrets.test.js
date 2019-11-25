@@ -1,11 +1,11 @@
 "use strict";
-var assert = require("assert");
-var async = require("async");
-var helper = require("../../../../helper.js");
-var config = require("../../../../../config.js");
-var utils = helper.requireModule('./lib/environment/drivers/secrets.js');
+const assert = require("assert");
+const async = require("async");
+const helper = require("../../../../helper.js");
+const config = require("../../../../../config.js");
+const utils = helper.requireModule('./lib/environment/drivers/secrets.js');
 
-var req = {
+let req = {
 	soajs: {
 		registry: {
 			coreDB: {
@@ -60,7 +60,7 @@ var req = {
 		}
 	}
 };
-var mongoStub = {
+let mongoStub = {
 	findEntry: function (soajs, opts, cb) {
 		cb(null, {
 			"productize": {
@@ -87,7 +87,7 @@ var mongoStub = {
 		return true;
 	}
 };
-var BL = {
+let BL = {
 	customRegistry: {},
 	model: mongoStub,
 	cloud: {
@@ -96,7 +96,7 @@ var BL = {
 		}
 	}
 };
-var template = {
+let template = {
 	"type": "_template",
 	"name": "MGTT",
 	"description": "Mike Generic Test Template",
@@ -417,7 +417,7 @@ var template = {
 		}
 	}
 };
-var environmentRecord = {
+let environmentRecord = {
 	_id: '5a58d942ace01a5325fa3e4c',
 	code: 'DASHBORAD',
 	deployer: {
@@ -466,7 +466,7 @@ var environmentRecord = {
 	profile: ''
 };
 
-var lib = {
+let lib = {
 	initBLModel: function (module, modelName, cb) {
 		return cb(null, {
 			add: function (context, req, data, cb) {
@@ -482,7 +482,7 @@ var lib = {
 	}
 };
 
-var context = {
+let context = {
 	BL: BL,
 	environmentRecord: {},
 	template: {},

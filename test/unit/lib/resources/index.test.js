@@ -1,24 +1,24 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/resources/index.js');
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const utils = helper.requireModule('./lib/resources/index.js');
 let resources;
-var config = helper.requireModule('./config.js');
+const config = helper.requireModule('./config.js');
 
-var soajs = {
+let soajs = {
 	registry: {
 		name: 'dev',
 		environment: 'dev',
 		coreDB: {},
 		serviceConfig: {
 			awareness: {},
-			ports: { controller: 4000, maintenanceInc: 1000, randomInc: 100 }
+			ports: {controller: 4000, maintenanceInc: 1000, randomInc: 100}
 		},
 		ports: {},
 		deployer: {
 			type: 'manual',
 			selected: 'container.docker.local',
-			container: { docker: {}, kubernetes: {} }
+			container: {docker: {}, kubernetes: {}}
 		},
 		services: {}
 	},
@@ -49,7 +49,7 @@ let stubMongo = {
 		return cb(null, soajs.inputmaskData.id);
 	},
 	findEntry: function (soajs, opts, cb) {
-		cb(null, { metadata: {} });
+		cb(null, {metadata: {}});
 	},
 	findEntries: function (soajs, opts, cb) {
 		cb(null, []);
@@ -77,7 +77,7 @@ let stubMongo = {
 };
 
 describe("testing resources/index.js", function () {
-
+	
 	describe("init ()", function () {
 		
 		it("No Model Requested", function (done) {
@@ -117,7 +117,7 @@ describe("testing resources/index.js", function () {
 					}
 				});
 			};
-
+			
 			resources.upgradeResources(config, req, res, function (error, body) {
 				assert.ok(body);
 				done();

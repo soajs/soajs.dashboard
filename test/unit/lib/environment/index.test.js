@@ -1,11 +1,12 @@
 "use strict";
 const sinon = require('sinon');
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/environment/index.js');
-var mongoModel = helper.requireModule('./models/mongo.js');
-var status = helper.requireModule('./lib/environment/status.js');
-var vms = helper.requireModule('./lib/cloud/vm/index.js');
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const utils = helper.requireModule('./lib/environment/index.js');
+const mongoModel = helper.requireModule('./models/mongo.js');
+const status = helper.requireModule('./lib/environment/status.js');
+const vms = helper.requireModule('./lib/cloud/vm/index.js');
+
 function stubStatusUtils() {
 	sinon
 		.stub(status, 'validateDeploymentInputs')
@@ -20,9 +21,10 @@ function stubStatusUtils() {
 		.stub(status, 'rollbackDeployment')
 		.yields(null, true);
 }
-var environment;
 
-var req = {
+let environment;
+
+let req = {
 	soajs: {
 		registry: {
 			coreDB: {
@@ -30,7 +32,7 @@ var req = {
 					name: 'core_provision',
 					prefix: '',
 					servers: [
-						{ host: '127.0.0.1', port: 27017 }
+						{host: '127.0.0.1', port: 27017}
 					],
 					credentials: null,
 					streaming: {
@@ -53,13 +55,13 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-
+			
 			},
 			error: function (data) {
-
+			
 			},
 			info: function (data) {
-
+			
 			}
 		},
 		inputmaskData: {},
@@ -72,11 +74,10 @@ var req = {
 							return {
 								errors: []
 							};
-						}
-						else {
+						} else {
 							//invalid
 							return {
-								errors: [{ error: 'msg' }]
+								errors: [{error: 'msg'}]
 							};
 						}
 					}
@@ -93,7 +94,7 @@ var req = {
 	}
 };
 
-var input = {
+let input = {
 	data: {
 		envType: "container",
 		code: 'MIKE',
@@ -130,27 +131,27 @@ var input = {
 							locked: true,
 							plugged: false,
 							shared: true,
-							value: { test1: true }
+							value: {test1: true}
 						},
 							{
 								name: 'ciConfig2',
 								locked: true,
 								plugged: false,
 								shared: true,
-								value: { test2: true }
+								value: {test2: true}
 							},
 							{
 								name: 'ciConfig3',
 								locked: true,
 								plugged: false,
 								shared: true,
-								value: { test3: true }
+								value: {test3: true}
 							}]
 					}
 				},
 				steps: {
-					productization: { ui: { readOnly: true } },
-					tenant: { ui: { readOnly: true } }
+					productization: {ui: {readOnly: true}},
+					tenant: {ui: {readOnly: true}}
 				},
 				post: {
 					'deployments.resources.external': {
@@ -161,7 +162,7 @@ var input = {
 							locked: false,
 							shared: false,
 							plugged: false,
-							config: { username: 'username', password: 'pwd' }
+							config: {username: 'username', password: 'pwd'}
 						}]
 					}
 				}
@@ -217,7 +218,7 @@ var input = {
 							deploy: {
 								options: {
 									deployConfig: {
-										replication: { mode: 'global' },
+										replication: {mode: 'global'},
 										memoryLimit: 524288000
 									},
 									custom: {
@@ -243,11 +244,11 @@ var input = {
 			}
 		}
 	}
-
+	
 };
 
-var res = {};
-var config = {
+let res = {};
+let config = {
 	"errors": {},
 	"HA": {
 		"blacklist": ['soajs_mongo_password', 'soajs_git_token', 'soajs_config_repo_token'],
@@ -255,9 +256,9 @@ var config = {
 		"clustersList": ['mysql', 'sql', "mongo", 'mongodb', "es", 'elasticsearch']
 	}
 };
-var deployer = {
+let deployer = {
 	listServices: function (options, cb) {
-		var services = [];
+		let services = [];
 		
 		return cb(null, services);
 	},
@@ -268,7 +269,7 @@ var deployer = {
 		return cb(null, {});
 	}
 };
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -294,10 +295,10 @@ var mongoStub = {
 			ObjectId: function () {
 				return data;
 			}
-		}
+		};
 	},
-	validateCustomId : function(soajs, id) {
-		return true
+	validateCustomId: function (soajs, id) {
+		return true;
 	},
 	removeEntry: function (soajs, opts, cb) {
 		cb(null, true);
@@ -322,18 +323,18 @@ var mongoStub = {
 };
 
 describe("testing index.js", function () {
-
+	
 	describe("testing init", function () {
-
+		
 		it("No Model Requested", function (done) {
 			utils.init(null, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Model Name not found", function (done) {
-
+			
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
@@ -349,11 +350,11 @@ describe("testing index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing add environment", function () {
-
+		
 		it("Success add", function (done) {
 			req.soajs.inputmaskData = input;
 			stubStatusUtils();
@@ -387,8 +388,8 @@ describe("testing index.js", function () {
 								}
 							}
 						},
-						"restriction":{
-							"1231231":{
+						"restriction": {
+							"1231231": {
 								"eastus": {
 									group: "grouptest",
 									network: "networktest"
@@ -511,16 +512,14 @@ describe("testing index.js", function () {
 							}
 						}
 					});
-				}
-				else if (opts.collection === 'templates') {
+				} else if (opts.collection === 'templates') {
 					cb(null, {
 						"name": "SOAJS Microservices Environment",
 						"description": "This template will create an environment with SOAJS API Gateway configured, deployed & ready to use. You can leverage this environment to deploy microservices.",
 						"link": "https://soajsorg.atlassian.net/wiki/spaces/DSBRD/pages/400588803/SOAJS+Microservices+Environment",
 						"logo": "modules/dashboard/templates/images/soajs.png",
-					})
-				}
-				else if (opts.collection === 'infra'){
+					});
+				} else if (opts.collection === 'infra') {
 					
 					cb(null, {
 						"_id": '5b28c5edb53002d7b3b1f0cf',
@@ -542,10 +541,8 @@ describe("testing index.js", function () {
 							"Terraform"
 						],
 						"label": "local",
-						"deployments": [
-						
-						]
-					})
+						"deployments": []
+					});
 				}
 			};
 			req.soajs.validator = {
@@ -567,7 +564,7 @@ describe("testing index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success add previous", function (done) {
 			req.soajs.inputmaskData = input;
 			req.soajs.inputmaskData.data.soajsFrmwrk = true;
@@ -592,7 +589,7 @@ describe("testing index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Fail validating inputs", function (done) {
 			req.soajs.inputmaskData = input;
 			sinon
@@ -616,11 +613,11 @@ describe("testing index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing getDeploymentStatus", function () {
-
+		
 		it("Success environment has been deployment - activate", function (done) {
 			req.soajs.inputmaskData = {
 				code: 'MIKE',
@@ -639,7 +636,7 @@ describe("testing index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success environment has been deployment - activate", function (done) {
 			req.soajs.inputmaskData = {
 				code: 'MIKE',
@@ -654,7 +651,7 @@ describe("testing index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success ", function (done) {
 			req.soajs.inputmaskData = {
 				code: 'MIKE',
@@ -667,7 +664,7 @@ describe("testing index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success with id", function (done) {
 			req.soajs.inputmaskData = {
 				id: '1234',
@@ -692,11 +689,11 @@ describe("testing index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing Update deployer configuration", function () {
-
+		
 		it("Success updateDeployerConfig", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, {
@@ -862,7 +859,7 @@ describe("testing index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
 	
 	describe("testing attach container", function () {
@@ -1018,8 +1015,7 @@ describe("testing index.js", function () {
 							}
 						}
 					});
-				}
-				else if (opts.collection === 'infra') {
+				} else if (opts.collection === 'infra') {
 					cb(null, {
 						"_id": '5b2b93624e0ec86cef92b147',
 						"api": {
@@ -1052,7 +1048,7 @@ describe("testing index.js", function () {
 								"id": "htlocalr6yav9ay6daz5"
 							}
 						]
-					})
+					});
 				}
 			};
 			mongoStub.saveEntry = function (soajs, opts, cb) {
@@ -1298,8 +1294,7 @@ describe("testing index.js", function () {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					cb(null, env);
-				}
-				else if (opts.collection === 'infra') {
+				} else if (opts.collection === 'infra') {
 					cb(null, {
 						"_id": '5b2b93624e0ec86cef92b147',
 						"api": {
@@ -1332,15 +1327,14 @@ describe("testing index.js", function () {
 								"id": "htlocalr6yav9ay6daz5"
 							}
 						]
-					})
-				}
-				else if (opts.collection === 'cicd') {
+					});
+				} else if (opts.collection === 'cicd') {
 					cb(null, {
 						"1234": {},
 						"_id": '5b30afbc410c508e89cddda3',
 						"type": "resource",
 						"QA": {}
-					})
+					});
 				}
 			};
 			
@@ -1351,14 +1345,13 @@ describe("testing index.js", function () {
 				.stub(mongoModel, 'findEntry')
 				.yields(null, env);
 			
-			req.soajs.inputmaskData = { env: "QA" };
+			req.soajs.inputmaskData = {env: "QA"};
 			
 			environment.model = mongoStub;
 			deployer.execute = function (opts, command, options, cb) {
 				if (command === "listServices") {
-					return cb(null, [])
-				}
-				else {
+					return cb(null, []);
+				} else {
 					return cb(null, {});
 				}
 			};
@@ -1577,8 +1570,8 @@ describe("testing index.js", function () {
 		
 		it("Success unlockEnvToCloudProvider", function (done) {
 			let env = {
-				"restriction":{
-					"123":{
+				"restriction": {
+					"123": {
 						group: "123"
 					}
 				},
@@ -1765,7 +1758,7 @@ describe("testing index.js", function () {
 			sinon
 				.stub(vms, 'init')
 				.yields(null, {
-					listVMs : function (context, req, data, cb) {
+					listVMs: function (context, req, data, cb) {
 						return cb(null, true);
 					}
 				});
@@ -1781,5 +1774,5 @@ describe("testing index.js", function () {
 			});
 		});
 	});
-
+	
 });
