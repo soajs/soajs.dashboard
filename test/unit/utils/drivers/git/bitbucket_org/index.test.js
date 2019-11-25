@@ -1,15 +1,17 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../../../helper.js");
-var driver = helper.requireModule('./utils/drivers/git/bitbucket/index.js');
-var driverHelper = helper.requireModule('./utils/drivers/git/bitbucket/helper.js');
+const assert = require("assert"); //todo: check unused
+const helper = require("../../../../../helper.js");
+
+let driver = helper.requireModule('./utils/drivers/git/bitbucket/index.js');
+let driverHelper = helper.requireModule('./utils/drivers/git/bitbucket/helper.js');
 driver.helper = driverHelper;
+
 describe("testing git/bitbucket index.js", function () {
-	var soajs = {};
-	var data = {
+	let soajs = {};
+	let data = {
 		// data.checkIfAccountExists
 		getAccount: function (soajs, model, options, cb) {
-			var accountRecord = {
+			let accountRecord = {
 				repos: []
 			};
 			return cb(null, accountRecord);
@@ -24,12 +26,12 @@ describe("testing git/bitbucket index.js", function () {
 			return cb(null, true);
 		}
 	};
-	var model = {};
-	var options = {
+	let model = {};
+	let options = {
 		tokenInfo: {},
 		provider: 'bitbucket'
 	};
-
+	
 	describe("testing login", function () {
 		it("Success private", function (done) {
 			driverHelper.createAuthToken = function (options, cb) {
@@ -72,7 +74,7 @@ describe("testing git/bitbucket index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Fail", function (done) {
 			data.checkIfAccountExists = function (soajs, model, id, cb) {
 				return cb(null, 1);
@@ -83,7 +85,7 @@ describe("testing git/bitbucket index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing logout", function () {
 		it("Success", function (done) {
 			driver.logout(soajs, data, model, options, function (error, body) {
@@ -92,7 +94,7 @@ describe("testing git/bitbucket index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getRepos", function () {
 		it("Success", function (done) {
 			driverHelper.getAllRepos = function (options, cb) {
@@ -116,7 +118,7 @@ describe("testing git/bitbucket index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getBranches", function () {
 		it("Success", function (done) {
 			driverHelper.getRepoBranches = function (options, cb) {
@@ -128,12 +130,12 @@ describe("testing git/bitbucket index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getJSONContent", function () {
 		it("Success", function (done) {
 			options.path = '';
 			driverHelper.getRepoContent = function (options, cb) {
-				var content = "{}";
+				let content = "{}";
 				return cb(null, content);
 			};
 			driver.getJSONContent(soajs, data, model, options, function (error, body) {
@@ -142,12 +144,12 @@ describe("testing git/bitbucket index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getAnyContent", function () {
 		it("Success", function (done) {
 			options.path = '';
 			driverHelper.getRepoContent = function (options, cb) {
-				var content = "{}";
+				let content = "{}";
 				return cb(null, content);
 			};
 			driver.getAnyContent(soajs, data, model, options, function (error, body) {
@@ -156,5 +158,5 @@ describe("testing git/bitbucket index.js", function () {
 			});
 		});
 	});
-
+	
 });

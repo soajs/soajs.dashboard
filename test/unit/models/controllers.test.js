@@ -1,9 +1,10 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../helper.js");
-var models = helper.requireModule('./models/controllers.js');
 
-var soajs = {
+const assert = require("assert"); //todo: check unused
+const helper = require("../../helper.js");
+const models = helper.requireModule('./models/controllers.js');
+
+let soajs = {
 	log: {
 		debug: function (data) {
 			
@@ -16,7 +17,7 @@ var soajs = {
 		}
 	}
 };
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -74,7 +75,7 @@ var mongoStub = {
 	}
 };
 describe("testing models cicd.js", function () {
-	var options = {};
+	let options = {};
 	describe("testing findEntries", function () {
 		it("success", function (done) {
 			models.findEntries(soajs, mongoStub, options, function () {
@@ -83,7 +84,7 @@ describe("testing models cicd.js", function () {
 		});
 		
 		it("success", function (done) {
-			mongoStub.findEntries= function (soajs, opts, cb) {
+			mongoStub.findEntries = function (soajs, opts, cb) {
 				cb(null, []);
 			};
 			models.findEntries(soajs, mongoStub, options, function () {
@@ -92,7 +93,7 @@ describe("testing models cicd.js", function () {
 		});
 		
 		it("fail", function (done) {
-			mongoStub.findEntries= function (soajs, opts, cb) {
+			mongoStub.findEntries = function (soajs, opts, cb) {
 				cb(true);
 			};
 			models.findEntries(soajs, mongoStub, options, function () {
@@ -108,7 +109,7 @@ describe("testing models cicd.js", function () {
 			});
 		});
 		it("success", function (done) {
-			mongoStub.findEntry= function (soajs, opts, cb) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(true);
 			};
 			models.findEntry(soajs, mongoStub, options, function () {

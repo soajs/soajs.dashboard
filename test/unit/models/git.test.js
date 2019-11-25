@@ -1,9 +1,9 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../helper.js");
-var models = helper.requireModule('./models/git.js');
+const assert = require("assert"); //todo: check unused
+const helper = require("../../helper.js");
+const models = helper.requireModule('./models/git.js');
 
-var soajs = {
+let soajs = {
 	log: {
 		debug: function (data) {
 			
@@ -17,7 +17,7 @@ var soajs = {
 	},
 	inputmaskData: {}
 };
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -47,7 +47,7 @@ var mongoStub = {
 	}
 };
 describe("testing models git.js", function () {
-	var options = {};
+	let options = {};
 	describe("testing getAuthToken", function () {
 		it("success 1", function (done) {
 			models.getAuthToken(soajs, mongoStub, options, function () {
@@ -55,7 +55,7 @@ describe("testing models git.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getAccount", function () {
 		it("success 1", function (done) {
 			options.accountId = '111';
@@ -73,7 +73,7 @@ describe("testing models git.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getRepo", function () {
 		it("success 1", function (done) {
 			models.getRepo(soajs, mongoStub, options, function () {
@@ -81,7 +81,7 @@ describe("testing models git.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing searchForAccount", function () {
 		it("success 1", function (done) {
 			models.searchForAccount(soajs, mongoStub, options, function () {
@@ -89,14 +89,14 @@ describe("testing models git.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing addRepoToAccount", function () {
 		it("success 1", function (done) {
 			options = {
 				repo: 'property'
 			};
 			soajs.inputmaskData = {
-				accountRecord : {
+				accountRecord: {
 					repos: []
 				}
 			};
@@ -105,15 +105,15 @@ describe("testing models git.js", function () {
 			});
 		});
 	});
-
-
+	
+	
 	describe("testing removeRepoFromAccount", function () {
 		it("success 1", function (done) {
 			options = {
 				repoLabel: 'property'
 			};
 			soajs.inputmaskData = {
-				accountRecord : {
+				accountRecord: {
 					repos: []
 				}
 			};
@@ -122,7 +122,7 @@ describe("testing models git.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing updateRepoInfo", function () {
 		it("success 1", function (done) {
 			options = {
@@ -136,9 +136,7 @@ describe("testing models git.js", function () {
 	
 	describe("testing saveNewAccount", function () {
 		it("success 1", function (done) {
-			options = {
-			
-			};
+			options = {};
 			models.saveNewAccount(soajs, mongoStub, options, function () {
 				done();
 			});
@@ -147,9 +145,7 @@ describe("testing models git.js", function () {
 	
 	describe("testing removeAccount", function () {
 		it("success 1", function (done) {
-			options = {
-			
-			};
+			options = {};
 			models.removeAccount(soajs, mongoStub, options, function () {
 				done();
 			});
@@ -160,12 +156,10 @@ describe("testing models git.js", function () {
 		it("success 1", function (done) {
 			soajs.inputmaskData.fullList = true;
 			soajs.inputmaskData.rms = true;
-			options = {
-			
-			};
+			options = {};
 			models.listGitAccounts(soajs, mongoStub, function () {
 				soajs.inputmaskData = {
-					accountRecord : {
+					accountRecord: {
 						repos: []
 					}
 				};
@@ -175,9 +169,7 @@ describe("testing models git.js", function () {
 	});
 	describe("testing listGitAccountsWithRepos", function () {
 		it("success 1", function (done) {
-			options = {
-			
-			};
+			options = {};
 			models.listGitAccountsWithRepos(soajs, mongoStub, function () {
 				done();
 			});
@@ -187,12 +179,12 @@ describe("testing models git.js", function () {
 	describe("testing addRepoToAccount", function () {
 		it("success 1", function (done) {
 			options = {
-				repo :{
-					name : "test"
+				repo: {
+					name: "test"
 				}
 			};
 			soajs.inputmaskData = {
-				accountRecord : {
+				accountRecord: {
 					repos: [{
 						name: "test"
 					}]
@@ -207,20 +199,20 @@ describe("testing models git.js", function () {
 	describe("testing removeRepoFromAccount", function () {
 		it("success 1", function (done) {
 			options = {
-				repoLabel : "test"
+				repoLabel: "test"
 			};
 			soajs.inputmaskData.branch = "testBranch";
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, {
 					repos: [
 						{
-							name : "test",
-							git : {
-								branch : [
+							name: "test",
+							git: {
+								branch: [
 									{
-										name : "testBranch"
+										name: "testBranch"
 									}
-									
+								
 								]
 							}
 						}
@@ -234,18 +226,18 @@ describe("testing models git.js", function () {
 		
 		it("success 1", function (done) {
 			options = {
-				repoLabel : "test2"
+				repoLabel: "test2"
 			};
 			soajs.inputmaskData.branch = "testBranch";
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, {
 					repos: [
 						{
-							name : "test",
-							git : {
-								branch : [
+							name: "test",
+							git: {
+								branch: [
 									{
-										name : "testBranch"
+										name: "testBranch"
 									}
 								
 								]
@@ -264,12 +256,12 @@ describe("testing models git.js", function () {
 		it("success 1", function (done) {
 			options = {
 				value: {
-					sha : "123",
+					sha: "123",
 					swaggerSHA: "1234"
 				}
 			};
 			soajs.inputmaskData.branches = {
-				name: 	"testBranch"
+				name: "testBranch"
 			};
 			models.updateRepoInfo(soajs, mongoStub, options, function () {
 				done();

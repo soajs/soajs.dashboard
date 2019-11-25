@@ -1,9 +1,9 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../helper.js");
-var utils = helper.requireModule('./utils/utils.js');
+const assert = require("assert"); //todo: check unused
+const helper = require("../../helper.js");
+const utils = helper.requireModule('./utils/utils.js');
 
-var soajs = {
+let soajs = {
 	log: {
 		debug: function (data) {
 			
@@ -20,7 +20,7 @@ var soajs = {
 describe("testing utils utils.js", function () {
 	
 	describe("testing checkErrorReturn", function () {
-		var data = {
+		let data = {
 			config: {
 				errors: {}
 			},
@@ -29,7 +29,7 @@ describe("testing utils utils.js", function () {
 				msg: ''
 			}
 		};
-		var mainCb = function (data) {
+		let mainCb = function (data) {
 			return data;
 		};
 		it("Fail 1", function (done) {
@@ -39,12 +39,12 @@ describe("testing utils utils.js", function () {
 	});
 	
 	describe("testing buildDeployerOptions", function () {
-		var BL = {
+		let BL = {
 			model: {}
 		};
-		var envRecord = {};
+		let envRecord = {};
 		it("Fail 1", function (done) {
-			var options = utils.buildDeployerOptions(envRecord, soajs, BL);
+			let options = utils.buildDeployerOptions(envRecord, soajs, BL);
 			done();
 		});
 		
@@ -52,7 +52,7 @@ describe("testing utils utils.js", function () {
 			envRecord = {
 				deployer: {}
 			};
-			var options = utils.buildDeployerOptions(envRecord, soajs, BL);
+			let options = utils.buildDeployerOptions(envRecord, soajs, BL);
 			done();
 		});
 		
@@ -62,7 +62,7 @@ describe("testing utils utils.js", function () {
 					test: 'manual'
 				}
 			};
-			var options = utils.buildDeployerOptions(envRecord, soajs, BL);
+			let options = utils.buildDeployerOptions(envRecord, soajs, BL);
 			done();
 		});
 		
@@ -72,7 +72,7 @@ describe("testing utils utils.js", function () {
 					type: 'manual'
 				}
 			};
-			var options = utils.buildDeployerOptions(envRecord, soajs, BL);
+			let options = utils.buildDeployerOptions(envRecord, soajs, BL);
 			done();
 		});
 	});

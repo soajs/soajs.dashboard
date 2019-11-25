@@ -1,14 +1,15 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../../../helper.js");
-var driver = helper.requireModule('./utils/drivers/git/github/index.js');
-var driverHelper = helper.requireModule('./utils/drivers/git/github/helper.js');
+const assert = require("assert"); //todo: check unused
+const helper = require("../../../../../helper.js");
+
+let driver = helper.requireModule('./utils/drivers/git/github/index.js');
+let driverHelper = helper.requireModule('./utils/drivers/git/github/helper.js');
 driver.helper = driverHelper;
 
-var soajs = {};
-var data = {
+let soajs = {};
+let data = {
 	getAccount: function (soajs, model, options, cb) {
-		var accountRecord = {
+		let accountRecord = {
 			repos: []
 		};
 		return cb(null, accountRecord);
@@ -22,15 +23,15 @@ var data = {
 	checkIfAccountExists: function (soajs, model, options, cb) {
 		return cb(null, 0);
 	}
-
+	
 };
-var model = {};
+let model = {};
 
 describe("testing git/github index.js", function () {
-	var options = {
+	let options = {
 		provider: 'github'
 	};
-
+	
 	describe("testing login", function () {
 		it("Success public personal", function (done) {
 			options = {
@@ -44,7 +45,7 @@ describe("testing git/github index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success public organization", function (done) {
 			options = {
 				owner: '123456789',
@@ -57,7 +58,7 @@ describe("testing git/github index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success public organization", function (done) {
 			options = {
 				username: "username",
@@ -71,9 +72,9 @@ describe("testing git/github index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing logout", function () {
 		it("Success", function (done) {
 			driver.logout(soajs, data, model, options, function (error, body) {
@@ -82,7 +83,7 @@ describe("testing git/github index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getRepos", function () {
 		it("Success", function (done) {
 			driverHelper.getAllRepos = function (options, cb) {
@@ -94,7 +95,7 @@ describe("testing git/github index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getBranches", function () {
 		it("Success 1", function (done) {
 			driverHelper.getRepoBranches = function (options, cb) {
@@ -106,12 +107,12 @@ describe("testing git/github index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getJSONContent", function () {
 		it("Success", function (done) {
 			options.path = '';
 			driverHelper.getRepoContent = function (options, cb) {
-				var content = {
+				let content = {
 					sha: "code",
 					content: "{}"
 				};
@@ -123,12 +124,12 @@ describe("testing git/github index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getAnyContent", function () {
 		it("Success", function (done) {
 			options.path = '';
 			driverHelper.getRepoContent = function (options, cb) {
-				var content = {
+				let content = {
 					sha: "code",
 					content: "{}"
 				};
@@ -140,5 +141,5 @@ describe("testing git/github index.js", function () {
 			});
 		});
 	});
-
+	
 });

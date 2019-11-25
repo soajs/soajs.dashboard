@@ -1,7 +1,7 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var json = helper.requireModule('./utils/apiBuilder/json.js');
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const json = helper.requireModule('./utils/apiBuilder/json.js');
 
 let schemaMultipleSource = {
 	get: {

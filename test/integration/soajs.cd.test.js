@@ -1,17 +1,18 @@
 "use strict";
-var assert = require('assert');
-var request = require("request");
-var shell = require("shelljs");
-var helper = require("../helper.js");
+const assert = require('assert');
+const request = require("request");
+const shell = require("shelljs");
+const helper = require("../helper.js"); //todo: check not used
 
-var Mongo = require("soajs.core.modules").mongo;
-var dbConfig = require("./db.config.test.js");
-var dashboardConfig = dbConfig();
+const Mongo = require("soajs.core.modules").mongo;
+const dbConfig = require("./db.config.test.js");
+let dashboardConfig = dbConfig();
 dashboardConfig.name = "core_provision";
-var mongo = new Mongo(dashboardConfig);
 
-var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
-var access_token;
+const mongo = new Mongo(dashboardConfig);
+
+const extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
+let access_token;
 
 function executeMyRequest(params, apiPath, method, cb) {
 	requester(apiPath, method, params, function (error, body) {
@@ -21,7 +22,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 	});
 	
 	function requester(apiName, method, params, cb) {
-		var options = {
+		let options = {
 			uri: 'http://localhost:4000/dashboard/' + apiName,
 			headers: {
 				key: extKey
@@ -30,7 +31,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 		};
 		
 		if (params.headers) {
-			for (var h in params.headers) {
+			for (let h in params.headers) {
 				if (params.headers.hasOwnProperty(h)) {
 					options.headers[h] = params.headers[h];
 				}
@@ -67,7 +68,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 }
 
 function getServices(env, cb) {
-	var params = {
+	let params = {
 		qs: {
 			access_token: access_token,
 			env: env
@@ -75,13 +76,13 @@ function getServices(env, cb) {
 	};
 	executeMyRequest(params, "cloud/services/list", "get", function (body) {
 		assert.ifError(body.errors);
-		var services = body.data;
+		let services = body.data;
 		return cb(services);
 	});
 }
 
 function deleteService(options, cb) {
-	var params = {
+	let params = {
 		"qs": {
 			access_token: access_token,
 			env: options.env,
@@ -93,8 +94,8 @@ function deleteService(options, cb) {
 }
 
 describe("testing hosts deployment", function () {
-	var soajsauth, recipesInfo;
-	var Authorization;
+	let soajsauth, recipesInfo; //todo: check not used
+	let Authorization;
 	
 	before(function (done) {
 		process.env.SOAJS_ENV_WORKDIR = process.env.APP_DIR_FOR_CODE_COVERAGE;
@@ -102,7 +103,7 @@ describe("testing hosts deployment", function () {
 		console.log("* Setting CD functionality");
 		console.log("***************************************************************");
 		
-		var options1 = {
+		let options1 = {
 			uri: 'http://localhost:4000/oauth/authorization',
 			headers: {
 				'Content-Type': 'application/json',
@@ -116,7 +117,7 @@ describe("testing hosts deployment", function () {
 			assert.ok(body);
 			Authorization = body.data;
 			
-			var options = {
+			let options = {
 				uri: 'http://localhost:4000/oauth/token',
 				headers: {
 					'Content-Type': 'application/json',
@@ -135,7 +136,7 @@ describe("testing hosts deployment", function () {
 				assert.ok(body);
 				access_token = body.access_token;
 				
-				var validDeployerRecord = {
+				let validDeployerRecord = {
 					"type": "container",
 					"selected": "container.docker.local",
 					"container": {
@@ -152,7 +153,7 @@ describe("testing hosts deployment", function () {
 							"deployer": validDeployerRecord,
 							"profile": __dirname + "/../profiles/profile.js"
 						}
-					}, { multi: true }, function (error) {
+					}, {multi: true}, function (error) {
 						assert.ifError(error);
 						done();
 					});
@@ -171,7 +172,7 @@ describe("testing hosts deployment", function () {
 	});
 	
 	before('create dashboard environment record', function (done) {
-		var dashEnv = {
+		let dashEnv = {
 			"code": "DASHBOARD",
 			"domain": "soajs.org",
 			"locked": true,
@@ -300,10 +301,10 @@ describe("testing hosts deployment", function () {
 				}
 			}
 		};
-		var updateField = {
+		let updateField = {
 			"$set": dashEnv
 		};
-		mongo.update("environment", { "code": "DASHBOARD" }, updateField, {
+		mongo.update("environment", {"code": "DASHBOARD"}, updateField, {
 			"upsert": true,
 			"multi": false
 		}, function (error) {
@@ -324,7 +325,7 @@ describe("testing hosts deployment", function () {
 	describe("testing service deployment", function () {
 		
 		function mimicCall(token, version, cb) {
-			var options = {
+			let options = {
 				qs: {
 					deploy_token: token
 				},
@@ -335,7 +336,7 @@ describe("testing hosts deployment", function () {
 					commit: '1fea60a6d26efd7fcbaeeb95d52fc651d6c3eba5',
 					ciProvider: 'travis',
 					services: [
-						{ serviceName: 'controller' }
+						{serviceName: 'controller'}
 					]
 				}
 			};
@@ -350,7 +351,7 @@ describe("testing hosts deployment", function () {
 		}
 		
 		function configureCD(config, cb) {
-			var options = {
+			let options = {
 				qs: {
 					access_token: access_token
 				},
@@ -365,7 +366,7 @@ describe("testing hosts deployment", function () {
 		}
 		
 		it("update catalog recipe", function (done) {
-			var recipes = [
+			let recipes = [
 				{
 					"name": "soajsCatalog",
 					"type": "service",
@@ -713,7 +714,7 @@ describe("testing hosts deployment", function () {
 		});
 		
 		it("Fail - Invalid token", function (done) {
-			var params = {
+			let params = {
 				qs: {
 					deploy_token: "1234"
 				},
@@ -724,7 +725,7 @@ describe("testing hosts deployment", function () {
 					commit: 'abc',
 					ciProvider: 'travis',
 					services: [
-						{ serviceName: 'controller' }
+						{serviceName: 'controller'}
 					]
 				}
 			};
@@ -733,9 +734,9 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-
+		
 		it("success - deploy 1 service using catalog 1", function (done) {
-			var params = {
+			let params = {
 				qs: {
 					access_token: access_token
 				},
@@ -772,7 +773,7 @@ describe("testing hosts deployment", function () {
 		});
 		
 		it.skip("success - deploy 1 service using catalog2", function (done) {
-			var params = {
+			let params = {
 				qs: {
 					access_token: access_token
 				},
@@ -802,7 +803,7 @@ describe("testing hosts deployment", function () {
 		});
 		
 		it.skip("success - deploy 1 service using catalog3", function (done) {
-			var params = {
+			let params = {
 				qs: {
 					access_token: access_token
 				},
@@ -834,7 +835,7 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-
+		
 		it.skip("mimic call to cd/deploy, nothing should happen", function (done) {
 			mimicCall("myGitToken", null, function (body) {
 				assert.equal(body.result, true);
@@ -907,7 +908,7 @@ describe("testing hosts deployment", function () {
 		});
 		
 		it("get ledger", function (done) {
-			var options = {
+			let options = {
 				qs: {
 					deploy_token: access_token,
 					env: 'stg'
@@ -918,12 +919,12 @@ describe("testing hosts deployment", function () {
 				assert.ok(body.result);
 				assert.ok(body.data);
 				done();
-				// var list = body.data;
+				// let list = body.data;
 				// if(Array.isArray(list) && list.length === 0){
 				// 	done();
 				// }
 				// else{
-				// 	var options = {
+				// 	let options = {
 				// 		qs: {
 				// 			deploy_token: access_token
 				// 		},
@@ -944,7 +945,7 @@ describe("testing hosts deployment", function () {
 		});
 		
 		it("mark all ledger entries as read", function (done) {
-			var options = {
+			let options = {
 				qs: {
 					deploy_token: access_token
 				},
@@ -962,7 +963,7 @@ describe("testing hosts deployment", function () {
 		});
 		
 		it("trigger catalog update", function (done) {
-			mongo.update('catalogs', { 'name': "soajsCatalog" }, {
+			mongo.update('catalogs', {'name': "soajsCatalog"}, {
 				$set: {
 					v: 2,
 					ts: new Date().getTime()
@@ -974,7 +975,7 @@ describe("testing hosts deployment", function () {
 		});
 		
 		it.skip("get updates", function (done) {
-			var options = {
+			let options = {
 				qs: {
 					deploy_token: access_token,
 					env: 'stg'
@@ -1014,7 +1015,7 @@ describe("testing hosts deployment", function () {
 		
 		//todo: need to trigger get action api, redeploy and rebuild
 		it.skip("calling take action on redeploy", function (done) {
-			var options = {
+			let options = {
 				qs: {
 					deploy_token: access_token,
 					env: 'stg'
@@ -1025,16 +1026,16 @@ describe("testing hosts deployment", function () {
 				assert.ok(body.result);
 				assert.ok(body.data);
 				
-				var list = body.data;
-				var oneUpdate;
-				for (var i = 0; i < list.length; i++) {
+				let list = body.data;
+				let oneUpdate;
+				for (let i = 0; i < list.length; i++) {
 					if (list[i].notify && !list[i].manual) {
 						oneUpdate = list[i];
 						break;
 					}
 				}
 				
-				var options = {
+				let options = {
 					// qs: {
 					// 	deploy_token: access_token
 					// },
@@ -1059,8 +1060,8 @@ describe("testing hosts deployment", function () {
 		
 		it.skip("calling take action on rebuild", function (done) {
 			getServices('stg', function (list) {
-				var lastEntry = list[list.length - 1];
-				var options = {
+				let lastEntry = list[list.length - 1];
+				let options = {
 					qs: {
 						deploy_token: access_token
 					},
@@ -1081,9 +1082,9 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-
+		
 		it("fail cd/action", function (done) {
-			var options = {
+			let options = {
 				form: {
 					env: 'TEST',
 					data: {
@@ -1097,7 +1098,7 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-
+		
 		it("get CD", function (done) {
 			executeMyRequest({}, "cd", "get", function (body) {
 				assert.ok(body);
@@ -1117,7 +1118,7 @@ describe("testing hosts deployment", function () {
 		});
 		
 		it("pause CD", function (done) {
-			var params = {
+			let params = {
 				form: {
 					"config": {
 						"env": "STG",
@@ -1138,7 +1139,7 @@ describe("testing hosts deployment", function () {
 		describe("List VM", function () {
 			
 			it("Fail - invalid Id", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						"env": "TEST",
 						"infraId": "123",
@@ -1157,7 +1158,7 @@ describe("testing hosts deployment", function () {
 		describe("Add VM", function () {
 			
 			it("Fail - invalid Id", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						"env": "TEST",
 						"infraId": "123",
@@ -1182,7 +1183,7 @@ describe("testing hosts deployment", function () {
 		describe("Edit VM", function () {
 			
 			it("Fail - invalid Id", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						"env": "TEST",
 						"id": "123",
@@ -1208,7 +1209,7 @@ describe("testing hosts deployment", function () {
 		describe("VM maintenance", function () {
 			
 			it("Fail - invalid Id", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						"infraId": "123",
 						"technology": "docker",
@@ -1230,7 +1231,7 @@ describe("testing hosts deployment", function () {
 		describe("VM Logs", function () {
 			
 			it("Fail - logs", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						"group": "a",
 						"infraId": "123",
@@ -1251,7 +1252,7 @@ describe("testing hosts deployment", function () {
 		describe("VM Onboard", function () {
 			
 			it("Fail - onboard", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						env: "TEST",
 						infraId: "123",
@@ -1273,7 +1274,7 @@ describe("testing hosts deployment", function () {
 		describe("VM Layer status", function () {
 			
 			it("Fail - status", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						infraId: "123",
 						id: "123",
@@ -1292,7 +1293,7 @@ describe("testing hosts deployment", function () {
 		describe("Delete VM instance", function () {
 			
 			it("Fail", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						env: "TEST",
 						infraId: "123",
@@ -1312,7 +1313,7 @@ describe("testing hosts deployment", function () {
 		describe("Delete VM", function () {
 			
 			it("Fail", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						id: "abc",
 						env: "TEST",
@@ -1337,7 +1338,7 @@ describe("testing hosts deployment", function () {
 		describe("List Metrics Services", function () {
 			
 			it("Fail - Env not found", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						"env": "TEST"
 					}
@@ -1354,7 +1355,7 @@ describe("testing hosts deployment", function () {
 		describe("List Metrics Nodes", function () {
 			
 			it("Fail - Env not found", function (done) {
-				var params = {
+				let params = {
 					qs: {
 						"env": "TEST"
 					}

@@ -67,7 +67,7 @@ module.exports = function (grunt) {
 				"newcap": true,
 				"noarg": true,
 				"undef": true,
-				"unused": true,
+				"unused": false,
 				"laxcomma": true,
 				// "loopfunc": true,
 				"sub": true,

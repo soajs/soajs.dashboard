@@ -1,19 +1,23 @@
 "use strict";
-var assert = require('assert');
-var shell = require('shelljs');
-var helper = require("../helper.js");
-var sampleData = require("soajs.mongodb.data/modules/dashboard");
-var dashboard, controller, urac, oauth;
 
-var Mongo = require('soajs.core.modules').mongo;
-var dbConfig = require("./db.config.test.js");
-var dashboardConfig = dbConfig();
+const assert = require('assert');
+const shell = require('shelljs');
+const helper = require("../helper.js");
+const sampleData = require("soajs.mongodb.data/modules/dashboard");
+
+let dashboard, controller, urac, oauth;
+
+const Mongo = require('soajs.core.modules').mongo;
+const dbConfig = require("./db.config.test.js");
+
+let dashboardConfig = dbConfig();
 dashboardConfig.name = "core_provision";
-var mongo = new Mongo(dashboardConfig);
+
+const mongo = new Mongo(dashboardConfig);
 
 
 describe("importing sample data", function () {
-
+	
 	it("do import", function (done) {
 		shell.pushd(sampleData.dir);
 		shell.exec("chmod +x " + sampleData.shell, function (code) {
@@ -25,9 +29,9 @@ describe("importing sample data", function () {
 			});
 		});
 	});
-
+	
 	it("update environment before starting service", function (done) {
-		var setDoc = {
+		let setDoc = {
 			"$set": {
 				"services.config.logger.level": (process.env.SOAJS_DEBUG_LOGS) ? "debug" : "fatal",
 				"services.config.logger.formatter.outputMode": (process.env.SOAJS_DEBUG_LOGS) ? "long" : "short"
@@ -45,9 +49,9 @@ describe("importing sample data", function () {
 			done();
 		});
 	});
-
+	
 	it("update requestTimeout", function (done) {
-		var setDoc = {
+		let setDoc = {
 			"$set": {
 				"requestTimeout": 70
 			}
@@ -58,7 +62,7 @@ describe("importing sample data", function () {
 				done();
 			});
 	});
-
+	
 	it("Start Services", function (done) {
 		//todo: never change process.env.SOAJS_ENV_WORKDIR to /opt/, contents of the directory will be deleted.
 		process.env.SOAJS_ENV_WORKDIR = __dirname + "/";
@@ -73,9 +77,9 @@ describe("importing sample data", function () {
 			}, 2000);
 		}, 2000);
 	});
-
+	
 	it("reload controller registry", function (done) {
-		var params = {
+		let params = {
 			"uri": "http://127.0.0.1:5000/reloadRegistry",
 			"headers": {
 				"content-type": "application/json"
@@ -90,7 +94,7 @@ describe("importing sample data", function () {
 			}, 500);
 		});
 	});
-
+	
 	after(function (done) {
 		setTimeout(function () {
 			require("./soajs.dashboard.test.saas.js");

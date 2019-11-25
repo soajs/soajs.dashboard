@@ -1,12 +1,14 @@
 "use strict";
-var assert = require("assert");
-var fs = require("fs");
-var request = require("request");
 
-var helper = require("../../../helper.js");
-var coreModules = require("soajs.core.modules");
-var core = coreModules.core;
-var async = require('async');
+//todo: check unused
+const assert = require("assert");
+const fs = require("fs");
+const request = require("request");
+
+const helper = require("../../../helper.js");
+const coreModules = require("soajs.core.modules");
+const core = coreModules.core;
+const async = require('async');
 let template = require('./schema/template.js');
 const repoIndex = helper.requireModule('./lib/templates/drivers/repos.js');
 
@@ -73,14 +75,14 @@ let mongoStub = {
 				"recipe": "sudo something",
 				"locked": true,
 				"sha": "1234"
-			}])
+			}]);
 		},
 		getDb: function (data) {
 			return {
 				ObjectId: function () {
 					return ['123qwe'];
 				}
-			}
+			};
 		}
 	}
 };
@@ -112,7 +114,7 @@ const lib = {
 			if (typeof (data.error) === 'object') {
 				req.soajs.log.error(data.error);
 			}
-			return mainCb({ "code": data.code, "msg": data.config.errors[data.code] });
+			return mainCb({"code": data.code, "msg": data.config.errors[data.code]});
 		} else {
 			if (cb) {
 				return cb();
@@ -133,7 +135,7 @@ describe("Testing productization", function () {
 					validate: function () {
 						return {
 							errors: ["error"],
-						}
+						};
 					}
 				};
 			}
@@ -150,7 +152,7 @@ describe("Testing productization", function () {
 					validate: function () {
 						return {
 							valid: true,
-						}
+						};
 					}
 				};
 			}
@@ -165,14 +167,16 @@ describe("Testing productization", function () {
 			return cb(null, 0);
 		};
 		repoIndex.check(req, context, lib, async, mongoStub, function (result, error) {
+			//todo: check unused
 			done();
 		});
 	});
 	
 	it("Fail - No repo found", function (done) {
-		let newContext = JSON.parse(JSON.stringify(context))
+		let newContext = JSON.parse(JSON.stringify(context));
 		newContext.template.content.deployments.repo = [];
 		repoIndex.check(req, newContext, lib, async, mongoStub, function (result, error) {
+			//todo: check unused
 			done();
 		});
 	})

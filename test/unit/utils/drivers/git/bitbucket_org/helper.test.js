@@ -1,17 +1,18 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../../../helper.js");
-var driverHelper = helper.requireModule('./utils/drivers/git/bitbucket/helper.js');
-var nock = require("nock");
+
+const assert = require("assert"); //todo: check unused
+const helper = require("../../../../../helper.js");
+const driverHelper = helper.requireModule('./utils/drivers/git/bitbucket/helper.js');
+const nock = require("nock");
 
 describe("testing git/bitbucket helper.js", function () {
-	var soajs = {};
-	var model = {};
-	var options = {
+	let soajs = {};
+	let model = {};
+	let options = {
 		provider: 'bitbucket'
 	};
 	
-	before(function(done){
+	before(function (done) {
 		// TODO - under construction
 		nock('https://api.bitbucket.org')
 			.get('/1.0/users/')
@@ -74,7 +75,7 @@ describe("testing git/bitbucket helper.js", function () {
 	
 	describe("testing createAuthToken", function () {
 		it("Success generate", function (done) {
-			var data = {
+			let data = {
 				tokenInfo: {
 					oauthKey: 'oauthKey',
 					oauthSecret: 'oauthSecret'
@@ -91,7 +92,7 @@ describe("testing git/bitbucket helper.js", function () {
 	});
 	
 	describe("testing checkAuthToken", function () {
-		var accountRecord = {};
+		let accountRecord = {};
 		// it.skip("Success generate", function (done) {
 		// 	options.action = 'generate';
 		// 	options.tokenInfo = {};
@@ -103,7 +104,7 @@ describe("testing git/bitbucket helper.js", function () {
 		it("Success refresh", function (done) {
 			options.action = 'refresh';
 			options.tokenInfo = {
-				refresh_token : '1234',
+				refresh_token: '1234',
 				created: 700000,
 				expires_in: 1234522,
 				oauthKey: "!23",
@@ -113,16 +114,16 @@ describe("testing git/bitbucket helper.js", function () {
 				.filteringRequestBody(/[\s\S]+/, '*')
 				.post('/site/oauth2/access_token', '*')
 				.reply(200, {
-						access_token: 123,
-						refresh_token: 3434,
-						expires_in: 3434
-					});
-			model.saveEntry = function(options, opts, cb){
+					access_token: 123,
+					refresh_token: 3434,
+					expires_in: 3434
+				});
+			model.saveEntry = function (options, opts, cb) {
 				return cb(null, true);
 			};
 			
 			driverHelper.checkAuthToken(soajs, options, model, {
-				tokenInfo :{}
+				tokenInfo: {}
 			}, function (error, body) {
 				// assert.ok(body);
 				done();
@@ -141,10 +142,10 @@ describe("testing git/bitbucket helper.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing buildBranchesArray", function () {
 		it("Success", function (done) {
-			var allBranches = {
+			let allBranches = {
 				develop: {
 					raw_node: {}
 				}
@@ -153,10 +154,10 @@ describe("testing git/bitbucket helper.js", function () {
 			done();
 		});
 	});
-
+	
 	describe("testing addReposStatus", function () {
 		it("Success", function (done) {
-			var allRepos = [
+			let allRepos = [
 				{
 					full_name: 'abccccc'
 				},
@@ -167,7 +168,7 @@ describe("testing git/bitbucket helper.js", function () {
 					full_name: 'abc/123'
 				}
 			];
-			var activeRepos = [
+			let activeRepos = [
 				{
 					type: 'multi',
 					status: 'active',

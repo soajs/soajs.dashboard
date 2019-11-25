@@ -1,17 +1,17 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../../../helper.js");
-var driverHelper = helper.requireModule('./utils/drivers/git/github/helper.js');
+const assert = require("assert"); //todo: check unused
+const helper = require("../../../../../helper.js");
+const driverHelper = helper.requireModule('./utils/drivers/git/github/helper.js');
 
 describe("testing git/github helper.js", function () {
-	var soajs = {};
-	var options = {
+	let soajs = {};
+	let options = {
 		type: 'basic',
 		username: "username",
 		password: 'password',
 		provider: 'github'
 	};
-
+	
 	describe("testing authenticate", function () {
 		it("Success type basic", function (done) {
 			driverHelper.authenticate(options, function (error, body) {
@@ -20,7 +20,7 @@ describe("testing git/github helper.js", function () {
 			});
 		});
 		it("Success type oauth", function (done) {
-			var options1 = {
+			let options1 = {
 				type: 'oauth',
 				token: '123456',
 				provider: 'github'
@@ -31,7 +31,7 @@ describe("testing git/github helper.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing createAuthToken", function () {
 		it("Success", function (done) {
 			driverHelper.createAuthToken(options, function (error, body) {
@@ -40,7 +40,7 @@ describe("testing git/github helper.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing checkUserRecord", function () {
 		it("Success checkUserRecord", function (done) {
 			options = {
@@ -52,7 +52,7 @@ describe("testing git/github helper.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing checkOrgRecord", function () {
 		it("Success checkOrgRecord", function (done) {
 			options = {
@@ -64,7 +64,7 @@ describe("testing git/github helper.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getRepoBranches", function () {
 		it("Success 1", function (done) {
 			driverHelper.getRepoBranches(options, function (error, body) {
@@ -80,7 +80,7 @@ describe("testing git/github helper.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getRepoContent", function () {
 		it("Success", function (done) {
 			options.path = '';
@@ -90,7 +90,7 @@ describe("testing git/github helper.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getAllRepos", function () {
 		it("Success getAllRepos token", function (done) {
 			options = {
@@ -101,7 +101,7 @@ describe("testing git/github helper.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success getAllRepos personal", function (done) {
 			options = {
 				type: 'personal',
@@ -112,7 +112,7 @@ describe("testing git/github helper.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success getAllRepos organization", function (done) {
 			options = {
 				type: 'organization',
@@ -124,10 +124,10 @@ describe("testing git/github helper.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing addReposStatus", function () {
 		it("Success", function (done) {
-			var allRepos = [
+			let allRepos = [
 				{
 					full_name: 'abccccc'
 				},
@@ -138,7 +138,7 @@ describe("testing git/github helper.js", function () {
 					full_name: 'abc/123'
 				}
 			];
-			var activeRepos = [
+			let activeRepos = [
 				{
 					type: 'multi',
 					status: 'active',
@@ -179,5 +179,5 @@ describe("testing git/github helper.js", function () {
 			});
 		});
 	});
-
+	
 });

@@ -1,11 +1,12 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../../../helper.js");
-var utils = helper.requireModule('./utils/drivers/ci/travis/index.js');
+
+const assert = require("assert");
+const helper = require("../../../../../helper.js");
+const utils = helper.requireModule('./utils/drivers/ci/travis/index.js');
 const nock = require('nock');
 
 describe("testing ci travis index.js", function () {
-	var options = {
+	let options = {
 		log: {
 			debug: function (data) {
 			}
@@ -20,7 +21,7 @@ describe("testing ci travis index.js", function () {
 		},
 		recipe: '',
 		type: 'ci',
-		params: { repoId: 123456 }
+		params: {repoId: 123456}
 	};
 	beforeEach(function (done) {
 		done();
@@ -29,23 +30,23 @@ describe("testing ci travis index.js", function () {
 		done();
 	});
 	describe("testing generateToken", function () {
-
+		
 		it("Call generateToken", function (done) {
 			nock('https://my.travis')
 				.post('/auth/github')
-				.reply(200, { access_token: 'access1' });
-
+				.reply(200, {access_token: 'access1'});
+			
 			utils.generateToken(options, function (error, body) {
 				assert.ok(body);
 				assert.equal(body, 'access1');
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing listRepos", function () {
-
+		
 		it("Call listRepos", function (done) {
 			nock('https://my.travis')
 				.get('/repos/soajsTestAccount?access_token=access1')
@@ -116,7 +117,7 @@ describe("testing ci travis index.js", function () {
 						}
 					]
 				});
-
+			
 			options.variables = {
 				SOAJS_CD_AUTH_KEY: 'aa39b54908c39565bd8d72f68ac',
 				SOAJS_CD_DEPLOY_TOKEN: 'token',
@@ -130,11 +131,11 @@ describe("testing ci travis index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing listRepoBranches", function () {
-
+		
 		it("Call listRepoBranches", function (done) {
 			nock('https://my.travis')
 				.get('/repos/123456/branches?access_token=access1')
@@ -160,9 +161,9 @@ describe("testing ci travis index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing updateEnvVar", function () {
 		before(function (done) {
 			nock('https://my.travis')
@@ -170,13 +171,13 @@ describe("testing ci travis index.js", function () {
 				.reply(200, {});
 			done();
 		});
-
+		
 		it("Call updateEnvVar", function (done) {
-
-			var options = {
+			
+			let options = {
 				log: {
 					debug: function (data) {
-
+					
 					}
 				},
 				_id: 'aaa',
@@ -194,7 +195,7 @@ describe("testing ci travis index.js", function () {
 				},
 				recipe: 'sudo:',
 				type: 'ci',
-				params: { repoId: 123456 }
+				params: {repoId: 123456}
 			};
 			utils.updateEnvVar(options, function (error, body) {
 				// assert.ok(body);
@@ -202,13 +203,13 @@ describe("testing ci travis index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing ensureRepoVars", function () {
 		beforeEach(function (done) {
 			nock('https://my.travis')
 				.delete('/settings/env_vars/5eb00b12424d?repository_id=123456&access_token=access1')
 				.reply(200, {});
-
+			
 			nock('https://my.travis')
 				.post('/settings/env_vars?repository_id=123456&access_token=access1', {
 					env_var: {
@@ -226,7 +227,7 @@ describe("testing ci travis index.js", function () {
 						repository_id: 123456
 					}
 				});
-
+			
 			nock('https://my.travis')
 				.post('/settings/env_vars?repository_id=123456&access_token=access1', {
 					env_var: {
@@ -244,7 +245,7 @@ describe("testing ci travis index.js", function () {
 						repository_id: 123456
 					}
 				});
-
+			
 			nock('https://my.travis')
 				.post('/settings/env_vars?repository_id=123456&access_token=access1', {
 					env_var: {
@@ -262,7 +263,7 @@ describe("testing ci travis index.js", function () {
 						repository_id: 123456
 					}
 				});
-
+			
 			nock('https://my.travis')
 				.get('/settings/env_vars?repository_id=123456&access_token=access1')
 				.reply(200, {
@@ -299,9 +300,9 @@ describe("testing ci travis index.js", function () {
 				});
 			done();
 		});
-
+		
 		it("Call addEnvVar", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function (data) {
 					}
@@ -320,7 +321,7 @@ describe("testing ci travis index.js", function () {
 				},
 				recipe: 'sudo:',
 				type: 'ci',
-				params: { repoId: 123456 }
+				params: {repoId: 123456}
 			};
 			utils.addEnvVar(options, function (error, body) {
 				assert.ok(body);
@@ -328,7 +329,7 @@ describe("testing ci travis index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Call updateEnvVar", function (done) {
 			nock('https://my.travis')
 				.patch('/settings/env_vars/18e99209-5eb00b12424d?repository_id=123456&access_token=access1', {
@@ -339,7 +340,7 @@ describe("testing ci travis index.js", function () {
 					}
 				})
 				.reply(200, {});
-			var options = {
+			let options = {
 				log: {
 					debug: function (data) {
 					}
@@ -371,9 +372,9 @@ describe("testing ci travis index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Call deleteEnvVar", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function (data) {
 					}
@@ -389,7 +390,7 @@ describe("testing ci travis index.js", function () {
 				},
 				recipe: 'sudo:',
 				type: 'ci',
-				params: { repoId: 123456 },
+				params: {repoId: 123456},
 				variables: {}
 			};
 			utils.deleteEnvVar(options, function (error, body) {
@@ -398,9 +399,9 @@ describe("testing ci travis index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Call listEnvVars", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function (data) {
 					}
@@ -415,14 +416,14 @@ describe("testing ci travis index.js", function () {
 				},
 				recipe: 'sudo:',
 				type: 'ci',
-				params: { repoId: 123456 }
+				params: {repoId: 123456}
 			};
 			utils.listEnvVars(options, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-
+		
 		it("Call ensureRepoVars Success", function (done) {
 			nock('https://my.travis')
 				.post('/settings/env_vars?repository_id=123456&access_token=access1', {
@@ -441,8 +442,8 @@ describe("testing ci travis index.js", function () {
 						repository_id: 123456
 					}
 				});
-
-			var options = {
+			
+			let options = {
 				log: {
 					debug: function (data) {
 					}
@@ -471,9 +472,9 @@ describe("testing ci travis index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Call ensureRepoVars Fail", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -498,9 +499,9 @@ describe("testing ci travis index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing updateSettings", function () {
 		before(function (done) {
 			nock('https://my.travis')
@@ -523,9 +524,9 @@ describe("testing ci travis index.js", function () {
 				});
 			done();
 		});
-
+		
 		it("Call updateSettings", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function (data) {
 					}
@@ -560,7 +561,7 @@ describe("testing ci travis index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing setHook", function () {
 		before(function (done) {
 			nock('https://my.travis')
@@ -574,15 +575,15 @@ describe("testing ci travis index.js", function () {
 				});
 			done();
 		});
-
+		
 		it("Call setHook", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function (data) {
-
+					
 					}
 				},
-				hook: { id: 1234, active: false },
+				hook: {id: 1234, active: false},
 				_id: 'aaa',
 				driver: 'travis',
 				settings: {
@@ -601,7 +602,7 @@ describe("testing ci travis index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing listSettings", function () {
 		before(function (done) {
 			nock('https://my.travis')
@@ -615,9 +616,9 @@ describe("testing ci travis index.js", function () {
 				});
 			done();
 		});
-
+		
 		it("Call listSettings", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function (data) {
 					}
@@ -640,7 +641,7 @@ describe("testing ci travis index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getRepoBuilds", function () {
 		before(function (done) {
 			nock('https://my.travis')
@@ -671,20 +672,19 @@ describe("testing ci travis index.js", function () {
 						}
 					]
 				})
-
+				
 				.get('/jobs/123?access_token=access1')
 				.reply(200, {
 					state: "completed", //dummy values
 					result: "passed"    //dummy values
 				})
-
 				.get('/jobs/123/log?access_token=access1')
 				.reply(200, "this is the log");
 			done();
 		});
-
+		
 		it("Call getRepoBuilds", function (done) {
-			var options = {
+			let options = {
 				driver: 'travis',
 				settings: {
 					ciToken: 'access1',
@@ -706,14 +706,14 @@ describe("testing ci travis index.js", function () {
 				const expected = {
 					branch: "develop",
 					commit_id: 123456
-				}
-
-				assert.deepEqual(body[expected.branch].commit_id, expected.commit_id)
+				};
+				
+				assert.deepEqual(body[expected.branch].commit_id, expected.commit_id);
 				assert.ok(body[expected.branch]);
 				nock.cleanAll();
 				done();
 			});
 		});
 	});
-
+	
 });

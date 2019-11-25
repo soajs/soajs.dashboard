@@ -1,15 +1,16 @@
 "use strict";
-var assert = require('assert');
-var request = require("request");
+const assert = require('assert');
+const request = require("request");
 
-var Mongo = require("soajs.core.modules").mongo;
-var dbConfig = require("./db.config.test.js");
+const Mongo = require("soajs.core.modules").mongo;
+const dbConfig = require("./db.config.test.js");
 
-var dashboardConfig = dbConfig();
+let dashboardConfig = dbConfig();
 dashboardConfig.name = "core_provision";
-var mongo = new Mongo(dashboardConfig);
 
-var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
+const mongo = new Mongo(dashboardConfig);
+
+const extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 let mockServers = null;
 let mock = require('./test-service-mock');
 
@@ -21,7 +22,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 	});
 	
 	function requester(apiName, method, params, cb) {
-		var options = {
+		let options = {
 			uri: 'http://localhost:4000/dashboard/' + apiName,
 			headers: {
 				'Content-Type': 'application/json',
@@ -31,7 +32,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 		};
 		
 		if (params.headers) {
-			for (var h in params.headers) {
+			for (let h in params.headers) {
 				if (params.headers.hasOwnProperty(h)) {
 					options.headers[h] = params.headers[h];
 				}
@@ -82,7 +83,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 		});
 	});
 	it("reload controller registry", function (done) {
-		var params = {
+		let params = {
 			"uri": "http://127.0.0.1:5000/reloadRegistry",
 			"headers": {
 				"content-type": "application/json"
@@ -93,7 +94,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 			assert.ifError(error);
 			assert.ok(response);
 			setTimeout(function () {
-				var params = {
+				let params = {
 					"uri": "http://127.0.0.1:5000/awarenessStat",
 					"headers": {
 						"content-type": "application/json"
@@ -185,7 +186,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 		}, 10000);
 	});
 	it("reload controller registry", function (done) {
-		var params = {
+		let params = {
 			"uri": "http://127.0.0.1:5000/reloadRegistry",
 			"headers": {
 				"content-type": "application/json"
@@ -196,7 +197,7 @@ describe("DASHBOARD UC-1 Integration Tests:", function () {
 			assert.ifError(error);
 			assert.ok(response);
 			setTimeout(function () {
-				var params = {
+				let params = {
 					"uri": "http://127.0.0.1:5000/awarenessStat",
 					"headers": {
 						"content-type": "application/json"

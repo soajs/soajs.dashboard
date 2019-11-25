@@ -2,7 +2,7 @@
 const assert = require('assert');
 const request = require("request");
 const helper = require("../helper.js");
-let dashboard;
+let dashboard; //todo: check not used
 
 const config = helper.requireModule('./config');
 const errorCodes = config.errors;

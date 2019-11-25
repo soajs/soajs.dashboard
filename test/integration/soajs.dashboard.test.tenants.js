@@ -2,7 +2,7 @@
 const assert = require('assert');
 const request = require("request");
 const helper = require("../helper.js");
-let dashboard;
+let dashboard; //todo: check not used
 
 const config = helper.requireModule('./config');
 const errorCodes = config.errors;
@@ -798,8 +798,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 			before(function (done) {
 				uracMongo.remove('users', {'tenant.code': 'TSTN'}, function (error, data) {
 					assert.ifError(error);
+					assert.ok(data);
+					
 					uracMongo.remove('groups', {'tenant.code': 'TSTN'}, function (error, data) {
 						assert.ifError(error);
+						assert.ok(data);
 						done();
 					});
 				});
@@ -2160,6 +2163,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
 						//todo check this !
 						//assert.ok(body.data);
+						assert.ok(body);
 						done();
 					});
 				});
@@ -2975,8 +2979,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 					if (count > 0) {
 						uracMongo.remove('users', {'tenant.code': tenantCode}, function (error, data) {
 							assert.ifError(error);
+							assert.ok(data);
+							
 							uracMongo.remove('groups', {'tenant.code': tenantCode}, function (error, data) {
 								assert.ifError(error);
+								assert.ok(data);
+								
 								cb();
 							});
 						});
@@ -3086,8 +3094,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 					assert.equal(body.result, true);
 					checkIfKeyExists(tenantCode, function (error, deleted) {
 						assert.ifError(error);
-						// assert.ok(deleted);
-						// assert.equal(deleted, true);
+						assert.ok(deleted);
+						assert.equal(deleted, true);
 						done();
 					});
 				});

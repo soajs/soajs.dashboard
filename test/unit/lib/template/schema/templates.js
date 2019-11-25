@@ -1,3 +1,5 @@
+"use strict";
+
 let template1 = {
 	
 	"name": "NGINX & SOAJS Microservices Environment",

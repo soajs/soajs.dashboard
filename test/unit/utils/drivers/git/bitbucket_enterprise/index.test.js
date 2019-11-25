@@ -1,19 +1,20 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../../../helper.js");
-var driver = helper.requireModule('./utils/drivers/git/bitbucket_enterprise/index.js');
-var driverHelper = helper.requireModule('./utils/drivers/git/bitbucket_enterprise/helper.js');
+const assert = require("assert"); //todo: check unused
+const helper = require("../../../../../helper.js");
+
+let driver = helper.requireModule('./utils/drivers/git/bitbucket_enterprise/index.js');
+let driverHelper = helper.requireModule('./utils/drivers/git/bitbucket_enterprise/helper.js');
 driver.helper = driverHelper;
 
 describe("testing git/bitbucket_enterprise index.js", function () {
-	var soajs = {};
-	var data = {
+	let soajs = {};
+	let data = {
 		// data.checkIfAccountExists
 		getAccount: function (soajs, model, options, cb) {
-			var accountRecord = {
+			let accountRecord = {
 				repos: [],
-				token : "123456",
-				domain : "org"
+				token: "123456",
+				domain: "org"
 			};
 			return cb(null, accountRecord);
 		},
@@ -27,13 +28,13 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 			return cb(null, true);
 		}
 	};
-	var model = {};
-	var options = {
+	let model = {};
+	let options = {
 		owner: '123',
 		password: '123',
 		accountRecord: {
-			token : "123456",
-			domain : "org"
+			token: "123456",
+			domain: "org"
 		},
 		tokenInfo: {},
 		provider: 'bitbucket_enterprise'
@@ -122,7 +123,7 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 		it("Success", function (done) {
 			options.path = '/-/>??.??';
 			driverHelper.getRepoContent = function (options, cb) {
-				var content = {
+				let content = {
 					lines: [{
 						text: ''
 					}]
@@ -140,7 +141,7 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 		it("Success", function (done) {
 			options.path = '';
 			driverHelper.getRepoContent = function (options, cb) {
-				var content = {
+				let content = {
 					lines: [{
 						text: ''
 					}]

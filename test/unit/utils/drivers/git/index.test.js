@@ -1,11 +1,11 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../../helper.js");
-var utils = helper.requireModule('./utils/drivers/git/index.js');
+const assert = require("assert");
+const helper = require("../../../../helper.js");
+const utils = helper.requireModule('./utils/drivers/git/index.js');
 
 describe("testing git index.js", function () {
-	var soajs = {};
-	var data = {
+	let soajs = {};
+	let data = {
 		getAccount: function (soajs, model, options, cb) {
 			return cb('error');
 		},
@@ -13,13 +13,13 @@ describe("testing git index.js", function () {
 			return cb('error');
 		}
 	};
-	var model = {};
-	var options = {
+	let model = {};
+	let options = {
 		provider: 'any'
 	};
-
+	
 	describe("testing login", function () {
-
+		
 		it("Login github", function (done) {
 			options = {
 				provider: 'github'
@@ -30,11 +30,11 @@ describe("testing git index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing logout", function () {
-
+		
 		it("logout github", function (done) {
 			options = {
 				provider: 'github'
@@ -45,11 +45,11 @@ describe("testing git index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing getRepos", function () {
-
+		
 		it("getRepos github", function (done) {
 			options = {
 				provider: 'github'
@@ -60,11 +60,11 @@ describe("testing git index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing getBranches", function () {
-
+		
 		it("getBranches github", function (done) {
 			options = {
 				provider: 'github'
@@ -75,11 +75,11 @@ describe("testing git index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing getJSONContent", function () {
-
+		
 		it("getJSONContent github", function (done) {
 			options = {
 				path: 'name.js',
@@ -91,11 +91,11 @@ describe("testing git index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing getAnyContent", function () {
-
+		
 		it("Fail name not found", function (done) {
 			options = {
 				provider: 'any'
@@ -105,7 +105,7 @@ describe("testing git index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success get github", function (done) {
 			options = {
 				provider: 'github'
@@ -116,7 +116,7 @@ describe("testing git index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 });

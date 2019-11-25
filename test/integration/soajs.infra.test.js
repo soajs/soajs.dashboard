@@ -238,7 +238,7 @@ describe("Testing Infra Functionality", function () {
 			};
 			
 			executeMyRequest(params, "infra/template", 'delete', function (result) {
-				// console.log(JSON.stringify(result));
+				assert.ok(result);
 				done();
 			});
 		});

@@ -1,10 +1,11 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../../../helper.js");
-var driverHelper = helper.requireModule('./utils/drivers/git/bitbucket_enterprise/helper.js');
+
+const assert = require("assert"); //todo: check unused
+const helper = require("../../../../../helper.js");
+const driverHelper = helper.requireModule('./utils/drivers/git/bitbucket_enterprise/helper.js');
 
 describe("testing git/bitbucket helper.js", function () {
-	var options = {
+	let options = {
 		provider: 'bitbucket_enterprise'
 	};
 	
@@ -101,8 +102,8 @@ describe("testing git/bitbucket helper.js", function () {
 	
 	describe("testing addReposStatus", function () {
 		it("Success - empty repos", function (done) {
-			var allRepos = [];
-			var activeRepos = [];
+			let allRepos = [];
+			let activeRepos = [];
 			driverHelper.addReposStatus(allRepos, activeRepos, function (error, body) {
 				// assert.ok(body);
 				done();
@@ -110,33 +111,33 @@ describe("testing git/bitbucket helper.js", function () {
 		});
 		
 		it("Success - repo not found", function (done) {
-			var allRepos = [
+			let allRepos = [
 				{
-					full_name : 'repo1'
+					full_name: 'repo1'
 				},
 				{
-					full_name : 'repo2'
+					full_name: 'repo2'
 				}
 			];
-			var activeRepos = [
+			let activeRepos = [
 				{
-					name : 'repo1',
-					type : 'multi',
-					status : 'active',
-					configSHA : [
+					name: 'repo1',
+					type: 'multi',
+					status: 'active',
+					configSHA: [
 						{
-							contentName : 'example',
-							contentType : 'any',
+							contentName: 'example',
+							contentType: 'any',
 						}
 					]
 				},
 				{
-					name : 'repo2',
-					type : 'multi',
-					configSHA : [
+					name: 'repo2',
+					type: 'multi',
+					configSHA: [
 						{
-							contentName : 'example',
-							contentType : 'any',
+							contentName: 'example',
+							contentType: 'any',
 						}
 					]
 				}
@@ -148,15 +149,15 @@ describe("testing git/bitbucket helper.js", function () {
 		});
 		
 		it("Success - repo found", function (done) {
-			var allRepos = [];
-			var activeRepos = [
+			let allRepos = [];
+			let activeRepos = [
 				{
-					name : 'repo1',
-					type : 'multi',
-					configSHA : [
+					name: 'repo1',
+					type: 'multi',
+					configSHA: [
 						{
-							contentName : 'example',
-							contentType : 'any',
+							contentName: 'example',
+							contentType: 'any',
 						}
 					]
 				}

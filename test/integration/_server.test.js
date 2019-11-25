@@ -1,23 +1,26 @@
 "use strict";
 // remove all cashed requires in unit test cases
-Object.keys(require.cache).forEach(function(key) {
+Object.keys(require.cache).forEach(function (key) {
 	delete require.cache[key];
 });
-var assert = require('assert');
-var shell = require('shelljs');
-var helper = require("../helper.js");
-var sampleData = require("soajs.mongodb.data/modules/dashboard");
-var dashboard, controller, urac, oauth;
 
-var Mongo = require('soajs.core.modules').mongo;
-var dbConfig = require("./db.config.test.js");
-var dashboardConfig = dbConfig();
+const assert = require('assert');
+const shell = require('shelljs');
+const helper = require("../helper.js");
+const sampleData = require("soajs.mongodb.data/modules/dashboard");
+let dashboard, controller, urac, oauth;
+
+const Mongo = require('soajs.core.modules').mongo;
+const dbConfig = require("./db.config.test.js");
+
+let dashboardConfig = dbConfig();
 dashboardConfig.name = "core_provision";
-var mongo = new Mongo(dashboardConfig);
+
+const mongo = new Mongo(dashboardConfig);
 
 
 describe("importing sample data", function () {
-
+	
 	it("drop previous db", (done) => {
 		mongo.dropDatabase(() => {
 			done();
@@ -35,9 +38,9 @@ describe("importing sample data", function () {
 			});
 		});
 	});
-
+	
 	it("update environment before starting service", function (done) {
-		var setDoc = {
+		let setDoc = {
 			"$set": {
 				"services.config.logger.level": (process.env.SOAJS_DEBUG_LOGS) ? "debug" : "fatal",
 				"services.config.logger.formatter.outputMode": (process.env.SOAJS_DEBUG_LOGS) ? "long" : "short"
@@ -55,9 +58,9 @@ describe("importing sample data", function () {
 			done();
 		});
 	});
-
+	
 	it("update requestTimeout", function (done) {
-		var setDoc = {
+		let setDoc = {
 			"$set": {
 				"requestTimeout": 70
 			}
@@ -85,16 +88,28 @@ describe("importing sample data", function () {
 	});
 	
 	it("Update hosts entries", (done) => {
-		mongo.update('hosts', {'name': 'dashboard'}, {$set: {"port": 8003}}, {"multi": true, "safe": true}, function (error) {
+		mongo.update('hosts', {'name': 'dashboard'}, {$set: {"port": 8003}}, {
+			"multi": true,
+			"safe": true
+		}, function (error) {
 			assert.ifError(error);
 			
-			mongo.update('hosts', {'name': 'urac'}, {$set: {"port": 8001}}, {"multi": true, "safe": true}, function (error) {
+			mongo.update('hosts', {'name': 'urac'}, {$set: {"port": 8001}}, {
+				"multi": true,
+				"safe": true
+			}, function (error) {
 				assert.ifError(error);
 				
-				mongo.update('hosts', {'name': 'oauth'}, {$set: {"port": 8002}}, {"multi": true, "safe": true}, function (error) {
+				mongo.update('hosts', {'name': 'oauth'}, {$set: {"port": 8002}}, {
+					"multi": true,
+					"safe": true
+				}, function (error) {
 					assert.ifError(error);
 					
-					mongo.update('hosts', {'name': 'controller'}, {$set: {"port": 4000}}, {"multi": true, "safe": true}, function (error) {
+					mongo.update('hosts', {'name': 'controller'}, {$set: {"port": 4000}}, {
+						"multi": true,
+						"safe": true
+					}, function (error) {
 						assert.ifError(error);
 						done();
 					});
@@ -105,7 +120,7 @@ describe("importing sample data", function () {
 	
 	
 	it("reload controller registry", function (done) {
-		var params = {
+		let params = {
 			"uri": "http://127.0.0.1:5000/reloadRegistry",
 			"headers": {
 				"content-type": "application/json"
@@ -116,7 +131,7 @@ describe("importing sample data", function () {
 			assert.ifError(error);
 			assert.ok(response);
 			
-			var params = {
+			let params = {
 				"uri": "http://127.0.0.1:5000/awarenessStat",
 				"headers": {
 					"content-type": "application/json"
@@ -142,21 +157,26 @@ describe("importing sample data", function () {
 				"content-type": "application/json"
 			}
 		};
-		function checkDashboard(){
-			helper.requester("get", params, (err, res)=>{
+		
+		function checkDashboard() {
+			helper.requester("get", params, (err, res) => {
 				counter++;
-				if ((err || !res || !res.result) && counter < 20){
-					if (res) console.log("res:", JSON.stringify(res, null, 2));
-					if (err) console.log("err:", JSON.stringify(err, null, 2));
+				if ((err || !res || !res.result) && counter < 20) {
+					if (res) {
+						console.log("res:", JSON.stringify(res, null, 2));
+					}
+					if (err) {
+						console.log("err:", JSON.stringify(err, null, 2));
+					}
 					setTimeout(function () {
 						checkDashboard();
 					}, 2000);
-				}
-				else {
+				} else {
 					done();
 				}
 			});
 		}
+		
 		checkDashboard();
 	});
 	after(function (done) {

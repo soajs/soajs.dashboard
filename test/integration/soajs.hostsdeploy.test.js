@@ -2,7 +2,7 @@
 const assert = require('assert');
 const request = require("request");
 const helper = require("../helper.js");
-const fs = require('fs');
+const fs = require('fs'); //todo: check not used
 const shell = require('shelljs');
 
 const Mongo = require("soajs.core.modules").mongo;
@@ -11,7 +11,7 @@ let dashboardConfig = dbConfig();
 dashboardConfig.name = "core_provision";
 const mongo = new Mongo(dashboardConfig);
 
-const errorCodes = helper.requireModule('./config').errors;
+const errorCodes = helper.requireModule('./config').errors; //todo: check not used
 const extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 
 let access_token;
@@ -30,7 +30,7 @@ function configureCD(config, cb) {
 	executeMyRequest(options, "cd/", "post", function (body) {
 		return cb(body);
 	});
-}
+} //todo: check not used
 
 function executeMyRequest(params, apiPath, method, cb) {
 	requester(apiPath, method, params, function (error, body) {
@@ -123,7 +123,7 @@ function deleteService(options, cb) {
 }
 
 describe("testing hosts deployment", function () {
-	let soajsauth, containerInfo;
+	let soajsauth, containerInfo; //todo: check not used
 	let Authorization;
 	
 	before(function (done) {
@@ -400,7 +400,7 @@ describe("testing hosts deployment", function () {
 			}
 		};
 		
-		request(params, function (error, response, nodeId) {
+		request(params, function (error) {
 			assert.ifError(error);
 			
 			params = {
@@ -424,6 +424,8 @@ describe("testing hosts deployment", function () {
 			
 			request(params, function (error, response, body) {
 				assert.ifError(error);
+				assert.ok(response);
+				assert.ok(body);
 				done();
 			});
 		});
@@ -670,6 +672,7 @@ describe("testing hosts deployment", function () {
 			};
 			
 			mongo.update('catalogs', {name: 'daemonCatalog'}, {'$set': record}, function (error) {
+				assert.ifError(error);
 				done();
 			});
 		});
@@ -962,6 +965,7 @@ describe("testing hosts deployment", function () {
 				executeMyRequest(params, "cloud/services/instances/logs", "get", function (body) {
 					// assert.ok(body.result);
 					// assert.ok(body.data);
+					assert.ok(body);
 					done();
 				});
 			});
@@ -1012,6 +1016,7 @@ describe("testing hosts deployment", function () {
 			};
 			
 			executeMyRequest(params, "cloud/services/autoscale", "put", function (body) {
+				assert.ok(body);
 				done();
 			});
 		});
@@ -1038,6 +1043,7 @@ describe("testing hosts deployment", function () {
 			};
 			
 			executeMyRequest(params, "cloud/services/autoscale/config", "put", function (body) {
+				assert.deepEqual(body);
 				done();
 			});
 		});

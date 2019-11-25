@@ -1,14 +1,14 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../../helper.js");
-var utils = helper.requireModule('./utils/drivers/ci/index.js');
+const assert = require("assert");
+const helper = require("../../../../helper.js");
+const utils = helper.requireModule('./utils/drivers/ci/index.js');
 
 describe("testing ci index.js", function () {
 	
 	describe("testing addEnvVar", function () {
 		
 		it("Call Travis addEnvVar", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -24,7 +24,7 @@ describe("testing ci index.js", function () {
 		});
 		
 		it("Call Drone addEnvVar", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -44,7 +44,7 @@ describe("testing ci index.js", function () {
 	describe("testing updateEnvVar", function () {
 		
 		it("Call Travis updateEnvVar", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -60,7 +60,7 @@ describe("testing ci index.js", function () {
 		});
 		
 		it("Call Drone updateEnvVar", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -80,7 +80,7 @@ describe("testing ci index.js", function () {
 	describe("testing deleteEnvVar", function () {
 		
 		it("Call Travis deleteEnvVar", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -95,7 +95,7 @@ describe("testing ci index.js", function () {
 		});
 		
 		it("Call Drone deleteEnvVar", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -114,7 +114,7 @@ describe("testing ci index.js", function () {
 	describe("testing setHook", function () {
 		
 		it("Call Travis setHook", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -130,7 +130,7 @@ describe("testing ci index.js", function () {
 		});
 		
 		it("Call Drone setHook", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -153,7 +153,7 @@ describe("testing ci index.js", function () {
 	describe("testing listSettings", function () {
 		
 		it("Call Travis listSettings", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -173,7 +173,7 @@ describe("testing ci index.js", function () {
 	describe("testing updateSettings", function () {
 		
 		it("Call Travis updateSettings", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -189,7 +189,7 @@ describe("testing ci index.js", function () {
 		});
 		
 		it("Call Drone updateSettings", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -209,7 +209,7 @@ describe("testing ci index.js", function () {
 	describe("testing generateToken", function () {
 		
 		it("Call Travis generateToken", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -229,7 +229,7 @@ describe("testing ci index.js", function () {
 	describe("testing listEnvVars", function () {
 		
 		it("Call Travis listEnvVars", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -245,7 +245,7 @@ describe("testing ci index.js", function () {
 		});
 		
 		it("Call Drone listEnvVars", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -265,7 +265,7 @@ describe("testing ci index.js", function () {
 	describe("testing listRepos", function () {
 		
 		it("Call Travis listRepos", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -281,7 +281,7 @@ describe("testing ci index.js", function () {
 		});
 		
 		it("Call Drone listRepos", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -301,7 +301,7 @@ describe("testing ci index.js", function () {
 	describe("testing ensureRepoVars", function () {
 		
 		it("Call Travis ensureRepoVars", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}
@@ -316,7 +316,7 @@ describe("testing ci index.js", function () {
 		});
 		
 		it("Call Drone ensureRepoVars", function (done) {
-			var options = {
+			let options = {
 				log: {
 					debug: function () {
 					}

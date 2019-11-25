@@ -1,7 +1,7 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var swagger = helper.requireModule('./utils/apiBuilder/swagger.js');
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const swagger = helper.requireModule('./utils/apiBuilder/swagger.js');
 
 let yamlWithResponse = "swagger: '2.0'\ninfo:\n    version: 1.0.0\n    title: www\nhost: localhost\nbasePath: /www\nschemes:\n    - http\npaths:\n    /pet:\n        post:\n            tags:\n                - pet\n            summary: 'Add a new pet to the store'\n            operationId: Addanewpettothestore\n            responses:      200:        description:test";
 
