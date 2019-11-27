@@ -1,8 +1,8 @@
 "use strict";
 
-var collName = "settings";
+const collName = "settings";
 
-var methods = {
+let methods = {
 	"findEntry": function (soajs, model, opts, cb) {
 		opts.collection = collName;
 		model.findEntry(soajs, opts, cb);

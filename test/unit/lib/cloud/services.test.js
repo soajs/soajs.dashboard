@@ -1,11 +1,11 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/cloud/services/index.js');
-var services;
-var config = helper.requireModule('./config.js');
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const utils = helper.requireModule('./lib/cloud/services/index.js');
+let services;
+const config = helper.requireModule('./config.js');
 
-var req = {
+let req = {
 	soajs: {
 		servicesConfig: {
 			dashboard: {}
@@ -17,19 +17,19 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-
+			
 			},
 			error: function (data) {
-
+			
 			},
 			info: function (data) {
-
+			
 			}
 		},
 		inputmaskData: {}
 	}
 };
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -48,11 +48,11 @@ var mongoStub = {
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
-	switchConnection: function(soajs) {
+	switchConnection: function (soajs) {
 	}
 };
 
-var envRecord = {
+let envRecord = {
 	_id: '',
 	code: 'DEV',
 	deployer: {
@@ -91,10 +91,10 @@ var envRecord = {
 		}
 	}
 };
-var deployer = helper.deployer;
+let deployer = helper.deployer;
 
 deployer.listServices = function (options, cb) {
-	var arr = [
+	let arr = [
 		{
 			env: [
 				'NODE_ENV=production',
@@ -114,38 +114,38 @@ deployer.listServices = function (options, cb) {
 };
 
 describe("testing lib/cloud/services/index.js", function () {
-
+	
 	before(() => {
 		mongoStub.findEntry = function (soajs, opts, cb) {
 			if (opts.collection === 'environment') {
 				return cb(null, envRecord);
-			}else if (opts.collection === 'infra') {
+			} else if (opts.collection === 'infra') {
 				return cb(null, helper.infraRecord);
-			}else{
+			} else {
 				return cb(null, {});
 			}
 		};
-
+		
 	});
 	describe("testing init", function () {
-
+		
 		it("No Model Requested", function (done) {
 			utils.init(null, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Model Name not found", function (done) {
-
+			
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Init", function (done) {
-
+			
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
 				services = body;
@@ -153,57 +153,57 @@ describe("testing lib/cloud/services/index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("listServices", function () {
-
+		
 		it.skip("Success", function (done) {
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'daemon';
-
+			
 			services.listServices(config, req.soajs, deployer, function (error, body) {
-			// NOTE: services.forEach is not a function
-			// FIXME: services returned by listKubeServices is an object {stateFile: {}} - should be array
+				// NOTE: services.forEach is not a function
+				// FIXME: services returned by listKubeServices is an object {stateFile: {}} - should be array
 				assert.ok(body);
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("scaleService", function () {
-
+		
 		it("Success", function (done) {
 			req.soajs.inputmaskData.env = 'dev';
-
+			
 			services.scaleService(config, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("deleteService", function () {
-
+		
 		it("Success", function (done) {
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.serviceId = '123';
-
+			
 			services.deleteService(config, req, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing checkResource", function () {
-
+		
 		before("init", function (done) {
 			deployer.listKubeServices = function (options, cb) {
-				var kubeServices = [
+				let kubeServices = [
 					{
 						apiVersion: 'v1',
 						kind: 'Service',
@@ -213,10 +213,10 @@ describe("testing lib/cloud/services/index.js", function () {
 						}
 					}
 				];
-
+				
 				return cb(null, kubeServices);
 			};
-
+			
 			done();
 		});
 		it.skip("success - will find heapster service", function (done) {
@@ -231,7 +231,7 @@ describe("testing lib/cloud/services/index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("success - will not find heapster service", function (done) {
 			deployer.listKubeServices = function (options, cb) {
 				return cb(null, []);
@@ -245,6 +245,6 @@ describe("testing lib/cloud/services/index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
 });

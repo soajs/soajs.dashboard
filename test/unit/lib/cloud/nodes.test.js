@@ -1,12 +1,12 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/cloud/nodes/index.js');
-var nodes;
-var config = {
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const utils = helper.requireModule('./lib/cloud/nodes/index.js');
+let nodes;
+let config = {
 	errors: {}
 };
-var req = {
+let req = {
 	soajs: {
 		registry: {
 			coreDB: {
@@ -27,7 +27,7 @@ var req = {
 		inputmaskData: {}
 	}
 };
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -46,11 +46,11 @@ var mongoStub = {
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
-	switchConnection: function(soajs) {
+	switchConnection: function (soajs) {
 	}
 };
 
-var envRecord = {
+let envRecord = {
 	_id: '',
 	code: 'DEV',
 	deployer: {
@@ -84,12 +84,10 @@ var envRecord = {
 		}
 	},
 	services: {
-		config: {
-		
-		}
+		config: {}
 	},
-	"restriction":{
-		"1231231":{
+	"restriction": {
+		"1231231": {
 			"eastus": {
 				group: "grouptest",
 				network: "networktest"
@@ -98,7 +96,7 @@ var envRecord = {
 	}
 };
 
-var deployer = helper.deployer;
+let deployer = helper.deployer;
 
 describe("testing lib/cloud/nodes/index.js", function () {
 	
@@ -135,9 +133,9 @@ describe("testing lib/cloud/nodes/index.js", function () {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}else if (opts.collection === 'infra') {
+				} else if (opts.collection === 'infra') {
 					return cb(null, helper.infraRecord);
-				}else{
+				} else {
 					return cb(null, {});
 				}
 			};

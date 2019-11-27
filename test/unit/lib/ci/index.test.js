@@ -1,11 +1,11 @@
 "use strict";
-var fs = require('fs');
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/ci/index.js');
-var ci;
+const fs = require('fs');
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const utils = helper.requireModule('./lib/ci/index.js');
+let ci;
 
-var ciDriver = {
+let ciDriver = {
 	ensureRepoVars: function (settings, cb) {
 		return cb(null, true);
 	},
@@ -28,13 +28,15 @@ var ciDriver = {
 		return cb(null, []);
 	},
 	getFileName: function (options, cb) {
-		var filename = '';
-		if (options.driver === 'travis') filename = '.travis.yml';
+		let filename = '';
+		if (options.driver === 'travis') {
+			filename = '.travis.yml';
+		}
 		return cb(filename);
 	}
 };
 
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -65,28 +67,28 @@ var mongoStub = {
 };
 
 //git files are used for getRepoYamlFile
-var git = {};
+let git = {};
 
-var gitBL = {
+let gitBL = {
 	model: {}
 };
 
-var gitModel = {
-	getAccount: function(soajs, model, options, cb) {
+let gitModel = {
+	getAccount: function (soajs, model, options, cb) {
 		return cb(null, {});
 	}
 };
 
-var gitHelpers = {
-	doGetFile: function(req, BL, git, gitModel, account, branch, cb) {
-		var filedata = {
+let gitHelpers = {
+	doGetFile: function (req, BL, git, gitModel, account, branch, cb) {
+		let filedata = {
 			content: "language: node_js\nnode_js: 6.9.5\nafter_success:\n    - 'node ./soajs.cd.js'\n"
 		};
 		return cb(null, filedata);
 	}
 };
 
-var req = {
+let req = {
 	soajs: {
 		tenant: {
 			key: {
@@ -97,43 +99,41 @@ var req = {
 			coreDB: {
 				provision: {}
 			},
-			custom:{
-				ciConfig : {
-					value : {
-						apiPrefix : 'PRE',
-						domain : 'localhost',
-						protocol : 'http',
-						port : 1234
+			custom: {
+				ciConfig: {
+					value: {
+						apiPrefix: 'PRE',
+						domain: 'localhost',
+						protocol: 'http',
+						port: 1234
 					}
 				}
 			}
 		},
-		servicesConfig : {
-			SOAJS_SAAS : {
-				test : {
-
-				}
+		servicesConfig: {
+			SOAJS_SAAS: {
+				test: {}
 			}
 		},
 		log: {
 			debug: function (data) {
-
+			
 			},
 			error: function (data) {
-
+			
 			},
 			info: function (data) {
-
+			
 			}
 		},
 		inputmaskData: {}
 	}
 };
-var config = helper.requireModule('./config.js');
+let config = helper.requireModule('./config.js');
 
 describe("testing ci.js", function () {
 	beforeEach(() => {
-		var record = {
+		let record = {
 			_id: '592806440effddeec7d52b55',
 			driver: 'travis',
 			settings: {
@@ -151,23 +151,23 @@ describe("testing ci.js", function () {
 			cb(null, {});
 		};
 	});
-
+	
 	describe("testing init", function () {
-
+		
 		it("No Model Requested", function (done) {
 			utils.init(null, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Model Name not found", function (done) {
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Init model", function (done) {
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
@@ -176,24 +176,24 @@ describe("testing ci.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing toggleRepoStatus", function () {
-
-		before(function(done) {
+		
+		before(function (done) {
 			ciDriver.listRepos = function (options, cb) {
-				var repos = [
+				let repos = [
 					{
 						id: 'ciRepoId'
 					}
 				];
 				return cb(null, repos);
 			};
-
+			
 			done();
 		});
-
+		
 		it("Success - enable", function (done) {
 			req.soajs.inputmaskData = {
 				id: 'ciRepoId',
@@ -206,7 +206,7 @@ describe("testing ci.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success - disable", function (done) {
 			req.soajs.inputmaskData = {
 				id: 'ciRepoId',
@@ -219,22 +219,22 @@ describe("testing ci.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing getRepoSettings", function () {
-
+		
 		before(function (done) {
-			ciDriver.listEnvVars = function(options, cb) {
-				var envs = [
+			ciDriver.listEnvVars = function (options, cb) {
+				let envs = [
 					"TEST_ENV_1=test1",
 					"TEST_ENV_2=test2"
 				];
 				return cb(null, envs);
 			};
-
+			
 			ciDriver.listSettings = function (options, cb) {
-				var settings = {
+				let settings = {
 					"builds_only_with_travis_yml": true,
 					"build_pushes": true,
 					"build_pull_requests": true,
@@ -242,21 +242,21 @@ describe("testing ci.js", function () {
 				};
 				return cb(null, settings);
 			};
-
+			
 			done();
 		});
-
+		
 		it("Success getRepoSettings", function (done) {
 			ci.getRepoSettings(config, req, ciDriver, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("testing updateRepoSettings", function () {
-
+		
 		it("Success id (number)", function (done) {
 			req.soajs.inputmaskData = {
 				"id": 12464664,
@@ -265,13 +265,13 @@ describe("testing ci.js", function () {
 				"variables": [{
 					name: "var1",
 					value: "val1"
-				},{
+				}, {
 					name: "var2",
 					value: "val2"
 				}
 				]
 			};
-
+			
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, {
 					apiPrefix: "dashboard-api",
@@ -280,13 +280,13 @@ describe("testing ci.js", function () {
 					protocol: "http"
 				});
 			};
-
+			
 			ci.updateRepoSettings(config, req, ciDriver, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-
+		
 		it("Success id (string)", function (done) {
 			req.soajs.inputmaskData = {
 				"id": "CLOUD/dashboard",
@@ -295,13 +295,13 @@ describe("testing ci.js", function () {
 				"variables": [{
 					name: "var1",
 					value: "val1"
-				},{
+				}, {
 					name: "var2",
 					value: "val2"
 				}
 				]
 			};
-
+			
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, {
 					apiPrefix: "dashboard-api",
@@ -310,13 +310,13 @@ describe("testing ci.js", function () {
 					protocol: "http"
 				});
 			};
-
+			
 			ci.updateRepoSettings(config, req, ciDriver, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-
+		
 		it("Success empty reg", function (done) {
 			let oldSoajsSaasValue = process.env.SOAJS_SAAS;
 			process.env.SOAJS_SAAS = "true";
@@ -327,34 +327,34 @@ describe("testing ci.js", function () {
 				"variables": [{
 					name: "var1",
 					value: "val1"
-				},{
+				}, {
 					name: "var2",
 					value: "val2"
 				}
 				],
-				soajs_project : 'test'
+				soajs_project: 'test'
 			};
-
+			
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, {});
 			};
-
+			
 			ci.updateRepoSettings(config, req, ciDriver, function (error, body) {
-				if(oldSoajsSaasValue){
+				if (oldSoajsSaasValue) {
 					process.env.SOAJS_SAAS = oldSoajsSaasValue;
-				}else{
+				} else {
 					delete process.env.SOAJS_SAAS;
 				}
-
+				
 				assert.ok(body);
 				done();
 			});
 		});
-
+		
 	});
-
-	describe("testing getRepoYamlFile", function() {
-
+	
+	describe("testing getRepoYamlFile", function () {
+		
 		it("success - will get file", function (done) {
 			req.soajs.inputmaskData = {
 				provider: 'travis',
@@ -367,6 +367,6 @@ describe("testing ci.js", function () {
 				done();
 			});
 		});
-
+		
 	});
 });

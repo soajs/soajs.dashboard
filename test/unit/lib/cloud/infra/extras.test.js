@@ -1,14 +1,14 @@
 "use strict";
-var assert = require("assert");
-var testHelper = require("../../../../helper.js");
-var module = testHelper.requireModule('./lib/cloud/infra/index.js');
-var extras;
-var config = testHelper.requireModule('./config.js');
-var deployer = testHelper.deployer;
+const assert = require("assert");
+const testHelper = require("../../../../helper.js");
+const module = testHelper.requireModule('./lib/cloud/infra/index.js');
+let extras;
+const config = testHelper.requireModule('./config.js');
+const deployer = testHelper.deployer;
 
 const sinon = require('sinon');
 
-var soajs = {
+let soajs = {
 	registry: {
 		coreDB: {
 			provision: {}
@@ -16,13 +16,13 @@ var soajs = {
 	},
 	log: {
 		debug: function (data) {
-
+		
 		},
 		error: function (data) {
-
+		
 		},
 		info: function (data) {
-
+		
 		}
 	},
 	inputmaskData: {},
@@ -35,11 +35,10 @@ var soajs = {
 						return {
 							errors: []
 						};
-					}
-					else {
+					} else {
 						//invalid
 						return {
-							errors: [{ error: 'msg' }]
+							errors: [{error: 'msg'}]
 						};
 					}
 				}
@@ -47,7 +46,7 @@ var soajs = {
 		}
 	}
 };
-var infraRecord = {
+let infraRecord = {
 	"_id": '5b28c5edb53002d7b3b1f0cf',
 	"api": {
 		"clientId": "1",
@@ -82,7 +81,7 @@ var infraRecord = {
 		}
 	]
 };
-var vm_layers = {
+let vm_layers = {
 	"_id": '5b2cea680669cf2c142e6407',
 	"infraId": "5b28c5edb53002d7b3b1f0cf",
 	"layerName": "tester-ragheb",
@@ -93,7 +92,7 @@ var vm_layers = {
 	"v": 1,
 	"ts": 1529670248943
 };
-var template = {
+let template = {
 	"type": "_infra",
 	"infra": "5b28c5edb53002d7b3b1f0cf",
 	"location": "local",
@@ -105,7 +104,7 @@ var template = {
 	"description": "sdasdasdas",
 	"content": "provider"
 };
-var envRecord = {
+let envRecord = {
 	code: 'DEV',
 	deployer: {
 		"type": "container",
@@ -144,7 +143,7 @@ var envRecord = {
 					username: 'username',
 					password: 'password'
 				},
-				servers: [{ port: 123, host: 'host' }]
+				servers: [{port: 123, host: 'host'}]
 			},
 			oneCluster: {
 				servers: []
@@ -158,8 +157,8 @@ var envRecord = {
 	},
 	services: {},
 	profile: '',
-	"restriction":{
-		"1231231":{
+	"restriction": {
+		"1231231": {
 			"eastus": {
 				group: "grouptest",
 				network: "networktest"
@@ -167,18 +166,18 @@ var envRecord = {
 		}
 	}
 };
-var req = {
+let req = {
 	query: {},
 	soajs: soajs
 };
-var mongoStub = {
+let mongoStub = {
 	getDb: function () {
 	},
 	checkForMongo: function (soajs) {
 		return true;
 	},
 	insertEntry: function (soajs, options, cb) {
-		cb(null, [{ _id: "123" }]);
+		cb(null, [{_id: "123"}]);
 	},
 	validateId: function (soajs, cb) {
 		return cb(null, soajs.inputmaskData.id);
@@ -186,27 +185,23 @@ var mongoStub = {
 	validateCustomId: function (soajs, id, cb) {
 		if (typeof cb === 'function') {
 			return cb(null, id);
-		}
-		else {
+		} else {
 			return id;
 		}
 	},
 	findEntry: function (soajs, opts, cb) {
 		if (opts.collection === 'environment') {
 			cb(null, envRecord);
-		}
-		else if (opts.collection === 'infra') {
+		} else if (opts.collection === 'infra') {
 			cb(null, infraRecord);
-		}
-		else if (opts.collection === 'templates') {
+		} else if (opts.collection === 'templates') {
 			cb(null, template);
-		}
-		else if (opts.collection === 'vm_layers') {
+		} else if (opts.collection === 'vm_layers') {
 			cb(null, vm_layers);
 		}
 	},
 	findEntries: function (soajs, opts, cb) {
-		var data = [{
+		let data = [{
 			name: 'one'
 		}];
 		cb(null, data);
@@ -228,12 +223,12 @@ var mongoStub = {
 };
 
 describe("testing lib/cloud/infra/extras.js", function () {
-
+	
 	after(function (done) {
 		sinon.restore();
 		done();
 	});
-
+	
 	describe("testing init", function () {
 		before(() => {
 			mongoStub.findEntry = function (soajs, opts, cb) {
@@ -256,14 +251,14 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Model Name not found", function (done) {
 			module.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Init", function (done) {
 			module.init('mongo', function (error, body) {
 				assert.ok(body);
@@ -272,9 +267,9 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("Testing getExtras", function () {
 		afterEach(function (done) {
 			deployer.execute = function (opts, command, options, cb) {
@@ -320,7 +315,7 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				"params": {
 					"section": "group",
 					"name": "testcase",
-					"labels": { "test": "case" }
+					"labels": {"test": "case"}
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
@@ -341,7 +336,7 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				"params": {
 					"section": "network",
 					"name": "testcase",
-					"labels": { "test": "case" }
+					"labels": {"test": "case"}
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
@@ -362,7 +357,7 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				"params": {
 					"section": "loadBalancer",
 					"name": "testcase",
-					"labels": { "test": "case" }
+					"labels": {"test": "case"}
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
@@ -383,7 +378,7 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				"params": {
 					"section": "publicIp",
 					"name": "testcase",
-					"labels": { "test": "case" }
+					"labels": {"test": "case"}
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
@@ -404,7 +399,7 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				"params": {
 					"section": "securityGroup",
 					"name": "testcase",
-					"labels": { "test": "case" }
+					"labels": {"test": "case"}
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
@@ -425,7 +420,7 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				"params": {
 					"section": "wrong",
 					"name": "testcase",
-					"labels": { "test": "case" }
+					"labels": {"test": "case"}
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
@@ -454,7 +449,7 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				"params": {
 					"section": "group",
 					"name": "testcase",
-					"labels": { "test": "case" }
+					"labels": {"test": "case"}
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
@@ -475,7 +470,7 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				"params": {
 					"section": "network",
 					"name": "testcase",
-					"labels": { "test": "case" }
+					"labels": {"test": "case"}
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
@@ -496,7 +491,7 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				"params": {
 					"section": "loadBalancer",
 					"name": "testcase",
-					"labels": { "test": "case" }
+					"labels": {"test": "case"}
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
@@ -517,7 +512,7 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				"params": {
 					"section": "publicIp",
 					"name": "testcase",
-					"labels": { "test": "case" }
+					"labels": {"test": "case"}
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
@@ -538,7 +533,7 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				"params": {
 					"section": "securityGroup",
 					"name": "testcase",
-					"labels": { "test": "case" }
+					"labels": {"test": "case"}
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
@@ -559,7 +554,7 @@ describe("testing lib/cloud/infra/extras.js", function () {
 				"params": {
 					"section": "wrong",
 					"name": "testcase",
-					"labels": { "test": "case" }
+					"labels": {"test": "case"}
 				},
 			};
 			deployer.execute = function (opts, command, options, cb) {
@@ -682,5 +677,5 @@ describe("testing lib/cloud/infra/extras.js", function () {
 			});
 		});
 	});
-
+	
 });

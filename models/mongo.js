@@ -1,39 +1,39 @@
 'use strict';
-var soajsCore = require("soajs");
-var Mongo = soajsCore.mongo;
+const soajsCore = require("soajs");
+const Mongo = soajsCore.mongo;
 
-var soajsUtils = soajsCore.utils;
+const soajsUtils = soajsCore.utils;
 
-var servicesCollectionName = 'services';
-var daemonsCollectionName = 'daemons';
-var groupConfigCollectionName = 'daemon_grpconf';
-var environmentCollectionName = 'environment';
-var tenantCollectionName = 'tenants';
-var productsCollectionName = 'products';
-var hostsCollectionName = 'hosts';
-var oauthUracCollectionName = 'oauth_urac';
-var oauthTokenCollectionName = 'oauth_token';
-var gitAccountsCollectionName = 'git_accounts';
-var templatesCollectionName = 'templates';
-var resourcesCollection = 'resources';
-var customRegCollection = 'custom_registry';
-var templatesCollection = 'templates';
-var endpointCollections = 'api_builder_endpoints';
-var microservicesCollection = 'api_builder_services';
-var infraCollection = 'infra';
-var favoriteCollection = 'favorite';
-var settingsCollection = 'settings';
+const servicesCollectionName = 'services';
+const daemonsCollectionName = 'daemons';
+const groupConfigCollectionName = 'daemon_grpconf';
+const environmentCollectionName = 'environment';
+const tenantCollectionName = 'tenants';
+const productsCollectionName = 'products';
+const hostsCollectionName = 'hosts';
+const oauthUracCollectionName = 'oauth_urac';
+const oauthTokenCollectionName = 'oauth_token';
+const gitAccountsCollectionName = 'git_accounts';
+const templatesCollectionName = 'templates';
+const resourcesCollection = 'resources';
+const customRegCollection = 'custom_registry';
+const templatesCollection = 'templates';
+const endpointCollections = 'api_builder_endpoints';
+const microservicesCollection = 'api_builder_services';
+const infraCollection = 'infra';
+const favoriteCollection = 'favorite';
+const settingsCollection = 'settings';
 
-var firstRun = true;
-var lib = {
+let firstRun = true;
+let lib = {
 	"initConnection": function (soajs) {
 		function errorLogger(error) {
 			if (error) {
 				return soajs.log.error(error);
 			}
 		}
-
-		var provision = {
+		
+		let provision = {
 			name: soajs.registry.coreDB.provision.name,
 			prefix: soajs.registry.coreDB.provision.prefix,
 			servers: soajs.registry.coreDB.provision.servers,
@@ -43,8 +43,8 @@ var lib = {
 			extraParam: soajs.registry.coreDB.provision.extraParam
 		};
 		
-		var switchedConnection = lib.switchConnection(soajs);
-		if (switchedConnection && typeof  switchedConnection === 'object' && Object.keys(switchedConnection).length > 0) {
+		let switchedConnection = lib.switchConnection(soajs);
+		if (switchedConnection && typeof switchedConnection === 'object' && Object.keys(switchedConnection).length > 0) {
 			provision = switchedConnection;
 			if (soajs.log) {
 				soajs.log.debug('Switching to connection to project:', soajs.inputmaskData.soajs_project);
@@ -55,8 +55,7 @@ var lib = {
 			}
 			//error
 			return false;
-		}
-		else {
+		} else {
 			if (soajs.log) {
 				soajs.log.debug("Connecting to core project", soajs.registry.coreDB.provision.prefix);
 			}
@@ -64,24 +63,24 @@ var lib = {
 		
 		soajs.mongoDb = new Mongo(provision);
 		if (firstRun) {
-			soajs.mongoDb.createIndex(servicesCollectionName, { name: 1, port: 1 }, { unique: true }, errorLogger);
-			soajs.mongoDb.createIndex(servicesCollectionName, { 'src.owner': 1, 'src.repo': 1 }, errorLogger);
+			soajs.mongoDb.createIndex(servicesCollectionName, {name: 1, port: 1}, {unique: true}, errorLogger);
+			soajs.mongoDb.createIndex(servicesCollectionName, {'src.owner': 1, 'src.repo': 1}, errorLogger);
 			soajs.mongoDb.createIndex(servicesCollectionName, {
 				name: 1,
 				port: 1,
 				'src.owner': 1,
 				'src.repo': 1
 			}, errorLogger);
-			soajs.mongoDb.createIndex(servicesCollectionName, { gcId: 1 }, errorLogger);
-			soajs.mongoDb.createIndex(servicesCollectionName, { name: 1, gcId: 1 }, errorLogger);
-			soajs.mongoDb.createIndex(servicesCollectionName, { port: 1, gcId: 1 }, errorLogger);
-			soajs.mongoDb.createIndex(servicesCollectionName, { epId: 1 }, errorLogger);
+			soajs.mongoDb.createIndex(servicesCollectionName, {gcId: 1}, errorLogger);
+			soajs.mongoDb.createIndex(servicesCollectionName, {name: 1, gcId: 1}, errorLogger);
+			soajs.mongoDb.createIndex(servicesCollectionName, {port: 1, gcId: 1}, errorLogger);
+			soajs.mongoDb.createIndex(servicesCollectionName, {epId: 1}, errorLogger);
 			
 			//daemons
-			soajs.mongoDb.createIndex(daemonsCollectionName, { name: 1 }, { unique: true }, errorLogger);
-			soajs.mongoDb.createIndex(daemonsCollectionName, { port: 1 }, { unique: true }, errorLogger);
-			soajs.mongoDb.createIndex(daemonsCollectionName, { name: 1, port: 1 }, { unique: true }, errorLogger);
-			soajs.mongoDb.createIndex(daemonsCollectionName, { 'src.owner': 1, 'src.repo': 1 }, errorLogger);
+			soajs.mongoDb.createIndex(daemonsCollectionName, {name: 1}, {unique: true}, errorLogger);
+			soajs.mongoDb.createIndex(daemonsCollectionName, {port: 1}, {unique: true}, errorLogger);
+			soajs.mongoDb.createIndex(daemonsCollectionName, {name: 1, port: 1}, {unique: true}, errorLogger);
+			soajs.mongoDb.createIndex(daemonsCollectionName, {'src.owner': 1, 'src.repo': 1}, errorLogger);
 			soajs.mongoDb.createIndex(daemonsCollectionName, {
 				name: 1,
 				port: 1,
@@ -90,11 +89,11 @@ var lib = {
 			}, errorLogger);
 			
 			//daemon_grpconf
-			soajs.mongoDb.createIndex(groupConfigCollectionName, { daemon: 1 }, errorLogger);
-			soajs.mongoDb.createIndex(groupConfigCollectionName, { name: 1 }, errorLogger);
+			soajs.mongoDb.createIndex(groupConfigCollectionName, {daemon: 1}, errorLogger);
+			soajs.mongoDb.createIndex(groupConfigCollectionName, {name: 1}, errorLogger);
 			
 			//environment
-			soajs.mongoDb.createIndex(environmentCollectionName, { locked: 1 }, errorLogger);
+			soajs.mongoDb.createIndex(environmentCollectionName, {locked: 1}, errorLogger);
 			
 			//fs.files
 			// soajs.mongoDb.createIndex(gridfsCollectionName, {filename: 1}, {unique: true}, errorLogger);
@@ -103,71 +102,71 @@ var lib = {
 			// soajs.mongoDb.createIndex(gridfsCollectionName, { 'metadata.env': 1 }, errorLogger);
 			
 			//tenants
-			soajs.mongoDb.createIndex(tenantCollectionName, { _id: 1, locked: 1 }, errorLogger);
-			soajs.mongoDb.createIndex(tenantCollectionName, { name: 1 }, errorLogger);
-			soajs.mongoDb.createIndex(tenantCollectionName, { type: 1 }, errorLogger);
-			soajs.mongoDb.createIndex(tenantCollectionName, { 'application.keys.extKeys.env': 1 }, errorLogger);
+			soajs.mongoDb.createIndex(tenantCollectionName, {_id: 1, locked: 1}, errorLogger);
+			soajs.mongoDb.createIndex(tenantCollectionName, {name: 1}, errorLogger);
+			soajs.mongoDb.createIndex(tenantCollectionName, {type: 1}, errorLogger);
+			soajs.mongoDb.createIndex(tenantCollectionName, {'application.keys.extKeys.env': 1}, errorLogger);
 			
 			//products
-			soajs.mongoDb.createIndex(productsCollectionName, { code: 1, "packages.code": 1 }, errorLogger);
+			soajs.mongoDb.createIndex(productsCollectionName, {code: 1, "packages.code": 1}, errorLogger);
 			
 			//hosts
 			if (!process.env.SOAJS_DEPLOY_HA) {
-				soajs.mongoDb.createIndex(hostsCollectionName, { _id: 1, locked: 1 }, errorLogger);
-				soajs.mongoDb.createIndex(hostsCollectionName, { env: 1, name: 1, hostname: 1 }, errorLogger);
-				soajs.mongoDb.createIndex(hostsCollectionName, { env: 1, name: 1, ip: 1, hostname: 1 }, errorLogger);
-				soajs.mongoDb.createIndex(hostsCollectionName, { env: 1, type: 1, running: 1 }, errorLogger);
+				soajs.mongoDb.createIndex(hostsCollectionName, {_id: 1, locked: 1}, errorLogger);
+				soajs.mongoDb.createIndex(hostsCollectionName, {env: 1, name: 1, hostname: 1}, errorLogger);
+				soajs.mongoDb.createIndex(hostsCollectionName, {env: 1, name: 1, ip: 1, hostname: 1}, errorLogger);
+				soajs.mongoDb.createIndex(hostsCollectionName, {env: 1, type: 1, running: 1}, errorLogger);
 			}
-
+			
 			//oauth_urac
-			soajs.mongoDb.createIndex(oauthUracCollectionName, { tId: 1, _id: 1 }, errorLogger);
-			soajs.mongoDb.createIndex(oauthUracCollectionName, { tId: 1, userId: 1, _id: 1 }, errorLogger);
-			soajs.mongoDb.createIndex(oauthTokenCollectionName, { expires: 1 }, { expireAfterSeconds: 0 }, errorLogger);
-
+			soajs.mongoDb.createIndex(oauthUracCollectionName, {tId: 1, _id: 1}, errorLogger);
+			soajs.mongoDb.createIndex(oauthUracCollectionName, {tId: 1, userId: 1, _id: 1}, errorLogger);
+			soajs.mongoDb.createIndex(oauthTokenCollectionName, {expires: 1}, {expireAfterSeconds: 0}, errorLogger);
+			
 			//git_accounts
-			soajs.mongoDb.createIndex(gitAccountsCollectionName, { _id: 1, 'repos.name': 1 }, errorLogger);
-			soajs.mongoDb.createIndex(gitAccountsCollectionName, { 'repos.name': 1 }, errorLogger);
-			soajs.mongoDb.createIndex(gitAccountsCollectionName, { owner: 1, provider: 1 }, errorLogger);
-
+			soajs.mongoDb.createIndex(gitAccountsCollectionName, {_id: 1, 'repos.name': 1}, errorLogger);
+			soajs.mongoDb.createIndex(gitAccountsCollectionName, {'repos.name': 1}, errorLogger);
+			soajs.mongoDb.createIndex(gitAccountsCollectionName, {owner: 1, provider: 1}, errorLogger);
+			
 			//templates
-			soajs.mongoDb.createIndex(templatesCollectionName, { code: 1 }, errorLogger);
-			soajs.mongoDb.createIndex(templatesCollectionName, { type: 1 }, errorLogger);
-
+			soajs.mongoDb.createIndex(templatesCollectionName, {code: 1}, errorLogger);
+			soajs.mongoDb.createIndex(templatesCollectionName, {type: 1}, errorLogger);
+			
 			//resources
-			soajs.mongoDb.createIndex(customRegCollection, { type: 1, }, errorLogger);
-			soajs.mongoDb.createIndex(customRegCollection, { name: 1, type: 1, category: 1 }, errorLogger); //compound index, includes {name: 1}, {name: 1, type: 1}
-			soajs.mongoDb.createIndex(resourcesCollection, { created: 1, shared: 1, sharedEnv: 1 }, errorLogger); //compound index, includes {created: 1}, {created: 1, shared: 1}
-
+			soajs.mongoDb.createIndex(customRegCollection, {type: 1,}, errorLogger);
+			soajs.mongoDb.createIndex(customRegCollection, {name: 1, type: 1, category: 1}, errorLogger); //compound index, includes {name: 1}, {name: 1, type: 1}
+			soajs.mongoDb.createIndex(resourcesCollection, {created: 1, shared: 1, sharedEnv: 1}, errorLogger); //compound index, includes {created: 1}, {created: 1, shared: 1}
+			
 			//custom registry
-			soajs.mongoDb.createIndex(customRegCollection, { name: 1, created: 1 }, errorLogger); //compound index, includes {name: 1}
-			soajs.mongoDb.createIndex(customRegCollection, { created: 1, shared: 1, sharedEnv: 1 }, errorLogger); //compound index, includes {created: 1}, {created: 1, shared: 1}
-
+			soajs.mongoDb.createIndex(customRegCollection, {name: 1, created: 1}, errorLogger); //compound index, includes {name: 1}
+			soajs.mongoDb.createIndex(customRegCollection, {created: 1, shared: 1, sharedEnv: 1}, errorLogger); //compound index, includes {created: 1}, {created: 1, shared: 1}
+			
 			//templates
-			soajs.mongoDb.createIndex(templatesCollection, { type: 1 }, errorLogger);
-			soajs.mongoDb.createIndex(templatesCollection, { name: 1, type: 1 }, errorLogger);
-			soajs.mongoDb.createIndex(templatesCollection, { expires: 1 }, { expireAfterSeconds: 0 }, errorLogger);
-
+			soajs.mongoDb.createIndex(templatesCollection, {type: 1}, errorLogger);
+			soajs.mongoDb.createIndex(templatesCollection, {name: 1, type: 1}, errorLogger);
+			soajs.mongoDb.createIndex(templatesCollection, {expires: 1}, {expireAfterSeconds: 0}, errorLogger);
+			
 			//endpoint collection
-			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1 }, errorLogger);
-			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1, servicePort: 1 }, errorLogger);
-
+			soajs.mongoDb.createIndex(endpointCollections, {serviceName: 1}, errorLogger);
+			soajs.mongoDb.createIndex(endpointCollections, {serviceName: 1, servicePort: 1}, errorLogger);
+			
 			//microservices collections
-			soajs.mongoDb.createIndex(microservicesCollection, { serviceName: 1 }, errorLogger);
-			soajs.mongoDb.createIndex(endpointCollections, { serviceName: 1, servicePort: 1 }, errorLogger);
-
+			soajs.mongoDb.createIndex(microservicesCollection, {serviceName: 1}, errorLogger);
+			soajs.mongoDb.createIndex(endpointCollections, {serviceName: 1, servicePort: 1}, errorLogger);
+			
 			//infra collection
-			soajs.mongoDb.createIndex(infraCollection, { 'deployments.environments': 1 }, errorLogger);
-			soajs.mongoDb.createIndex(infraCollection, { 'deployments.technology': 1 }, errorLogger);
+			soajs.mongoDb.createIndex(infraCollection, {'deployments.environments': 1}, errorLogger);
+			soajs.mongoDb.createIndex(infraCollection, {'deployments.technology': 1}, errorLogger);
 			
 			//favorite collection
-			soajs.mongoDb.createIndex(favoriteCollection, { userid: 1, type: 1 }, errorLogger);
+			soajs.mongoDb.createIndex(favoriteCollection, {userid: 1, type: 1}, errorLogger);
 			
 			//settings collection
-			soajs.mongoDb.createIndex(settingsCollection, { release: 1}, { unique: true }, errorLogger);
+			soajs.mongoDb.createIndex(settingsCollection, {release: 1}, {unique: true}, errorLogger);
 			soajs.log.debug("Indexes Updated!");
 			firstRun = false;
 		}
-
+		
 		return true;
 	},
 	/**
@@ -178,12 +177,10 @@ var lib = {
 		if (soajs.mongoDb) {
 			if (soajs.inputmaskData && soajs.inputmaskData.soajs_project) {
 				soajs.log.debug('Closing connection to client project:', soajs.inputmaskData.soajs_project);
-			}
-			else {
+			} else {
 				if (soajs && soajs.log) {
 					soajs.log.debug('Closing connection to core_provision');
-				}
-				else {
+				} else {
 					console.log('Closing connection to core_provision');
 				}
 			}
@@ -214,8 +211,7 @@ var lib = {
 			
 			if (cb) {
 				return cb('no id provided');
-			}
-			else {
+			} else {
 				return null;
 			}
 		}
@@ -223,12 +219,10 @@ var lib = {
 		try {
 			soajs.inputmaskData.id = soajs.mongoDb.ObjectId(soajs.inputmaskData.id);
 			return ((cb) ? cb(null, soajs.inputmaskData.id) : soajs.inputmaskData.id);
-		}
-		catch (e) {
+		} catch (e) {
 			if (cb) {
 				return cb(e);
-			}
-			else {
+			} else {
 				soajs.log.error('Exception thrown while trying to get object id for ' + soajs.inputmaskData.id);
 				soajs.log.error(e);
 				return null;
@@ -243,20 +237,17 @@ var lib = {
 			
 			if (cb) {
 				return cb('no id provided');
-			}
-			else {
+			} else {
 				return null;
 			}
 		}
 		try {
 			id = soajs.mongoDb.ObjectId(id);
 			return ((cb) ? cb(null, id) : id);
-		}
-		catch (e) {
+		} catch (e) {
 			if (cb) {
 				return cb(e);
-			}
-			else {
+			} else {
 				soajs.log.error('Exception thrown while trying to get object id for ' + id);
 				soajs.log.error(e);
 				return null;
@@ -272,10 +263,10 @@ var lib = {
 	"findEntries": function (soajs, opts, cb) {
 		lib.checkForMongo(soajs);
 		let options = {};
-		if (opts.options){
+		if (opts.options) {
 			options = opts.options;
 		}
-		if (opts.fields){
+		if (opts.fields) {
 			options.fields = opts.fields;
 		}
 		soajs.mongoDb.find(opts.collection, opts.conditions || {}, options, cb);
@@ -284,10 +275,10 @@ var lib = {
 	"findEntry": function (soajs, opts, cb) {
 		lib.checkForMongo(soajs);
 		let options = {};
-		if (opts.options){
+		if (opts.options) {
 			options = opts.options;
 		}
-		if (opts.fields){
+		if (opts.fields) {
 			options.fields = opts.fields;
 		}
 		soajs.mongoDb.findOne(opts.collection, opts.conditions || {}, options, cb);
@@ -319,7 +310,7 @@ var lib = {
 	},
 	
 	"switchConnection": function (soajs) {
-		var provision = true;
+		let provision = true;
 		if (process.env.SOAJS_SAAS && soajs.serviceConfig && soajs.serviceConfig.SOAJS_SAAS) {
 			soajs.log.info(soajs.servicesConfig.SOAJS_SAAS);
 		}
@@ -332,17 +323,14 @@ var lib = {
 								provision = soajsUtils.cloneObj(soajs.registry.resources.cluster[soajs.inputmaskData.soajs_project].config);
 								provision.name = soajs.registry.coreDB.provision.name;
 								provision.prefix = soajs.inputmaskData.soajs_project + "_";
-							}
-							else {
+							} else {
 								soajs.log.error('Missing cluster for', soajs.inputmaskData.soajs_project);
 								return false;
 							}
-						}
-						else {
+						} else {
 							return false;
 						}
-					}
-					else {
+					} else {
 						soajs.log.error('Missing project in servicesConfig', soajs.inputmaskData.soajs_project || '');
 						return false;
 					}
@@ -350,8 +338,7 @@ var lib = {
 					soajs.log.error('Missing project name from input');
 					return false;
 				}
-			}
-			else {
+			} else {
 				soajs.log.error('Missing project in servicesConfig', soajs.inputmaskData.soajs_project || '');
 				return false;
 			}

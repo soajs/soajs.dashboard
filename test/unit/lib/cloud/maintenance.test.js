@@ -1,13 +1,13 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/cloud/maintenance/index.js');
-var maintenance;
-var config = {
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const utils = helper.requireModule('./lib/cloud/maintenance/index.js');
+let maintenance;
+let config = {
 	errors: {}
 };
 
-var req = {
+let req = {
 	soajs: {
 		servicesConfig: {
 			dashboard: {}
@@ -31,7 +31,7 @@ var req = {
 		inputmaskData: {}
 	}
 };
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -50,11 +50,11 @@ var mongoStub = {
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
-	switchConnection: function(soajs) {
+	switchConnection: function (soajs) {
 	}
 };
 
-var envRecord = {
+let envRecord = {
 	_id: '',
 	code: 'DEV',
 	deployments: [
@@ -108,8 +108,8 @@ var envRecord = {
 			}
 		}
 	},
-	"restriction":{
-		"1231231":{
+	"restriction": {
+		"1231231": {
 			"eastus": {
 				group: "grouptest",
 				network: "networktest"
@@ -118,7 +118,7 @@ var envRecord = {
 	}
 };
 
-var deployer = helper.deployer;
+let deployer = helper.deployer;
 
 describe("testing lib/cloud/maintenance/index.js", function () {
 	
@@ -179,9 +179,9 @@ describe("testing lib/cloud/maintenance/index.js", function () {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}else if (opts.collection === 'infra') {
+				} else if (opts.collection === 'infra') {
 					return cb(null, helper.infraRecord);
-				}else{
+				} else {
 					return cb(null, {});
 				}
 			};
@@ -199,9 +199,9 @@ describe("testing lib/cloud/maintenance/index.js", function () {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}else if (opts.collection === 'infra') {
+				} else if (opts.collection === 'infra') {
 					return cb(null, helper.infraRecord);
-				}else{
+				} else {
 					return cb(null, {});
 				}
 			};
@@ -223,9 +223,9 @@ describe("testing lib/cloud/maintenance/index.js", function () {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}else if (opts.collection === 'infra') {
+				} else if (opts.collection === 'infra') {
 					return cb(null, helper.infraRecord);
-				}else{
+				} else {
 					return cb(null, {});
 				}
 			};
@@ -244,9 +244,9 @@ describe("testing lib/cloud/maintenance/index.js", function () {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}else if (opts.collection === 'infra') {
+				} else if (opts.collection === 'infra') {
 					return cb(null, helper.infraRecord);
-				}else{
+				} else {
 					return cb(null, {});
 				}
 			};
@@ -266,7 +266,7 @@ describe("testing lib/cloud/maintenance/index.js", function () {
 	describe("maintenance VM", function () {
 		it("Success", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				var infraRecord = {
+				let infraRecord = {
 					"_id": '5b28c5edb53002d7b3b1f0cf',
 					"api": {
 						"clientId": "1",
@@ -329,7 +329,7 @@ describe("testing lib/cloud/maintenance/index.js", function () {
 	describe("get Logs VM", function () {
 		it("Success", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				var infraRecord = {
+				let infraRecord = {
 					"_id": '5b28c5edb53002d7b3b1f0cf',
 					"api": {
 						"clientId": "1",

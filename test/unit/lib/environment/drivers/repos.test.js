@@ -1107,5 +1107,5 @@ describe("testing repos.js", function () {
 				done();
 			});
 		});
-	})
+	});
 });

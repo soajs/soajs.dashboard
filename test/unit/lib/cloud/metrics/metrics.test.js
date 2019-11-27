@@ -1,12 +1,12 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../../helper.js");
-var utils = helper.requireModule('./lib/cloud/metrics/index.js');
-var metrics;
-var config = {
+const assert = require("assert");
+const helper = require("../../../../helper.js");
+const utils = helper.requireModule('./lib/cloud/metrics/index.js');
+let metrics;
+let config = {
 	errors: {}
 };
-var req = {
+let req = {
 	soajs: {
 		servicesConfig: {
 			dashboard: {}
@@ -32,7 +32,7 @@ var req = {
 		}
 	}
 };
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -51,11 +51,11 @@ var mongoStub = {
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
-	switchConnection: function(soajs) {
+	switchConnection: function (soajs) {
 	}
 };
 
-var envRecord = {
+let envRecord = {
 	_id: '',
 	code: 'DEV',
 	deployer: {
@@ -97,7 +97,7 @@ var envRecord = {
 	}
 };
 
-var deployer = helper.deployer;
+let deployer = helper.deployer;
 
 describe("testing lib/cloud/metrics/index.js", function () {
 	

@@ -1,11 +1,11 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var helpers = helper.requireModule('./lib/daemons/helper.js');
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const helpers = helper.requireModule('./lib/daemons/helper.js');
 
-var config = {};
+let config = {};
 
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -16,12 +16,12 @@ var mongoStub = {
 		cb(null, {});
 	},
 	findEntries: function (soajs, opts, cb) {
-		var entries = [
+		let entries = [
 			{
 				code: 'DEV'
 			}
 		];
-
+		
 		return cb(null, entries);
 	},
 	removeEntry: function (soajs, opts, cb) {
@@ -35,37 +35,37 @@ var mongoStub = {
 	}
 };
 
-var BL = {
+let BL = {
 	model: mongoStub
 };
 
-var cloudBL = {
-
+let cloudBL = {
+	
 	listServices: function (config, soajs, deployer, cb) {
 		deployer.listServices({}, function (error, services) {
 			return cb(null, services);
 		});
 	}
-
+	
 };
 
-var deployer = {
-
+let deployer = {
+	
 	listServices: function (options, cb) {
-		var services = [
+		let services = [
 			{
 				env: [
 					'SOAJS_DAEMON_GRP_CONF=testDaemonGroup'
 				]
 			}
 		];
-
+		
 		return cb(null, services);
 	}
-
+	
 };
 
-var req = {
+let req = {
 	soajs: {
 		inputmaskData: {}
 	}
@@ -75,10 +75,11 @@ function checkReturnError(req, mainCb, data, cb) {
 	return cb();
 }
 
-function mainCb() {}
+function mainCb() {
+}
 
 describe("testing lib/daemons/helper.js", function () {
-	var soajs = {
+	let soajs = {
 		inputmaskData: {
 			"timeZone": "America/Los_Angeles",
 			"cronTime": "*/5	*	*	*	*",
@@ -86,14 +87,14 @@ describe("testing lib/daemons/helper.js", function () {
 		},
 		tenant: {}
 	};
-
+	
 	describe("validateCronTime ()", function () {
-		var criteria = {};
-
+		let criteria = {};
+		
 		beforeEach(() => {
-
+		
 		});
-
+		
 		it("Success type cron", function (done) {
 			soajs.inputmaskData.type = 'cron';
 			criteria = {
@@ -110,11 +111,11 @@ describe("testing lib/daemons/helper.js", function () {
 				"jobs": {},
 				"order": []
 			};
-
+			
 			helpers.validateCronTime(soajs, criteria);
 			done();
 		});
-
+		
 		it("Success type once", function (done) {
 			soajs.inputmaskData.type = 'once';
 			criteria = {
@@ -131,27 +132,27 @@ describe("testing lib/daemons/helper.js", function () {
 				"jobs": {},
 				"order": []
 			};
-
+			
 			helpers.validateCronTime(soajs, criteria);
 			done();
 		});
-
+		
 	});
-
-	describe("testing checkIfGroupIsDeployed", function() {
-		var daemonGroupRecord = {
+	
+	describe("testing checkIfGroupIsDeployed", function () {
+		let daemonGroupRecord = {
 			daemonConfigGroup: 'testDaemonGroup'
 		};
-
-		it("success - will get one deployed daemon", function(done) {
-			helpers.checkIfGroupIsDeployed(config, daemonGroupRecord, req, BL, cloudBL, deployer, checkReturnError, mainCb, function() {
+		
+		it("success - will get one deployed daemon", function (done) {
+			helpers.checkIfGroupIsDeployed(config, daemonGroupRecord, req, BL, cloudBL, deployer, checkReturnError, mainCb, function () {
 				done();
 			});
 		});
-
-		it("success - will not find any deployed daemons", function(done) {
+		
+		it("success - will not find any deployed daemons", function (done) {
 			deployer.listServices = function (options, cb) {
-				var services = [
+				let services = [
 					{
 						env: [
 							'SOAJS_DAEMON_GRP_CONF=invalidDaemonGroup'
@@ -160,13 +161,13 @@ describe("testing lib/daemons/helper.js", function () {
 				];
 				return cb(null, services);
 			};
-
-			helpers.checkIfGroupIsDeployed(config, daemonGroupRecord, req, BL, cloudBL, deployer, checkReturnError, mainCb, function() {
+			
+			helpers.checkIfGroupIsDeployed(config, daemonGroupRecord, req, BL, cloudBL, deployer, checkReturnError, mainCb, function () {
 				done();
 			});
 		});
-
-
+		
+		
 	});
-
+	
 });

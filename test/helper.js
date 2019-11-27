@@ -1,4 +1,6 @@
-var testConsole = {
+"use strict";
+
+let testConsole = {
 	log: function () {
 		if (process.env.SHOW_LOGS === 'true') {
 			console.log.apply(this, arguments);
@@ -6,7 +8,7 @@ var testConsole = {
 	}
 };
 
-var request = require("request");
+const request = require("request");
 
 module.exports = {
 	deployer: {
@@ -44,11 +46,11 @@ module.exports = {
 			return cb(null, true);
 		},
 		listNodes: function (options, cb) {
-			var arr = [];
+			let arr = [];
 			return cb(null, arr);
 		},
 		listServices: function (data, cb) {
-			var arr = [
+			let arr = [
 				{
 					labels: {
 						'soajs.env.code': 'dev'
@@ -135,14 +137,22 @@ module.exports = {
 		return require(filePath);
 	},
 	requester: function (method, params, cb) {
-		var requestOptions = {
+		let requestOptions = {
 			'uri': params.uri,
 			'json': params.body || true
 		};
-		if (params.headers) requestOptions.headers = params.headers;
-		if (params.authorization) requestOptions.headers.authorization = params.authorization;
-		if (params.qs) requestOptions.qs = params.qs;
-		if (params.form !== undefined) requestOptions.form = params.form;
+		if (params.headers) {
+			requestOptions.headers = params.headers;
+		}
+		if (params.authorization) {
+			requestOptions.headers.authorization = params.authorization;
+		}
+		if (params.qs) {
+			requestOptions.qs = params.qs;
+		}
+		if (params.form !== undefined) {
+			requestOptions.form = params.form;
+		}
 		
 		testConsole.log('===========================================================================');
 		testConsole.log('==== URI     :', params.uri);

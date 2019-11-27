@@ -1,10 +1,10 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../../helper.js");
-var utils = helper.requireModule('./lib/cloud/deploy/index.js');
-var deploy;
-var config = helper.requireModule('./config');
-var req = {
+const assert = require("assert");
+const helper = require("../../../../helper.js");
+const utils = helper.requireModule('./lib/cloud/deploy/index.js');
+let deploy;
+const config = helper.requireModule('./config');
+let req = {
 	soajs: {
 		registry: {
 			coreDB: {
@@ -13,13 +13,13 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-
+			
 			},
 			error: function (data) {
-
+			
 			},
 			info: function (data) {
-
+			
 			}
 		},
 		inputmaskData: {},
@@ -32,8 +32,7 @@ var req = {
 							return {
 								errors: []
 							};
-						}
-						else {
+						} else {
 							//invalid
 							return {
 								errors: [{error: 'msg'}]
@@ -46,7 +45,7 @@ var req = {
 	}
 };
 // BL.model.validateCustomId
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -71,12 +70,13 @@ var mongoStub = {
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
-	switchConnection: function(soajs) {}
+	switchConnection: function (soajs) {
+	}
 };
 
-var deployer = helper.deployer;
+let deployer = helper.deployer;
 
-var envRecord = {
+let envRecord = {
 	_id: '',
 	code: 'DEV',
 	dbs: {
@@ -128,9 +128,7 @@ var envRecord = {
 		}
 	},
 	services: {
-		config: {
-
-		}
+		config: {}
 	},
 	deployments: [
 		{
@@ -149,23 +147,23 @@ var envRecord = {
 };
 
 describe("testing lib/cloud/deploy/index.js", function () {
-
+	
 	describe("testing init", function () {
-
+		
 		it("No Model Requested", function (done) {
 			utils.init(null, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Model Name not found", function (done) {
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Init", function (done) {
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
@@ -174,15 +172,15 @@ describe("testing lib/cloud/deploy/index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	// "deployService": function (config, soajs, registry, deployer, cbMain) {
 	describe("deployService", function () {
-
+		
 		it("Fail deployService ports mismatch", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				var catalogRecord = {
+				let catalogRecord = {
 					"_id": '12',
 					"name": "serviceCatalog",
 					"type": "soajs",
@@ -194,19 +192,19 @@ describe("testing lib/cloud/deploy/index.js", function () {
 								"name": "soajs",
 								"tag": "latest"
 							},
-							"ports" : [
+							"ports": [
 								{
-									"name" : "http",
-									"target" : 80,
-									"isPublished" : true,
-									"published" : 80,
-									"preserveClientIP" : true
+									"name": "http",
+									"target": 80,
+									"isPublished": true,
+									"published": 80,
+									"preserveClientIP": true
 								},
 								{
-									"name" : "https",
-									"target" : 443,
-									"isPublished" : true,
-									"preserveClientIP" : true
+									"name": "https",
+									"target": 443,
+									"isPublished": true,
+									"preserveClientIP": true
 								}
 							]
 						},
@@ -238,8 +236,8 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						}
 					}
 				};
-
-				var tenantRecord = {
+				
+				let tenantRecord = {
 					"_id": '551286bce603d7e01ab1688e',
 					"oauth": {},
 					"locked": true,
@@ -278,24 +276,24 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						}
 					]
 				};
-
+				
 				if (opts.collection === 'catalogs') {
 					return cb(null, catalogRecord);
 				}
-				if(opts.collection === 'tenants'){
+				if (opts.collection === 'tenants') {
 					return cb(null, tenantRecord);
 				}
-
-				if(opts.collection === 'cicd'){
+				
+				if (opts.collection === 'cicd') {
 					return cb({
-						code : 400,
-						msg : 'error test'
+						code: 400,
+						msg: 'error test'
 					});
 				}
-
+				
 				return cb(null, envRecord);
 			};
-
+			
 			req.soajs.registry = envRecord;
 			req.soajs.registry.coreDB = {
 				provision: {
@@ -303,7 +301,7 @@ describe("testing lib/cloud/deploy/index.js", function () {
 					"credentials": {}
 				}
 			};
-
+			
 			req.soajs.inputmaskData = {
 				deployConfig: {
 					replication: {
@@ -318,34 +316,33 @@ describe("testing lib/cloud/deploy/index.js", function () {
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
-
+			
 			deployer = {
-				execute: function(driverOptions, method, methodOptions, cb) {
-					if (method === 'manageResources'){
+				execute: function (driverOptions, method, methodOptions, cb) {
+					if (method === 'manageResources') {
 						return cb(null, true);
-					}
-					else {
+					} else {
 						return cb(null, {
-							service : {
-								labels : {
-									'soajs.service.type' : 'service'
+							service: {
+								labels: {
+									'soajs.service.type': 'service'
 								}
 							}
 						});
 					}
 				}
 			};
-
+			
 			deploy.deployService(config, req, deployer, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		// todo: xxxxxx
 		it.skip("Fail deployService port outside range", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				var catalogRecord = {
+				let catalogRecord = {
 					"_id": '12',
 					"name": "serviceCatalog",
 					"type": "soajs",
@@ -357,13 +354,13 @@ describe("testing lib/cloud/deploy/index.js", function () {
 								"name": "soajs",
 								"tag": "latest"
 							},
-							"ports" : [
+							"ports": [
 								{
-									"name" : "http",
-									"target" : 80,
-									"isPublished" : true,
-									"published" : 5000,
-									"preserveClientIP" : true
+									"name": "http",
+									"target": 80,
+									"isPublished": true,
+									"published": 5000,
+									"preserveClientIP": true
 								}
 							]
 						},
@@ -395,8 +392,8 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						}
 					}
 				};
-
-				var tenantRecord = {
+				
+				let tenantRecord = {
 					"_id": '551286bce603d7e01ab1688e',
 					"oauth": {},
 					"locked": true,
@@ -435,19 +432,19 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						}
 					]
 				};
-
+				
 				if (opts.collection === 'catalogs') {
 					return cb(null, catalogRecord);
 				}
-				if(opts.collection === 'tenants'){
+				if (opts.collection === 'tenants') {
 					return cb(null, tenantRecord);
 				}
-
+				
 				let kubeEnvRecord = JSON.parse(JSON.stringify(envRecord, null, 2));
 				kubeEnvRecord.deployer.selected = "container.kubernetes.local";
 				return cb(null, kubeEnvRecord);
 			};
-
+			
 			req.soajs.registry = envRecord;
 			req.soajs.registry.coreDB = {
 				provision: {
@@ -455,7 +452,7 @@ describe("testing lib/cloud/deploy/index.js", function () {
 					"credentials": {}
 				}
 			};
-
+			
 			req.soajs.inputmaskData = {
 				deployConfig: {
 					replication: {
@@ -467,37 +464,36 @@ describe("testing lib/cloud/deploy/index.js", function () {
 				},
 				custom: {}
 			};
-
+			
 			deployer = {
-				execute: function(driverOptions, method, methodOptions, cb) {
-					if (method === 'manageResources'){
+				execute: function (driverOptions, method, methodOptions, cb) {
+					if (method === 'manageResources') {
 						return cb(null, true);
-					}
-					else {
+					} else {
 						return cb(null, {
-							service : {
-								labels : {
-									'soajs.service.type' : 'service'
+							service: {
+								labels: {
+									'soajs.service.type': 'service'
 								}
 							}
 						});
 					}
 				}
 			};
-
+			
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
-
+			
 			deploy.deployService(config, req, deployer, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Success deployService. soajs", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				var catalogRecord = {
+				let catalogRecord = {
 					"_id": '12',
 					"name": "serviceCatalog",
 					"type": "soajs",
@@ -509,12 +505,12 @@ describe("testing lib/cloud/deploy/index.js", function () {
 								"name": "soajs",
 								"tag": "latest"
 							},
-							"sourceCode" : {
-								"configuration" : {
-									"repo" : "soajsTestAccount/custom-configuration",
-									"branch" : "master",
-									"owner" : "soajsTestAccount",
-									"commit" : "e61063e026d4b904bf254b176d9f2c0034b62cbf"
+							"sourceCode": {
+								"configuration": {
+									"repo": "soajsTestAccount/custom-configuration",
+									"branch": "master",
+									"owner": "soajsTestAccount",
+									"commit": "e61063e026d4b904bf254b176d9f2c0034b62cbf"
 								}
 							}
 						},
@@ -546,8 +542,8 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						}
 					}
 				};
-
-				var tenantRecord = {
+				
+				let tenantRecord = {
 					"_id": '551286bce603d7e01ab1688e',
 					"oauth": {},
 					"locked": true,
@@ -586,24 +582,24 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						}
 					]
 				};
-
+				
 				if (opts.collection === 'catalogs') {
 					return cb(null, catalogRecord);
 				}
-				if(opts.collection === 'tenants'){
+				if (opts.collection === 'tenants') {
 					return cb(null, tenantRecord);
 				}
 				return cb(null, envRecord);
 			};
-
+			
 			req.soajs.registry = envRecord;
 			req.soajs.registry.coreDB = {
-                provision: {
-                    "servers": [],
-                    "credentials": {}
-                }
-            };
-
+				provision: {
+					"servers": [],
+					"credentials": {}
+				}
+			};
+			
 			req.soajs.inputmaskData = {
 				deployConfig: {
 					replication: {
@@ -618,16 +614,16 @@ describe("testing lib/cloud/deploy/index.js", function () {
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
-
+			
 			deploy.deployService(config, req, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-
+		
 		it("Success deployService VM", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				var catalogRecord = {
+				let catalogRecord = {
 					"_id": "123456",
 					"name": "Mongo Recipe VM",
 					"type": "cluster",
@@ -717,8 +713,8 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						}
 					}
 				};
-
-				var tenantRecord = {
+				
+				let tenantRecord = {
 					"_id": '551286bce603d7e01ab1688e',
 					"oauth": {},
 					"locked": true,
@@ -757,16 +753,16 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						}
 					]
 				};
-
+				
 				if (opts.collection === 'catalogs') {
 					return cb(null, catalogRecord);
 				}
-				if(opts.collection === 'tenants'){
+				if (opts.collection === 'tenants') {
 					return cb(null, tenantRecord);
 				}
 				let vmEnvRecord = JSON.parse(JSON.stringify(envRecord, null, 2));
 				vmEnvRecord.restriction = {
-					"1231231":{
+					"1231231": {
 						"eastus": {
 							group: "grouptest",
 							network: "networktest"
@@ -775,15 +771,15 @@ describe("testing lib/cloud/deploy/index.js", function () {
 				};
 				return cb(null, vmEnvRecord);
 			};
-
+			
 			req.soajs.registry = envRecord;
 			req.soajs.registry.coreDB = {
-                provision: {
-                    "servers": [],
-                    "credentials": {}
-                }
-            };
-
+				provision: {
+					"servers": [],
+					"credentials": {}
+				}
+			};
+			
 			req.soajs.inputmaskData = {
 				deployConfig: {
 					replication: {
@@ -800,16 +796,16 @@ describe("testing lib/cloud/deploy/index.js", function () {
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
 			req.soajs.inputmaskData.infraId = '123';
-
+			
 			deploy.deployService(config, req, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-
+		
 		it("Success redeployService VM redeploy action", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				var catalogRecord = {
+				let catalogRecord = {
 					"_id": "123456",
 					"name": "Mongo Recipe VM",
 					"type": "cluster",
@@ -899,8 +895,8 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						}
 					}
 				};
-
-				var tenantRecord = {
+				
+				let tenantRecord = {
 					"_id": '551286bce603d7e01ab1688e',
 					"oauth": {},
 					"locked": true,
@@ -939,16 +935,16 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						}
 					]
 				};
-
+				
 				if (opts.collection === 'catalogs') {
 					return cb(null, catalogRecord);
 				}
-				if(opts.collection === 'tenants'){
+				if (opts.collection === 'tenants') {
 					return cb(null, tenantRecord);
 				}
 				let vmEnvRecord = JSON.parse(JSON.stringify(envRecord, null, 2));
 				vmEnvRecord.restriction = {
-					"1231231":{
+					"1231231": {
 						"eastus": {
 							group: "grouptest",
 							network: "networktest"
@@ -957,15 +953,15 @@ describe("testing lib/cloud/deploy/index.js", function () {
 				};
 				return cb(null, vmEnvRecord);
 			};
-
+			
 			req.soajs.registry = envRecord;
 			req.soajs.registry.coreDB = {
-                provision: {
-                    "servers": [],
-                    "credentials": {}
-                }
-            };
-
+				provision: {
+					"servers": [],
+					"credentials": {}
+				}
+			};
+			
 			req.soajs.inputmaskData = {
 				deployConfig: {
 					replication: {
@@ -983,16 +979,16 @@ describe("testing lib/cloud/deploy/index.js", function () {
 			req.soajs.inputmaskData.serviceName = 'test';
 			req.soajs.inputmaskData.action = 'redeploy';
 			req.soajs.inputmaskData.infraId = '123';
-
+			
 			deploy.redeployService(config, req, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-
+		
 		it("Success redeployService VM redeploy action", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				var catalogRecord = {
+				let catalogRecord = {
 					"_id": "123456",
 					"name": "Mongo Recipe VM",
 					"type": "cluster",
@@ -1082,8 +1078,8 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						}
 					}
 				};
-
-				var tenantRecord = {
+				
+				let tenantRecord = {
 					"_id": '551286bce603d7e01ab1688e',
 					"oauth": {},
 					"locked": true,
@@ -1122,16 +1118,16 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						}
 					]
 				};
-
+				
 				if (opts.collection === 'catalogs') {
 					return cb(null, catalogRecord);
 				}
-				if(opts.collection === 'tenants'){
+				if (opts.collection === 'tenants') {
 					return cb(null, tenantRecord);
 				}
 				let vmEnvRecord = JSON.parse(JSON.stringify(envRecord, null, 2));
 				vmEnvRecord.restriction = {
-					"1231231":{
+					"1231231": {
 						"eastus": {
 							group: "grouptest",
 							network: "networktest"
@@ -1140,15 +1136,15 @@ describe("testing lib/cloud/deploy/index.js", function () {
 				};
 				return cb(null, vmEnvRecord);
 			};
-
+			
 			req.soajs.registry = envRecord;
 			req.soajs.registry.coreDB = {
-                provision: {
-                    "servers": [],
-                    "credentials": {}
-                }
-            };
-
+				provision: {
+					"servers": [],
+					"credentials": {}
+				}
+			};
+			
 			req.soajs.inputmaskData = {
 				deployConfig: {
 					replication: {
@@ -1166,16 +1162,16 @@ describe("testing lib/cloud/deploy/index.js", function () {
 			req.soajs.inputmaskData.serviceName = 'test';
 			req.soajs.inputmaskData.action = 'rebuild';
 			req.soajs.inputmaskData.infraId = '123';
-
+			
 			deploy.redeployService(config, req, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-
+		
 		it("Success deploy Nginx server", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				var catalogRecord = {
+				let catalogRecord = {
 					"_id": '12',
 					"name": "serviceCatalog",
 					"type": "server",
@@ -1188,20 +1184,20 @@ describe("testing lib/cloud/deploy/index.js", function () {
 								"name": "nginx",
 								"tag": "latest"
 							},
-							"ports" : [
+							"ports": [
 								{
-									"name" : "http",
-									"target" : 80,
-									"isPublished" : true,
-									"published" : 80,
-									"preserveClientIP" : true
+									"name": "http",
+									"target": 80,
+									"isPublished": true,
+									"published": 80,
+									"preserveClientIP": true
 								},
 								{
-									"name" : "https",
-									"target" : 443,
-									"isPublished" : true,
-									"published" : 443,
-									"preserveClientIP" : true
+									"name": "https",
+									"target": 443,
+									"isPublished": true,
+									"published": 443,
+									"preserveClientIP": true
 								}
 							]
 						},
@@ -1237,8 +1233,8 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						}
 					}
 				};
-
-				var tenantRecord = {
+				
+				let tenantRecord = {
 					"_id": '551286bce603d7e01ab1688e',
 					"oauth": {},
 					"locked": true,
@@ -1277,16 +1273,16 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						}
 					]
 				};
-
+				
 				if (opts.collection === 'catalogs') {
 					return cb(null, catalogRecord);
 				}
-				if(opts.collection === 'tenants'){
+				if (opts.collection === 'tenants') {
 					return cb(null, tenantRecord);
 				}
 				return cb(null, envRecord);
 			};
-
+			
 			req.soajs.registry = envRecord;
 			req.soajs.registry.coreDB = {
 				provision: {
@@ -1294,7 +1290,7 @@ describe("testing lib/cloud/deploy/index.js", function () {
 					"credentials": {}
 				}
 			};
-
+			
 			req.soajs.inputmaskData = {
 				deployConfig: {
 					replication: {
@@ -1309,7 +1305,7 @@ describe("testing lib/cloud/deploy/index.js", function () {
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
-
+			
 			deployer.inspectService = function (opts, cb) {
 				return cb(null, {
 					"service": {
@@ -1317,8 +1313,7 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						"version": "1157",
 						"name": "dashboard-nginx",
 						"namespace": "soajs",
-						"labels": {
-						},
+						"labels": {},
 						"env": [
 							"SOAJS_NX_API_HTTPS: true",
 							"SOAJS_NX_SITE_HTTPS: true"
@@ -1366,86 +1361,86 @@ describe("testing lib/cloud/deploy/index.js", function () {
 					]
 				});
 			};
-
+			
 			deploy.deployService(config, req, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 	});
-
-	describe("testing deploy plugin", function() {
-
-		before("init", function(done) {
-			deployer.manageResources = function(options, cb) {
+	
+	describe("testing deploy plugin", function () {
+		
+		before("init", function (done) {
+			deployer.manageResources = function (options, cb) {
 				return cb(null, true);
 			};
-
-			var envRecord = {
-	            code: 'DASHBORAD',
-	            deployer: {
-	                "type": "container",
-	                "selected": "container.docker.local",
-	                "container": {
-	                    "docker": {
-	                        "local": {
-	                            "socketPath": "/var/run/docker.sock"
-	                        },
-	                        "remote": {
-	                            "nodes": ""
-	                        }
-	                    },
-	                    "kubernetes": {
-	                        "local": {
-	                            "nginxDeployType": "",
-	                            "namespace": {},
-	                            "auth": {
-	                                "token": ""
-	                            }
-	                        },
-	                        "remote": {
-	                            "nginxDeployType": "",
-	                            "namespace": {},
-	                            "auth": {
-	                                "token": ""
-	                            }
-	                        }
-	                    }
-	                }
-	            },
-	            dbs: {
-	                clusters: {
-	                    oneCluster: {
-	                        servers: {}
-	                    }
-	                },
-	                config: {
-	                    session: {
-	                        cluster: 'oneCluster'
-	                    }
-	                }
-	            },
-	            services: {},
-	            profile: ''
-	        };
+			
+			let envRecord = {
+				code: 'DASHBORAD',
+				deployer: {
+					"type": "container",
+					"selected": "container.docker.local",
+					"container": {
+						"docker": {
+							"local": {
+								"socketPath": "/var/run/docker.sock"
+							},
+							"remote": {
+								"nodes": ""
+							}
+						},
+						"kubernetes": {
+							"local": {
+								"nginxDeployType": "",
+								"namespace": {},
+								"auth": {
+									"token": ""
+								}
+							},
+							"remote": {
+								"nginxDeployType": "",
+								"namespace": {},
+								"auth": {
+									"token": ""
+								}
+							}
+						}
+					}
+				},
+				dbs: {
+					clusters: {
+						oneCluster: {
+							servers: {}
+						}
+					},
+					config: {
+						session: {
+							cluster: 'oneCluster'
+						}
+					}
+				},
+				services: {},
+				profile: ''
+			};
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, envRecord);
 			};
-
+			
 			done();
 		});
-
-		it("success - deploy heapster plugin", function(done) {
+		
+		it("success - deploy heapster plugin", function (done) {
 			req.soajs.inputmaskData = {
 				env: 'dev',
 				plugin: 'heapster'
 			};
-
-			deploy.deployPlugin(config, req.soajs, deployer, function(error, result) {
+			
+			deploy.deployPlugin(config, req.soajs, deployer, function (error, result) {
 				assert.ok(result);
 				done();
 			});
 		});
-
+		
 	});
 });

@@ -1,10 +1,10 @@
 "use strict";
-var async = require("async");
-var helper = require("../../../../helper.js");
-var config = require("../../../../../config.js");
-var utils = helper.requireModule('./lib/environment/drivers/customReg.js');
+const async = require("async");
+const helper = require("../../../../helper.js");
+const config = require("../../../../../config.js");
+const utils = helper.requireModule('./lib/environment/drivers/customReg.js');
 
-var req = {
+let req = {
 	soajs: {
 		registry: {
 			coreDB: {
@@ -12,7 +12,7 @@ var req = {
 					name: 'core_provision',
 					prefix: '',
 					servers: [
-						{ host: '127.0.0.1', port: 27017 }
+						{host: '127.0.0.1', port: 27017}
 					],
 					credentials: null,
 					streaming: {
@@ -58,7 +58,7 @@ var req = {
 		}
 	}
 };
-var mongoStub = {
+let mongoStub = {
 	findEntry: function (soajs, opts, cb) {
 		cb(null, {
 			"productize": {
@@ -85,11 +85,11 @@ var mongoStub = {
 		return true;
 	}
 };
-var BL = {
-	customRegistry :{},
+let BL = {
+	customRegistry: {},
 	model: mongoStub
 };
-var template = {
+let template = {
 	"type": "_template",
 	"name": "MGTT",
 	"description": "Mike Generic Test Template",
@@ -310,9 +310,9 @@ var template = {
 							}
 						}
 					],
-					"status":{
+					"status": {
 						"done": true,
-						"data":[
+						"data": [
 							{
 								"db": "mongo id of this resource"
 							}
@@ -363,9 +363,7 @@ var template = {
 							type: 'custom'
 						}
 					],
-					"status": {
-					
-					}
+					"status": {}
 					
 				},
 				'deployments__dot__resources__dot__nginx': {
@@ -412,7 +410,7 @@ var template = {
 		}
 	}
 };
-var environmentRecord = {
+let environmentRecord = {
 	_id: '5a58d942ace01a5325fa3e4c',
 	code: 'DASHBORAD',
 	deployer: {
@@ -461,22 +459,22 @@ var environmentRecord = {
 	profile: ''
 };
 
-var lib = {
-	initBLModel : function(module, modelName, cb){
+let lib = {
+	initBLModel: function (module, modelName, cb) {
 		return cb(null, {
-			add : function (context, req, data, cb) {
+			add: function (context, req, data, cb) {
 				return cb(null, true);
 			},
-			delete : function (context, req, data, cb) {
+			delete: function (context, req, data, cb) {
 				return cb(true);
 			}
 		});
 	},
-	checkReturnError: function(req, {}, {}, cb){
+	checkReturnError: function (req, {}, {}, cb) {
 		return cb(null, true);
 	}
 };
-var context = {};
+let context = {};
 describe("testing customReg.js", function () {
 	
 	describe("testing validate", function () {
@@ -488,19 +486,19 @@ describe("testing customReg.js", function () {
 				template: {},
 				config: config,
 				errors: [],
-				opts: {  }
+				opts: {}
 			};
 			context.template.content = {};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("fail no inputs", function (done) {
 			context.template = JSON.parse(JSON.stringify(template));
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success", function (done) {
@@ -542,7 +540,7 @@ describe("testing customReg.js", function () {
 			context.environmentRecord = environmentRecord;
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("fail validation", function (done) {
@@ -560,13 +558,13 @@ describe("testing customReg.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("fail no custom_registry data with no name in all templates", function (done) {
 			context.template.content = {
-				custom_registry : {
-					data : [
+				custom_registry: {
+					data: [
 						{
 							test: 1
 						},
@@ -581,7 +579,7 @@ describe("testing customReg.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("fail no custom_registry data with no name in all inputs", function (done) {
@@ -621,8 +619,8 @@ describe("testing customReg.js", function () {
 				]
 			};
 			context.template.content = {
-				custom_registry : {
-					data : [
+				custom_registry: {
+					data: [
 						{
 							name: 1,
 							test: 1
@@ -638,7 +636,7 @@ describe("testing customReg.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 	});
@@ -693,16 +691,16 @@ describe("testing customReg.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 		it("success custom_registry", function (done) {
 			context.template.deploy.database.pre.custom_registry.status = {
 				done: false
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success custom_registry with data", function (done) {
@@ -736,7 +734,7 @@ describe("testing customReg.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success custom_registry with malformed datadata", function (done) {
@@ -754,7 +752,7 @@ describe("testing customReg.js", function () {
 							}
 					},
 					{
-						 value: 'string value here ...'
+						value: 'string value here ...'
 					},
 					{
 						
@@ -770,13 +768,13 @@ describe("testing customReg.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success custom_registry with malformed inputs", function (done) {
 			context.template.content = {
-				custom_registry : {
-					data : [
+				custom_registry: {
+					data: [
 						{
 							test: 1
 						},
@@ -819,11 +817,11 @@ describe("testing customReg.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-
+		
 	});
-
+	
 	describe("testing rollback", function () {
 		
 		it("success custom_registry with no status ", function (done) {
@@ -871,7 +869,7 @@ describe("testing customReg.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success custom_registry with status not done", function (done) {
@@ -922,7 +920,7 @@ describe("testing customReg.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success custom_registry with status and done", function (done) {
@@ -973,7 +971,7 @@ describe("testing customReg.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success custom_registry with data", function (done) {
@@ -1007,7 +1005,7 @@ describe("testing customReg.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-	})
+	});
 });

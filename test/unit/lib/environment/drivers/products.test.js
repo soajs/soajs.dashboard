@@ -1,10 +1,10 @@
 "use strict";
-var async = require("async");
-var helper = require("../../../../helper.js");
-var config = require("../../../../../config.js");
-var utils = helper.requireModule('./lib/environment/drivers/products.js');
+const async = require("async");
+const helper = require("../../../../helper.js");
+const config = require("../../../../../config.js");
+const utils = helper.requireModule('./lib/environment/drivers/products.js');
 
-var req = {
+let req = {
 	soajs: {
 		registry: {
 			coreDB: {
@@ -58,7 +58,7 @@ var req = {
 		}
 	}
 };
-var mongoStub = {
+let mongoStub = {
 	findEntry: function (soajs, opts, cb) {
 		cb(null, {
 			"productize": {
@@ -85,7 +85,7 @@ var mongoStub = {
 		return true;
 	}
 };
-var BL = {
+let BL = {
 	customRegistry: {
 		module: {}
 	},
@@ -111,7 +111,7 @@ var BL = {
 		module: {}
 	}
 };
-var template = {
+let template = {
 	"type": "_template",
 	"name": "MGTT",
 	"description": "Mike Generic Test Template",
@@ -432,7 +432,7 @@ var template = {
 		}
 	}
 };
-var environmentRecord = {
+let environmentRecord = {
 	_id: '5a58d942ace01a5325fa3e4c',
 	code: 'DASHBORAD',
 	deployer: {
@@ -481,7 +481,7 @@ var environmentRecord = {
 	profile: ''
 };
 
-var lib = {
+let lib = {
 	initBLModel: function (module, modelName, cb) {
 		return cb(null, {
 			add: function (context, req, data, cb) {
@@ -542,7 +542,7 @@ var lib = {
 		return cb(null, true);
 	}
 };
-var context = {};
+let context = {};
 describe("testing products.js", function () {
 	
 	describe("testing validate", function () {
@@ -563,7 +563,7 @@ describe("testing products.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success", function (done) {
@@ -582,7 +582,7 @@ describe("testing products.js", function () {
 			};
 			utils.validate(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 	});
 	
@@ -607,7 +607,7 @@ describe("testing products.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success products with a status", function (done) {
@@ -629,7 +629,7 @@ describe("testing products.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success products with Product entry already created", function (done) {
@@ -659,7 +659,7 @@ describe("testing products.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success products with no entries", function (done) {
@@ -679,7 +679,7 @@ describe("testing products.js", function () {
 			context.template.content.productization.data = [];
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success products with a package", function (done) {
@@ -698,7 +698,7 @@ describe("testing products.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success products with no package found", function (done) {
@@ -770,7 +770,7 @@ describe("testing products.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success products with no product found", function (done) {
@@ -849,7 +849,7 @@ describe("testing products.js", function () {
 			};
 			utils.deploy(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 	});
@@ -873,7 +873,7 @@ describe("testing products.js", function () {
 			delete context.template.deploy.database.steps["productization"].status;
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success products not done", function (done) {
@@ -895,7 +895,7 @@ describe("testing products.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success products ", function (done) {
@@ -917,14 +917,14 @@ describe("testing products.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success products with no entries", function (done) {
 			context.template.content.productization.data = [];
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success products with no product", function (done) {
@@ -1090,7 +1090,7 @@ describe("testing products.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
 		
 		it("success products with no product and no acl", function (done) {
@@ -1251,7 +1251,7 @@ describe("testing products.js", function () {
 			};
 			utils.rollback(req, context, lib, async, BL, 'mongo', function (err, body) {
 				done();
-			})
+			});
 		});
-	})
+	});
 });

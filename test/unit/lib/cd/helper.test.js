@@ -7,12 +7,12 @@ const deployBL = helper.requireModule('./lib/cloud/deploy/index.js');
 const nock = require('nock');
 const sinon = require('sinon');
 
-var config = {
+let config = {
 	docker: {
 		url: 'http://my.docker.com'
 	}
 };
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -35,12 +35,12 @@ var mongoStub = {
 		return true;
 	}
 };
-var deployer = {
+let deployer = {
 	redeployService: function (options, cb) {
 		return cb(null, true);
 	},
 	listServices: function (options, cb) {
-		var services = [];
+		let services = [];
 		return cb(null, services);
 	},
 	deployService: function (options, cb) {
@@ -48,12 +48,12 @@ var deployer = {
 	}
 	
 };
-var BL = {
+let BL = {
 	model: mongoStub
 };
 
 describe("testing helper soajs.cd.js", function () {
-	var soajs = {
+	let soajs = {
 		registry: {
 			coreDB: {
 				provision: {}
@@ -61,16 +61,24 @@ describe("testing helper soajs.cd.js", function () {
 		},
 		log: {
 			debug: function (data) {
-				if (process.env.SOAJS_DEBUG_LOGS) console.log(data);
+				if (process.env.SOAJS_DEBUG_LOGS) {
+					console.log(data);
+				}
 			},
 			error: function (data) {
-				if (process.env.SOAJS_DEBUG_LOGS) console.log(data);
+				if (process.env.SOAJS_DEBUG_LOGS) {
+					console.log(data);
+				}
 			},
 			info: function (data) {
-				if (process.env.SOAJS_DEBUG_LOGS) console.log(data);
+				if (process.env.SOAJS_DEBUG_LOGS) {
+					console.log(data);
+				}
 			},
 			warn: function (data) {
-				if (process.env.SOAJS_DEBUG_LOGS) console.log(data);
+				if (process.env.SOAJS_DEBUG_LOGS) {
+					console.log(data);
+				}
 			}
 		},
 		inputmaskData: {},
@@ -78,10 +86,10 @@ describe("testing helper soajs.cd.js", function () {
 			application: {}
 		}
 	};
-	var req = {
+	let req = {
 		soajs: soajs
 	};
-	var envRecord = {
+	let envRecord = {
 		code: 'DEV',
 		environment: 'dev',
 		deployer: {
@@ -120,24 +128,24 @@ describe("testing helper soajs.cd.js", function () {
 	};
 	
 	describe("testing deepVersionComparison", function () {
-		var oneImage = {}, tag = "", opts = {}, newObj = {};
+		let oneImage = {}, tag = "", opts = {}, newObj = {};
 		before(function (done) {
-			oneImage = { name: '1.0.x-1.0.x', last_updated: 1499852120 };
-			opts.imageInfo = { prefix: 'soajsorg' };
+			oneImage = {name: '1.0.x-1.0.x', last_updated: 1499852120};
+			opts.imageInfo = {prefix: 'soajsorg'};
 			tag = '1.0.x-1.0.x';
 			newObj.image = {};
 			done();
 		});
 		
 		it("success - no update detected, official image", function (done) {
-			var result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
+			let result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
 			assert.ok(result);
 			done();
 		});
 		
 		it("success - deployer update detected, official image", function (done) {
 			oneImage.name = '1.1.x-1.0.x';
-			var result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
+			let result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
 			assert.ok(result);
 			assert.ok(result[0]);
 			done();
@@ -145,7 +153,7 @@ describe("testing helper soajs.cd.js", function () {
 		
 		it("success - core update detected, official image", function (done) {
 			oneImage.name = '1.0.x-1.1.x';
-			var result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
+			let result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
 			assert.ok(result);
 			assert.ok(result[0]);
 			done();
@@ -155,7 +163,7 @@ describe("testing helper soajs.cd.js", function () {
 			opts.imageInfo.prefix = 'soajstest';
 			oneImage.name = '2.0';
 			tag = '1.0';
-			var result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
+			let result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
 			assert.ok(result);
 			assert.ok(result[0]);
 			done();
@@ -163,7 +171,7 @@ describe("testing helper soajs.cd.js", function () {
 		
 		it("success - image tag is not a number", function (done) {
 			tag = "testing";
-			var result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
+			let result = helpers.deepVersionComparison(oneImage, tag, opts, newObj);
 			assert.ok(result);
 			assert.ok(result[0]);
 			done();
@@ -172,7 +180,7 @@ describe("testing helper soajs.cd.js", function () {
 	});
 	
 	describe("testing processUndeployedServices", function () {
-		var deployedServices = [], allServices = [], cdInfo = {};
+		let deployedServices = [], allServices = [], cdInfo = {};
 		
 		before(function (done) {
 			deployedServices.push({
@@ -410,7 +418,7 @@ describe("testing helper soajs.cd.js", function () {
 		beforeEach(() => {
 			
 		});
-		var oneService = {
+		let oneService = {
 			serviceVersion: 1,
 			envRecord: envRecord,
 			service: {
@@ -453,7 +461,7 @@ describe("testing helper soajs.cd.js", function () {
 		it("Success update", function (done) {
 			//NOTE: mocking environment variables for service to include daemon group config variable
 			
-			oneService.service.labels = { 'soajs.service.version': '1' };
+			oneService.service.labels = {'soajs.service.version': '1'};
 			oneService.service.env = ['SOAJS_DAEMON_GRP_CONF=testGroup'];
 			helpers.processOneService(req, BL, oneService, deployer, options, cdConfigRecord, function (error, body) {
 				assert.equal(body, true);
@@ -510,7 +518,7 @@ describe("testing helper soajs.cd.js", function () {
 		});
 		
 		it("Fail", function (done) {
-			var envs2 = [
+			let envs2 = [
 				{
 					record: envRecord,
 					services: [{
@@ -555,7 +563,7 @@ describe("testing helper soajs.cd.js", function () {
 					}]
 				}
 			];
-			var record2 = {
+			let record2 = {
 				_id: 'ffddeec7d52b61',
 				QA: {
 					branch: 'master',
@@ -572,7 +580,7 @@ describe("testing helper soajs.cd.js", function () {
 		});
 		
 		it("Fail 2", function (done) {
-			var record = {
+			let record = {
 				_id: 'ffddeec7d52b61',
 				DEV: {
 					branch: 'master',
@@ -583,7 +591,7 @@ describe("testing helper soajs.cd.js", function () {
 				},
 				type: 'cd'
 			};
-			var envs = [
+			let envs = [
 				{
 					record: envRecord,
 					services: []
@@ -596,7 +604,7 @@ describe("testing helper soajs.cd.js", function () {
 		
 		it("Success", function (done) {
 			req.soajs.inputmaskData.services = [];
-			var record = {
+			let record = {
 				_id: 'ffddeec7d52b61',
 				DEV: {
 					branch: 'master',
@@ -617,7 +625,7 @@ describe("testing helper soajs.cd.js", function () {
 				},
 				type: 'cd'
 			};
-			var envs = [
+			let envs = [
 				{
 					record: envRecord,
 					services: [
@@ -713,7 +721,7 @@ describe("testing helper soajs.cd.js", function () {
 					serviceVersion: 1
 				}
 			];
-			var record = {
+			let record = {
 				_id: 'ffddeec7d52b61',
 				DEV: {
 					branch: 'master',
@@ -724,7 +732,7 @@ describe("testing helper soajs.cd.js", function () {
 				},
 				type: 'cd'
 			};
-			var envs = [
+			let envs = [
 				{
 					record: envRecord,
 					services: [
@@ -794,7 +802,7 @@ describe("testing helper soajs.cd.js", function () {
 				}
 			
 			];
-			var record = {
+			let record = {
 				_id: 'ffddeec7d52b61',
 				DEV: {
 					pause: true,
@@ -823,7 +831,7 @@ describe("testing helper soajs.cd.js", function () {
 				},
 				type: 'cd'
 			};
-			var envs = [
+			let envs = [
 				{
 					record: envRecord,
 					services: [
@@ -964,7 +972,7 @@ describe("testing helper soajs.cd.js", function () {
 			req.soajs.inputmaskData.branch = 'master';
 			req.soajs.inputmaskData.commit = '67a61db0955803cddf94672b0192be28f47cf280';
 			
-			var record = {
+			let record = {
 				_id: 'ffddeec7d52b61',
 				DEV: {
 					pause: true,
@@ -976,7 +984,7 @@ describe("testing helper soajs.cd.js", function () {
 				type: 'cd'
 			};
 			
-			var envs = [
+			let envs = [
 				{
 					record: envRecord,
 					services: [
@@ -1017,12 +1025,12 @@ describe("testing helper soajs.cd.js", function () {
 	
 	describe("getEnvsServices", function () {
 		
-		var envs = [
+		let envs = [
 			envRecord
 		];
 		it("Success", function (done) {
 			deployer.listServices = function (options, cb) {
-				var services = [{
+				let services = [{
 					labels: {
 						'service.repo': '',
 						'service.branch': ''
@@ -1050,18 +1058,18 @@ describe("testing helper soajs.cd.js", function () {
 		});
 		
 		it("Fail 1", function (done) {
-			var updateList = [];
-			var oneService = {};
-			var catalogs = [];
-			var soajsImages = [];
+			let updateList = [];
+			let oneService = {};
+			let catalogs = [];
+			let soajsImages = [];
 			helpers.doesServiceHaveUpdates(req, config, updateList, oneService, catalogs, soajsImages, function (error, body) {
 				done();
 			});
 		});
 		
 		it("Fail 2", function (done) {
-			var updateList = [];
-			var oneService = {
+			let updateList = [];
+			let oneService = {
 				tasks: [
 					{
 						status: {}
@@ -1071,8 +1079,8 @@ describe("testing helper soajs.cd.js", function () {
 					'any': '12'
 				}
 			};
-			var catalogs = [];
-			var soajsImages = [];
+			let catalogs = [];
+			let soajsImages = [];
 			helpers.doesServiceHaveUpdates(req, config, updateList, oneService, catalogs, soajsImages, function (error, body) {
 				done();
 			});
@@ -1082,8 +1090,8 @@ describe("testing helper soajs.cd.js", function () {
 			req.soajs.inputmaskData = {
 				env: 'dev'
 			};
-			var updateList = [];
-			var oneService = {
+			let updateList = [];
+			let oneService = {
 				tasks: [
 					{
 						status: {}
@@ -1094,8 +1102,8 @@ describe("testing helper soajs.cd.js", function () {
 					'soajs.catalog.v': '1'
 				}
 			};
-			var catalogs = [];
-			var soajsImages = [];
+			let catalogs = [];
+			let soajsImages = [];
 			helpers.doesServiceHaveUpdates(req, config, updateList, oneService, catalogs, soajsImages, function (error, body) {
 				done();
 			});
@@ -1105,8 +1113,8 @@ describe("testing helper soajs.cd.js", function () {
 			req.soajs.inputmaskData = {
 				env: 'dev'
 			};
-			var updateList = [];
-			var oneService = {
+			let updateList = [];
+			let oneService = {
 				tasks: [
 					{
 						status: {}
@@ -1118,7 +1126,7 @@ describe("testing helper soajs.cd.js", function () {
 					'soajs.catalog.v': '1'
 				}
 			};
-			var catalogs = [
+			let catalogs = [
 				{
 					"_id": '12',
 					"name": "serviceCatalog",
@@ -1161,7 +1169,7 @@ describe("testing helper soajs.cd.js", function () {
 					}
 				}
 			];
-			var soajsImages = [];
+			let soajsImages = [];
 			helpers.doesServiceHaveUpdates(req, config, updateList, oneService, catalogs, soajsImages, function (error, body) {
 				assert.ok(body);
 				done();
@@ -1187,8 +1195,8 @@ describe("testing helper soajs.cd.js", function () {
 			req.soajs.inputmaskData = {
 				env: 'dev'
 			};
-			var updateList = [];
-			var oneService = {
+			let updateList = [];
+			let oneService = {
 				tasks: [
 					{
 						status: {}
@@ -1200,7 +1208,7 @@ describe("testing helper soajs.cd.js", function () {
 					'soajs.catalog.v': '1'
 				}
 			};
-			var catalogs = [
+			let catalogs = [
 				{
 					"_id": '12',
 					"name": "serviceCatalog",
@@ -1244,7 +1252,7 @@ describe("testing helper soajs.cd.js", function () {
 					}
 				}
 			];
-			var soajsImages = [];
+			let soajsImages = [];
 			helpers.doesServiceHaveUpdates(req, config, updateList, oneService, catalogs, soajsImages, function (error, body) {
 				// assert.ok(body);
 				done();
@@ -1267,9 +1275,9 @@ describe("testing helper soajs.cd.js", function () {
 	});
 	
 	describe("getServices", function () {
-		var cloudServices = {
+		let cloudServices = {
 			init: function (modelName, cb) {
-				var BL = {
+				let BL = {
 					listServices: function (config, soajs, deployer, cb) {
 						return cb(null, []);
 					}
@@ -1291,39 +1299,39 @@ describe("testing helper soajs.cd.js", function () {
 	describe("deepVersionComparison", function () {
 		
 		it("Success 1", function (done) {
-			var oneImage = {
+			let oneImage = {
 				name: 'soajs'
 			};
-			var tag = 1;
-			var opts = {
+			let tag = 1;
+			let opts = {
 				imageInfo: {
 					prefix: ''
 				}
 			};
-			var newObj = {};
+			let newObj = {};
 			helpers.deepVersionComparison(oneImage, tag, opts, newObj);
 			done();
 		});
 		
 		it("Success 2", function (done) {
-			var oneImage = {
+			let oneImage = {
 				name: '1'
 			};
-			var tag = '1';
-			var opts = {
+			let tag = '1';
+			let opts = {
 				imageInfo: {
 					prefix: 'soajsorg'
 				}
 			};
-			var newObj = {};
+			let newObj = {};
 			helpers.deepVersionComparison(oneImage, tag, opts, newObj);
 			done();
 		});
 	});
 	
 	// describe("callDeployer", function () {
-	// 	var registry = {};
-	// 	var opName = 'deployService';
+	// 	let registry = {};
+	// 	let opName = 'deployService';
 	// 	it("Success callDeployer", function (done) {
 	// 		helpers.callDeployer(config, req, registry, deployer, opName, function (error, body) {
 	// 			done();

@@ -1,14 +1,14 @@
 'use strict';
-var serviceConfig = require("./schemas/serviceConfig");
+const serviceConfig = require("./schemas/serviceConfig");
 
-var aclSchema = require("./schemas/acl");
-var catalogSchema = require("./schemas/catalog");
-var resourceSchema = require("./schemas/resource");
-var customRegEntrySchema = require("./schemas/customRegistry");
-var resourceDeployConfigSchema = require("./schemas/resourceDeployConfig");
-var environmentSchema = require("./schemas/environmentSchema");
-var serviceSchema = require("./schemas/serviceSchema");
-var cdOptions = require("./schemas/cdOptions");
+const aclSchema = require("./schemas/acl");
+const catalogSchema = require("./schemas/catalog");
+const resourceSchema = require("./schemas/resource");
+const customRegEntrySchema = require("./schemas/customRegistry");
+const resourceDeployConfigSchema = require("./schemas/resourceDeployConfig");
+const environmentSchema = require("./schemas/environmentSchema");
+const serviceSchema = require("./schemas/serviceSchema");
+const cdOptions = require("./schemas/cdOptions");
 
 module.exports = {
 	type: 'service',
@@ -1912,7 +1912,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project'],
 				"env": {
-					"source": ['query.env','body.env'],
+					"source": ['query.env', 'body.env'],
 					"required": false,
 					"validation": {
 						"type": "string"
@@ -5678,7 +5678,7 @@ module.exports = {
 						}
 					}
 				},
-				"includeSOAJS" : {
+				"includeSOAJS": {
 					'source': ['body.includeSOAJS'],
 					'required': false,
 					'validation': {
@@ -5748,7 +5748,7 @@ module.exports = {
 						}
 					}
 				},
-				"includeSOAJS" : {
+				"includeSOAJS": {
 					'source': ['body.includeSOAJS'],
 					'required': false,
 					'validation': {

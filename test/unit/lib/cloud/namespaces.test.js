@@ -1,12 +1,12 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/cloud/namespaces/index.js');
-var namespaces;
-var config = {
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const utils = helper.requireModule('./lib/cloud/namespaces/index.js');
+let namespaces;
+let config = {
 	errors: {}
 };
-var req = {
+let req = {
 	soajs: {
 		registry: {
 			coreDB: {
@@ -27,7 +27,7 @@ var req = {
 	}
 };
 
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -46,13 +46,13 @@ var mongoStub = {
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
-	switchConnection: function(soajs) {
+	switchConnection: function (soajs) {
 	}
 };
 
-var deployer = helper.deployer;
+let deployer = helper.deployer;
 
-var envRecord = {
+let envRecord = {
 	_id: '',
 	code: 'DEV',
 	deployer: {
@@ -87,7 +87,7 @@ var envRecord = {
 	}
 };
 
-var envRecordKub = {
+let envRecordKub = {
 	_id: '',
 	code: 'DEV',
 	deployer: {
@@ -121,34 +121,32 @@ var envRecordKub = {
 		}
 	},
 	services: {
-		config: {
-		
-		}
+		config: {}
 	}
 	
 };
 
 describe("testing lib/cloud/namespaces/index.js", function () {
-
+	
 	describe("testing init", function () {
-
+		
 		it("No Model Requested", function (done) {
 			utils.init(null, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Model Name not found", function (done) {
-
+			
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Init", function (done) {
-
+			
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
 				namespaces = body;
@@ -156,11 +154,11 @@ describe("testing lib/cloud/namespaces/index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("list", function () {
-
+		
 		it("success", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, envRecord);
@@ -170,7 +168,7 @@ describe("testing lib/cloud/namespaces/index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("success kubernetes", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, envRecordKub);
@@ -180,11 +178,11 @@ describe("testing lib/cloud/namespaces/index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("delete", function () {
-
+		
 		it("success", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, envRecord);
@@ -194,7 +192,7 @@ describe("testing lib/cloud/namespaces/index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("success kubernetes", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, envRecordKub);
@@ -204,7 +202,7 @@ describe("testing lib/cloud/namespaces/index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 });

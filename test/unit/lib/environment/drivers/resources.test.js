@@ -1275,5 +1275,5 @@ describe("testing resources.js", function () {
 				done();
 			});
 		});
-	})
+	});
 });

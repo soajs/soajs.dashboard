@@ -1,19 +1,19 @@
 "use strict";
-var assert = require("assert");
-var testHelper = require("../../../../helper.js");
-var module = testHelper.requireModule('./lib/cloud/infra/index.js');
-var templates = testHelper.requireModule('./lib/cloud/infra/templates.js');
-var clusters = testHelper.requireModule('./lib/cloud/infra/cluster.js');
-var helper = testHelper.requireModule('./lib/cloud/infra/helper.js');
+const assert = require("assert");
+const testHelper = require("../../../../helper.js");
+const module = testHelper.requireModule('./lib/cloud/infra/index.js');
+const templates = testHelper.requireModule('./lib/cloud/infra/templates.js');
+const clusters = testHelper.requireModule('./lib/cloud/infra/cluster.js');
+const helper = testHelper.requireModule('./lib/cloud/infra/helper.js');
 
-var infra;
-var config = testHelper.requireModule('./config.js');
-var deployer = testHelper.deployer;
+let infra;
+const config = testHelper.requireModule('./config.js');
+const deployer = testHelper.deployer;
 
 const nock = require("nock");
 const sinon = require('sinon');
 
-var mongoStub = {
+let mongoStub = {
 	getDb: function () {
 	},
 	checkForMongo: function (soajs) {
@@ -40,7 +40,7 @@ var mongoStub = {
 		cb(null, {});
 	},
 	findEntries: function (soajs, opts, cb) {
-		var data = [{
+		let data = [{
 			name: 'one',
 			label: "docker",
 			api: {},
@@ -88,8 +88,8 @@ var mongoStub = {
 				type: "container",
 				selected: "container.docker.remote"
 			},
-			"restriction":{
-				"1231231":{
+			"restriction": {
+				"1231231": {
 					"eastus": {
 						group: "grouptest",
 						network: "networktest"
@@ -109,7 +109,7 @@ var mongoStub = {
 	switchConnection: function (soajs) {
 	}
 };
-var soajs = {
+let soajs = {
 	registry: {
 		coreDB: {
 			provision: {}
@@ -117,13 +117,13 @@ var soajs = {
 	},
 	log: {
 		debug: function (data) {
-
+		
 		},
 		error: function (data) {
-
+		
 		},
 		info: function (data) {
-
+		
 		}
 	},
 	inputmaskData: {},
@@ -136,11 +136,10 @@ var soajs = {
 						return {
 							errors: []
 						};
-					}
-					else {
+					} else {
 						//invalid
 						return {
-							errors: [{ error: 'msg' }]
+							errors: [{error: 'msg'}]
 						};
 					}
 				}
@@ -148,22 +147,22 @@ var soajs = {
 		}
 	}
 };
-var req = {
+let req = {
 	query: {},
 	soajs: soajs
 };
 
 describe("testing lib/cloud/infra/index.js", function () {
-	var BL = {
+	let BL = {
 		model: mongoStub
 	};
-
+	
 	after(function (done) {
 		sinon.restore();
 		sinon.restore(clusters);
 		done();
 	});
-
+	
 	describe("testing init", function () {
 		
 		it("No Model Requested", function (done) {
@@ -197,7 +196,7 @@ describe("testing lib/cloud/infra/index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success list - 2", function (done) {
 			req.soajs.inputmaskData = {
 				technology: 'docker',
@@ -210,7 +209,7 @@ describe("testing lib/cloud/infra/index.js", function () {
 		});
 		
 	});
-
+	
 	describe("get", function () {
 		it("Success list", function (done) {
 			infra.get(config, req.soajs, deployer, function (error, body) {
@@ -218,16 +217,16 @@ describe("testing lib/cloud/infra/index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("activate", function () {
-
+		
 		it("Success activate", function (done) {
 			req.soajs.inputmaskData.name = 'docker';
 			req.soajs.inputmaskData.label = 'kube';
 			req.soajs.inputmaskData.api = {"data": true};
 			infra.activate(config, req.soajs, deployer, function (error, body) {
-				assert.ifError(error)
-				assert.ok(body)
+				assert.ifError(error);
+				assert.ok(body);
 				done();
 			});
 		});
@@ -251,11 +250,11 @@ describe("testing lib/cloud/infra/index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("modify", function () {
-
+		
 		it("Success modify", function (done) {
 			infra.modify(config, req.soajs, deployer, function (error, body) {
 				assert.ifError(error);
@@ -263,14 +262,14 @@ describe("testing lib/cloud/infra/index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("deactivate", function () {
-
+		
 		it("Success deactivate", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				var data = {
+				let data = {
 					deployments: []
 				};
 				cb(null, data);
@@ -279,18 +278,18 @@ describe("testing lib/cloud/infra/index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("removeDeployment", function () {
-
+		
 		it("Success removeDeployment", function (done) {
 			req.soajs.inputmaskData = {
 				id: 'id',
 				deploymentId: '1'
 			};
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				var data = {
+				let data = {
 					deployments: [{
 						id: '1',
 						name: '1'
@@ -302,136 +301,136 @@ describe("testing lib/cloud/infra/index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("deployCluster", function () {
-
+		
 		it("Success deployCluster", function (done) {
 			sinon
 				.stub(clusters, 'deployCluster')
 				.yields(null, {});
-
+			
 			infra.deployCluster(config, req, req.soajs, deployer, function (error, body) {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("getDeployClusterStatus", function () {
-
+		
 		it("Success getDeployClusterStatus", function (done) {
 			sinon
 				.stub(clusters, 'getDeployClusterStatus')
 				.yields(null, {});
-
+			
 			infra.getDeployClusterStatus(config, req, req.soajs, deployer, function (error, body) {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("getDNSInfo", function () {
-
+		
 		it("Success getDNSInfo", function (done) {
 			sinon
 				.stub(clusters, 'getDNSInfo')
 				.yields(null, {});
-
+			
 			infra.getDNSInfo(config, req, req.soajs, deployer, function (error, body) {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("scaleCluster", function () {
-
+		
 		it("Success scaleCluster", function (done) {
 			sinon
 				.stub(clusters, 'scaleCluster')
 				.yields(null, {});
-
+			
 			infra.scaleCluster(config, req.soajs, deployer, function (error, body) {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("getCluster", function () {
-
+		
 		it("Success getCluster", function (done) {
 			sinon
 				.stub(clusters, 'getCluster')
 				.yields(null, {});
-
+			
 			infra.getCluster(config, req.soajs, deployer, function (error, body) {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("updateCluster", function () {
-
+		
 		it("Success updateCluster", function (done) {
 			sinon
 				.stub(clusters, 'updateCluster')
 				.yields(null, {});
-
+			
 			infra.updateCluster(config, req.soajs, deployer, function (error, body) {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("removeEnvFromDeployment", function () {
-
+		
 		it("Success removeEnvFromDeployment", function (done) {
 			sinon
 				.stub(clusters, 'removeEnvFromDeployment')
 				.yields(null, {});
-
+			
 			infra.removeEnvFromDeployment(config, req, req.soajs, deployer, function (error, body) {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("removeTemplate", function () {
-
+		
 		it("Success removeTemplate", function (done) {
 			infra.removeTemplate(config, req.soajs, deployer, function (error, body) {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("addTemplate", function () {
-
+		
 		it("Error addTemplate", function (done) {
 			infra.model.findEntry = function (soajs, opts, cb) {
-				var InfraRecord = {
+				let InfraRecord = {
 					templates: []
 				};
 				cb(null, InfraRecord);
 			};
-
+			
 			infra.addTemplate(config, req.soajs, function (error, body) {
 				done();
 			});
 		});
-
+		
 		it("Success addTemplate", function (done) {
 			soajs.inputmaskData.template = {};
 			infra.model.findEntry = function (soajs, opts, cb) {
-				var InfraRecord = {
+				let InfraRecord = {
 					_id: '123',
 					templates: ['local']
 				};
@@ -441,12 +440,12 @@ describe("testing lib/cloud/infra/index.js", function () {
 			infra.model.countEntries = function (soajs, opts, cb) {
 				cb(null, 1);
 			};
-
+			
 			infra.addTemplate(config, req.soajs, function (error, body) {
 				done();
 			});
 		});
-
+		
 		it("Success addTemplate -2 ", function (done) {
 			soajs.inputmaskData.template = {
 				inputs: ['1'],
@@ -455,7 +454,7 @@ describe("testing lib/cloud/infra/index.js", function () {
 				driver: 'aws'
 			};
 			infra.model.findEntry = function (soajs, opts, cb) {
-				var InfraRecord = {
+				let InfraRecord = {
 					_id: '123',
 					templates: ['local']
 				};
@@ -465,18 +464,18 @@ describe("testing lib/cloud/infra/index.js", function () {
 			infra.model.countEntries = function (soajs, opts, cb) {
 				cb(null, 1);
 			};
-
+			
 			infra.addTemplate(config, req.soajs, function (error, body) {
 				done();
 			});
-		})
+		});
 	});
-
+	
 	describe("updateTemplate", function () {
-
+		
 		it("Success updateTemplate", function (done) {
 			infra.model.findEntry = function (soajs, opts, cb) {
-				var templateRecord = {
+				let templateRecord = {
 					location: 'local'
 				};
 				cb(null, templateRecord);
@@ -485,15 +484,15 @@ describe("testing lib/cloud/infra/index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("uploadTemplate", function () {
-
+		
 		it("Error uploadTemplate", function (done) {
-
+			
 			infra.model.findEntry = function (soajs, opts, cb) {
-				var InfraRecord = {
+				let InfraRecord = {
 					_id: '123',
 					templates: ['external']
 				};
@@ -503,36 +502,36 @@ describe("testing lib/cloud/infra/index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("uploadTemplateInputsFile", function () {
-
+		
 		it("Success uploadTemplateInputsFile", function (done) {
 			infra.model.findEntry = function (soajs, opts, cb) {
-				var InfraRecord = {
+				let InfraRecord = {
 					_id: '123',
 					templates: ['external']
 				};
 				cb(null, InfraRecord);
 			};
-
+			
 			infra.uploadTemplateInputsFile(config, req, soajs, deployer, function (error, body) {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("downloadTemplate", function () {
-
+		
 		it("Success downloadTemplate", function (done) {
-			var res = {};
+			let res = {};
 			infra.downloadTemplate(config, req.soajs, deployer, res, function (error, body) {
 				done();
 			});
 		});
-
+		
 	});
 	
 	describe("onboardVM", function () {

@@ -1,11 +1,11 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/catalog/index.js');
-var catalog;
-var config = helper.requireModule('./config.js');
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const utils = helper.requireModule('./lib/catalog/index.js');
+let catalog;
+const config = helper.requireModule('./config.js');
 
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -37,7 +37,7 @@ var mongoStub = {
 		return true;
 	}
 };
-var req = {
+let req = {
 	soajs: {
 		registry: {
 			coreDB: {

@@ -1,22 +1,22 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/daemons/index.js');
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const utils = helper.requireModule('./lib/daemons/index.js');
 
 describe("testing lib/daemons/index.js", function () {
 	
-	var daemon;
-	var req = {
+	let daemon;
+	let req = {
 		soajs: {
 			inputmaskData: {},
-			registry :{
-				coreDB :{
-					provision : {}
+			registry: {
+				coreDB: {
+					provision: {}
 				}
 			}
 		}
 	};
-	var res = {};
+	let res = {};
 	
 	it("Init model", function (done) {
 		

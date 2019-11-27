@@ -1,10 +1,10 @@
 "use strict";
 
-var collName = "products";
+const collName = "products";
 const async = require("async");
 const soajsLib = require("soajs.core.libs");
 
-var methods = {
+let methods = {
 	"findEntries": function (soajs, model, opts, cb) {
 		opts.collection = collName;
 		model.findEntries(soajs, opts, (err, records) => {

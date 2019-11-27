@@ -1,20 +1,20 @@
 "use strict";
 const sinon = require('sinon');
 
-var assert = require("assert");
-var testHelper = require("../../../../helper.js");
-var config = testHelper.requireModule('./config.js');
+const assert = require("assert");
+const testHelper = require("../../../../helper.js");
+const config = testHelper.requireModule('./config.js');
 
-var infraTemplates = testHelper.requireModule('./lib/cloud/infra/templates.js');
-var deployer = testHelper.deployer;
+const infraTemplates = testHelper.requireModule('./lib/cloud/infra/templates.js');
+const deployer = testHelper.deployer;
 
-var mongoStub = {
+let mongoStub = {
 	getDb: function (soajs) {
-        return {
-            ObjectId: function (id) {
-                return {message :"Argument passed in must be a single String of 12 bytes or a string of 24 hex characters"};
-            }
-        };
+		return {
+			ObjectId: function (id) {
+				return {message: "Argument passed in must be a single String of 12 bytes or a string of 24 hex characters"};
+			}
+		};
 	},
 	checkForMongo: function (soajs) {
 		return true;
@@ -26,12 +26,12 @@ var mongoStub = {
 		cb(null, {});
 	},
 	findEntries: function (soajs, opts, cb) {
-		var data = [];
-		if (opts.collection && opts .collection === 'templates') {
+		let data = [];
+		if (opts.collection && opts.collection === 'templates') {
 			data = [{
-				inputs : '[{}]',
-				display : '[{}]',
-				imfv : '[{}]',
+				inputs: '[{}]',
+				display: '[{}]',
+				imfv: '[{}]',
 			}];
 		}
 		cb(null, data);
@@ -39,11 +39,11 @@ var mongoStub = {
 	removeEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
-    countEntries: function (soajs, opts, cb) {
+	countEntries: function (soajs, opts, cb) {
 		if (opts.collection === 'templates') {
-            cb(null, 0);
+			cb(null, 0);
 		} else {
-            cb(null, true);
+			cb(null, true);
 		}
 	},
 	saveEntry: function (soajs, opts, cb) {
@@ -51,11 +51,11 @@ var mongoStub = {
 	},
 	switchConnection: function (soajs) {
 	},
-    insertEntry: function (soajs, {}, cb) {
-		return cb(null, true)
+	insertEntry: function (soajs, {}, cb) {
+		return cb(null, true);
 	},
 };
-var soajs = {
+let soajs = {
 	validator: {
 		Validator: function () {
 			return {
@@ -65,11 +65,10 @@ var soajs = {
 						return {
 							errors: []
 						};
-					}
-					else {
+					} else {
 						//invalid
 						return {
-							errors: [{ error: 'msg' }]
+							errors: [{error: 'msg'}]
 						};
 					}
 				}
@@ -94,20 +93,20 @@ var soajs = {
 	},
 	// uracDriver: {},
 	inputmaskData: {
-        templateId : 'test'
+		templateId: 'test'
 	},
 	tenant: {}
 };
-var BL = {
+let BL = {
 	model: mongoStub
 };
-var req = {
+let req = {
 	soajs: soajs,
 	query: {}
 };
 
 describe("testing lib/cloud/infra/templates.js", function () {
-	var envRecord = {
+	let envRecord = {
 		code: 'DEV',
 		deployer: {
 			"type": "container",
@@ -146,7 +145,7 @@ describe("testing lib/cloud/infra/templates.js", function () {
 						username: 'username',
 						password: 'password'
 					},
-					servers: [{ port: 123, host: 'host' }]
+					servers: [{port: 123, host: 'host'}]
 				},
 				oneCluster: {
 					servers: []
@@ -161,20 +160,20 @@ describe("testing lib/cloud/infra/templates.js", function () {
 		services: {},
 		profile: ''
 	};
-
+	
 	before(function (done) {
 		sinon.restore();
 		done();
 	});
-
+	
 	describe("getLocalTemplates", function () {
-		var oneInfra = {};
+		let oneInfra = {};
 		it("Success getLocalTemplates", function (done) {
 			infraTemplates.getLocalTemplates(soajs, config, BL, oneInfra, function (error, body) {
 				done();
 			});
 		});
-
+		
 		it("Success getLocalTemplates - 2", function (done) {
 			oneInfra._id = '123';
 			oneInfra.templatesTypes = ['local'];
@@ -182,29 +181,29 @@ describe("testing lib/cloud/infra/templates.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("getRemoteTemplates", function () {
-		var oneInfra = {};
-		var options = {};
+		let oneInfra = {};
+		let options = {};
 		it("Error getRemoteTemplates", function (done) {
 			infraTemplates.getRemoteTemplates(soajs, config, BL, oneInfra, deployer, options, function (error, body) {
 				done();
 			});
 		});
-
+		
 		it("Success getRemoteTemplates", function (done) {
 			oneInfra.templatesTypes = ['external'];
 			infraTemplates.getRemoteTemplates(soajs, config, BL, oneInfra, deployer, options, function (error, body) {
 				done();
 			});
 		});
-
+		
 		it("Success getRemoteTemplates - 2", function (done) {
 			oneInfra.templatesTypes = ['external'];
 			deployer.execute = function (driverOptions, method, methodOptions, cb) {
-				var templates = [{
+				let templates = [{
 					type: 'inputsAndDisplay'
 				}];
 				return cb(null, templates);
@@ -225,31 +224,31 @@ describe("testing lib/cloud/infra/templates.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success getRemoteTemplates - 3", function (done) {
 			oneInfra.templatesTypes = ['external'];
 			deployer.execute = function (driverOptions, method, methodOptions, cb) {
 				let templates = [];
 				if (method === 'getFiles') {
-                    templates = [{
-                    	id : '1234',
-                        type: 'template',
-                        name : 'test',
-						tags : {
-                        	template : '1234',
+					templates = [{
+						id: '1234',
+						type: 'template',
+						name: 'test',
+						tags: {
+							template: '1234',
 						}
-                    }];
-				} else if(method === 'downloadFile') {
-                    templates = {
-                    	content : {
-                    		"test" : 'test'
+					}];
+				} else if (method === 'downloadFile') {
+					templates = {
+						content: {
+							"test": 'test'
 						}
-					}
+					};
 				}
 				return cb(null, templates);
 			};
 			soajs.inputmaskData.fullTemplate = 'test';
-
+			
 			infraTemplates.getRemoteTemplates(soajs, config, BL, oneInfra, deployer, options, function (error, body) {
 				deployer.execute = function (driverOptions, method, methodOptions, cb) {
 					if (method === 'listKubeServices') {
@@ -266,56 +265,56 @@ describe("testing lib/cloud/infra/templates.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("removeTemplate", function () {
 		it("Success removeTemplate", function (done) {
 			infraTemplates.removeTemplate(config, soajs, BL, deployer, function (error, body) {
 				done();
 			});
 		});
-
+		
 		it("Success removeTemplate -2", function (done) {
 			infraTemplates.removeTemplate(config, soajs, BL, deployer, function (error, body) {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("addTemplate", function () {
 		it("Success addTemplate", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				var InfraRecord = {
-					'_id' : 1234,
-					templates : 'local'
+				let InfraRecord = {
+					'_id': 1234,
+					templates: 'local'
 				};
 				cb(null, InfraRecord);
 			};
-				soajs.inputmaskData = {
-                    template : {
-                        textMode : true,
-                        driver : {},
-                        technology : 'vm',
-                        name : 'test',
-                        description : 'test',
-                        display : {},
-                        imfv : {},
-                        inputs : {},
-                        tags : {},
-					}
-				};
+			soajs.inputmaskData = {
+				template: {
+					textMode: true,
+					driver: {},
+					technology: 'vm',
+					name: 'test',
+					description: 'test',
+					display: {},
+					imfv: {},
+					inputs: {},
+					tags: {},
+				}
+			};
 			infraTemplates.addTemplate(config, soajs, BL, function (error, body) {
 				done();
 			});
 		});
-
+		
 		it("Success addTemplate - 2", function (done) {
 			mongoStub.count = function (soajs, opts, cb) {
-				var InfraRecord = {
+				let InfraRecord = {
 					templates: [],
-                    '_id' : 1234,
+					'_id': 1234,
 				};
 				cb(null, InfraRecord);
 			};
@@ -323,22 +322,22 @@ describe("testing lib/cloud/infra/templates.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("updateTemplate", function () {
 		it("Success updateTemplate", function (done) {
 			infraTemplates.updateTemplate(config, soajs, BL, function (error, body) {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("uploadTemplate", function () {
 		it("Success uploadTemplate", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				var InfraRecord = {
+				let InfraRecord = {
 					templates: []
 				};
 				cb(null, InfraRecord);
@@ -347,9 +346,9 @@ describe("testing lib/cloud/infra/templates.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("uploadTemplateInputsFile", function () {
 		it("Success uploadTemplateInputsFile", function (done) {
 			soajs.inputmaskData.inputs = [
@@ -363,35 +362,35 @@ describe("testing lib/cloud/infra/templates.js", function () {
 				}
 			];
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				var InfraRecord = {
+				let InfraRecord = {
 					_id: '123',
 					templates: ['external']
 				};
 				cb(null, InfraRecord);
 			};
-
+			
 			infraTemplates.uploadTemplateInputsFile(config, req, soajs, BL, deployer, function (error, body) {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("downloadTemplate", function () {
-		var res = {};
+		let res = {};
 		it("Success downloadTemplate", function (done) {
 			soajs.inputmaskData.templateId = '123';
-            soajs.inputmaskData.returnRawData = true;
-            deployer.execute = function (opts, method, {}, cb) {
-            	if (method === 'getFiles') {
-            		return cb(null, [{
-            			type : 'template',
-						id : '123'
-					}])
+			soajs.inputmaskData.returnRawData = true;
+			deployer.execute = function (opts, method, {}, cb) {
+				if (method === 'getFiles') {
+					return cb(null, [{
+						type: 'template',
+						id: '123'
+					}]);
 				} else {
-            		return cb(null, {
-						content : {}
-					})
+					return cb(null, {
+						content: {}
+					});
 				}
 			};
 			infraTemplates.downloadTemplate(config, soajs, BL, deployer, res, function (error, body) {
@@ -399,54 +398,54 @@ describe("testing lib/cloud/infra/templates.js", function () {
 			});
 		});
 	});
-
+	
 	describe("buildTemplateRawRecord", function () {
-		var res = {};
+		let res = {};
 		it("Success buildTemplateRawRecord", function (done) {
-            soajs.inputmaskData.templateId = 'test';
-
+			soajs.inputmaskData.templateId = 'test';
+			
 			let downloadedFiles = [{
-                fileName : 'test',
-                data : {
-                    inputs : [],
-                    display : [],
-                    imfv : [],
-                },
-				record : {
-                    id : '',
-                    name : '',
-                    description : '',
-                    driver : '',
-                    technology : '',
-                    tags : '',
+				fileName: 'test',
+				data: {
+					inputs: [],
+					display: [],
+					imfv: [],
+				},
+				record: {
+					id: '',
+					name: '',
+					description: '',
+					driver: '',
+					technology: '',
+					tags: '',
 				},
 			}];
 			infraTemplates.buildTemplateRawRecord(soajs, downloadedFiles);
 			done();
 		});
-
+		
 		it("Success buildTemplateRawRecord", function (done) {
-            soajs.inputmaskData.templateId = 'test';
+			soajs.inputmaskData.templateId = 'test';
 			let downloadedFiles = [{
-                fileName : 'comp__test',
-                data : {
-                	inputs : [],
-                    display : [],
-                	imfv : [],
-                },
-				record : {
-                    id : '',
-                    name : '',
-                    description : '',
-                    driver : '',
-                    technology : '',
-                    tags : '',
+				fileName: 'comp__test',
+				data: {
+					inputs: [],
+					display: [],
+					imfv: [],
+				},
+				record: {
+					id: '',
+					name: '',
+					description: '',
+					driver: '',
+					technology: '',
+					tags: '',
 				},
 			}];
 			infraTemplates.buildTemplateRawRecord(soajs, downloadedFiles);
 			done();
 		});
-
+		
 	});
-
+	
 });

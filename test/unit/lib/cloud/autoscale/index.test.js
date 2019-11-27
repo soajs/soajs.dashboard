@@ -1,12 +1,12 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../../helper.js");
-var utils = helper.requireModule('./lib/cloud/autoscale/index.js');
+const assert = require("assert");
+const helper = require("../../../../helper.js");
+const utils = helper.requireModule('./lib/cloud/autoscale/index.js');
 
-var autoscale = {};
-var config = helper.requireModule('./config');
+let autoscale = {};
+const config = helper.requireModule('./config');
 
-var req = {
+let req = {
 	soajs: {
 		registry: {
 			coreDB: {
@@ -15,23 +15,23 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-
+			
 			},
 			error: function (data) {
-
+			
 			},
 			info: function (data) {
-
+			
 			}
 		},
 		inputmaskData: {}
 	}
 };
 
-var mongoStub = {
+let mongoStub = {
 	findEntry: function (soajs, opts, cb) {
-		var entry = {};
-		if(opts.collection === 'environment' && opts.conditions && opts.conditions.code === 'DEV') {
+		let entry = {};
+		if (opts.collection === 'environment' && opts.conditions && opts.conditions.code === 'DEV') {
 			entry = {
 				_id: '',
 				code: 'DEV',
@@ -73,42 +73,40 @@ var mongoStub = {
 					}
 				},
 				services: {
-					config :{
-
-					}
+					config: {}
 				}
 			};
 		}
-
+		
 		cb(null, entry);
 	},
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
 	switchConnection: function (soajs) {
-
+	
 	}
 };
 
-var deployer = helper.deployer;
+let deployer = helper.deployer;
 
-describe("testing lib/cloud/autoscale/index.js", function() {
+describe("testing lib/cloud/autoscale/index.js", function () {
 	describe("testing init", function () {
-
+		
 		it("No Model Requested", function (done) {
 			utils.init(null, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Model Name not found", function (done) {
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Init", function (done) {
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
@@ -118,15 +116,15 @@ describe("testing lib/cloud/autoscale/index.js", function() {
 			});
 		});
 	});
-
-	describe("testing set", function() {
-
-		before("init", function(done) {
+	
+	describe("testing set", function () {
+		
+		before("init", function (done) {
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.services = [
-				{ id: 'srv1', type: 'deployment' },
-				{ id: 'srv2', type: 'deployment' },
-				{ id: 'srv3', type: 'deployment' }
+				{id: 'srv1', type: 'deployment'},
+				{id: 'srv2', type: 'deployment'},
+				{id: 'srv3', type: 'deployment'}
 			];
 			req.soajs.inputmaskData.autoscaler = {
 				replicas: {
@@ -139,10 +137,10 @@ describe("testing lib/cloud/autoscale/index.js", function() {
 					}
 				}
 			};
-
-			deployer.getAutoscaler = function(options, cb) {
-				var autoscaler = {};
-				if(options.params.id === 'srv1') {
+			
+			deployer.getAutoscaler = function (options, cb) {
+				let autoscaler = {};
+				if (options.params.id === 'srv1') {
 					//srv1 autoscaler identical to the one provided as input
 					autoscaler = {
 						replicas: {
@@ -155,8 +153,7 @@ describe("testing lib/cloud/autoscale/index.js", function() {
 							}
 						}
 					};
-				}
-				else if(options.params.id === 'srv2') {
+				} else if (options.params.id === 'srv2') {
 					//srv2 autoscaler is custom
 					autoscaler = {
 						replicas: {
@@ -169,23 +166,22 @@ describe("testing lib/cloud/autoscale/index.js", function() {
 							}
 						}
 					};
-				}
-				else if(options.params.id === 'srv3') {
+				} else if (options.params.id === 'srv3') {
 					//srv3 does not have an autoscaler
 					autoscaler = {};
 				}
-
+				
 				return cb(null, autoscaler);
 			};
-
+			
 			done();
 		});
-
-		it("success - update autoscalers", function(done) {
+		
+		it("success - update autoscalers", function (done) {
 			req.soajs.inputmaskData.action = 'update';
 			deployer = {
-				execute: function(driverOptions, method, methodOptions, cb) {
-					if (method === 'getAutoscaler'){
+				execute: function (driverOptions, method, methodOptions, cb) {
+					if (method === 'getAutoscaler') {
 						return cb(null, {
 							replicas: {
 								min: 1,
@@ -197,36 +193,33 @@ describe("testing lib/cloud/autoscale/index.js", function() {
 								}
 							}
 						});
-					}
-					else if (method === 'updateAutoscaler') {
+					} else if (method === 'updateAutoscaler') {
 						return cb(null, true);
-					}
-					else if (method === 'createAutoscaler') {
+					} else if (method === 'createAutoscaler') {
 						return cb(null, true);
-					}
-					else if (method === 'deleteAutoscaler') {
+					} else if (method === 'deleteAutoscaler') {
 						return cb(null, true);
 					}
 				},
-			}
-			autoscale.set(config, req.soajs, deployer, function(error) {
+			};
+			autoscale.set(config, req.soajs, deployer, function (error) {
 				assert.ifError(error);
 				done();
 			});
 		});
-
-		it("success - turn off autoscalers", function(done) {
+		
+		it("success - turn off autoscalers", function (done) {
 			req.soajs.inputmaskData.action = 'turnOff';
-			autoscale.set(config, req.soajs, deployer, function(error) {
+			autoscale.set(config, req.soajs, deployer, function (error) {
 				assert.ifError(error);
 				done();
 			});
 		});
-
-		it("fail - update autoscalers, driver error", function(done) {
+		
+		it("fail - update autoscalers, driver error", function (done) {
 			deployer = {
-				execute: function(driverOptions, method, methodOptions, cb) {
-					if (method === 'getAutoscaler'){
+				execute: function (driverOptions, method, methodOptions, cb) {
+					if (method === 'getAutoscaler') {
 						return cb(null, {
 							replicas: {
 								min: 1,
@@ -238,31 +231,28 @@ describe("testing lib/cloud/autoscale/index.js", function() {
 								}
 							}
 						});
-					}
-					else if (method === 'updateAutoscaler') {
+					} else if (method === 'updateAutoscaler') {
 						return cb({code: 677, error: "Unable to update autoscaler"}, 677);
-					}
-					else if (method === 'createAutoscaler') {
+					} else if (method === 'createAutoscaler') {
 						return cb(null, true);
-					}
-					else if (method === 'deleteAutoscaler') {
+					} else if (method === 'deleteAutoscaler') {
 						return cb(null, true);
 					}
 				},
-			}
-
+			};
+			
 			req.soajs.inputmaskData.action = 'update';
-			autoscale.set(config, req.soajs, deployer, function(error) {
+			autoscale.set(config, req.soajs, deployer, function (error) {
 				assert.ok(error);
 				assert.deepEqual(error.code, 677);
 				done();
 			});
 		});
-
-		it("fail - turn off autoscalers, driver error", function(done) {
+		
+		it("fail - turn off autoscalers, driver error", function (done) {
 			deployer = {
-				execute: function(driverOptions, method, methodOptions, cb) {
-					if (method === 'getAutoscaler'){
+				execute: function (driverOptions, method, methodOptions, cb) {
+					if (method === 'getAutoscaler') {
 						return cb(null, {
 							replicas: {
 								min: 1,
@@ -274,28 +264,27 @@ describe("testing lib/cloud/autoscale/index.js", function() {
 								}
 							}
 						});
-					}
-					else if (method === 'deleteAutoscaler') {
+					} else if (method === 'deleteAutoscaler') {
 						return cb({code: 678, error: "Unable to delete autoscaler"}, 678);
 					}
 				},
-			}
-
+			};
+			
 			req.soajs.inputmaskData.action = 'turnOff';
-			autoscale.set(config, req.soajs, deployer, function(error) {
+			autoscale.set(config, req.soajs, deployer, function (error) {
 				assert.ok(error);
 				assert.deepEqual(error.code, 678);
 				done();
 			});
 		});
-
+		
 	});
-
-	describe("testing updateEnvAutoscaleConfig", function() {
-
-		it("success - will update environment autoscale config and set deployer record", function(done) {
-			mongoStub.findEntry = function(soajs, opts, cb) {
-				var entry = {
+	
+	describe("testing updateEnvAutoscaleConfig", function () {
+		
+		it("success - will update environment autoscale config and set deployer record", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				let entry = {
 					_id: '',
 					code: 'DEV',
 					dbs: {},
@@ -304,10 +293,10 @@ describe("testing lib/cloud/autoscale/index.js", function() {
 						"selected": "container.kubernetes.local"
 					}
 				};
-
+				
 				cb(null, entry);
 			};
-
+			
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.autoscale = {
 				replicas: {
@@ -320,15 +309,15 @@ describe("testing lib/cloud/autoscale/index.js", function() {
 					}
 				}
 			};
-			autoscale.updateEnvAutoscaleConfig(config, req.soajs, function(error, result) {
+			autoscale.updateEnvAutoscaleConfig(config, req.soajs, function (error, result) {
 				assert.ok(result);
 				done();
 			});
 		});
-
-		it("success - will update environment autoscale config", function(done) {
-			mongoStub.findEntry = function(soajs, opts, cb) {
-				var entry = {
+		
+		it("success - will update environment autoscale config", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				let entry = {
 					_id: '',
 					code: 'DEV',
 					dbs: {},
@@ -369,10 +358,10 @@ describe("testing lib/cloud/autoscale/index.js", function() {
 						}
 					}
 				};
-
+				
 				cb(null, entry);
 			};
-
+			
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.autoscale = {
 				replicas: {
@@ -385,12 +374,12 @@ describe("testing lib/cloud/autoscale/index.js", function() {
 					}
 				}
 			};
-
-			autoscale.updateEnvAutoscaleConfig(config, req.soajs, function(error, result) {
+			
+			autoscale.updateEnvAutoscaleConfig(config, req.soajs, function (error, result) {
 				assert.ok(result);
 				done();
 			});
 		});
-
+		
 	});
 });

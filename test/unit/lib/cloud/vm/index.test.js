@@ -2,9 +2,9 @@
 const assert = require("assert");
 const helper = require("../../../../helper.js");
 const utils = helper.requireModule('./lib/cloud/vm/index.js');
-var services;
+let services;
 const config = helper.requireModule('./config.js');
-var req = {
+let req = {
 	soajs: {
 		servicesConfig: {
 			dashboard: {}
@@ -16,19 +16,19 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-
+			
 			},
 			error: function (data) {
-
+			
 			},
 			info: function (data) {
-
+			
 			}
 		},
 		inputmaskData: {}
 	}
 };
-var mongoStub = {
+let mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
 	},
@@ -69,10 +69,10 @@ var mongoStub = {
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
 	},
-	switchConnection: function(soajs) {
+	switchConnection: function (soajs) {
 	}
 };
-var envRecord = {
+let envRecord = {
 	_id: '',
 	code: 'DEV',
 	deployer: {
@@ -110,8 +110,8 @@ var envRecord = {
 			ports: {}
 		}
 	},
-	"restriction":{
-		"1231231":{
+	"restriction": {
+		"1231231": {
 			"eastus": {
 				group: "grouptest",
 				network: "networktest"
@@ -119,7 +119,7 @@ var envRecord = {
 		}
 	}
 };
-var infraRecord = {
+let infraRecord = {
 	"_id": '5b28c5edb53002d7b3b1f0cf',
 	"api": {
 		"clientId": "1",
@@ -154,8 +154,8 @@ var infraRecord = {
 		}
 	]
 };
-var vm_layers = {
-	"_id":'5b2cea680669cf2c142e6407',
+let vm_layers = {
+	"_id": '5b2cea680669cf2c142e6407',
 	"infraId": "5b28c5edb53002d7b3b1f0cf",
 	"layerName": "tester-ragheb",
 	"infraCodeTemplate": "dynamic-template-loadBalancer",
@@ -165,47 +165,47 @@ var vm_layers = {
 	"v": 1,
 	"ts": 1529670248943
 };
-var deployer = helper.deployer;
+let deployer = helper.deployer;
 
 deployer.runCommand = function (opts, command, options, cb) {
-
+	
 	return cb(null, true);
 };
 
 describe("testing lib/cloud/vm/index.js", function () {
-
+	
 	before(() => {
 		mongoStub.findEntry = function (soajs, opts, cb) {
-				if (opts.collection === 'environment') {
-					return cb(null, envRecord);
-				}else if (opts.collection === 'infra') {
-					return cb(null, infraRecord);
-				}else if (opts.collection === 'vm_layers') {
-					return cb(null, vm_layers);
-				}else{
-					return cb(null, {});
-				}
-			};
+			if (opts.collection === 'environment') {
+				return cb(null, envRecord);
+			} else if (opts.collection === 'infra') {
+				return cb(null, infraRecord);
+			} else if (opts.collection === 'vm_layers') {
+				return cb(null, vm_layers);
+			} else {
+				return cb(null, {});
+			}
+		};
 	});
 	describe("testing init", function () {
-
+		
 		it("No Model Requested", function (done) {
 			utils.init(null, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Model Name not found", function (done) {
-
+			
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Init", function (done) {
-
+			
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
 				services = body;
@@ -213,11 +213,11 @@ describe("testing lib/cloud/vm/index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("list Vms", function () {
-
+		
 		it("Success", function (done) {
 			req.soajs.inputmaskData.env = 'tester';
 			deployer.execute = function (opts, command, options, cb) {
@@ -358,9 +358,9 @@ describe("testing lib/cloud/vm/index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("runCommand", function () {
-
+		
 		it("Success", function (done) {
 			req.soajs.inputmaskData.env = 'tester';
 			req.soajs.inputmaskData.vmName = 'tester-vm';
@@ -381,7 +381,7 @@ describe("testing lib/cloud/vm/index.js", function () {
 				}
 			};
 			req.soajs.inputmaskData.infra = infraRecord;
-
+			
 			services.runCommand(config, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				assert.ifError(error);

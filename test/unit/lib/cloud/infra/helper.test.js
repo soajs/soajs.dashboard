@@ -1,10 +1,10 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../../helper.js");
-var helpers = helper.requireModule('./lib/cloud/infra/helper.js');
-var config = helper.requireModule('./config.js');
+const assert = require("assert");
+const helper = require("../../../../helper.js");
+const helpers = helper.requireModule('./lib/cloud/infra/helper.js');
+const config = helper.requireModule('./config.js');
 
-var mongoStub = {
+let mongoStub = {
 	getDb: function () {
 		return {
 			ObjectId: function (id) {
@@ -35,7 +35,7 @@ var mongoStub = {
 };
 
 describe("testing lib/cloud/infra/helper.js", function () {
-	var soajs = {
+	let soajs = {
 		validator: {
 			Validator: function () {
 				return {
@@ -45,11 +45,10 @@ describe("testing lib/cloud/infra/helper.js", function () {
 							return {
 								errors: []
 							};
-						}
-						else {
+						} else {
 							//invalid
 							return {
-								errors: [{ error: 'msg' }]
+								errors: [{error: 'msg'}]
 							};
 						}
 					}
@@ -76,12 +75,12 @@ describe("testing lib/cloud/infra/helper.js", function () {
 		inputmaskData: {},
 		tenant: {}
 	};
-	var BL = {
+	let BL = {
 		model: mongoStub
 	};
 	
 	describe("getCommonData", function () {
-		var cbMain = function () {
+		let cbMain = function () {
 			
 		};
 		

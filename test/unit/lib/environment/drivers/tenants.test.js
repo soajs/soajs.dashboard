@@ -1250,5 +1250,5 @@ describe("testing tenants.js", function () {
 				done();
 			});
 		});
-	})
+	});
 });

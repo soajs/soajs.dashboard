@@ -1,7 +1,7 @@
 "use strict";
-var assert = require("assert");
-var helper = require("../../../helper.js");
-var apiBuilderIndex = helper.requireModule('./lib/apiBuilder/index.js');
+const assert = require("assert");
+const helper = require("../../../helper.js");
+const apiBuilderIndex = helper.requireModule('./lib/apiBuilder/index.js');
 
 let mongoStub = {
 	checkForMongo: function (soajs) {

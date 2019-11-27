@@ -1,15 +1,15 @@
 "use strict";
-var assert = require("assert");
-var testHelper = require("../../../../helper.js");
-var module = testHelper.requireModule('./lib/cloud/infra/index.js');
-var vmModule = testHelper.requireModule('./lib/cloud/vm/index.js');
-var vm;
-var config = testHelper.requireModule('./config.js');
-var deployer = testHelper.deployer;
+const assert = require("assert");
+const testHelper = require("../../../../helper.js");
+const module = testHelper.requireModule('./lib/cloud/infra/index.js');
+const vmModule = testHelper.requireModule('./lib/cloud/vm/index.js');
+let vm;
+const config = testHelper.requireModule('./config.js');
+const deployer = testHelper.deployer;
 
 const sinon = require('sinon');
 
-var soajs = {
+let soajs = {
 	registry: {
 		coreDB: {
 			provision: {}
@@ -17,13 +17,13 @@ var soajs = {
 	},
 	log: {
 		debug: function (data) {
-
+		
 		},
 		error: function (data) {
-
+		
 		},
 		info: function (data) {
-
+		
 		}
 	},
 	inputmaskData: {},
@@ -36,11 +36,10 @@ var soajs = {
 						return {
 							errors: []
 						};
-					}
-					else {
+					} else {
 						//invalid
 						return {
-							errors: [{ error: 'msg' }]
+							errors: [{error: 'msg'}]
 						};
 					}
 				}
@@ -48,7 +47,7 @@ var soajs = {
 		}
 	}
 };
-var infraRecord = {
+let infraRecord = {
 	"_id": '5b28c5edb53002d7b3b1f0cf',
 	"api": {
 		"clientId": "1",
@@ -83,8 +82,8 @@ var infraRecord = {
 		}
 	]
 };
-var vm_layers = {
-	"_id":'5b2cea680669cf2c142e6407',
+let vm_layers = {
+	"_id": '5b2cea680669cf2c142e6407',
 	"infraId": "5b28c5edb53002d7b3b1f0cf",
 	"layerName": "tester-ragheb",
 	"infraCodeTemplate": "dynamic-template-loadBalancer",
@@ -94,7 +93,7 @@ var vm_layers = {
 	"v": 1,
 	"ts": 1529670248943
 };
-var template = {
+let template = {
 	"type": "_infra",
 	"infra": "5b28c5edb53002d7b3b1f0cf",
 	"location": "local",
@@ -106,7 +105,7 @@ var template = {
 	"description": "sdasdasdas",
 	"content": "provider"
 };
-var envRecord = {
+let envRecord = {
 	code: 'DEV',
 	deployer: {
 		"type": "container",
@@ -139,7 +138,7 @@ var envRecord = {
 		}
 	},
 	restriction: {
-		"5b28c5edb53002d7b3b1f0cf":{
+		"5b28c5edb53002d7b3b1f0cf": {
 			"eastus": {
 				group: "grouptest",
 				network: "networktest"
@@ -153,7 +152,7 @@ var envRecord = {
 					username: 'username',
 					password: 'password'
 				},
-				servers: [{ port: 123, host: 'host' }]
+				servers: [{port: 123, host: 'host'}]
 			},
 			oneCluster: {
 				servers: []
@@ -168,11 +167,11 @@ var envRecord = {
 	services: {},
 	profile: ''
 };
-var req = {
+let req = {
 	query: {},
 	soajs: soajs
 };
-var mongoStub = {
+let mongoStub = {
 	getDb: function () {
 	},
 	checkForMongo: function (soajs) {
@@ -185,29 +184,25 @@ var mongoStub = {
 		return cb(null, soajs.inputmaskData.id);
 	},
 	validateCustomId: function (soajs, id, cb) {
-		if (typeof cb === 'function'){
+		if (typeof cb === 'function') {
 			return cb(null, id);
-		}
-		else {
+		} else {
 			return id;
 		}
 	},
 	findEntry: function (soajs, opts, cb) {
-		if (opts.collection === 'environment'){
+		if (opts.collection === 'environment') {
 			cb(null, envRecord);
-		}
-		else if (opts.collection === 'infra'){
+		} else if (opts.collection === 'infra') {
 			cb(null, infraRecord);
-		}
-		else if (opts.collection === 'templates'){
+		} else if (opts.collection === 'templates') {
 			cb(null, template);
-		}
-		else if (opts.collection === 'vm_layers'){
+		} else if (opts.collection === 'vm_layers') {
 			cb(null, vm_layers);
 		}
 	},
 	findEntries: function (soajs, opts, cb) {
-		var data = [{
+		let data = [{
 			name: 'one'
 		}];
 		cb(null, data);
@@ -226,29 +221,29 @@ var mongoStub = {
 	},
 	switchConnection: function (soajs) {
 	},
-	closeConnection: function (soajs){
+	closeConnection: function (soajs) {
 		return true;
 	}
 };
 describe("testing lib/cloud/infra/index.js", function () {
-
+	
 	after(function (done) {
 		sinon.restore();
 		done();
 	});
-
+	
 	describe("testing init", function () {
 		before(() => {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
 					return cb(null, envRecord);
-				}else if (opts.collection === 'infra') {
+				} else if (opts.collection === 'infra') {
 					return cb(null, infraRecord);
-				}else if (opts.collection === 'templates') {
+				} else if (opts.collection === 'templates') {
 					return cb(null, template);
-				}else if (opts.collection === 'vm_layers') {
+				} else if (opts.collection === 'vm_layers') {
 					return cb(null, vm_layers);
-				}else{
+				} else {
 					return cb(null, {});
 				}
 			};
@@ -259,14 +254,14 @@ describe("testing lib/cloud/infra/index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Model Name not found", function (done) {
 			module.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Init", function (done) {
 			module.init('mongo', function (error, body) {
 				assert.ok(body);
@@ -275,9 +270,9 @@ describe("testing lib/cloud/infra/index.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("deployVM", function () {
 		it("success ", function (done) {
 			req.soajs.inputmaskData = {
@@ -339,12 +334,16 @@ describe("testing lib/cloud/infra/index.js", function () {
 			};
 			
 			vm.deployVM(config, req, req.soajs, deployer, function (error, body) {
-				assert.deepEqual(body, {"id": "123", "name": req.soajs.inputmaskData.layerName, "infraId": req.soajs.inputmaskData.infraId});
+				assert.deepEqual(body, {
+					"id": "123",
+					"name": req.soajs.inputmaskData.layerName,
+					"infraId": req.soajs.inputmaskData.infraId
+				});
 				done();
 			});
 		});
 	});
-
+	
 	describe("updateVM1", function () {
 		it("success ", function (done) {
 			req.soajs.inputmaskData = {
@@ -406,19 +405,23 @@ describe("testing lib/cloud/infra/index.js", function () {
 				return cb(null, {stateFileData: {}, render: {}});
 			};
 			vm.updateVM(config, req, req.soajs, deployer, function (error, body) {
-				assert.deepEqual(body, {"id": "123", "name": req.soajs.inputmaskData.layerName, "infraId": req.soajs.inputmaskData.infraId});
+				assert.deepEqual(body, {
+					"id": "123",
+					"name": req.soajs.inputmaskData.layerName,
+					"infraId": req.soajs.inputmaskData.infraId
+				});
 				done();
 			});
 		});
 	});
-
+	
 	describe("getDeployVMStatus", function () {
 		it("success ", function (done) {
 			req.soajs.inputmaskData = {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"technology": "vm",
 				"id": "123",
-				"layerName" : "tester-ragheb",
+				"layerName": "tester-ragheb",
 				"env": "dashboard",
 			};
 			sinon
@@ -430,10 +433,10 @@ describe("testing lib/cloud/infra/index.js", function () {
 								"name": "tester-vm",
 								"layer": "tester-ragheb",
 							}
-						])
+						]);
 					}
 				});
-					
+			
 			vm.getDeployVMStatus(config, req, req.soajs, deployer, function (error, body) {
 				sinon.restore(vmModule);
 				assert.ok(body);
@@ -448,7 +451,7 @@ describe("testing lib/cloud/infra/index.js", function () {
 				"infraId": "5b28c5edb53002d7b3b1f0cf",
 				"technology": "vm",
 				"id": "123",
-				"layerName" : "tester-ragheb",
+				"layerName": "tester-ragheb",
 				"env": "dashboard",
 			};
 			
