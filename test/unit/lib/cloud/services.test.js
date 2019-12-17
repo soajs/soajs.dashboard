@@ -99,9 +99,7 @@ deployer.listServices = function (options, cb) {
 			env: [
 				'NODE_ENV=production',
 				'SOAJS_ENV=dev',
-				'SOAJS_PROFILE=/opt/soajs/FILES/profiles/profile.js',
 				'SOAJS_SRV_AUTOREGISTERHOST=true',
-				'SOAJS_SRV_MEMORY=200',
 				'SOAJS_GIT_OWNER=soajs',
 				'SOAJS_GIT_BRANCH=develop',
 				'SOAJS_GIT_COMMIT=67a61db0955803cddf94672b0192be28f47cf280',

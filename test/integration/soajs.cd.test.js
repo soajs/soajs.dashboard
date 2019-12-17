@@ -396,25 +396,9 @@ describe("testing hosts deployment", function () {
 									"type": "computed",
 									"value": "$SOAJS_ENV"
 								},
-								"SOAJS_PROFILE": {
-									"type": "static",
-									"value": "/opt/soajs/FILES/profiles/profile.js"
-								},
 								"SOAJS_SRV_AUTOREGISTERHOST": {
 									"type": "static",
 									"value": "true"
-								},
-								"SOAJS_SRV_MEMORY": {
-									"type": "computed",
-									"value": "$SOAJS_SRV_MEMORY"
-								},
-								"SOAJS_GC_NAME": {
-									"type": "computed",
-									"value": "$SOAJS_GC_NAME"
-								},
-								"SOAJS_GC_VERSION": {
-									"type": "computed",
-									"value": "$SOAJS_GC_VERSION"
 								},
 								"SOAJS_GIT_OWNER": {
 									"type": "computed",
@@ -439,38 +423,6 @@ describe("testing hosts deployment", function () {
 								"SOAJS_DEPLOY_HA": {
 									"type": "computed",
 									"value": "$SOAJS_DEPLOY_HA"
-								},
-								"SOAJS_HA_NAME": {
-									"type": "computed",
-									"value": "$SOAJS_HA_NAME"
-								},
-								"SOAJS_MONGO_NB": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_NB"
-								},
-								"SOAJS_MONGO_PREFIX": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_PREFIX"
-								},
-								"SOAJS_MONGO_RSNAME": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_RSNAME"
-								},
-								"SOAJS_MONGO_AUTH_DB": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_AUTH_DB"
-								},
-								"SOAJS_MONGO_SSL": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_SSL"
-								},
-								"SOAJS_MONGO_IP": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_IP_N"
-								},
-								"SOAJS_MONGO_PORT": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_PORT_N"
 								}
 							},
 							"cmd": {
@@ -558,10 +510,6 @@ describe("testing hosts deployment", function () {
 								"SOAJS_DEPLOY_HA": {
 									"type": "computed",
 									"value": "$SOAJS_DEPLOY_HA"
-								},
-								"SOAJS_HA_NAME": {
-									"type": "computed",
-									"value": "$SOAJS_HA_NAME"
 								}
 								
 							},
@@ -611,25 +559,9 @@ describe("testing hosts deployment", function () {
 									"type": "computed",
 									"value": "$SOAJS_ENV"
 								},
-								"SOAJS_PROFILE": {
-									"type": "static",
-									"value": "/opt/soajs/FILES/profiles/profile.js"
-								},
 								"SOAJS_SRV_AUTOREGISTERHOST": {
 									"type": "static",
 									"value": "true"
-								},
-								"SOAJS_SRV_MEMORY": {
-									"type": "computed",
-									"value": "$SOAJS_SRV_MEMORY"
-								},
-								"SOAJS_GC_NAME": {
-									"type": "computed",
-									"value": "$SOAJS_GC_NAME"
-								},
-								"SOAJS_GC_VERSION": {
-									"type": "computed",
-									"value": "$SOAJS_GC_VERSION"
 								},
 								"SOAJS_GIT_OWNER": {
 									"type": "computed",
@@ -654,38 +586,6 @@ describe("testing hosts deployment", function () {
 								"SOAJS_DEPLOY_HA": {
 									"type": "computed",
 									"value": "$SOAJS_DEPLOY_HA"
-								},
-								"SOAJS_HA_NAME": {
-									"type": "computed",
-									"value": "$SOAJS_HA_NAME"
-								},
-								"SOAJS_MONGO_NB": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_NB"
-								},
-								"SOAJS_MONGO_PREFIX": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_PREFIX"
-								},
-								"SOAJS_MONGO_RSNAME": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_RSNAME"
-								},
-								"SOAJS_MONGO_AUTH_DB": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_AUTH_DB"
-								},
-								"SOAJS_MONGO_SSL": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_SSL"
-								},
-								"SOAJS_MONGO_IP": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_IP_N"
-								},
-								"SOAJS_MONGO_PORT": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_PORT_N"
 								}
 							},
 							"cmd": {

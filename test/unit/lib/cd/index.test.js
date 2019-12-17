@@ -294,14 +294,6 @@ describe("testing services.js", function () {
 									"SOAJS_DEPLOY_HA": {
 										"type": "computed",
 										"value": "$SOAJS_DEPLOY_HA"
-									},
-									"SOAJS_HA_NAME": {
-										"type": "computed",
-										"value": "$SOAJS_HA_NAME"
-									},
-									"SOAJS_MONGO_PORT": {
-										"type": "computed",
-										"value": "$SOAJS_MONGO_PORT_N"
 									}
 								},
 								"cmd": {

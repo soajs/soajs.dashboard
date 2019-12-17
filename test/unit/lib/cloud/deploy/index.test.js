@@ -218,10 +218,6 @@ describe("testing lib/cloud/deploy/index.js", function () {
 								"SOAJS_SRV_AUTOREGISTERHOST": {
 									"type": "static",
 									"value": "true"
-								},
-								"SOAJS_MONGO_PORT": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_PORT_N"
 								}
 							},
 							"cmd": {
@@ -375,10 +371,6 @@ describe("testing lib/cloud/deploy/index.js", function () {
 								"SOAJS_SRV_AUTOREGISTERHOST": {
 									"type": "static",
 									"value": "true"
-								},
-								"SOAJS_MONGO_PORT": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_PORT_N"
 								}
 							},
 							"cmd": {
@@ -526,10 +518,6 @@ describe("testing lib/cloud/deploy/index.js", function () {
 								"SOAJS_SRV_AUTOREGISTERHOST": {
 									"type": "static",
 									"value": "true"
-								},
-								"SOAJS_MONGO_PORT": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_PORT_N"
 								}
 							},
 							"cmd": {
@@ -1213,10 +1201,6 @@ describe("testing lib/cloud/deploy/index.js", function () {
 								"SOAJS_SRV_AUTOREGISTERHOST": {
 									"type": "static",
 									"value": "true"
-								},
-								"SOAJS_MONGO_PORT": {
-									"type": "computed",
-									"value": "$SOAJS_MONGO_PORT_N"
 								},
 								"SOAJS_NX_API_HTTPS": {
 									"type": "static",

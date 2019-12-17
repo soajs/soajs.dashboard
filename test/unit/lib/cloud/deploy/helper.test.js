@@ -230,19 +230,9 @@ describe("testing lib/cloud/deploy/helper.js", function () {
                                     type: 'static', value: 'production'
                                 },
                                 SOAJS_ENV: {type: 'computed', value: '$SOAJS_ENV'},
-                                SOAJS_PROFILE: {
-                                    type: 'static',
-                                    value: '/opt/soajs/FILES/profiles/profile.js'
-                                },
                                 SOAJS_SRV_AUTOREGISTERHOST: {type: 'static', value: 'true'},
-                                SOAJS_SRV_MEMORY: {type: 'computed', value: '$SOAJS_SRV_MEMORY'},
-                                SOAJS_GC_NAME: {type: 'computed', value: '$SOAJS_GC_NAME'},
-                                SOAJS_GC_VERSION: {type: 'computed', value: '$SOAJS_GC_VERSION'},
                                 SOAJS_GIT_BRANCH: {type: 'computed', value: '$SOAJS_GIT_BRANCH'},
                                 SOAJS_GIT_COMMIT: {type: 'computed', value: '$SOAJS_GIT_COMMIT'},
-                                SOAJS_HA_NAME: {type: 'computed', value: '$SOAJS_HA_NAME'},
-                                SOAJS_MONGO_AUTH_DB: {type: 'computed', value: '$SOAJS_MONGO_AUTH_DB'},
-                                SOAJS_MONGO_SSL: {type: 'computed', value: '$SOAJS_MONGO_SSL'},
                                 SOAJS_DEPLOY_ACC: {type: 'static', value: 'true'},
                                 NEW_VAR: {
                                     type: 'userInput'
