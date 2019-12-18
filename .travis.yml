@@ -51,6 +51,11 @@ jobs:
     - export MAJOR_VERSION=$(echo ${PACKAGE_VERSION} | awk -F. '{ print $1 }')
     - echo Package version ${PACKAGE_VERSION}
     - echo Major version ${MAJOR_VERSION}
+
+    - git config --local user.name ${GIT_USER}
+    - git config --local user.email ${GIT_EMAIL}
+    - git tag ${PACKAGE_VERSION}
+
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
     - docker build -t soajsorg/dashboard .
@@ -61,3 +66,9 @@ jobs:
     - docker tag soajsorg/dashboard:latest soajsorg/dashboard:${MAJOR_VERSION}.x
 
     - docker push soajsorg/dashboard
+    deploy:
+      on:
+        all_branches: true
+      provider: releases
+      api_key: ${GIT_TOKEN}
+      skip_cleanup: true
