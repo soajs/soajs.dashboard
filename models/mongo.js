@@ -162,8 +162,6 @@ var lib = {
 			//favorite collection
 			soajs.mongoDb.createIndex(favoriteCollection, { userid: 1, type: 1 }, errorLogger);
 			
-			//settings collection
-			soajs.mongoDb.createIndex(settingsCollection, { release: 1}, { unique: true }, errorLogger);
 			soajs.log.debug("Indexes Updated!");
 			firstRun = false;
 		}
