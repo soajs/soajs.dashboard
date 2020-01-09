@@ -191,15 +191,7 @@ var methods = {
 			set['$set']['repos.$.' + options.property] = options.value;
 		}
 		opts.fields = set;
-		model.updateEntry(soajs, opts, (err, response)=>{
-			console.log(err);
-			console.log(response);
-			if (err){
-				return cb(err);
-			}
-			
-			return cb(null, response);
-		});
+		model.updateEntry(soajs, opts, cb);
 	}
 };
 
