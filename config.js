@@ -6394,6 +6394,14 @@ module.exports = {
 						"type": "string",
 						"format": "alphanumeric"
 					}
+				},
+				"type": {
+					"source": ["query.type"],
+					"required": false,
+					"validation": {
+						"type": "string",
+						"enum": ["granular"]
+					}
 				}
 			},
 			
