@@ -223,7 +223,7 @@ var config = {
 							"type": "object",
 							"required": false,
 							"patternProperties": {
-								"^[0-9]+$": {"type": "string", "required": true, "minLength": 5}
+								"^[0-9]+$": {"type": "string", "required": true, "minLength": 1}
 							}
 						},
 						{
@@ -280,7 +280,7 @@ var config = {
 							"type": "object",
 							"required": false,
 							"patternProperties": {
-								"^[0-9]+$": {"type": "string", "required": true, "minLength": 5}
+								"^[0-9]+$": {"type": "string", "required": true, "minLength": 1}
 							}
 						},
 						{
