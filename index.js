@@ -1903,7 +1903,23 @@ service.init(function () {
 			checkConnection(BL, req, res, function () {
 				BL.streamLogs(config, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
+					if (req.soajs.inputmask.follow){
+						//TODO: check if it is a stream, if yes
+						// set header to stream
+						data.on("data", (chunk)=>{
+							//keep on witting to the response
+							res.write(chunk);
+						});
+						data.on("error", (error)=>{
+							res.end(error.msg);
+						});
+						data.on("close", ()=>{
+							res.end();
+						});
+						
+					} else {
+						return res.json(req.soajs.buildResponse(error, data));
+					}
 				});
 			});
 		});
