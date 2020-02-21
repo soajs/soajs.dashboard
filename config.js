@@ -6775,6 +6775,13 @@ module.exports = {
 						"enum": ['redeploy', 'rebuild']
 					}
 				},
+				"recipe": {
+					"source": ['body.recipe'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
 				"custom": {
 					"source": ["body.custom"],
 					"required": false,
