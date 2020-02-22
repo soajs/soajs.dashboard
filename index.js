@@ -1909,7 +1909,8 @@ service.init(function () {
 						let headObj = {
 							"connection": "keep-alive",
 							"cache-control": "no-cache",
-							"Content-Type": "text/event-stream"
+							"Content-Type": "text/event-stream",
+							"X-Accel-Buffering": "no"
 						};
 						if (!res.headersSent) {
 							res.writeHead(200, headObj);
