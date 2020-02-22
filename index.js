@@ -1904,7 +1904,6 @@ service.init(function () {
 				BL.streamLogs(config, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					if (req.soajs.inputmaskData.follow) {
-						console.log(data)
 						//TODO: check if it is a stream, if yes
 						// set header to stream
 						let headObj = {
@@ -1917,7 +1916,7 @@ service.init(function () {
 						}
 						data.on("data", (chunk) => {
 							//keep on witting to the response
-							res.write(chunk.toString());
+							res.write(chunk);
 						});
 						data.on("error", (error) => {
 							req.soajs.log.error(error);
