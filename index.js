@@ -1921,10 +1921,10 @@ service.init(function () {
 						});
 						data.on("error", (error) => {
 							req.soajs.log.error(error);
-							res.end();
+							res.end("---- Connection terminated!");
 						});
 						data.on("end", () => {
-							res.end();
+							res.end("---- Connection ended!");
 						});
 						
 					} else {
