@@ -114,11 +114,11 @@ var service = new soajs.server.service(config);
 
 function checkMyAccess(req, res, cb) {
 	if (!req.soajs.uracDriver || !req.soajs.uracDriver.getProfile()) {
-		return res.jsonp(req.soajs.buildResponse({ "code": 601, "msg": config.errors[601] }));
+		return res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
 	}
 	var myTenant = req.soajs.uracDriver.getProfile().tenant;
 	if (!myTenant || !myTenant.id) {
-		return res.jsonp(req.soajs.buildResponse({ "code": 608, "msg": config.errors[608] }));
+		return res.jsonp(req.soajs.buildResponse({"code": 608, "msg": config.errors[608]}));
 	}
 	else {
 		req.soajs.inputmaskData.id = myTenant.id.toString();
@@ -130,7 +130,7 @@ function initBLModel(req, res, BLModule, modelName, cb) {
 	BLModule.init(modelName, function (error, BL) {
 		if (error) {
 			req.soajs.log.error(error);
-			return res.json(req.soajs.buildResponse({ "code": 407, "msg": config.errors[407] }));
+			return res.json(req.soajs.buildResponse({"code": 407, "msg": config.errors[407]}));
 		}
 		else {
 			return cb(BL);
@@ -140,13 +140,13 @@ function initBLModel(req, res, BLModule, modelName, cb) {
 
 function checkConnection(BL, req, res, cb) {
 	if (!BL.model.initConnection(req.soajs)) {
-		return res.json(req.soajs.buildResponse({ "code": 600, "msg": config.errors[600] }));
+		return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
 	}
 	return cb();
 }
 
 service.init(function () {
-
+	
 	/**
 	 * returns all templates that can be used to deploy an environment
 	 * @param {String} API route
@@ -162,7 +162,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * run upgrade process on old template schemas
 	 * @param {String} API route
@@ -178,7 +178,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * remove a selected template by id
 	 * @param {String} API route
@@ -194,20 +194,20 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Upload a templated environment or post its correction inputs
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.post("/templates/import", function(req, res) {
+	service.post("/templates/import", function (req, res) {
 		initBLModel(req, res, dashboardBL.templates.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-
+				
 				//correct template
 				let imfvClone = soajsLib.utils.cloneObj(req.soajs.inputmaskData);
 				delete req.soajs.inputmaskData.soajs_project;
-				if(req.soajs.inputmaskData && Object.keys(req.soajs.inputmaskData).length > 0){
+				if (req.soajs.inputmaskData && Object.keys(req.soajs.inputmaskData).length > 0) {
 					req.soajs.inputmaskData = imfvClone;
 					//correct the template inputs
 					BL.correct(config, req, res, deployer, function (error, data) {
@@ -216,7 +216,7 @@ service.init(function () {
 					});
 				}
 				//import new template
-				else{
+				else {
 					req.soajs.inputmaskData = imfvClone;
 					//unzip file and process template first time
 					BL.import(config, req, res, deployer, function (error, data) {
@@ -227,7 +227,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Generate and export a templated environment
 	 * @param {String} API route
@@ -236,14 +236,14 @@ service.init(function () {
 	service.post("/templates/export", function (req, res) {
 		initBLModel(req, res, dashboardBL.templates.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				if(req.soajs.inputmaskData.id){
+				if (req.soajs.inputmaskData.id) {
 					//download template
 					BL.download(config, req, res, deployer, function (error, data) {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
 					});
 				}
-				else{
+				else {
 					//generate and download new template
 					BL.export(config, req, res, deployer, function (error, data) {
 						BL.model.closeConnection(req.soajs);
@@ -253,11 +253,11 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Environments features
 	 */
-
+	
 	/**
 	 * Add a new environment
 	 * @param {String} API route
@@ -273,7 +273,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete an environment
 	 * @param {String} API route
@@ -289,7 +289,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update an existing environment
 	 * @param {String} API route
@@ -305,7 +305,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List all environments
 	 * @param {String} API route
@@ -321,7 +321,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get a specific environment
 	 * @param {String} API route
@@ -337,7 +337,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get a specific environment Deployment Status
 	 * @param {String} API route
@@ -353,7 +353,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update environment tenant security key
 	 * @param {String} API route
@@ -370,7 +370,7 @@ service.init(function () {
 					else if (process.env.SOAJS_DEPLOY_HA) {
 						initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
 							let env = req.soajs.inputmaskData.envCode;
-
+							
 							let controllerService;
 							if (process.env.SOAJS_DEPLOY_HA === 'kubernetes') {
 								controllerService = env.toLowerCase() + "-controller-v1";
@@ -378,7 +378,7 @@ service.init(function () {
 							else {
 								controllerService = env.toLowerCase() + "-controller";
 							}
-
+							
 							req.soajs.inputmaskData = {
 								type: "service",
 								serviceName: "controller",
@@ -403,7 +403,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List environment databases
 	 * @param {String} API route
@@ -419,7 +419,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete environment database
 	 * @param {String} API route
@@ -435,7 +435,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add environment database
 	 * @param {String} API route
@@ -451,7 +451,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update environment database
 	 * @param {String} API route
@@ -467,7 +467,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update environment's database prefix
 	 * @param {String} API route
@@ -483,7 +483,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * return Profile of the current environment
 	 * @param {String} API route
@@ -533,25 +533,25 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List resources
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
 	service.get("/resources", function (req, res) {
-        initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (serviceBL) {
-            initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
-                checkConnection(BL, req, res, function () {
-                    BL.listResources(config, req, res, serviceBL, function (error, data) {
-                        BL.model.closeConnection(req.soajs);
-                        return res.json(req.soajs.buildResponse(error, data));
-                    });
-                });
-            });
-        });
+		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (serviceBL) {
+			initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+				checkConnection(BL, req, res, function () {
+					BL.listResources(config, req, res, serviceBL, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
+				});
+			});
+		});
 	});
-
+	
 	/**
 	 * Get one resource
 	 * @param {String} API route
@@ -567,7 +567,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Upgrade Resources
 	 * @param {String} API route
@@ -583,38 +583,38 @@ service.init(function () {
 			});
 		});
 	});
-
-    service.post("/resources", function (req, res) {
-        initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (serviceBL) {
-            initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
-                checkConnection(BL, req, res, function () {
-                    BL.addEditResource(config, req, res, serviceBL, function (error, data) {
-                        BL.model.closeConnection(req.soajs);
-                        return res.json(req.soajs.buildResponse(error, data));
-                    });
-                });
-            });
-        });
-    });
-
+	
+	service.post("/resources", function (req, res) {
+		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (serviceBL) {
+			initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+				checkConnection(BL, req, res, function () {
+					BL.addEditResource(config, req, res, serviceBL, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
+				});
+			});
+		});
+	});
+	
 	/**
 	 * Delete a resource
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
 	service.delete("/resources", function (req, res) {
-        initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (serviceBL) {
-            initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
-                checkConnection(BL, req, res, function () {
-                    BL.deleteResource(config, req, res, serviceBL, function (error, data) {
-                        BL.model.closeConnection(req.soajs);
-                        return res.json(req.soajs.buildResponse(error, data));
-                    });
-                });
-            });
-        });
+		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (serviceBL) {
+			initBLModel(req, res, dashboardBL.resources.module, dbModel, function (BL) {
+				checkConnection(BL, req, res, function () {
+					BL.deleteResource(config, req, res, serviceBL, function (error, data) {
+						BL.model.closeConnection(req.soajs);
+						return res.json(req.soajs.buildResponse(error, data));
+					});
+				});
+			});
+		});
 	});
-
+	
 	/**
 	 * Update a resource
 	 * @param {String} API route
@@ -630,7 +630,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get resources deploy configuration
 	 * @param {String} API route
@@ -646,7 +646,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Set resources deploy configuration
 	 * @param {String} API route
@@ -662,7 +662,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List custom registry entries
 	 * @param {String} API route
@@ -678,7 +678,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get a custom registry entry
 	 * @param {String} API route
@@ -694,7 +694,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add a custom registry entry
 	 * @param {String} API route
@@ -710,7 +710,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update a custom registry entry
 	 * @param {String} API route
@@ -726,7 +726,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Upgrade custom registry entries from old schema to new one
 	 * @param {String} API route
@@ -742,7 +742,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete a custom registry entry
 	 * @param {String} API route
@@ -758,7 +758,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List enviornment platforms
 	 * @param {String} API route
@@ -774,7 +774,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update deployer configuration
 	 * @param {String} API route
@@ -813,11 +813,11 @@ service.init(function () {
 		});
 	});
 	
-
+	
 	/**
 	 * Products features
 	 */
-
+	
 	/**
 	 * Add a new product
 	 * @param {String} API route
@@ -833,7 +833,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete an existing product
 	 * @param {String} API route
@@ -849,7 +849,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update an existing product
 	 * @param {String} API route
@@ -881,7 +881,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List available products
 	 * @param {String} API route
@@ -913,7 +913,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get a specific product
 	 * @param {String} API route
@@ -961,7 +961,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List all product packages
 	 * @param {String} API route
@@ -977,7 +977,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add a new product package
 	 * @param {String} API route
@@ -993,7 +993,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update a product package
 	 * @param {String} API route
@@ -1009,7 +1009,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete a product package
 	 * @param {String} API route
@@ -1025,11 +1025,11 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Tenants features
 	 */
-
+	
 	/**
 	 * Add a new tenant
 	 * @param {String} API route
@@ -1045,7 +1045,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete an existing tenant
 	 * @param {String} API route
@@ -1061,7 +1061,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List available tenants
 	 * @param {String} API route
@@ -1093,7 +1093,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update an existing tenant
 	 * @param {String} API route
@@ -1109,7 +1109,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get a specific tenant
 	 * @param {String} API route
@@ -1125,7 +1125,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List tenant oauth configuration
 	 * @param {String} API route
@@ -1141,7 +1141,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add new tenant oauth configuration
 	 * @param {String} API route
@@ -1157,7 +1157,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update existing oauth configuration
 	 * @param {String} API route
@@ -1173,7 +1173,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete oauth configuration
 	 * @param {String} API route
@@ -1189,7 +1189,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List tenant oauth users
 	 * @param {String} API route
@@ -1205,7 +1205,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete tenant oauth user
 	 * @param {String} API route
@@ -1221,7 +1221,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add new tenant oauth user
 	 * @param {String} API route
@@ -1237,7 +1237,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update tenant oauth user
 	 * @param {String} API route
@@ -1253,7 +1253,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List tenant applications
 	 * @param {String} API route
@@ -1269,7 +1269,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add a new tenant application
 	 * @param {String} API route
@@ -1285,7 +1285,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update an existing tenant application
 	 * @param {String} API route
@@ -1301,7 +1301,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete a tenant application
 	 * @param {String} API route
@@ -1317,7 +1317,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get tenant ACL
 	 * @param {String} API route
@@ -1333,7 +1333,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add a new application key
 	 * @param {String} API route
@@ -1349,7 +1349,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List all tenant application keys
 	 * @param {String} API route
@@ -1365,7 +1365,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete application key
 	 * @param {String} API route
@@ -1381,7 +1381,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List application external keys for a specific key
 	 * @param {String} API route
@@ -1397,7 +1397,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add a new application external key for a specific key
 	 * @param {String} API route
@@ -1413,7 +1413,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update an existing application external key
 	 * @param {String} API route
@@ -1429,7 +1429,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete an existing application external key
 	 * @param {String} API route
@@ -1445,7 +1445,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update the service configuration for a specific key
 	 * @param {String} API route
@@ -1461,7 +1461,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List service configuration for a specific key
 	 * @param {String} API route
@@ -1477,11 +1477,11 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Dashboard Keys
 	 */
-
+	
 	/**
 	 * List external keys with dashboard access
 	 * @param {String} API route
@@ -1497,11 +1497,11 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Hosts features
 	 */
-
+	
 	/**
 	 * List existing hosts in manual deployment mode
 	 * @param {String} API route
@@ -1517,7 +1517,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Perform awareness stat operation on a controller host deployed in manual mode
 	 * @param {String} API route
@@ -1525,7 +1525,7 @@ service.init(function () {
 	 */
 	service.get("/hosts/awareness", function (req, res) {
 		let model = {
-			controllersModel :  dashboardBL.controllers.model
+			controllersModel: dashboardBL.controllers.model
 		};
 		initBLModel(req, res, dashboardBL.hosts.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
@@ -1588,7 +1588,7 @@ service.init(function () {
 	/**
 	 * High Availability Cloud features
 	 */
-
+	
 	/**
 	 * Get all available nodes
 	 * @param {String} API route
@@ -1604,7 +1604,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add a new node
 	 * @param {String} API route
@@ -1620,7 +1620,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Remove an existing node
 	 * @param {String} API route
@@ -1636,7 +1636,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update the role or availability of an existing node
 	 * @param {String} API route
@@ -1652,7 +1652,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List all services per environment deployed in container mode
 	 * @param {String} API route
@@ -1668,7 +1668,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Deploy a new SOAJS service
 	 * @param {String} API route
@@ -1684,7 +1684,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Deploy a plugin, such as heapster
 	 * @param {String} API route
@@ -1700,7 +1700,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Check if resource is deployed
 	 * @param {String} API route
@@ -1716,7 +1716,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Create a virtual machine layer
 	 * @param {String} API route
@@ -1732,7 +1732,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List all Vms deployed in a region
 	 * @param {String} API route
@@ -1748,7 +1748,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete a virtual machine
 	 * @param {String} API route
@@ -1764,7 +1764,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete a virtual machine layer
 	 * @param {String} API route
@@ -1780,7 +1780,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Redeploy a running service
 	 * @param {String} API route
@@ -1796,7 +1796,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update a virtual machine layer
 	 * @param {String} API route
@@ -1812,7 +1812,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get a virtual machine layer status
 	 * @param {String} API route
@@ -1828,7 +1828,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Scale an existing service deployment
 	 * @param {String} API route
@@ -1844,7 +1844,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete an existing deployment
 	 * @param {String} API route
@@ -1860,7 +1860,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Perform maintenance operations on services deployed in container mode
 	 * @param {String} API route
@@ -1876,7 +1876,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Perform maintenance operations to a virtual machine
 	 * @param {String} API route
@@ -1892,7 +1892,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get container logs
 	 * @param {String} API route
@@ -1903,12 +1903,68 @@ service.init(function () {
 			checkConnection(BL, req, res, function () {
 				BL.streamLogs(config, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
-					return res.json(req.soajs.buildResponse(error, data));
+					if (req.soajs.inputmaskData.follow) {
+						//TODO: check if it is a stream, if yes
+						// set header to stream
+						let headObj = {
+							"connection": "keep-alive",
+							"cache-control": "no-cache",
+							"Content-Type": "text/event-stream",
+							"X-Accel-Buffering": "no"
+						};
+						if (!res.headersSent) {
+							res.writeHead(200, headObj);
+						}
+						let keepConnectionAlive = true;
+						data.on("data", (chunk) => {
+							//keep on witting to the response
+							res.write(chunk);
+						});
+						data.on("error", (error) => {
+							req.soajs.log.error(error);
+							keepConnectionAlive = false;
+							res.end("---- Connection terminated!");
+						});
+						data.on("end", () => {
+							keepConnectionAlive = false;
+							res.end("---- Connection ended, no more logs!");
+						});
+						req.on("error", (error) => {
+							req.soajs.log.error(error);
+							keepConnectionAlive = false;
+						});
+						req.on("timeout", () => {
+							keepConnectionAlive = false;
+						});
+						res.on("error", (error) => {
+							req.soajs.log.error(error);
+							keepConnectionAlive = false;
+						});
+						res.on("close", () => {
+							keepConnectionAlive = false;
+						});
+						
+						let keepAlive = () => {
+							res.write(' ');
+							if (keepConnectionAlive) {
+								setTimeout(keepAlive, 30000);
+							} else {
+								data.destroy();
+								req.soajs.log.debug("LOG keepAlive done, log stream destroyed successfully");
+							}
+						};
+						if (keepConnectionAlive) {
+							setTimeout(keepAlive, 30000);
+						}
+						
+					} else {
+						return res.json(req.soajs.buildResponse(error, data));
+					}
 				});
 			});
 		});
 	});
-
+	
 	/**
 	 *Get virtual machine logs
 	 * @param {String} API route
@@ -1924,8 +1980,8 @@ service.init(function () {
 			});
 		});
 	});
-
-
+	
+	
 	/**
 	 * Autoscale one or more services
 	 * @param {String} API route
@@ -1941,7 +1997,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Configure environment autoscaling
 	 * @param {String} API route
@@ -1957,7 +2013,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List available namespaces
 	 * @param {String} API route
@@ -1973,7 +2029,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete a namespace
 	 * @param {String} API route
@@ -1989,7 +2045,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get Services Metrics
 	 * @param {String} API route
@@ -1997,7 +2053,7 @@ service.init(function () {
 	 */
 	service.get("/cloud/metrics/services", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.metrics.module, dbModel, function (BL) {
-
+			
 			checkConnection(BL, req, res, function () {
 				BL.getServicesMetrics(config, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
@@ -2006,7 +2062,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get Nodes Metrics ( kubernetes only)
 	 * @param {String} API route
@@ -2014,7 +2070,7 @@ service.init(function () {
 	 */
 	service.get("/cloud/metrics/nodes", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.metrics.module, dbModel, function (BL) {
-
+			
 			checkConnection(BL, req, res, function () {
 				BL.getNodesMetrics(config, req.soajs, deployer, function (error, data) {
 					BL.model.closeConnection(req.soajs);
@@ -2023,11 +2079,11 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Catalog Recipes features
 	 */
-
+	
 	/**
 	 * List catalogs
 	 * @param {String} API route
@@ -2043,7 +2099,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add new catalog
 	 * @param {String} API route
@@ -2059,7 +2115,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update a catalog
 	 * @param {String} API route
@@ -2075,7 +2131,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete a catalog
 	 * @param {String} API route
@@ -2091,7 +2147,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get a catalog
 	 * @param {String} API route
@@ -2107,7 +2163,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Upgrade Catalog Recipes to latest versions
 	 * @param {String} API route
@@ -2123,11 +2179,11 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Continuous Delivery Features
 	 */
-
+	
 	/**
 	 * Get a CD configuration
 	 * @param {String} API route
@@ -2143,7 +2199,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get Get Update Notification Ledger
 	 * @param {String} API route
@@ -2151,7 +2207,7 @@ service.init(function () {
 	 */
 	service.get("/cd/updates", function (req, res) {
 		initBLModel(req, res, dashboardBL.cd.module, dbModel, function (BL) {
-
+			
 			checkConnection(BL, req, res, function () {
 				BL.getUpdates(config, req, deployer, dashboardBL.cd.helper, dashboardBL.cloud.service.module, function (error, data) {
 					BL.model.closeConnection(req.soajs);
@@ -2160,7 +2216,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Save a CD configuration
 	 * @param {String} API route
@@ -2176,7 +2232,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Pause CD in an environment
 	 * @param {String} API route
@@ -2192,7 +2248,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Trigger CD deploy operation
 	 * @param {String} API route
@@ -2208,7 +2264,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Take action based on ledger notification
 	 * @param {String} API route
@@ -2216,7 +2272,7 @@ service.init(function () {
 	 */
 	service.put("/cd/action", function (req, res) {
 		initBLModel(req, res, dashboardBL.cd.module, dbModel, function (BL) {
-
+			
 			checkConnection(BL, req, res, function () {
 				BL.cdAction(config, req, deployer, dashboardBL.cd.helper, function (error, data) {
 					BL.model.closeConnection(req.soajs);
@@ -2225,7 +2281,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Lists the ledgers of a specific environment
 	 * @param {String} API route
@@ -2241,8 +2297,8 @@ service.init(function () {
 			});
 		});
 	});
-
-
+	
+	
 	/**
 	 * Marks records as read
 	 * @param {String} API route
@@ -2261,7 +2317,7 @@ service.init(function () {
 	/**
 	 * Continuous Integration features
 	 */
-
+	
 	/**
 	 * Get CI Accounts
 	 * @param {String} API route
@@ -2277,7 +2333,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get CI providers
 	 * @param {String} API route
@@ -2293,7 +2349,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Turn On/Off Repository CI
 	 * @param {String} API route
@@ -2309,7 +2365,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Activate CI Provider
 	 * @param {String} API route
@@ -2325,7 +2381,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add CI Recipe
 	 * @param {String} API route
@@ -2341,7 +2397,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Edit CI Recipe
 	 * @param {String} API route
@@ -2357,7 +2413,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete CI Recipe
 	 * @param {String} API route
@@ -2373,7 +2429,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Deactivate CI Provider
 	 * @param {String} API route
@@ -2389,7 +2445,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Download a CI recipe
 	 * @param {String} API route
@@ -2405,7 +2461,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Download CI provider script for CD
 	 * @param {String} API route
@@ -2416,7 +2472,7 @@ service.init(function () {
 			BL.downloadScript(config, req, res);
 		});
 	});
-
+	
 	/**
 	 * Get ci repository settings and environment variables
 	 * @param {String} API route
@@ -2432,7 +2488,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update ci repository settings and environment variables
 	 * @param {String} API route
@@ -2448,7 +2504,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * get the content of the ci file from provider for this repo
 	 * @param {String} API route
@@ -2469,7 +2525,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * get the latest build of a repo per branch from a ci provider
 	 * @param {String} API route
@@ -2489,11 +2545,11 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Git App features gitAccountsBL
 	 */
-
+	
 	/**
 	 * Add a new git account
 	 * @param {String} API route
@@ -2509,7 +2565,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete an existing git account
 	 * @param {String} API route
@@ -2525,7 +2581,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List all available git accounts
 	 * @param {String} API route
@@ -2541,7 +2597,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get git account repositories
 	 * @param {String} API route
@@ -2557,7 +2613,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get file content from a repository, restricted to YAML files
 	 * @param {String} API route
@@ -2606,7 +2662,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Activate a repository
 	 * @param {String} API route
@@ -2648,7 +2704,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Sync an active repository branch
 	 * @param {String} API route
@@ -2684,11 +2740,11 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Services features
 	 */
-
+	
 	/**
 	 * List available services
 	 * @param {String} API route
@@ -2704,7 +2760,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update service settings
 	 * @param {String} API route
@@ -2720,7 +2776,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get all environments where a specific service is deployed
 	 * @param {String} API route
@@ -2819,7 +2875,7 @@ service.init(function () {
 	/**
 	 * Daemons features
 	 */
-
+	
 	/**
 	 * List available daemons
 	 * @param {String} API route
@@ -2835,7 +2891,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List available daemon group configurations
 	 * @param {String} API route
@@ -2851,7 +2907,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add a new group configuration
 	 * @param {String} API route
@@ -2867,7 +2923,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update an exiting daemon group configuration
 	 * @param {String} API route
@@ -2883,7 +2939,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete a group configuration
 	 * @param {String} API route
@@ -2904,7 +2960,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update the service configuration of a specific group configuration
 	 * @param {String} API route
@@ -2920,7 +2976,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List service configurations per group configuration
 	 * @param {String} API route
@@ -2936,7 +2992,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update list of tenant external keys per group configuration
 	 * @param {String} API route
@@ -2952,7 +3008,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List tenant external keys per group configuration
 	 * @param {String} API route
@@ -2968,11 +3024,11 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Settings features
 	 */
-
+	
 	/**
 	 * Update logged in user's tenant
 	 * @param {String} API route
@@ -2990,7 +3046,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get current logged-in user's tenant
 	 * @param {String} API route
@@ -3020,7 +3076,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List current tenant's oauth configuration
 	 * @param {String} API route
@@ -3038,7 +3094,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add new oauth configuration for current tenant
 	 * @param {String} API route
@@ -3056,7 +3112,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update current tenant's oauth configuration
 	 * @param {String} API route
@@ -3074,7 +3130,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete current tenant's oauth configuration
 	 * @param {String} API route
@@ -3092,7 +3148,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List current tenant's oauth users
 	 * @param {String} API route
@@ -3110,7 +3166,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete current tenant's oauth user
 	 * @param {String} API route
@@ -3128,7 +3184,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add a new oauth user for current tenant
 	 * @param {String} API route
@@ -3146,7 +3202,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update current tennant oauth user
 	 * @param {String} API route
@@ -3164,7 +3220,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List current tenant applications
 	 * @param {String} API route
@@ -3182,7 +3238,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add application key for current tenant
 	 * @param {String} API route
@@ -3200,7 +3256,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List current tenant's keys
 	 * @param {String} API route
@@ -3218,7 +3274,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete current tenant's application key
 	 * @param {String} API route
@@ -3236,7 +3292,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List external keys of current tenant
 	 * @param {String} API route
@@ -3254,7 +3310,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add external key to current tenant's application
 	 * @param {String} API route
@@ -3272,7 +3328,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update external key of current tenant's application
 	 * @param {String} API route
@@ -3290,7 +3346,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete external key of current tenant's application
 	 * @param {String} API route
@@ -3308,7 +3364,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Update service configuration of current tenant's key
 	 * @param {String} API route
@@ -3326,7 +3382,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List service configuration of current tenant's key
 	 * @param {String} API route
@@ -3344,7 +3400,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Simulation api that mimics a service api behavior used by swagger feature.
 	 * Api takes a yaml input and simulate the imfv validation of a requested service API
@@ -3361,7 +3417,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Swagger generate service API
 	 * Api takes service information and yaml code as service api schema
@@ -3381,7 +3437,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Generate Service from data saved in db
 	 */
@@ -3395,11 +3451,11 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * api builder apis
 	 */
-
+	
 	service.get("/apiBuilder/list", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
@@ -3410,7 +3466,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	service.get("/apiBuilder/get", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
@@ -3421,7 +3477,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	service.get("/apiBuilder/publish", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
@@ -3432,7 +3488,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	service.get("/apiBuilder/getResources", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
@@ -3443,7 +3499,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	service.post("/apiBuilder/add", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
@@ -3454,7 +3510,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	service.post("/apiBuilder/authentication/update", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
@@ -3465,7 +3521,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	service.post("/apiBuilder/convertSwaggerToImfv", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
@@ -3476,7 +3532,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	service.post("/apiBuilder/convertImfvToSwagger", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
@@ -3487,7 +3543,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	service.put("/apiBuilder/edit", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
@@ -3498,7 +3554,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	service.put("/apiBuilder/updateSchemas", function (req, res) {
 		initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
@@ -3509,7 +3565,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	service.delete("/apiBuilder/delete", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.service.module, dbModel, function (cloudBL) {
 			initBLModel(req, res, dashboardBL.apiBuilder.module, dbModel, function (BL) {
@@ -3522,7 +3578,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * List secrets
 	 * @param {String} API route
@@ -3538,7 +3594,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Add a new secret
 	 * @param {String} API route
@@ -3554,7 +3610,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get one secret
 	 * @param {String} API route
@@ -3570,7 +3626,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Delete a secret
 	 * @param {String} API route
@@ -3651,24 +3707,24 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Infra Providers
 	 */
-
+	
 	/**
 	 * Get activated Infra Provider(s)
 	 */
 	service.get("/infra", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
-				if(req.soajs.inputmaskData.id){
+				if (req.soajs.inputmaskData.id) {
 					BL.get(config, req.soajs, deployer, function (error, data) {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
 					});
 				}
-				else{
+				else {
 					BL.list(config, req.soajs, deployer, function (error, data) {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
@@ -3691,7 +3747,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	service.post("/cloud/vm/onboard", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
@@ -3702,7 +3758,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * modify infra provider connection settings
 	 */
@@ -3716,7 +3772,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * deactivate infra provider
 	 */
@@ -3730,7 +3786,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get cluster information from Infra Provider
 	 */
@@ -3744,7 +3800,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get cluster information from Infra Provider
 	 */
@@ -3758,7 +3814,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * delete deployment from infra provider
 	 */
@@ -3772,7 +3828,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * delete template from infra provider
 	 */
@@ -3786,7 +3842,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * add template from infra provider
 	 */
@@ -3800,7 +3856,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * upload template for infra provider to remote infra cloud CDN
 	 */
@@ -3824,7 +3880,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * download template from infra provider remote cloud CDN
 	 */
@@ -3838,7 +3894,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * update template from infra provider
 	 */
@@ -3862,11 +3918,11 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Get infra extra components
 	 */
-	service.get("/infra/extras", function(req, res) {
+	service.get("/infra/extras", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.getExtras(config, req, req.soajs, deployer, function (error, data) {
@@ -3880,7 +3936,7 @@ service.init(function () {
 	/**
 	 * Create infra components
 	 */
-	service.post("/infra/extras", function(req, res) {
+	service.post("/infra/extras", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.createExtras(config, req, req.soajs, deployer, function (error, data) {
@@ -3894,7 +3950,7 @@ service.init(function () {
 	/**
 	 * Update infra components
 	 */
-	service.put("/infra/extras", function(req, res) {
+	service.put("/infra/extras", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.updateExtras(config, req, req.soajs, deployer, function (error, data) {
@@ -3908,7 +3964,7 @@ service.init(function () {
 	/**
 	 * Update infra components
 	 */
-	service.delete("/infra/extras", function(req, res) {
+	service.delete("/infra/extras", function (req, res) {
 		initBLModel(req, res, dashboardBL.cloud.infra.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.deleteExtras(config, req, req.soajs, deployer, function (error, data) {
@@ -3922,7 +3978,7 @@ service.init(function () {
 	/**
 	 * get console version
 	 */
-	service.get("/version", function(req, res) {
+	service.get("/version", function (req, res) {
 		initBLModel(req, res, dashboardBL.settings.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.get(config, req, res, dashboardBL.settings.model, function (error, data) {
@@ -3936,7 +3992,7 @@ service.init(function () {
 	/**
 	 * check console version
 	 */
-	service.get("/version/check", function(req, res) {
+	service.get("/version/check", function (req, res) {
 		initBLModel(req, res, dashboardBL.settings.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.check(config, req, res, dashboardBL.settings.model, function (error, data) {
@@ -3946,7 +4002,7 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
 	 * Service Start
 	 */
