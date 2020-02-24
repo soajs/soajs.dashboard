@@ -1950,7 +1950,7 @@ service.init(function () {
 								setTimeout(keepAlive, 30000);
 							} else {
 								data.destroy();
-								req.soajs.log.debug("----- keepAlive done, log stream destroyed successfully");
+								req.soajs.log.debug("LOG keepAlive done, log stream destroyed successfully");
 							}
 						};
 						if (keepConnectionAlive) {
