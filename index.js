@@ -1915,17 +1915,47 @@ service.init(function () {
 						if (!res.headersSent) {
 							res.writeHead(200, headObj);
 						}
+						let keepConnectionAlive = true;
 						data.on("data", (chunk) => {
 							//keep on witting to the response
 							res.write(chunk);
 						});
 						data.on("error", (error) => {
 							req.soajs.log.error(error);
+							keepConnectionAlive = false;
 							res.end("---- Connection terminated!");
 						});
 						data.on("end", () => {
-							res.end("---- Connection ended!");
+							keepConnectionAlive = false;
+							res.end("---- Connection ended, no more logs!");
 						});
+						req.on("error", (error) => {
+							req.soajs.log.error(error);
+							keepConnectionAlive = false;
+						});
+						req.on("timeout", () => {
+							keepConnectionAlive = false;
+						});
+						res.on("error", (error) => {
+							req.soajs.log.error(error);
+							keepConnectionAlive = false;
+						});
+						res.on("close", () => {
+							keepConnectionAlive = false;
+						});
+						
+						let keepAlive = () => {
+							res.write(' ');
+							if (keepConnectionAlive) {
+								setTimeout(keepAlive, 30000);
+							} else {
+								data.destroy();
+								req.soajs.log.debug("----- keepAlive done, log stream destroyed successfully");
+							}
+						};
+						if (keepConnectionAlive) {
+							setTimeout(keepAlive, 30000);
+						}
 						
 					} else {
 						return res.json(req.soajs.buildResponse(error, data));
