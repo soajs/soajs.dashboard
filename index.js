@@ -1916,19 +1916,33 @@ service.init(function () {
 							res.writeHead(200, headObj);
 						}
 						let keepConnectionAlive = true;
+						
+						res.write("event: open\n");
+						res.write(`id: ${new Date().getTime()}\n`);
+						res.write("data: ---- Log tail about to start ...\n\n");
+						
 						data.on("data", (chunk) => {
 							//keep on witting to the response
-							res.write(chunk);
+							res.write("event: message\n");
+							res.write(`id: ${new Date().getTime()}\n`);
+							res.write(`data: ${chunk}\n\n`);
 						});
 						data.on("error", (error) => {
 							req.soajs.log.error(error);
 							keepConnectionAlive = false;
-							res.end("---- Connection terminated!");
+							
+							res.write("event: error\n");
+							res.write(`id: ${new Date().getTime()}\n`);
+							res.end("data: ---- Connection terminated!\n\n");
 						});
 						data.on("end", () => {
 							keepConnectionAlive = false;
-							res.end("---- Connection ended, no more logs!");
+							
+							res.write("event: end\n");
+							res.write(`id: ${new Date().getTime()}\n`);
+							res.end("data: ---- Connection ended, no more logs!\n\n");
 						});
+						
 						req.on("error", (error) => {
 							req.soajs.log.error(error);
 							keepConnectionAlive = false;
@@ -1943,9 +1957,16 @@ service.init(function () {
 						res.on("close", () => {
 							keepConnectionAlive = false;
 						});
+						res.on("finish", () => {
+							keepConnectionAlive = false;
+						});
 						
 						let keepAlive = () => {
-							res.write(' ');
+							
+							res.write('event: keepalive\n');
+							res.write("id: " + new Date().getTime() + "\n");
+							res.write('data: \n\n');
+							
 							if (keepConnectionAlive) {
 								setTimeout(keepAlive, 30000);
 							} else {
