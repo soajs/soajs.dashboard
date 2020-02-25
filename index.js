@@ -1964,7 +1964,7 @@ service.init(function () {
 							
 							res.write('event: keepalive\n');
 							res.write("id: " + new Date().getTime() + "\n");
-							res.write('data: \n\n');
+							res.write('data: Heartbeat to stay alive\n\n');
 							
 							if (keepConnectionAlive) {
 								setTimeout(keepAlive, 30000);
