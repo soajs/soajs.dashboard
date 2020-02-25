@@ -1916,7 +1916,7 @@ service.init(function () {
 							res.writeHead(200, headObj);
 						}
 						let keepConnectionAlive = true;
-						
+						res.write("retry: 100\n");
 						res.write("event: open\n");
 						res.write(`id: ${new Date().getTime()}\n`);
 						res.write("data: ---- Log tail about to start ...\n\n");
