@@ -212,7 +212,7 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						},
 						"buildOptions": {
 							"settings": {
-								"accelerateDeployment": true
+								
 							},
 							"env": {
 								"SOAJS_SRV_AUTOREGISTERHOST": {
@@ -365,7 +365,7 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						},
 						"buildOptions": {
 							"settings": {
-								"accelerateDeployment": true
+								
 							},
 							"env": {
 								"SOAJS_SRV_AUTOREGISTERHOST": {
@@ -512,7 +512,7 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						},
 						"buildOptions": {
 							"settings": {
-								"accelerateDeployment": true
+								
 							},
 							"env": {
 								"SOAJS_SRV_AUTOREGISTERHOST": {
@@ -1195,7 +1195,7 @@ describe("testing lib/cloud/deploy/index.js", function () {
 						},
 						"buildOptions": {
 							"settings": {
-								"accelerateDeployment": true
+								
 							},
 							"env": {
 								"SOAJS_SRV_AUTOREGISTERHOST": {

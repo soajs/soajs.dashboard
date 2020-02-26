@@ -385,7 +385,6 @@ describe("testing hosts deployment", function () {
 						},
 						"buildOptions": {
 							"settings": {
-								"accelerateDeployment": true
 							},
 							"env": {
 								"NODE_ENV": {
@@ -474,7 +473,6 @@ describe("testing hosts deployment", function () {
 						},
 						"buildOptions": {
 							"settings": {
-								"accelerateDeployment": true
 							},
 							"env": {
 								"SOAJS_ENV": {
@@ -548,7 +546,6 @@ describe("testing hosts deployment", function () {
 						},
 						"buildOptions": {
 							"settings": {
-								"accelerateDeployment": true
 							},
 							"env": {
 								"NODE_ENV": {

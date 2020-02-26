@@ -284,7 +284,7 @@ describe("testing services.js", function () {
 							},
 							"buildOptions": {
 								"settings": {
-									"accelerateDeployment": true
+									
 								},
 								"env": {
 									"SOAJS_GIT_TOKEN": {

@@ -222,10 +222,7 @@ let context = {
                                             "properties": {
                                                 "settings": {
                                                     "type": "object",
-                                                    "required": false,
-                                                    "properties": {
-                                                        "accelerateDeployment": {"type": "boolean", "required": false}
-                                                    }
+                                                    "required": false
                                                 },
                                                 "env": {
                                                     "type": "object",

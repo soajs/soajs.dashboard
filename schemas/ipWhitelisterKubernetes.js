@@ -72,7 +72,6 @@ module.exports = {
                 }
             },
             "settings" : {
-                "accelerateDeployment" : true
             },
             "cmd" : {
                 "deploy" : {

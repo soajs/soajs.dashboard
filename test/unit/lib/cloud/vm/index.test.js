@@ -368,7 +368,7 @@ describe("testing lib/cloud/vm/index.js", function () {
 				"recipe": {
 					"buildOptions": {
 						"settings": {
-							"accelerateDeployment": true
+							
 						},
 						"cmd": {
 							"deploy": {

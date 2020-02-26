@@ -1079,7 +1079,7 @@ describe("testing helper soajs.cd.js", function () {
 						},
 						"buildOptions": {
 							"settings": {
-								"accelerateDeployment": true
+								
 							},
 							"env": {
 								"SOAJS_SRV_AUTOREGISTERHOST": {
@@ -1158,7 +1158,7 @@ describe("testing helper soajs.cd.js", function () {
 						},
 						"buildOptions": {
 							"settings": {
-								"accelerateDeployment": true
+								
 							},
 							"env": {
 								"SOAJS_SRV_AUTOREGISTERHOST": {
