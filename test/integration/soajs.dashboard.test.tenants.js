@@ -318,10 +318,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"acl": {
 								"inv": {
 									"urac": {
-										'access': false,
-										'apis': {
-											'/account/changeEmail': {
-												'access': true
+										"1": {
+											'access': false,
+											'apis': {
+												'/account/changeEmail': {
+													'access': true
+												}
 											}
 										}
 									}
@@ -349,10 +351,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"acl": {
 								"dev": {
 									"urac": {
-										'access': false,
-										'apis': {
-											'/account/changeEmail': {
-												'access': true
+										"1" : {
+											'access': false,
+											'apis': {
+												'/account/changeEmail': {
+													'access': true
+												}
 											}
 										}
 									}
@@ -435,10 +439,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"acl": {
 								"dev": {
 									"urac": {
-										'access': false,
-										'apis': {
-											'/account/changeEmail': {
-												'access': true
+										"1" :{
+											'access': false,
+											'apis': {
+												'/account/changeEmail': {
+													'access': true
+												}
 											}
 										}
 									}
@@ -507,10 +513,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"acl": {
 								"inv": {
 									"urac": {
-										'access': false,
-										'apis': {
-											'/account/changeEmail': {
-												'access': true
+										"1" :{
+											'access': false,
+											'apis': {
+												'/account/changeEmail': {
+													'access': true
+												}
 											}
 										}
 									}
@@ -537,10 +545,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"acl": {
 								"dev": {
 									"urac": {
-										'access': false,
-										'apis': {
-											'/account/changeEmail': {
-												'access': true
+										"1" : {
+											'access': false,
+											'apis': {
+												'/account/changeEmail': {
+													'access': true
+												}
 											}
 										}
 									}
@@ -576,10 +586,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"_TTL": '24',
 							"acl": {
 								"urac": {
-									'access': false,
-									'apis': {
-										'/account/changeEmail': {
-											'access': true
+									"1" : {
+										'access': false,
+										'apis': {
+											'/account/changeEmail': {
+												'access': true
+											}
 										}
 									}
 								}
@@ -634,7 +646,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'product/packages/update', 'put', function (body) {
-						assert.deepEqual(body.errors.details[0], { "code": 405, "message": errorCodes[405] });
 						done();
 					});
 				});
