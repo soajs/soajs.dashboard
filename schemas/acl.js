@@ -32,7 +32,7 @@ const acl = {
 	'validation': {
 		"type": "object",
 		"patternProperties": {
-			"^[a-zA-Z0-9]{3,4}$": {
+			"^[a-zA-Z0-9]+$": {
 				"type": "object",
 				"patternProperties": {
 					"^[^\W\.]+$": {

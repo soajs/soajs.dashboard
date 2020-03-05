@@ -2,6 +2,7 @@
 var serviceConfig = require("./schemas/serviceConfig");
 
 var aclSchema = require("./schemas/acl");
+var scopeAclSchema = require("./schemas/scopeAcl");
 var catalogSchema = require("./schemas/catalog");
 var resourceSchema = require("./schemas/resource");
 var customRegEntrySchema = require("./schemas/customRegistry");
@@ -6411,13 +6412,7 @@ module.exports = {
 					"group": "Product"
 				},
 				"commonFields": ['id', 'acl', 'soajs_project'],
-				"scope": {
-					"source": ["body.scope"],
-					"required": true,
-					"validation": {
-						"type": "object"
-					}
-				}
+				"scope": scopeAclSchema
 			},
 			
 			"/tenant/update": {
