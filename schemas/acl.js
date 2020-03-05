@@ -1,6 +1,7 @@
 "use strict";
 
-var apisObject = {
+
+const apisObject = {
 	"type": "object",
 	"required": false,
 	"patternProperties": {
@@ -15,14 +16,17 @@ var apisObject = {
 	}
 };
 
-var aclMethod = {
+const granularAcl = {
 	"type": "object",
 	"required": false,
 	"properties": {
 		"apis": apisObject
 	}
 };
-var acl = {
+
+const apiGroup = {"type": "array", "items": {"type": "string", "required": true}, "required": false};
+
+const acl = {
 	'source': ['body.acl'],
 	'required': false,
 	'validation': {
@@ -32,48 +36,77 @@ var acl = {
 				"type": "object",
 				"patternProperties": {
 					"^[^\W\.]+$": {
-						"type": "object",
-						"required": false,
-						"patternProperties": {
-							".+": {
+						"oneOf": [
+							{
 								"type": "object",
 								"required": false,
-								"properties": {
-									"access": {"type": "boolean", "required": false},
-									"apisPermission": {
-										"type": "string", "enum": ["restricted"], "required": false
-									},
-									"apis": apisObject,
-									"get": aclMethod,
-									"post": aclMethod,
-									"put": aclMethod,
-									"delete": aclMethod,
-									"head": aclMethod,
-									"options": aclMethod,
-									"other": aclMethod,
-									"apisRegExp": {
-										"type": "array",
+								"patternProperties": {
+									".+": {
+										"type": "object",
 										"required": false,
-										"minItems": 1,
-										"items": {
-											"type": "object",
-											"properties": {
-												"regExp": {
-													"type": "pattern",
-													"required": true,
-													"pattern": /\.+/
-												},
-												"access": {"type": "boolean", "required": false}
+										"properties": {
+											"access": {"type": "boolean", "required": false},
+											"apisPermission": {
+												"type": "string", "enum": ["restricted"], "required": false
+											},
+											"apis": apisObject,
+											"get": granularAcl,
+											"post": granularAcl,
+											"put": granularAcl,
+											"delete": granularAcl,
+											"head": granularAcl,
+											"options": granularAcl,
+											"other": granularAcl,
+											"apisRegExp": {
+												"type": "array",
+												"required": false,
+												"minItems": 1,
+												"items": {
+													"type": "object",
+													"properties": {
+														"regExp": {
+															"type": "pattern",
+															"required": true,
+															"pattern": /\.+/
+														},
+														"access": {"type": "boolean", "required": false}
+													},
+													"additionalProperties": false
+												}
 											},
 											"additionalProperties": false
-										}
+										},
+										"additionalProperties": false
+									}
+								},
+								"additionalProperties": false
+							},
+							{
+								"type": "array",
+								"minItems": 1,
+								"items": {
+									"type": "object",
+									"required": false,
+									"properties": {
+										"access": {"type": "boolean", "required": false},
+										"version": {"type": "string", "required": false},
+										"apisPermission": {
+											"type": "string", "enum": ["restricted"], "required": false
+										},
+										"get": apiGroup,
+										"post": apiGroup,
+										"put": apiGroup,
+										"delete": apiGroup,
+										"head": apiGroup,
+										"options": apiGroup,
+										"other": apiGroup,
+										"additionalProperties": false
 									},
 									"additionalProperties": false
 								},
-								"additionalProperties": false
+								"required": false
 							}
-						},
-						"additionalProperties": false
+						]
 					}
 				},
 				"additionalProperties": false
@@ -84,3 +117,5 @@ var acl = {
 };
 
 module.exports = acl;
+
+
