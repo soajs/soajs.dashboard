@@ -1,6 +1,5 @@
 "use strict";
 
-
 const apisObject = {
 	"type": "object",
 	"required": false,
@@ -31,6 +30,7 @@ const acl = {
 	'required': false,
 	'validation': {
 		"type": "object",
+		"required": false,
 		"patternProperties": {
 			"^[a-zA-Z0-9]+$": {
 				"type": "object",
