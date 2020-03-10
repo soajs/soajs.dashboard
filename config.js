@@ -2866,7 +2866,15 @@ module.exports = {
 						"minLength": 4,
 						"maxLength": 5
 					}
-				}
+				},
+				"type": {
+					"source": ["body.type"],
+					"required": false,
+					"validation": {
+						"type": "string",
+						"enum": ["granular"]
+					}
+				},
 			},
 			
 			"/tenant/add": {
