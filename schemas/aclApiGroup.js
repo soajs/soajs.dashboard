@@ -19,6 +19,7 @@ const aclApi = {
 			"put": apiGroup,
 			"delete": apiGroup,
 			"head": apiGroup,
+			"patch": apiGroup,
 			"options": apiGroup,
 			"other": apiGroup,
 			"additionalProperties": false
