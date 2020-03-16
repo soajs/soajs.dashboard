@@ -66,6 +66,7 @@ let catalog = {
                 "prefix": "soajstest",
                 "name": "newSoajs",
                 "tag": "latest",
+	            "shell": "/bin/sh"
             },
             "ports": [
                 {

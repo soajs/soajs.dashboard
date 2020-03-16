@@ -43,6 +43,7 @@ module.exports = {
 									"tag": {"type": "string", "required": true},
 									"repositoryType": {"type": "string", "required": false, "enum": ["private","public"]},
 									"pullPolicy": {"type": "string", "required": false},
+									"shell": {"type": "string", "required": false},
 								}
 							},
 							
