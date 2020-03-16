@@ -40,7 +40,8 @@ var lib = {
 			credentials: soajs.registry.coreDB.provision.credentials,
 			streaming: soajs.registry.coreDB.provision.streaming,
 			URLParam: soajs.registry.coreDB.provision.URLParam,
-			extraParam: soajs.registry.coreDB.provision.extraParam
+			extraParam: soajs.registry.coreDB.provision.extraParam,
+			registryLocation: soajs.registry.coreDB.provision.registryLocation
 		};
 		
 		var switchedConnection = lib.switchConnection(soajs);
