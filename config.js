@@ -2856,7 +2856,7 @@ module.exports = {
 					"l": "Add Product Package",
 					"group": "Product"
 				},
-				"commonFields": ['id', 'name', 'description', '_TTL', 'soajs_project'],
+				"commonFields": ['id', 'name', 'description', 'acl', '_TTL', 'soajs_project'],
 				"code": {
 					"source": ["body.code"],
 					"required": false,
@@ -2867,6 +2867,13 @@ module.exports = {
 						"maxLength": 5
 					}
 				},
+				"type": {
+					"source": ["body.type"],
+					"required": false,
+					"validation": {
+						"type": "object",
+					}
+				}
 			},
 			
 			"/tenant/add": {
@@ -6396,8 +6403,8 @@ module.exports = {
 						"format": "alphanumeric"
 					}
 				},
-				"aclTypeByEnv": {
-					"source": ["body.aclTypeByEnv"],
+				"type": {
+					"source": ["body.type"],
 					"required": false,
 					"validation": {
 						"type": "object",

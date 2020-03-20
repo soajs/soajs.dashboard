@@ -564,12 +564,25 @@ describe("DASHBOARD UNIT Tests:", function () {
 						mongo.findOne('products', { 'code': 'TPROD' }, function (error, record) {
 							assert.ifError(error);
 							delete record._id;
-							assert.deepEqual(record.packages[0], {
+							assert.deepEqual(record.packages[0],  {
 								"code": "TPROD_BASIC",
 								"name": "basic package 2",
 								"description": "this is a dummy updated description",
-								"_TTL": 24 * 3600 * 1000,
-								"acl": {}
+								"acl": {
+									"dev": {
+										"urac": {
+											"1": {
+												"access": false,
+												"apis": {
+													"/account/changeEmail": {
+														"access": true
+													}
+												}
+											}
+										}
+									}
+								},
+								"_TTL": 86400000
 							});
 							done();
 							
@@ -762,8 +775,21 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": "TPROD_BASIC",
 							"name": "basic package 2",
 							"description": "this is a dummy updated description",
-							"_TTL": 24 * 3600 * 1000,
-							"acl": {}
+							"acl": {
+								"dev": {
+									"urac": {
+										"1": {
+											"access": false,
+											"apis": {
+												"/account/changeEmail": {
+													"access": true
+												}
+											}
+										}
+									}
+								}
+							},
+							"_TTL": 86400000
 						});
 						done();
 					});
@@ -786,7 +812,20 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"code": "TPROD_BASIC",
 								"name": "basic package 2",
 								"description": "this is a dummy updated description",
-								"acl": {},
+								"acl": {
+									"dev": {
+										"urac": {
+											"1": {
+												"access": false,
+												"apis": {
+													"/account/changeEmail": {
+														"access": true
+													}
+												}
+											}
+										}
+									}
+								},
 								"_TTL": 24 * 3600 * 1000
 							}
 						],
