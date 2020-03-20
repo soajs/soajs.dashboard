@@ -50,6 +50,17 @@ var methods = {
 			}, call);
 		}, cb);
 	},
+	"sanitizePerEnv": function (acl, cb) {
+		async.eachOf(acl, function (service, serviceKey, callback) {
+			let sanitizedVersion = {};
+			Object.keys(service).forEach(function (key) {
+				sanitizedVersion[soajsLib.version.sanitize(key)] = service[key];
+				delete service[key];
+			});
+			acl[serviceKey] = sanitizedVersion;
+			callback();
+		}, cb);
+	},
 	"unsanitize": function (record, cb) {
 		if (record && record.scope && record.scope.acl && Object.keys(record.scope.acl > 0)) {
 			let scope = record.scope.acl;

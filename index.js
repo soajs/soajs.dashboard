@@ -883,6 +883,22 @@ service.init(function () {
 	});
 	
 	/**
+	 * Update a product scope per env
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/product/scope/env", function (req, res) {
+		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.updateScopePerEnv(config, req, res, dashboardBL.product.model, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
 	 * List available products
 	 * @param {String} API route
 	 * @param {Function} API middleware
@@ -1003,6 +1019,22 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.updatePackage(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Update a product package
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/product/packages/acl/env", function (req, res) {
+		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.updatePackageAcl(config, req, res, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});

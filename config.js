@@ -2856,7 +2856,7 @@ module.exports = {
 					"l": "Add Product Package",
 					"group": "Product"
 				},
-				"commonFields": ['id', 'name', 'description', '_TTL', 'acl', 'soajs_project'],
+				"commonFields": ['id', 'name', 'description', '_TTL', 'soajs_project'],
 				"code": {
 					"source": ["body.code"],
 					"required": false,
@@ -2865,14 +2865,6 @@ module.exports = {
 						"format": "alphanumeric",
 						"minLength": 4,
 						"maxLength": 5
-					}
-				},
-				"type": {
-					"source": ["body.type"],
-					"required": false,
-					"validation": {
-						"type": "string",
-						"enum": ["granular"]
 					}
 				},
 			},
@@ -6404,6 +6396,29 @@ module.exports = {
 						"format": "alphanumeric"
 					}
 				},
+				"aclTypeByEnv": {
+					"source": ["body.aclTypeByEnv"],
+					"required": false,
+					"validation": {
+						"type": "object",
+					}
+				}
+			},
+			
+			"/product/packages/acl/env": {
+				_apiInfo: {
+					"l": "Update Product Package Acl By Env",
+					"group": "Product"
+				},
+				"commonFields": ['id', 'soajs_project'],
+				"code": {
+					"source": ["query.code"],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"format": "alphanumeric"
+					}
+				},
 				"type": {
 					"source": ["query.type"],
 					"required": false,
@@ -6411,16 +6426,48 @@ module.exports = {
 						"type": "string",
 						"enum": ["granular"]
 					}
+				},
+				"env": {
+					"source": ["query.env"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"acl": {
+					'source': ['body.acl'],
+					'required': true,
+					"validation": aclSchema.validation.patternProperties["^[a-zA-Z0-9]+$"]
 				}
 			},
 			
 			"/product/scope/update": {
 				_apiInfo: {
-					"l": "Update Product Package",
+					"l": "Update Product Scope",
 					"group": "Product"
 				},
-				"commonFields": ['id', 'acl', 'soajs_project'],
+				"commonFields": ['id', 'soajs_project'],
 				"scope": scopeAclSchema
+			},
+			
+			"/product/scope/env": {
+				_apiInfo: {
+					"l": "Update Product Scope Per Env",
+					"group": "Product"
+				},
+				"commonFields": ['id', 'soajs_project'],
+				"env": {
+					"required": true,
+					"source": ["query.env"],
+					"validation": {
+						"type": "string"
+					}
+				},
+				"acl": {
+					'source': ['body.acl'],
+					'required': true,
+					"validation": scopeAclSchema.validation.patternProperties["^[a-zA-Z0-9]+$"]
+				}
 			},
 			
 			"/tenant/update": {
