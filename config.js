@@ -2671,7 +2671,7 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"memoryLimit": {"required": false, "type": "number", "default": 209715200},
+							"memoryLimit": {"required": false, "type": "string"},
 							"cpuLimit": {"required": false, "type": "string"},
 							"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
 							"replication": {
@@ -3172,7 +3172,7 @@ module.exports = {
 					"validation": {
 						"type": "object",
 						"properties": {
-							"memoryLimit": {"required": false, "type": "number", "default": 209715200},
+							"memoryLimit": {"required": false, "type": "string"},
 							"cpuLimit": {"required": false, "type": "string"},
 							"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
 							"replication": {
@@ -6039,7 +6039,7 @@ module.exports = {
 								"required": true,
 								"type": "object",
 								"properties": {
-									"memoryLimit": {"required": false, "type": "number", "default": 209715200},
+									"memoryLimit": {"required": false, "type": "string"},
 									"cpuLimit": {"required": false, "type": "string"},
 									"isKubernetes": {"required": false, "type": "boolean"},
 									"replication": {

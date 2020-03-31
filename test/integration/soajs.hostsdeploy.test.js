@@ -465,7 +465,7 @@ describe("testing hosts deployment", function () {
                     },
                     recipe: '59034e43c69a1b962fc62213', // todo
                     deployConfig: {
-                        memoryLimit: 209715200,
+                       
                         replication: {
                             mode: 'replicated',
                             replicas: 1
@@ -513,7 +513,7 @@ describe("testing hosts deployment", function () {
                             commit: '67a61db0955803cddf94672b0192be28f47cf280'
                         },
                         deployConfig: {
-                            memoryLimit: 209715200,
+                           
                             replication: {
                                 mode: 'replicated',
                                 replicas: 1
@@ -543,7 +543,7 @@ describe("testing hosts deployment", function () {
                     },
                     recipe: '59034e43c69a1b962fc62212', // todo
                     deployConfig: {
-                        memoryLimit: 209715200,
+                       
                         replication: {
                             mode: 'replicated',
                             replicas: 1
@@ -591,7 +591,7 @@ describe("testing hosts deployment", function () {
                     },
                     deployConfig: {
                         useLocalSOAJS: true,
-                        memoryLimit: 209715200,
+                       
                         imagePrefix: 'soajsorg',
                         replication: {
                             mode: 'global'
@@ -641,7 +641,7 @@ describe("testing hosts deployment", function () {
                             commit: '67a61db0955803cddf94672b0192be28f47cf280'
                         },
                         deployConfig: {
-                            memoryLimit: 209715200,
+                           
                             replication: {
                                 mode: 'replicated',
                                 replicas: 1
@@ -695,7 +695,6 @@ describe("testing hosts deployment", function () {
 						commit: '67a61db0955803cddf94672b0192be28f47cf280'
 					},
 					deployConfig: {
-						memoryLimit: 209715200,
 						replication: {
 							mode: 'replicated',
 							replicas: 1
@@ -755,7 +754,6 @@ describe("testing hosts deployment", function () {
                             commit: '67a61db0955803cddf94672b0192be28f47cf280'
                         },
                         deployConfig: {
-                            memoryLimit: 209715200,
                             replication: {
                                 mode: 'replicated',
                                 replicas: 1

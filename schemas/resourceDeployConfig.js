@@ -8,7 +8,7 @@ module.exports = {
 		"type": "object",
 		"required": true,
 		"properties": {
-			"memoryLimit": {"required": false, "type": "number", "default": 209715200},
+			"memoryLimit": {"required": false, "type": "string"},
 			"cpuLimit": {"required": false, "type": "string"},
 			"isKubernetes": {"required": false, "type": "boolean"},
 			"replication": {

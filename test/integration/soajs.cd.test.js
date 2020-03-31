@@ -650,7 +650,7 @@ describe("testing hosts deployment", function () {
 						commit: '67a61db0955803cddf94672b0192be28f47cf280'
 					},
 					deployConfig: {
-						memoryLimit: 209715200,
+						
 						replication: {
 							mode: 'replicated',
 							replicas: 1
@@ -681,7 +681,7 @@ describe("testing hosts deployment", function () {
 					},
 					recipe: recipesInfo[1]._id.toString(),
 					deployConfig: {
-						memoryLimit: 209715200,
+						
 						replication: {
 							mode: 'replicated',
 							replicas: 1
@@ -717,7 +717,7 @@ describe("testing hosts deployment", function () {
 						commit: '4470c1cd2bc2aef867ffecf26c02602df19e1f3a'
 					},
 					deployConfig: {
-						memoryLimit: 209715200,
+						
 						replication: {
 							mode: 'replicated',
 							replicas: 1
