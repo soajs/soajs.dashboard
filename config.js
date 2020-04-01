@@ -1911,7 +1911,7 @@ module.exports = {
 				},
 				'commonFields': ['soajs_project'],
 				"env": {
-					"source": ['query.env','body.env'],
+					"source": ['query.env', 'body.env'],
 					"required": false,
 					"validation": {
 						"type": "string"
@@ -5684,7 +5684,7 @@ module.exports = {
 						}
 					}
 				},
-				"includeSOAJS" : {
+				"includeSOAJS": {
 					'source': ['body.includeSOAJS'],
 					'required': false,
 					'validation': {
@@ -5754,7 +5754,7 @@ module.exports = {
 						}
 					}
 				},
-				"includeSOAJS" : {
+				"includeSOAJS": {
 					'source': ['body.includeSOAJS'],
 					'required': false,
 					'validation': {
@@ -6848,7 +6848,7 @@ module.exports = {
 						"properties": {
 							"branch": {"type": "string", "required": false},
 							"commit": {"type": "string", "required": false},
-							"memory": {"type": "number", "required": false, "minimum": 0},
+							"memory": {"type": "string"},
 							"image": {
 								"type": "object",
 								"required": false,
