@@ -7,7 +7,7 @@ var assert = require('assert');
 var shell = require('shelljs');
 var helper = require("../helper.js");
 var sampleData = require("soajs.mongodb.data/modules/dashboard");
-var dashboard, controller, urac, oauth;
+var controller;
 
 var Mongo = require('soajs.core.modules').mongo;
 var dbConfig = require("./db.config.test.js");
@@ -75,12 +75,24 @@ describe("importing sample data", function () {
 		console.log('test data imported.');
 		controller = require("soajs.controller");
 		setTimeout(function () {
+			
+			require("soajs.urac")(() => {
+				require("soajs.oauth")(() => {
+					helper.requireModule('./index')(() => {
+						setTimeout(function () {
+							done();
+						}, 5000);
+					});
+				});
+			});
+			/*
 			urac = require("soajs.urac");
 			oauth = require("soajs.oauth");
 			dashboard = helper.requireModule('./index');
 			setTimeout(function () {
 				done();
 			}, 20000);
+			*/
 		}, 6000);
 	});
 	

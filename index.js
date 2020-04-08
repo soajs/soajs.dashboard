@@ -3,6 +3,8 @@ var soajs = require('soajs');
 var config = require('./config.js');
 config.packagejson = require("./package.json");
 
+let serviceStartCb = null;
+
 var dashboardBL = {
 	environment: {
 		module: require("./lib/environment/index.js")
@@ -4058,5 +4060,10 @@ service.init(function () {
 	/**
 	 * Service Start
 	 */
-	service.start();
+	
+	service.start(serviceStartCb);
 });
+
+module.exports = function (cb) {
+	serviceStartCb = cb;
+};
