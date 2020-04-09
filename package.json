@@ -57,7 +57,7 @@
     "rimraf": "3.0.2",
     "shortid": "2.2.15",
     "soajs": "2.6.16",
-    "soajs.core.drivers": "3.5.45",
+    "soajs.core.drivers": "3.5.46",
     "unzip2": "0.2.5",
     "url-clean": "1.0.2",
     "yamljs": "0.3.0"
