@@ -1,7 +1,7 @@
 {
   "name": "soajs.dashboard",
   "description": "soajs dashboard service",
-  "version": "2.7.59",
+  "version": "2.7.60",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -57,7 +57,7 @@
     "rimraf": "3.0.2",
     "shortid": "2.2.15",
     "soajs": "2.6.16",
-    "soajs.core.drivers": "3.5.46",
+    "soajs.core.drivers": "3.5.47",
     "unzip2": "0.2.5",
     "url-clean": "1.0.2",
     "yamljs": "0.3.0"
