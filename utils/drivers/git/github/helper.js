@@ -170,12 +170,17 @@ var lib = {
 						code: 767,
 						message: 'Repository not found'
 					}, cb, function () {//in case of invalid repo info
-						checkIfError(error, { code: 763 }, cb, function () {//generic case
-							//todo add support for
-							//multiple page branches
-							//find a way to parse the link found in response.meta
-							// link: '<https://api.github.com/repositories/222/branches?per_page=10&access_token=2222&page=2>; rel="next", <https://api.github.com/repositories/222/branches?per_page=10&access_token=2222&page=4>; rel="last"',
-							return cb(null, response);
+						checkIfError(error, {code: 763}, cb, function () {//generic case
+							checkIfError(!Array.isArray(response) && response.message, {
+								code: 763,
+								message: response.message
+							}, cb, function () {//generic case
+								//todo add support for
+								//multiple page branches
+								//find a way to parse the link found in response.meta
+								// link: '<https://api.github.com/repositories/222/branches?per_page=10&access_token=2222&page=2>; rel="next", <https://api.github.com/repositories/222/branches?per_page=10&access_token=2222&page=4>; rel="last"',
+								return cb(null, response);
+							});
 						});
 					});
 				});
