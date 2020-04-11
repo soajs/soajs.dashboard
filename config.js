@@ -24,7 +24,6 @@ module.exports = {
 	"requestTimeout": 60,
 	"requestTimeoutRenewal": 5,
 	"extKeyRequired": true,
-	"awareness": false,
 	"oauth": true,
 	"uracDriver": true,
 	"urac_Profile": true,
@@ -32,8 +31,18 @@ module.exports = {
 	"provision_ACL": true,
 	"urac_GroupConfig": true,
 	"urac": true,
+	
+	"maintenance": {
+		"readiness": "/heartbeat",
+		"port": {"type": "maintenance"},
+		"commands": [
+			{"label": "Releoad Registry", "path": "/reloadRegistry", "icon": "registry"},
+			{"label": "Resource Info", "path": "/resourceInfo", "icon": "fas fa-info"}
+		]
+	},
+	
 	"hasher": {
-		"hashIterations": 1024,
+		"hashIterations": 12,
 		"seedLength": 32
 	},
 	
