@@ -290,8 +290,7 @@ module.exports = [
 												}
 											},
 											"urac": {
-												"hashIterations": 1024,
-												"seedLength": 32,
+												"hashIterations": 12,
 												"link": {
 													"addUser": "%domain%/#/setNewPassword",
 													"changeEmail": "%domain%/#/changeEmail/validate",
@@ -356,8 +355,7 @@ module.exports = [
 												}
 											},
 											"urac": {
-												"hashIterations": 1024,
-												"seedLength": 32,
+												"hashIterations": 12,
 												"link": {
 													"addUser": "%domain%/#/setNewPassword",
 													"changeEmail": "%domain%/#/changeEmail/validate",

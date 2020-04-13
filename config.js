@@ -36,14 +36,13 @@ module.exports = {
 		"readiness": "/heartbeat",
 		"port": {"type": "maintenance"},
 		"commands": [
-			{"label": "Releoad Registry", "path": "/reloadRegistry", "icon": "registry"},
+			{"label": "Reload Registry", "path": "/reloadRegistry", "icon": "fas fa-undo"},
 			{"label": "Resource Info", "path": "/resourceInfo", "icon": "fas fa-info"}
 		]
 	},
 	
 	"hasher": {
-		"hashIterations": 12,
-		"seedLength": 32
+		"hashIterations": 12
 	},
 	
 	"dashboardSuperUser": {
