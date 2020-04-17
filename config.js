@@ -1030,6 +1030,80 @@ module.exports = {
 				}
 			},
 			
+			"/product/packages/aclPreview/service": {
+				_apiInfo: {
+					"l": "Get Compact Product Package",
+					"group": "Product"
+				},
+				"commonFields": ['soajs_project'],
+				"packageCode": {
+					"source": ["query.packageCode"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"productCode": {
+					"source": ["query.productCode"],
+					"required": true,
+					"validation": {
+						"type": "string",
+					}
+				},
+				"mainEnv" :{
+					"source": ["query.mainEnv"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"secEnv" :{
+					"source": ["query.secEnv"],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
+			"/product/packages/aclPreview/api": {
+				_apiInfo: {
+					"l": "Get Compact Product Package",
+					"group": "Product"
+				},
+				"commonFields": ['soajs_project'],
+				"packageCode": {
+					"source": ["query.packageCode"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"productCode": {
+					"source": ["query.productCode"],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"format": "alphanumeric",
+						"maxLength": 6
+					}
+				},
+				"mainEnv" :{
+					"source": ["query.mainEnv"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"secEnv" :{
+					"source": ["query.secEnv"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
 			"/tenant/list": {
 				_apiInfo: {
 					"l": "List Tenants",
