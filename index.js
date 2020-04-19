@@ -121,8 +121,7 @@ function checkMyAccess(req, res, cb) {
 	var myTenant = req.soajs.uracDriver.getProfile().tenant;
 	if (!myTenant || !myTenant.id) {
 		return res.jsonp(req.soajs.buildResponse({"code": 608, "msg": config.errors[608]}));
-	}
-	else {
+	} else {
 		req.soajs.inputmaskData.id = myTenant.id.toString();
 		return cb();
 	}
@@ -133,8 +132,7 @@ function initBLModel(req, res, BLModule, modelName, cb) {
 		if (error) {
 			req.soajs.log.error(error);
 			return res.json(req.soajs.buildResponse({"code": 407, "msg": config.errors[407]}));
-		}
-		else {
+		} else {
 			return cb(BL);
 		}
 	});
@@ -244,8 +242,7 @@ service.init(function () {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
 					});
-				}
-				else {
+				} else {
 					//generate and download new template
 					BL.export(config, req, res, deployer, function (error, data) {
 						BL.model.closeConnection(req.soajs);
@@ -368,16 +365,14 @@ service.init(function () {
 					if (error) {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
-					}
-					else if (process.env.SOAJS_DEPLOY_HA) {
+					} else if (process.env.SOAJS_DEPLOY_HA) {
 						initBLModel(req, res, dashboardBL.cloud.maintenance.module, dbModel, function (BL) {
 							let env = req.soajs.inputmaskData.envCode;
 							
 							let controllerService;
 							if (process.env.SOAJS_DEPLOY_HA === 'kubernetes') {
 								controllerService = env.toLowerCase() + "-controller-v1";
-							}
-							else {
+							} else {
 								controllerService = env.toLowerCase() + "-controller";
 							}
 							
@@ -396,8 +391,7 @@ service.init(function () {
 								return res.json(req.soajs.buildResponse(null, data));
 							});
 						});
-					}
-					else {
+					} else {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
 					}
@@ -496,7 +490,7 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.environment.module, dbModel, function (BL) {
 			var switchedConnection = BL.model.switchConnection(req.soajs);
 			if (switchedConnection) {
-				if (typeof  switchedConnection === 'object' && Object.keys(switchedConnection).length > 0) {
+				if (typeof switchedConnection === 'object' && Object.keys(switchedConnection).length > 0) {
 					provision = switchedConnection;
 				}
 			}
@@ -1069,6 +1063,38 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.updatePackageAcl(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Update a product package api view
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/product/packages/aclPreview/api", function (req, res) {
+		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.updatePackageAclApi(config, req, res, dashboardBL.product.model, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Update a product package api service
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/product/packages/aclPreview/service", function (req, res) {
+		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.updatePackageAclService(config, req, res, dashboardBL.product.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -3809,8 +3835,7 @@ service.init(function () {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
 					});
-				}
-				else {
+				} else {
 					BL.list(config, req.soajs, deployer, function (error, data) {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
@@ -3955,8 +3980,7 @@ service.init(function () {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
 					});
-				}
-				else {
+				} else {
 					//upload template
 					BL.uploadTemplate(config, req, req.soajs, deployer, function (error, data) {
 						BL.model.closeConnection(req.soajs);
@@ -3993,8 +4017,7 @@ service.init(function () {
 						BL.model.closeConnection(req.soajs);
 						return res.json(req.soajs.buildResponse(error, data));
 					});
-				}
-				else {
+				} else {
 					//else template is external
 					BL.uploadTemplate(config, req, req.soajs, deployer, function (error, data) {
 						BL.model.closeConnection(req.soajs);

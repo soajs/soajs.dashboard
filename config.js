@@ -1063,7 +1063,16 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				"page" :{
+					"source": ["query.page"],
+					"required": false,
+					"validation": {
+						"type": "integer",
+						"minimum": 1
+					}
 				}
+				
 			},
 			
 			"/product/packages/aclPreview/api": {
@@ -1097,9 +1106,17 @@ module.exports = {
 				},
 				"secEnv" :{
 					"source": ["query.secEnv"],
-					"required": true,
+					"required": false,
 					"validation": {
 						"type": "string"
+					}
+				},
+				"page" :{
+					"source": ["query.page"],
+					"required": false,
+					"validation": {
+						"type": "integer",
+						"minimum": 1
 					}
 				}
 			},
@@ -6548,6 +6565,78 @@ module.exports = {
 					'source': ['body.acl'],
 					'required': true,
 					"validation": scopeAclSchema.validation.patternProperties["^[a-zA-Z0-9]+$"]
+				}
+			},
+			
+			"/product/packages/aclPreview/service": {
+				_apiInfo: {
+					"l": "Get Compact Product Package",
+					"group": "Product"
+				},
+				"commonFields": ['soajs_project'],
+				"packageCode": {
+					"source": ["body.packageCode", "query.packageCode"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"productCode": {
+					"source": ["body.productCode", "query.productCode"],
+					"required": true,
+					"validation": {
+						"type": "string",
+					}
+				},
+				"env" :{
+					"source": ["body.env", "query.env"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"acl" :{
+					"source": ["body.acl"],
+					"required": true,
+					"validation": {
+						"type": "array"
+					}
+				}
+			},
+			
+			"/product/packages/aclPreview/api": {
+				_apiInfo: {
+					"l": "Get Compact Product Package",
+					"group": "Product"
+				},
+				"commonFields": ['soajs_project'],
+				"packageCode": {
+					"source": ["body.packageCode", "query.packageCode"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"productCode": {
+					"source": ["body.productCode", "query.productCode"],
+					"required": true,
+					"validation": {
+						"type": "string",
+					}
+				},
+				"env" :{
+					"source": ["body.env", "query.env"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"acl" :{
+					"source": ["body.acl"],
+					"required": true,
+					"validation": {
+						"type": "array"
+					}
 				}
 			},
 			
