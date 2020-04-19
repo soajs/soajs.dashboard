@@ -120,6 +120,7 @@ var errors = {
 	"522": "The Service Host is already running in this environment",
 	"523": "The Service Host is not running in this environment",
 	"524": "The requested service is not found!",
+	"525": "Unable to compare different acl environment types",
 
 	"600": "Database error",
 	"601": "No Logged in User found.",
@@ -294,7 +295,7 @@ var errors = {
 	"906": "Running hosts exist for this environment, remove them before deleting this environment",
 	"907": "Running hosts exist for this environment, remove them before updating its namespace configuration",
 	"908": "Updating deployer configuration is only supported for kubernetes deployments",
-	"909": "Namepsace operations are only supported in kubernetes container deployment mode",
+	"909": "Namespace operations are only supported in kubernetes container deployment mode",
 
 	"910": "Specified memory limit is less than minimum memory prerequisite for this service",
 	"911": "Missing value for environment variable %ENV_NAME% of type %ENV_TYPE% set in catalog recipe",
