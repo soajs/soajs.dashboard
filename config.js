@@ -1129,6 +1129,83 @@ module.exports = {
 				}
 			},
 			
+			"/product/scope/aclPreview/service": {
+				_apiInfo: {
+					"l": "Get Compact Product Scope",
+					"group": "Product"
+				},
+				"commonFields": ['soajs_project'],
+				"productCode": {
+					"source": ["query.productCode"],
+					"required": true,
+					"validation": {
+						"type": "string",
+					}
+				},
+				"mainEnv" :{
+					"source": ["query.mainEnv"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"secEnv" :{
+					"source": ["query.secEnv"],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"page" :{
+					"source": ["query.page"],
+					"required": false,
+					"validation": {
+						"type": "integer",
+						"minimum": 1
+					}
+				}
+				
+			},
+			
+			"/product/scope/aclPreview/api": {
+				_apiInfo: {
+					"l": "Get Compact Product Scope",
+					"group": "Product"
+				},
+				"commonFields": ['soajs_project'],
+				"productCode": {
+					"source": ["query.productCode"],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"format": "alphanumeric",
+						"maxLength": 6
+					}
+				},
+				"mainEnv" :{
+					"source": ["query.mainEnv"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"secEnv" :{
+					"source": ["query.secEnv"],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"page" :{
+					"source": ["query.page"],
+					"required": false,
+					"validation": {
+						"type": "integer",
+						"minimum": 1
+					}
+				}
+			},
+			
 			"/tenant/list": {
 				_apiInfo: {
 					"l": "List Tenants",
@@ -6625,6 +6702,64 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				"productCode": {
+					"source": ["body.productCode", "query.productCode"],
+					"required": true,
+					"validation": {
+						"type": "string",
+					}
+				},
+				"env" :{
+					"source": ["body.env", "query.env"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"acl" :{
+					"source": ["body.acl"],
+					"required": true,
+					"validation": {
+						"type": "array"
+					}
+				}
+			},
+			
+			"/product/scope/aclPreview/service": {
+				_apiInfo: {
+					"l": "Get Compact Product Scope",
+					"group": "Product"
+				},
+				"commonFields": ['soajs_project'],
+				"productCode": {
+					"source": ["body.productCode", "query.productCode"],
+					"required": true,
+					"validation": {
+						"type": "string",
+					}
+				},
+				"env" :{
+					"source": ["body.env", "query.env"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"acl" :{
+					"source": ["body.acl"],
+					"required": true,
+					"validation": {
+						"type": "array"
+					}
+				}
+			},
+			
+			"/product/scope/aclPreview/api": {
+				_apiInfo: {
+					"l": "Get Compact Product Scope",
+					"group": "Product"
+				},
+				"commonFields": ['soajs_project'],
 				"productCode": {
 					"source": ["body.productCode", "query.productCode"],
 					"required": true,

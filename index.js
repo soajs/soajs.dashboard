@@ -975,7 +975,7 @@ service.init(function () {
 	});
 	
 	/**
-	 * Get package service preview of specific product
+	 * Get package service preview of specific package
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
@@ -991,7 +991,7 @@ service.init(function () {
 	});
 	
 	/**
-	 * Get package api preview of specific product
+	 * Get package api preview of specific package
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
@@ -999,6 +999,38 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.getPackagePreviewAClApi(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Get package service preview of specific product
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/product/scope/aclPreview/service", function (req, res) {
+		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.getScopePreviewAClService(config, req, res, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Get package api preview of specific product
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/product/scope/aclPreview/api", function (req, res) {
+		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.getScopePreviewAClApi(config, req, res, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -1095,6 +1127,38 @@ service.init(function () {
 		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
 			checkConnection(BL, req, res, function () {
 				BL.updatePackageAclService(config, req, res, dashboardBL.product.model, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Update a product scope api view
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/product/scope/aclPreview/api", function (req, res) {
+		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.updateScopeAclApi(config, req, res, dashboardBL.product.model, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
+	 * Update a product scope api service
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/product/scope/aclPreview/service", function (req, res) {
+		initBLModel(req, res, dashboardBL.product.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.updateScopeAclService(config, req, res, dashboardBL.product.model, function (error, data) {
 					BL.model.closeConnection(req.soajs);
 					return res.json(req.soajs.buildResponse(error, data));
 				});
