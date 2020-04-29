@@ -1,7 +1,7 @@
 {
   "name": "soajs.dashboard",
   "description": "soajs dashboard service",
-  "version": "2.8.5",
+  "version": "2.8.6",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -32,10 +32,10 @@
     "nock": "9.0.13",
     "shelljs": "0.7.5",
     "sinon": "1.17.6",
-    "soajs.controller": "3.1.14",
+    "soajs.controller": "3.1.16",
     "soajs.mongodb.data": "2.1.*",
-    "soajs.oauth": "2.7.9",
-    "soajs.urac": "3.1.9"
+    "soajs.oauth": "2.7.10",
+    "soajs.urac": "3.1.11"
   },
   "dependencies": {
     "async": "2.1.4",
@@ -56,7 +56,7 @@
     "request": "2.88.2",
     "rimraf": "3.0.2",
     "shortid": "2.2.15",
-    "soajs": "3.0.11",
+    "soajs": "3.0.12",
     "soajs.core.drivers": "3.6.4",
     "unzip2": "0.2.5",
     "url-clean": "1.0.2",
