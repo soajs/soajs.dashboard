@@ -33,7 +33,7 @@
     "shelljs": "0.7.5",
     "sinon": "1.17.6",
     "soajs.controller": "3.1.17",
-    "soajs.mongodb.data": "2.1.*",
+    "soajs.mongodb.data": "2.1.7",
     "soajs.oauth": "2.7.11",
     "soajs.urac": "3.1.12"
   },
