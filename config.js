@@ -1431,7 +1431,7 @@ module.exports = {
 					'source': ['query.type'],
 					'required': true,
 					"validation": {
-						"enum": ['apiCatalog', 'daemon'],
+						"enum": ['soajs', 'api', 'daemon', 'resource', 'custom', 'frontEnd', 'config'],
 						"type": "string"
 					}
 				}
@@ -5970,7 +5970,7 @@ module.exports = {
 					'source': ['query.type'],
 					'required': true,
 					"validation": {
-						"enum": ['apiCatalog', 'daemon'],
+						"enum": ['soajs', 'api', 'daemon', 'resource', 'custom', 'frontEnd', 'config'],
 						"type": "string"
 					}
 				}
@@ -9480,7 +9480,7 @@ module.exports = {
 					'source': ['query.type'],
 					'required': true,
 					"validation": {
-						"enum": ['apiCatalog', 'daemon'],
+						"enum": ['soajs', 'api', 'daemon', 'resource', 'custom', 'frontEnd', 'config'],
 						"type": "string"
 					}
 				}
