@@ -1431,7 +1431,7 @@ module.exports = {
 					'source': ['query.type'],
 					'required': true,
 					"validation": {
-						"enum": ['soajs', 'api', 'daemon', 'resource', 'custom', 'frontEnd', 'config'],
+						"enum": ['soajs', 'api', 'daemon', 'resource', 'custom', 'static', 'config'],
 						"type": "string"
 					}
 				}
