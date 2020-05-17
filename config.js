@@ -1688,6 +1688,20 @@ module.exports = {
 					"validation": {
 						"type": "boolean"
 					}
+				},
+				'skip': {
+					"source": ['query.skip'],
+					"required": false,
+					"validation": {
+						"type": "integer"
+					}
+				},
+				'limit': {
+					"source": ['query.limit'],
+					"required": false,
+					"validation": {
+						"type": "integer"
+					}
 				}
 			},
 			
