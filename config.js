@@ -3742,6 +3742,25 @@ module.exports = {
 				"catalog": catalogSchema
 			},
 			
+			"/catalog/recipes/list": {
+				"_apiInfo": {
+					"l": "List Selected Catalog Recipes",
+					"group": "Catalog"
+				},
+				'commonFields': ['soajs_project'],
+				'ids': {
+					"source": ['body.ids'],
+					"required": true,
+					"validation": {
+						"type": "array",
+						"minItems": "1",
+						"items": {
+							"type": "string",
+						}
+					}
+				},
+			},
+			
 			"/ci/provider": {
 				"_apiInfo": {
 					"l": "Activate CI Provider",

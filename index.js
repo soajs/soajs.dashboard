@@ -2277,6 +2277,22 @@ service.init(function () {
 	});
 	
 	/**
+	 * List catalogs by ids
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/catalog/recipes/list", function (req, res) {
+		initBLModel(req, res, dashboardBL.catalog.module, dbModel, function (BL) {
+			checkConnection(BL, req, res, function () {
+				BL.listSelected(config, req, function (error, data) {
+					BL.model.closeConnection(req.soajs);
+					return res.jsonp(req.soajs.buildResponse(error, data));
+				});
+			});
+		});
+	});
+	
+	/**
 	 * Add new catalog
 	 * @param {String} API route
 	 * @param {Function} API middleware
