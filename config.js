@@ -19,7 +19,7 @@ module.exports = {
 	},
 	"serviceVersion": 1,
 	"serviceName": "dashboard",
-	"serviceGroup": "SOAJS Core Services",
+	"serviceGroup": "Console",
 	"servicePort": 4003,
 	"requestTimeout": 60,
 	"requestTimeoutRenewal": 5,
