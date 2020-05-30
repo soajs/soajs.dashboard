@@ -15,6 +15,10 @@ var environment = {
 		"required": false,
 		"type": "string"
 	},
+	"namespace": {
+		"required": false,
+		"type": "string"
+	},
 	"domain": {
 		"required": false,
 		"type": "string",
