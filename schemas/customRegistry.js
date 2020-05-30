@@ -7,7 +7,6 @@ module.exports = {
         "additionalProperties": false,
         "properties": {
             "name": { "type": "string", "required": true },
-            "locked": { "type": "boolean", "required": false },
             "plugged": { "type": "boolean", "required": true },
             "shared": { "type": "boolean", "required": true },
             "sharedEnv": {
