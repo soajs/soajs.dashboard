@@ -854,13 +854,13 @@ module.exports = {
 					"groupMain": true
 				},
 				"commonFields": ['soajs_project', 'env'],
-				"envType": {
-					"source": ['query.envType'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
+				// "envType": {
+				// 	"source": ['query.envType'],
+				// 	"required": true,
+				// 	"validation": {
+				// 		"type": "string"
+				// 	}
+				// }
 			},
 			
 			"/resources/get": {
