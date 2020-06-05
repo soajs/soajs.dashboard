@@ -12,7 +12,9 @@ var serviceSchema = require("./schemas/serviceSchema");
 var cdOptions = require("./schemas/cdOptions");
 
 module.exports = {
-	type: 'service',
+	"type": 'service',
+	'subType': 'soajs',
+	"description": "This service handles the API of soajs console UI.",
 	prerequisites: {
 		cpu: '',
 		memory: ''
