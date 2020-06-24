@@ -108,14 +108,13 @@ module.exports = {
 								"type": "object",
 								"required": false
 							},
-							"serviceAccount": {
+							"execCommands": {
 								"type": "object",
 								"required": false
 							},
-							"certificates":{
-								"type": "string",
-								"required": false,
-								"enum": ["none","optional","required"]
+							"serviceAccount": {
+								"type": "object",
+								"required": false
 							},
 							"allowExposeServicePort": {
 								"type": "boolean",
