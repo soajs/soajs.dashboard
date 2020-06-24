@@ -12,14 +12,16 @@ var serviceSchema = require("./schemas/serviceSchema");
 var cdOptions = require("./schemas/cdOptions");
 
 module.exports = {
-	type: 'service',
+	"type": 'service',
+	'subType': 'soajs',
+	"description": "This service handles the API of soajs console UI.",
 	prerequisites: {
 		cpu: '',
 		memory: ''
 	},
 	"serviceVersion": 1,
 	"serviceName": "dashboard",
-	"serviceGroup": "SOAJS Core Services",
+	"serviceGroup": "Console",
 	"servicePort": 4003,
 	"requestTimeout": 60,
 	"requestTimeoutRenewal": 5,
@@ -854,13 +856,13 @@ module.exports = {
 					"groupMain": true
 				},
 				"commonFields": ['soajs_project', 'env'],
-				"envType": {
-					"source": ['query.envType'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
+				// "envType": {
+				// 	"source": ['query.envType'],
+				// 	"required": true,
+				// 	"validation": {
+				// 		"type": "string"
+				// 	}
+				// }
 			},
 			
 			"/resources/get": {
@@ -1431,7 +1433,7 @@ module.exports = {
 					'source': ['query.type'],
 					'required': true,
 					"validation": {
-						"enum": ['apiCatalog', 'daemon'],
+						"enum": ['soajs', 'service', 'daemon', 'resource', 'custom', 'static', 'config'],
 						"type": "string"
 					}
 				}
@@ -1687,6 +1689,20 @@ module.exports = {
 					"required": false,
 					"validation": {
 						"type": "boolean"
+					}
+				},
+				'skip': {
+					"source": ['query.skip'],
+					"required": false,
+					"validation": {
+						"type": "integer"
+					}
+				},
+				'limit': {
+					"source": ['query.limit'],
+					"required": false,
+					"validation": {
+						"type": "integer"
 					}
 				}
 			},
@@ -3726,6 +3742,25 @@ module.exports = {
 				},
 				"commonFields": ['soajs_project'],
 				"catalog": catalogSchema
+			},
+			
+			"/catalog/recipes/list": {
+				"_apiInfo": {
+					"l": "List Selected Catalog Recipes",
+					"group": "Catalog"
+				},
+				'commonFields': ['soajs_project'],
+				'ids': {
+					"source": ['body.ids'],
+					"required": true,
+					"validation": {
+						"type": "array",
+						"minItems": "1",
+						"items": {
+							"type": "string",
+						}
+					}
+				},
 			},
 			
 			"/ci/provider": {
@@ -5970,7 +6005,7 @@ module.exports = {
 					'source': ['query.type'],
 					'required': true,
 					"validation": {
-						"enum": ['apiCatalog', 'daemon'],
+						"enum": ['soajs', 'service', 'daemon', 'resource', 'custom', 'static', 'config'],
 						"type": "string"
 					}
 				}
@@ -9480,7 +9515,7 @@ module.exports = {
 					'source': ['query.type'],
 					'required': true,
 					"validation": {
-						"enum": ['apiCatalog', 'daemon'],
+						"enum": ['soajs', 'service', 'daemon', 'resource', 'custom', 'static', 'config'],
 						"type": "string"
 					}
 				}

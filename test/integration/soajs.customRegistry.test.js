@@ -23,7 +23,6 @@ var params = {}, access_token_owner = '', access_token_user1 = '';
 var customRegCopy = {}, customRegCopyId = '';
 var customRegRecord = {
     "name" : "c1",
-    "locked" : true,
     "plugged" : true,
     "shared" : true,
     "value" : "test custom registry entry"
@@ -634,7 +633,6 @@ describe("Testing Custom Registry Functionality", function() {
                     if(['c5', 'c6', 'c7', 'c8', 'c9'].indexOf(oneRecord.name) !== -1) {
                         assert.ok(oneRecord.plugged);
                         assert.ok(!oneRecord.shared);
-                        assert.ok(!oneRecord.locked);
                         assert.equal(oneRecord.created, 'DEV');
                         assert.equal(oneRecord.author, 'owner');
                         assert.ok(oneRecord.value);

@@ -103,7 +103,9 @@ module.exports = function (grunt) {
 				SOAJS_TEST_PACKAGE: "DSBRD_DEFLT",
 				APP_DIR_FOR_CODE_COVERAGE: '../',
 				SOAJS_SRVIP: '127.0.0.1',
-				SOAJS_DEPLOY_TEST: true
+				SOAJS_DEPLOY_TEST: true,
+				SOAJS_DEPLOY_MANUAL: true,
+				SOAJS_REGISTRY_API: '127.0.0.1:5000'
 			},
 			coverage: {
 				// NODE_ENV: 'test',
@@ -114,7 +116,9 @@ module.exports = function (grunt) {
 				APP_DIR_FOR_CODE_COVERAGE: '../test/coverage/instrument/',
 				SOAJS_SRVIP: '127.0.0.1',
 				SOAJS_PROFILE: '',
-				SOAJS_ENV: 'dev'
+				SOAJS_ENV: 'dev',
+				SOAJS_DEPLOY_MANUAL: true,
+				SOAJS_REGISTRY_API: '127.0.0.1:5000'
 			}
 		},
 
