@@ -115,10 +115,6 @@ module.exports = {
 							"serviceAccount": {
 								"type": "object",
 								"required": false
-							},
-							"allowExposeServicePort": {
-								"type": "boolean",
-								"required": false
 							}
 						}
 					},
