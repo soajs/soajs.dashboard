@@ -56,8 +56,8 @@
     "request": "2.88.2",
     "rimraf": "3.0.2",
     "shortid": "2.2.15",
-    "soajs": "4.0.12",
-    "soajs.core.drivers": "4.0.3",
+    "soajs": "4.0.13",
+    "soajs.core.drivers": "4.0.4",
     "unzip2": "0.2.5",
     "url-clean": "1.0.2",
     "yamljs": "0.3.0"
