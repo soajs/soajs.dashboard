@@ -68,9 +68,9 @@ module.exports = {
 	
 	"imagesDir": "/opt/soajs/deployer/",
 	
-	"kubeNginx": {
-		"minPort": 0,
-		"maxPort": 2767
+	"KubePort": {
+		"minPort": 30000,
+		"maxPort": 32767
 	},
 	
 	"docker": {
