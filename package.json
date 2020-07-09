@@ -48,7 +48,7 @@
     "jsonschema": "1.2.5",
     "json2yaml": "1.1.0",
     "kubernetes-client": "^2.2.2",
-    "lodash": "4.17.15",
+    "lodash": "4.17.16",
     "mkdirp": "0.5.1",
     "moment-timezone": "0.5.28",
     "ncp": "2.0.0",
