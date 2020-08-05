@@ -43,6 +43,16 @@ module.exports = {
 		]
 	},
 	
+	"tags": ["deprecated"],
+	"attributes": {
+		"previous": ["console"]
+	},
+	"program": ["soajs"],
+	"documentation": {
+		"readme": "/README.md",
+		"release": "/RELEASE.md"
+	},
+	
 	"hasher": {
 		"hashIterations": 12
 	},
