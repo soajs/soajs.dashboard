@@ -2,7 +2,9 @@
 var serviceConfig = require("./schemas/serviceConfig");
 
 var aclSchema = require("./schemas/acl");
+var updateAclSchema = require("./schemas/updateAcl");
 var scopeAclSchema = require("./schemas/scopeAcl");
+var updateScopeAclSchema = require("./schemas/updateScopeAcl");
 var catalogSchema = require("./schemas/catalog");
 var resourceSchema = require("./schemas/resource");
 var customRegEntrySchema = require("./schemas/customRegistry");
@@ -6665,7 +6667,7 @@ module.exports = {
 				"acl": {
 					'source': ['body.acl'],
 					'required': true,
-					"validation": aclSchema.validation.patternProperties["^[a-zA-Z0-9]+$"]
+					"validation": updateAclSchema
 				}
 			},
 			
@@ -6694,7 +6696,7 @@ module.exports = {
 				"acl": {
 					'source': ['body.acl'],
 					'required': true,
-					"validation": scopeAclSchema.validation.patternProperties["^[a-zA-Z0-9]+$"]
+					"validation": updateScopeAclSchema
 				}
 			},
 			
