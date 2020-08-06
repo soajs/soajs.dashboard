@@ -1,7 +1,7 @@
 {
   "name": "soajs.dashboard",
   "description": "soajs dashboard service",
-  "version": "3.0.10",
+  "version": "3.0.11",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -32,10 +32,10 @@
     "nock": "9.0.13",
     "shelljs": "0.7.5",
     "sinon": "1.17.6",
-    "soajs.controller": "4.0.22",
+    "soajs.controller": "4.0.23",
     "soajs.mongodb.data": "2.1.7",
-    "soajs.oauth": "3.0.12",
-    "soajs.urac": "4.0.12"
+    "soajs.oauth": "3.0.13",
+    "soajs.urac": "4.0.13"
   },
   "dependencies": {
     "async": "2.1.4",
@@ -48,7 +48,7 @@
     "jsonschema": "1.2.5",
     "json2yaml": "1.1.0",
     "kubernetes-client": "^2.2.2",
-    "lodash": "4.17.15",
+    "lodash": "4.17.19",
     "mkdirp": "0.5.1",
     "moment-timezone": "0.5.28",
     "ncp": "2.0.0",
